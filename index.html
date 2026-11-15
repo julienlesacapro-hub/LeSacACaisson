@@ -1819,6 +1819,16 @@ const CO_DECLAR = [
  {v:'cap', l:'Centre antipoison'}, {v:'ars', l:'ARS (déclaration obligatoire)'}, {v:'pomp', l:'Sapeurs-pompiers (mesures sur site)'}, {v:'travail', l:'Médecine ou inspection du travail'},
  {v:'maritime', l:'Affaires maritimes (matériel de plongée)'}, {v:'autre', l:'Autre'}
 ];
+const CO_DLR_THOR = [{v:0,l:'Absente',c:'v-ok'},{v:1,l:'Atypique',c:'v-wn'},{v:2,l:'Typique (angineuse)',c:'v-ab'}];
+const CO_ECG_RYTHME = [{v:1,l:'Sinusal',c:'v-ok'},{v:2,l:'Tachycardie sinusale',c:'v-wn'},{v:3,l:'Fibrillation ou flutter atrial',c:'v-ab'},{v:4,l:'Autre trouble du rythme',c:'v-ab'}];
+const CO_ECG_ISCH = [{v:'st_sus',l:'Sus-décalage du ST'},{v:'st_sous',l:'Sous-décalage du ST'},{v:'t_neg',l:'Ondes T négatives'},{v:'q',l:'Ondes Q'}];
+const CO_ECG_COND = [{v:'bav',l:'Bloc atrio-ventriculaire'},{v:'bbd',l:'Bloc de branche droit'},{v:'bbg',l:'Bloc de branche gauche'}];
+const CO_ECG_K = ['co_ecg_rythme','co_ecg_repol','co_ecg_cond','co_ecg_esv'];
+/* Demi-vies de l'HbCO (minutes) pour l'estimation de la cinétique (12.1.2) :
+   air ambiant 320 min (Peterson et Stewart, Arch Environ Health 1970, doi:10.1080/00039896.1970.10667215) ;
+   oxygène normobare 74 ± 25 min, extrêmes 26 à 148 (Weaver et al., Chest 2000, doi:10.1378/chest.117.3.801) ;
+   oxygène hyperbare environ 20 min (valeur de revue : Culnan et al., Ann Plast Surg 2018, doi:10.1097/SAP.0000000000001351). */
+const CO_TH = {air:320, nbo:74, nbo_sd:25, ohb:20};
 const CO_SUIVI = [{v:'neuropsy', l:'Bilan neuropsychologique à distance'}, {v:'consult', l:'Consultation de contrôle à 1 mois'}, {v:'irm', l:'IRM cérébrale si symptômes persistants'}, {v:'cardio', l:'Bilan cardiologique'}];
 const SPEC = [
 {id:'ident', t:'Identification', cols:2, page:1, tail:()=>identBox(), f:[
@@ -2115,8 +2125,8 @@ const SPEC = [
 
 {id:'general', t:'Examen clinique général', cols:1, page:3,
  norm:{ex_cv:0,ex_pneumo:0,ex_abdo:0,ex_loco:0}, f:[
-  {k:'ex_cv', l:'Anomalie cardio-vasculaire', t:'choice', o:ON},
-  {k:'ex_cv_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_cv',[1]], sub:1,
+  {k:'ex_cv', cadres:[1,2,3], l:'Anomalie cardio-vasculaire', t:'choice', o:ON},
+  {k:'ex_cv_txt', cadres:[1,2,3], l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_cv',[1]], sub:1,
    phr:['Tachycardie.','Bradycardie.','Hypotension.','Marbrures.','Souffle cardiaque.']},
   {k:'ex_pneumo', l:'Anomalie respiratoire', t:'choice', o:ON},
   {k:'ex_pneumo_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_pneumo',[1]], sub:1,
@@ -2126,7 +2136,7 @@ const SPEC = [
   {k:'ex_abdo_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_abdo',[1]], sub:1},
   {k:'ex_loco', l:'Anomalie locomotrice', t:'choice', o:ON},
   {k:'ex_loco_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_loco',[1]], sub:1,
-   phr:['Douleur articulaire (bend).','Épaule.','Coude.','Genou.','Hanche.','Impotence fonctionnelle.']}
+   phr:['Douleur articulaire (bend).','Épaule.','Coude.','Genou.','Hanche.','Impotence fonctionnelle.','Douleurs musculaires, zones de compression (rhabdomyolyse).','Phlyctènes de compression.']}
 ]},
 
 {id:'consc', page:3, t:'Conscience', cols:1, norm:{avpu:1,gcs_y:4,gcs_v:5,gcs_m:6}, f:[
@@ -2167,16 +2177,16 @@ const SPEC = [
   {k:'nys_cote', l:'Côté de la secousse rapide', t:'choice', o:CO2, dep:['nys',[1]], sub:1},
   {k:'nys_regard', l:'Position(s) du regard', t:'multi', o:REGARD, dep:['nys',[1]], sub:1,
    hint:'Plusieurs positions possibles'},
-  {k:'nys_type', l:'Sens du nystagmus', t:'choice', dep:['nys',[1]], sub:1,
+  {k:'nys_type', cadres:[1,2,3], l:'Sens du nystagmus', t:'choice', dep:['nys',[1]], sub:1,
    o:[{v:1,l:'Même sens que la secousse rapide'},{v:2,l:'Sens inverse'},{v:3,l:'Girato-rotatoire'}]},
-  {k:'vns', help:'nys', l:'VNS (vidéonystagmoscopie) réalisée', t:'choice', o:NN},
-  {k:'vns_spont', l:'Nystagmus spontané sous VNS', t:'choice', o:ON, dep:['vns',[1]], sub:1},
-  {k:'vns_spont_cote', l:'Côté (secousse rapide)', t:'choice', o:CO2, dep:['vns_spont',[1]], sub:1},
-  {k:'vns_spont_regard', l:'Position(s) du regard', t:'multi', o:REGARD, dep:['vns_spont',[1]], sub:1},
-  {k:'vns_sensib', l:'VNS sensibilisée', t:'choice', o:NN, dep:['vns',[1]], sub:1, hint:'Épreuve vibratoire mastoïdienne'},
-  {k:'vns_niv', help:'nys', l:'NIV — nystagmus induit par vibration', t:'choice', o:ON, dep:['vns_sensib',[1]], sub:1},
-  {k:'vns_niv_cote', l:'Côté (secousse rapide)', t:'choice', o:CO2, dep:['vns_niv',[1]], sub:1},
-  {k:'vns_niv_regard', l:'Position(s) du regard', t:'multi', o:REGARD, dep:['vns_niv',[1]], sub:1}
+  {k:'vns', cadres:[1,2,3], help:'nys', l:'VNS (vidéonystagmoscopie) réalisée', t:'choice', o:NN},
+  {k:'vns_spont', cadres:[1,2,3], l:'Nystagmus spontané sous VNS', t:'choice', o:ON, dep:['vns',[1]], sub:1},
+  {k:'vns_spont_cote', cadres:[1,2,3], l:'Côté (secousse rapide)', t:'choice', o:CO2, dep:['vns_spont',[1]], sub:1},
+  {k:'vns_spont_regard', cadres:[1,2,3], l:'Position(s) du regard', t:'multi', o:REGARD, dep:['vns_spont',[1]], sub:1},
+  {k:'vns_sensib', cadres:[1,2,3], l:'VNS sensibilisée', t:'choice', o:NN, dep:['vns',[1]], sub:1, hint:'Épreuve vibratoire mastoïdienne'},
+  {k:'vns_niv', cadres:[1,2,3], help:'nys', l:'NIV — nystagmus induit par vibration', t:'choice', o:ON, dep:['vns_sensib',[1]], sub:1},
+  {k:'vns_niv_cote', cadres:[1,2,3], l:'Côté (secousse rapide)', t:'choice', o:CO2, dep:['vns_niv',[1]], sub:1},
+  {k:'vns_niv_regard', cadres:[1,2,3], l:'Position(s) du regard', t:'multi', o:REGARD, dep:['vns_niv',[1]], sub:1}
 ]},
 
 {id:'orl', cadres:[1,2,3], page:3, t:'ORL et barotraumatisme', cols:2, note:HAINES_TXT, tail:()=>orlBox(),
@@ -2215,8 +2225,8 @@ const SPEC = [
   {k:'ref_bicip_G', l:'Bicipital GAUCHE', t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'ref_tricip_D',l:'Tricipital DROIT', t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'ref_tricip_G',l:'Tricipital GAUCHE',t:'choice', o:REF, flags:RFLAGS, copyref:1},
-  {k:'hoffman_D', help:'hoffmann', l:'Signe de Hoffmann DROIT',  t:'choice', o:ON, hint:'OUI = pathologique'},
-  {k:'hoffman_G', help:'hoffmann', l:'Signe de Hoffmann GAUCHE', t:'choice', o:ON, hint:'OUI = pathologique'}
+  {k:'hoffman_D', cadres:[1,2,3], help:'hoffmann', l:'Signe de Hoffmann DROIT',  t:'choice', o:ON, hint:'OUI = pathologique'},
+  {k:'hoffman_G', cadres:[1,2,3], help:'hoffmann', l:'Signe de Hoffmann GAUCHE', t:'choice', o:ON, hint:'OUI = pathologique'}
 ]},
 
 {id:'refinf', page:4, t:'Réflexes — membres inférieurs', cols:2,
@@ -2227,17 +2237,17 @@ const SPEC = [
   {k:'ref_ach_G', l:'Achilléen GAUCHE',t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'bbk_D', ok:[0,1], help:'babinski', l:'Cutané plantaire (BBK) DROIT',  t:'choice', o:BBK},
   {k:'bbk_G', ok:[0,1], help:'babinski', l:'Cutané plantaire (BBK) GAUCHE', t:'choice', o:BBK},
-  {k:'trep_pied', help:'trep', l:'Trépidation du pied', t:'choice', o:ON, full:1},
-  {k:'trep_pied_cote', l:'Côté', t:'choice', o:CO, dep:['trep_pied',[1]], sub:1, full:1},
-  {k:'trep_pied_qual_D', l:'Caractère à DROITE',  t:'choice', o:TREP, dep:['trep_pied_cote',[1,3]], sub:1, full:1},
-  {k:'trep_pied_qual_G', l:'Caractère à GAUCHE', t:'choice', o:TREP, dep:['trep_pied_cote',[2,3]], sub:1, full:1},
-  {k:'trep_rot', help:'trep',  l:'Trépidation de la rotule', t:'choice', o:ON, full:1},
-  {k:'trep_rot_cote', l:'Côté', t:'choice', o:CO, dep:['trep_rot',[1]], sub:1, full:1},
-  {k:'trep_rot_qual_D', l:'Caractère à DROITE',  t:'choice', o:TREP, dep:['trep_rot_cote',[1,3]], sub:1, full:1},
-  {k:'trep_rot_qual_G', l:'Caractère à GAUCHE', t:'choice', o:TREP, dep:['trep_rot_cote',[2,3]], sub:1, full:1},
-  {k:'contract',  l:'Contractions musculaires spontanées', t:'choice', o:ON, full:1},
-  {k:'contract_cote', l:'Côté', t:'choice', o:CO, dep:['contract',[1]], sub:1, full:1},
-  {k:'contract_loc',  l:'Localisation', t:'txt', wide:1, dep:['contract',[1]], sub:1, full:1, nofill:1,
+  {k:'trep_pied', cadres:[1,2,3], help:'trep', l:'Trépidation du pied', t:'choice', o:ON, full:1},
+  {k:'trep_pied_cote', cadres:[1,2,3], l:'Côté', t:'choice', o:CO, dep:['trep_pied',[1]], sub:1, full:1},
+  {k:'trep_pied_qual_D', cadres:[1,2,3], l:'Caractère à DROITE',  t:'choice', o:TREP, dep:['trep_pied_cote',[1,3]], sub:1, full:1},
+  {k:'trep_pied_qual_G', cadres:[1,2,3], l:'Caractère à GAUCHE', t:'choice', o:TREP, dep:['trep_pied_cote',[2,3]], sub:1, full:1},
+  {k:'trep_rot', cadres:[1,2,3], help:'trep',  l:'Trépidation de la rotule', t:'choice', o:ON, full:1},
+  {k:'trep_rot_cote', cadres:[1,2,3], l:'Côté', t:'choice', o:CO, dep:['trep_rot',[1]], sub:1, full:1},
+  {k:'trep_rot_qual_D', cadres:[1,2,3], l:'Caractère à DROITE',  t:'choice', o:TREP, dep:['trep_rot_cote',[1,3]], sub:1, full:1},
+  {k:'trep_rot_qual_G', cadres:[1,2,3], l:'Caractère à GAUCHE', t:'choice', o:TREP, dep:['trep_rot_cote',[2,3]], sub:1, full:1},
+  {k:'contract', cadres:[1,2,3],  l:'Contractions musculaires spontanées', t:'choice', o:ON, full:1},
+  {k:'contract_cote', cadres:[1,2,3], l:'Côté', t:'choice', o:CO, dep:['contract',[1]], sub:1, full:1},
+  {k:'contract_loc', cadres:[1,2,3],  l:'Localisation', t:'txt', wide:1, dep:['contract',[1]], sub:1, full:1, nofill:1,
    phr:['Deltoïde','Biceps brachial','Avant-bras','Éminence thénar','Muscles intercostaux','Paravertébraux lombaires','Quadriceps','Jumeaux / mollet','Loge antéro-externe de jambe','Muscles de la face']}
 ]},
 
@@ -2275,8 +2285,8 @@ const SPEC = [
   {k:'f_c7_D', l:'C7 — extension du coude',    t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msd'},
   {k:'f_c8_D', l:'C8 — flexion des doigts',    t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msd'},
   {k:'f_t1_D', l:'T1 — abduction du 5e doigt', t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msd'},
-  {k:'f_epaule_D', l:'Élévation de l\'épaule (hors ASIA)', t:'choice', o:MRC, mrc:1, vis:'msd'},
-  {k:'f_main_D',   l:'Serrage de main (hors ASIA)',        t:'choice', o:MRC, mrc:1, vis:'msd'},
+  {k:'f_epaule_D', cadres:[1,2,3], l:'Élévation de l\'épaule (hors ASIA)', t:'choice', o:MRC, mrc:1, vis:'msd'},
+  {k:'f_main_D', cadres:[1,2,3],   l:'Serrage de main (hors ASIA)',        t:'choice', o:MRC, mrc:1, vis:'msd'},
 
   {k:'h_msg', t:'head', l:'Membre supérieur GAUCHE', limb:'msg', full:1},
   {k:'f_c5_G', l:'C5 — flexion du coude',      t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msg'},
@@ -2284,8 +2294,8 @@ const SPEC = [
   {k:'f_c7_G', l:'C7 — extension du coude',    t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msg'},
   {k:'f_c8_G', l:'C8 — flexion des doigts',    t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msg'},
   {k:'f_t1_G', l:'T1 — abduction du 5e doigt', t:'choice', o:MRC, mrc:1, copyforce:1, vis:'msg'},
-  {k:'f_epaule_G', l:'Élévation de l\'épaule (hors ASIA)', t:'choice', o:MRC, mrc:1, vis:'msg'},
-  {k:'f_main_G',   l:'Serrage de main (hors ASIA)',        t:'choice', o:MRC, mrc:1, vis:'msg'},
+  {k:'f_epaule_G', cadres:[1,2,3], l:'Élévation de l\'épaule (hors ASIA)', t:'choice', o:MRC, mrc:1, vis:'msg'},
+  {k:'f_main_G', cadres:[1,2,3],   l:'Serrage de main (hors ASIA)',        t:'choice', o:MRC, mrc:1, vis:'msg'},
 
   {k:'h_mid', t:'head', l:'Membre inférieur DROIT', limb:'mid', full:1},
   {k:'f_l2_D', l:'L2 — flexion de hanche',        t:'choice', o:MRC, mrc:1, copyforce:1, vis:'mid', help:'mrc'},
@@ -2301,12 +2311,12 @@ const SPEC = [
   {k:'f_l5_G', l:"L5 — extension de l'hallux",    t:'choice', o:MRC, mrc:1, copyforce:1, vis:'mig'},
   {k:'f_s1_G', l:'S1 — flexion plantaire',        t:'choice', o:MRC, mrc:1, copyforce:1, vis:'mig'},
 
-  {k:'h_sph', t:'head', l:'Sphincter anal', limb:'sph', full:1,
+  {k:'h_sph', cadres:[1,2,3], t:'head', l:'Sphincter anal', limb:'sph', full:1,
    sub2:'Ces deux items décident du caractère complet ou incomplet de la lésion dans la classification ASIA.'},
-  {k:'def_sph', l:'Trouble sphinctérien ou anesthésie périnéale', t:'choice', o:ON, help:'vac'},
-  {k:'vac', l:'Contraction anale volontaire (VAC)', t:'choice', o:NO, full:1, vis:'sph', help:'vac',
+  {k:'def_sph', cadres:[1,2,3], l:'Trouble sphinctérien ou anesthésie périnéale', t:'choice', o:ON, help:'vac'},
+  {k:'vac', cadres:[1,2,3], l:'Contraction anale volontaire (VAC)', t:'choice', o:NO, full:1, vis:'sph', help:'vac',
    hint:'Élément indispensable à la détermination du caractère complet ou incomplet'},
-  {k:'dap', l:'Pression anale profonde perçue (DAP)', t:'choice', o:NO, full:1, vis:'sph', help:'vac'}
+  {k:'dap', cadres:[1,2,3], l:'Pression anale profonde perçue (DAP)', t:'choice', o:NO, full:1, vis:'sph', help:'vac'}
 ]},
 
 {id:'mict', cadres:[1,2,3], page:4, t:'Miction', cols:1, norm:{mict:1,mict_type:1}, f:[
@@ -2395,7 +2405,7 @@ const SPEC = [
    hint:'Durée propre à la table choisie'},
   {k:'tb_h_mep', l:'Heure de mise en pression', t:'time', hint:'Sur une séance sans examen : proposée (heure d’enregistrement), modifiable ; elle date la fiche'},
   {k:'tb_h_fin', l:'Heure de fin', t:'time', hint:'Calculée : mise en pression + durée de la table, modifiable'},
-  {k:'tb_delai', l:'Délai 1ers symptômes → recompression (min)', t:'calc', full:1, not:[4],
+  {k:'tb_delai', cadres:[1,2,3], l:'Délai 1ers symptômes → recompression (min)', t:'calc', full:1, not:[4],
    hint:'Facteur pronostique majeur. Un délai supérieur à 194 min a été associé à une récupération incomplète.'},
   {k:'tb_complic', l:'Complication thérapeutique', t:'choice', o:ON},
   {k:'tb_complic_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['tb_complic',[1]], sub:1,
@@ -2638,8 +2648,8 @@ const SPEC = [
   {k:'co_hbco_box', t:'html', fn:()=>coHbcoBox(), full:1, nofill:1},
   {k:'co_spco', l:'SpCO (oxymètre de pouls à CO-oxymétrie)', t:'num', min:0, max:100, unit:'%', nofill:1},
   {k:'co_spco_h', l:'Heure de la mesure de SpCO', t:'time', nofill:1},
-  {k:'co_o2_avant_min', l:'Oxygène normobare avant le 1er prélèvement de HbCO', t:'num', min:0, max:1440, unit:'min', nofill:1,
-   hint:'Sous oxygène, la HbCO baisse vite (demi-vie d’environ 1 h 30) : la première valeur sous-estime l’exposition'}
+  {k:'co_o2_avant_min', l:'Oxygène normobare avant la 1re mesure (HbCO, à défaut SpCO)', t:'num', min:0, max:1440, unit:'min', nofill:1,
+   hint:'Proposé : 1ers soins sur place (oxygène) → 1re mesure, modifiable. Sous oxygène normobare, la demi-vie de l’HbCO est de 74 ± 25 min (Weaver 2000) : la 1re valeur sous-estime le pic'}
 ]},
 {id:'co_gravite', t:'Gravité et indication d’oxygénothérapie hyperbare', cols:1, page:6, before:'recomp', cadres:[4], noghost:1, f:[
   {k:'co_grossesse', l:'Grossesse', t:'choice', o:CO_GROSSESSE, full:1, dep:['sexe',[2]]},
@@ -2655,6 +2665,44 @@ const SPEC = [
   {k:'co_expo_autres', l:'Autres personnes exposées : examinées ou orientées', t:'txt', wide:1, full:1, nofill:1},
   {k:'co_suivi', l:'Suivi à distance', t:'multi', o:CO_SUIVI, full:1},
   {k:'co_suivi_txt', l:'Précisions sur le suivi', t:'txt', wide:1, full:1, nofill:1}
+]},
+/* 12.1.2 : examen cardio-vasculaire détaillé, signes ECG, cinétique de l'HbCO, table de recompression proposée. Écrites en fin de SPEC : les colonnes existantes ne bougent pas. */
+{id:'co_cv', t:'Examen cardio-vasculaire', cols:2, page:3, after:'general', cadres:[4],
+ norm:{co_cv_dlr:0,co_cv_rythme:1,co_cv_souffle:0,co_cv_ic:0,co_cv_choc:0,co_cv_pouls:1}, f:[
+  {k:'co_cv_note', t:'html', fn:()=>'<div class="note" style="margin:0">Atteinte myocardique (troponine, CK-MB ou ECG) chez 37 % des intoxications modérées à sévères (Satran 2005), associée à une mortalité à long terme doublée (Henry 2006) : ECG et troponine à l’admission, troponine répétée.</div>', full:1, nofill:1},
+  {k:'co_cv_dlr', l:'Douleur thoracique', t:'choice', o:CO_DLR_THOR, full:1},
+  {k:'co_cv_rythme', l:'Pouls régulier', t:'choice', o:NO},
+  {k:'co_cv_souffle', l:'Souffle cardiaque', t:'choice', o:ON},
+  {k:'co_cv_ic', l:'Signes d’insuffisance cardiaque', t:'choice', o:ON, hint:'Crépitants, turgescence jugulaire, reflux hépato-jugulaire, œdèmes'},
+  {k:'co_cv_choc', l:'Signes d’hypoperfusion', t:'choice', o:ON, hint:'Marbrures, temps de recoloration supérieur à 3 s, extrémités froides, hypotension'},
+  {k:'co_cv_pouls', l:'Pouls périphériques perçus', t:'choice', o:NO},
+  {k:'co_cv_txt', l:'Précisions', t:'txt', wide:1, full:1, nofill:1, phr:['Tachycardie.','Bradycardie.','Hypotension.','Hypertension.','Marbrures.','Douleur thoracique constrictive.']},
+  {k:'h_co_inh', t:'head', l:'Incendie : inhalation de fumées', full:1, depFn:()=>depMatch('co_source',['incendie'])},
+  {k:'co_fumees', l:'Signes d’inhalation de fumées', t:'choice', o:ON, dep:['co_source',['incendie']], hint:'Suies narinaires ou buccales, brûlures faciales, voix rauque, stridor, crachats noirâtres'},
+  {k:'co_cyanure', l:'Intoxication cyanhydrique associée suspectée', t:'choice', o:ON, dep:['co_source',['incendie']], hint:'Incendie en milieu clos, troubles de la conscience, lactates élevés (Culnan 2018)'}
+]},
+{id:'co_ecg', t:'ECG : signes d’atteinte myocardique', cols:2, page:5, before:'examens', cadres:[4], noghost:1,
+ norm:{co_ecg_rythme:1,co_ecg_repol:0,co_ecg_cond:0,co_ecg_esv:0}, f:[
+  {k:'co_ecg_note', t:'html', fn:()=>coEcgNote(), full:1, nofill:1},
+  {k:'co_ecg_rythme', l:'Rythme', t:'choice', o:CO_ECG_RYTHME, full:1, dep:['im_ecg',[1]]},
+  {k:'co_ecg_repol', l:'Trouble de la repolarisation ou signe ischémique', t:'choice', o:ON, dep:['im_ecg',[1]]},
+  {k:'co_ecg_isch', l:'Lesquels', t:'multi', o:CO_ECG_ISCH, sub:1, full:1, dep:['co_ecg_repol',[1]]},
+  {k:'co_ecg_isch_loc', l:'Territoire', t:'txt', sub:1, nofill:1, dep:['co_ecg_repol',[1]], phr:['Antérieur.','Septal.','Latéral.','Inférieur.','Diffus.']},
+  {k:'co_ecg_cond', l:'Trouble de la conduction', t:'choice', o:ON, dep:['im_ecg',[1]]},
+  {k:'co_ecg_cond_t', l:'Lesquels', t:'multi', o:CO_ECG_COND, sub:1, full:1, dep:['co_ecg_cond',[1]]},
+  {k:'co_ecg_esv', l:'Extrasystoles ventriculaires', t:'choice', o:ON, dep:['im_ecg',[1]]}
+]},
+{id:'co_cinet', t:'Cinétique de l’HbCO (estimation)', cols:2, page:5, after:'co_bio', before:'actes', cadres:[4], noghost:1, f:[
+  {k:'co_k_box', t:'html', fn:()=>coCinetBox(), full:1, nofill:1},
+  {k:'co_k_air', l:'Air ambiant : soustraction → début de l’oxygène', t:'num', min:0, max:2880, unit:'min', nofill:1,
+   hint:'Proposé : fin de l’exposition → 1ers soins sur place (si oxygène sur place), modifiable'},
+  {k:'co_k_ohb_delai', l:'Délai 1re mesure → mise en pression', t:'num', min:0, max:2880, unit:'min', nofill:1,
+   hint:'Proposé d’après l’heure de mise en pression ; à défaut, saisissez un délai pour simuler'}
+]},
+{id:'co_table', t:'Table de recompression proposée', cols:1, page:6, after:'co_gravite', before:'recomp', cadres:[4], noghost:1, f:[
+  {k:'co_table_box', t:'html', fn:()=>coTableBox(), full:1, nofill:1},
+  {k:'co_iot', l:'Patient intubé et ventilé', t:'choice', o:ON, full:1, hint:'Oriente vers la version IOT de la table'},
+  {k:'co_delai_ohb', l:'Délai fin de l’exposition → mise en pression', t:'calc', unit:'min', full:1, hint:'Calculé : fin de l’exposition (onglet Circonstances) → heure de mise en pression'}
 ]}
 ];
 
@@ -4515,7 +4563,7 @@ function autoSync(k, val){
 /* les champs correspondants à l'écran suivent le calcul, sauf celui qui a le focus */
 const AUTOKEYS = ['tb_h_fin','tb_h_mep','rx_solu_dose','ev_seances','sortie_exam_second','ecg_txt','pl_dtr','pl_duree_tot','pl_rr_prof','pl_reimm_txt',
                   'pl_h_immersion','pl_h_depart_fond','pl_h_sortie',
-                  'gds_date','gds_h','gaa_date','gaa_h','lab_date','lab_h','lab_hb','lab_ht','lab_ldl'];
+                  'gds_date','gds_h','gaa_date','gaa_h','lab_date','lab_h','lab_hb','lab_ht','lab_ldl','co_o2_avant_min','co_k_air','co_k_ohb_delai'];
 function refreshAutoFields(){
   AUTOKEYS.forEach(k=>{
     const el = document.getElementById('i_'+k);
@@ -5836,7 +5884,7 @@ function adpCalc(){
   /* consultation de sortie : examens à réaliser, proposés d'après le ou les diagnostics retenus et le générateur de documents */
   if(ftype()===3 && !d.exam_prop_off) autoSync('sortie_exam_second', genExamsTexte(d));
   /* ECG : compte rendu rédigé à partir de la fréquence et du QTc, modifiable */
-  autoSync('ecg_txt', (d.im_ecg===1 && (d.ecg_fc!=null || d.ecg_qtc!=null)) ? ecgTexte(d) : null);
+  autoSync('ecg_txt', (d.im_ecg===1 && (d.ecg_fc!=null || d.ecg_qtc!=null || (cadreOf(d)===4 && CO_ECG_K.some(k=>d[k]!=null)))) ? ecgTexte(d) : null);
   /* biologie : horodatage proposé, Hb et Ht du bilan repris du gaz du sang du même jour */
   bioCalc(d);
 }
@@ -6248,6 +6296,7 @@ function addMin(hm, n){
 }
 /* ECG normal, à compléter : fréquence et QTc manquants restent « xx » pour être vus */
 function ecgTexte(d){
+  if(cadreOf(d)===4) return coEcgTexte(d);
   const fc = d.ecg_fc!=null ? d.ecg_fc : 'xx', q = d.ecg_qtc!=null ? d.ecg_qtc : 'xx';
   return 'RSR à '+fc+' bpm, d’axe non dévié, sans trouble de la conduction ni de la repolarisation. QTc à '+q+' ms.';
 }
@@ -7333,10 +7382,12 @@ function examFindings(){
 
   /* ---------- examen général par appareil ---------- */
   const GEN = [['ex_cv','cardio-vasculaire'],['ex_pneumo','respiratoire'],['ex_abdo','abdominal'],['ex_loco','locomoteur']];
-  const gen = dom('gen', GEN.some(g=>has(g[0])));
-  GEN.forEach(g=>{ if(d[g[0]]===1) add(gen,g[0],'anomalie '+g[1],d[g[0]+'_txt']?'('+TXT.lc1(flat(d[g[0]+'_txt']).replace(/\.$/,''))+')':'',1); });
-  gen.normaux = GEN.filter(g=>d[g[0]]===0).map(g=>g[1]);
-  gen.normIds = GEN.filter(g=>d[g[0]]===0).map(g=>g[0]);
+  const cv4 = cadreOf(d)===4 ? coCvGen(d) : null;          // intoxication au CO : l'anomalie cardio-vasculaire est déduite de l'encart « Examen cardio-vasculaire »
+  const gv = k => (cv4 && k==='ex_cv') ? cv4.v : d[k], gt = k => (cv4 && k==='ex_cv') ? cv4.t : d[k+'_txt'];
+  const gen = dom('gen', GEN.some(g=>gv(g[0])!=null));
+  GEN.forEach(g=>{ if(gv(g[0])===1) add(gen,g[0],'anomalie '+g[1],gt(g[0])?'('+TXT.lc1(flat(gt(g[0])).replace(/\.$/,''))+')':'',1); });
+  gen.normaux = GEN.filter(g=>gv(g[0])===0).map(g=>g[1]);
+  gen.normIds = GEN.filter(g=>gv(g[0])===0).map(g=>g[0]);
 
   /* ---------- miction et sphincter anal ---------- */
   const sph = dom('sph', has('mict') || d.mict_residu_post!=null || d.mict_residu_pre!=null || d.vac!=null || d.dap!=null);
@@ -7890,7 +7941,7 @@ function narrativeBlocks(){
       PC(cat, fin(lib+' : '+(ab ? bold(r) : r)), ab);
     } else PC(cat, lib+' réalisé'+(e?'e':'')+'.');
   };
-  if(d.im_ecg===1) PC('ecg', d.ecg_txt ? fin('ECG : '+d.ecg_txt) : 'ECG réalisé.');
+  if(d.im_ecg===1){ const eab = CO4 && coEcgAb(d), et = d.ecg_txt ? fin('ECG : '+d.ecg_txt) : 'ECG réalisé.'; PC('ecg', eab ? bold(et) : et, eab); }
   exam('rp', 'im_rp', 'Radiographie thoracique', 'im_rp_res', 1);
   exam('tdm_thor', 'im_tdm_thor', 'Scanner thoracique', 'im_tdm_thor_res', 0);
   exam('tdm_cer', 'im_tdm_cer', 'Scanner cérébral', 'im_tdm_cer_res', 0);
@@ -7958,6 +8009,7 @@ function narrativeBlocks(){
   /* ---------- diagnostic retenu : entre les examens paracliniques et la conduite à tenir ---------- */
   const dgt = diagnosticTexte(d);
   if(dgt) sect('Diagnostic retenu', [dgt], true);
+  if(CO4){ const ck = coCinetTexte(d); if(ck.length) sect('Cinétique de la carboxyhémoglobine (estimation)', ck, false); }
   if(CO4) sect('Gravité et indication d’oxygénothérapie hyperbare', coGraviteTexte(d), false);
 
   /* ---------- conduite à tenir ---------- */
@@ -9839,7 +9891,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.1.1';
+const APP_VERSION = '12.1.2';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -12713,6 +12765,12 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.1.2 (version d’essai) : intoxication au monoxyde de carbone.</b><br>'+
+  '<b>Examen neurologique simplifié</b> (sans vidéonystagmoscopie, Hoffmann, trépidations, contractions, sphincter anal). '+
+  '<b>Examen cardio-vasculaire</b> détaillé (douleur thoracique, rythme, souffle, insuffisance cardiaque, hypoperfusion, pouls ; inhalation de fumées et cyanure en cas d’incendie). '+
+  '<b>ECG</b> : rythme, repolarisation, conduction, extrasystoles, QTc allongé, en rouge et en gras quand ils sont anormaux ; le compte rendu de l’ECG s’en rédige. '+
+  '<b>Cinétique de l’HbCO</b> estimée : pic à la fin de l’exposition, délai jusqu’au seuil sous O<sub>2</sub> normobare et avec OHB, courbe. '+
+  '<b>Table proposée</b> : A18 en présence de signes neurologiques, A15 sinon (IOT si intubé), délai fin d’exposition → mise en pression.</p>'+
   '<p><b>Nouveautés de la 12.1.1 (version d’essai).</b><br>'+
   '<b>Œdème pulmonaire d’immersion seul</b> : ni score ASIA ni table de recompression cochée d’office (fiche, synthèse, compte rendu, texte court, ligne Excel). '+
   '<b>Score MEDSUBHYP</b> : le seuil de gravité passe de 6 à 8. '+
@@ -13001,6 +13059,17 @@ function coCalc(){
   const a = (d.co_deb_date && d.co_deb_h) ? new Date(d.co_deb_date+'T'+d.co_deb_h) : null, b = (d.co_fin_date && d.co_fin_h) ? new Date(d.co_fin_date+'T'+d.co_fin_h) : null;
   const m = (a && b && !isNaN(a) && !isNaN(b) && b > a) ? Math.round((b - a)/60000) : null;
   if(m==null) delete d.co_duree; else d.co_duree = m;
+  if(cadreOf(d)!==4) return;
+  /* durées de la cinétique proposées d'après les heures saisies (modifiables) */
+  const r = coRef(), o2 = d.soin_o2===1 && d.heure_soins;
+  autoSync('co_k_air', (o2 && d.co_fin_h) ? deltaMin(d.co_fin_h, d.heure_soins) : null);
+  autoSync('co_o2_avant_min', (o2 && r && r.hm) ? deltaMin(d.heure_soins, r.hm) : null);
+  autoSync('co_k_ohb_delai', (r && r.hm && d.tb_h_mep) ? deltaMin(r.hm, d.tb_h_mep) : null);
+  const f = b ? b : null, mep = d.tb_h_mep ? new Date((d.co_fin_date || d.date_ex)+'T'+d.tb_h_mep) : null;
+  let dl = null;
+  if(f && mep && !isNaN(mep)){ dl = Math.round((mep - f)/60000); while(dl < 0) dl += 1440; }
+  else if(d.co_fin_h && d.tb_h_mep) dl = deltaMin(d.co_fin_h, d.tb_h_mep);
+  if(dl==null) delete d.co_delai_ohb; else d.co_delai_ohb = dl;
 }
 /* les prélèvements de carboxyhémoglobine du dossier jusqu'à cette fiche (gaz du sang artériel et veineux), du plus ancien au plus récent : {v (nombre), txt, jour, hm, src, when} */
 function coHbco(seule){
@@ -13031,7 +13100,8 @@ function coCritProp(){
   if(d.co_pci===3 || (d.gcs_tot!=null && d.gcs_tot < 15) || (d.avpu!=null && d.avpu > 1)) p.push('coma');
   if(d.co_convuls===1 || X.mot.items.some(i=>i.sev>0) || X.coo.items.some(i=>i.sev>0) || X.ref.items.some(i=>i.grp==='pyr') || X.cer.items.some(i=>['par_fac','fs_parole','fs_visuel'].indexOf(i.id)>=0)) p.push('neuro');
   if(d.fs_comport===1 || d.fs_dts===1 || (d.co_moca!=null && d.co_moca < 26) || (d.co_mmse!=null && d.co_mmse < 27) || (Array.isArray(d.co_sympt) && (d.co_sympt.indexOf('confus')>=0 || d.co_sympt.indexOf('mnes')>=0))) p.push('cogn');
-  if(d.ex_cv===1 || tropo || (Array.isArray(d.co_sympt) && (d.co_sympt.indexOf('dlr_thor')>=0 || d.co_sympt.indexOf('palpit')>=0))) p.push('cardio');
+  const cv = coCvGen(d);
+  if(cv.v===1 || tropo || hi(BIO_LAB, 'lab_ntbnp') || coEcgAb(d) || (Array.isArray(d.co_sympt) && (d.co_sympt.indexOf('dlr_thor')>=0 || d.co_sympt.indexOf('palpit')>=0))) p.push('cardio');
   if(d.co_grossesse===1) p.push('gross');
   if(coHbco().some(x=>x.v!=null && x.v >= CO_HBCO_SEUIL)) p.push('hbco');
   if(hi(BIO_GDS, 'gds_lac') || hi(BIO_GAA, 'gaa_lac')) p.push('lac');
@@ -13048,6 +13118,158 @@ function coCritApply(){
   const p = coCritProp();
   if(p.length) REC.d.co_crit = p; else delete REC.d.co_crit;
   pruneDeps(); touch(); renderForm();
+}
+
+/* =====================================================================
+   INTOXICATION AU CO — 12.1.2 : examen cardio-vasculaire, ECG, cinétique de l'HbCO, table proposée
+   ===================================================================== */
+/* l'anomalie cardio-vasculaire déduite de l'encart « Examen cardio-vasculaire » : {v:1|0|null, t} */
+function coCvGen(d){
+  const a = [];
+  if(d.co_cv_dlr===1) a.push('douleur thoracique atypique'); else if(d.co_cv_dlr===2) a.push('douleur thoracique typique');
+  if(d.co_cv_rythme===0) a.push('pouls irrégulier');
+  if(d.co_cv_souffle===1) a.push('souffle cardiaque');
+  if(d.co_cv_ic===1) a.push('signes d’insuffisance cardiaque');
+  if(d.co_cv_choc===1) a.push('signes d’hypoperfusion');
+  if(d.co_cv_pouls===0) a.push('pouls périphériques non perçus');
+  const txt = d.co_cv_txt ? TXT.flat(d.co_cv_txt).replace(/[.;\s]+$/, '') : '';
+  if(a.length) return {v:1, t:a.concat(txt ? [TXT.lc1(txt)] : []).join(', ')};
+  const vu = ['co_cv_dlr','co_cv_rythme','co_cv_souffle','co_cv_ic','co_cv_choc','co_cv_pouls'].some(k=>d[k]!=null);
+  return vu ? {v:0, t:''} : {v:null, t:''};
+}
+/* ECG : QTc allongé (seuils usuels : 450 ms chez l'homme, 460 ms chez la femme) */
+const coQtLong = d => d.ecg_qtc!=null && d.ecg_qtc >= (d.sexe===2 ? 460 : 450);
+function coEcgAb(d){
+  return d.im_ecg===1 && (d.co_ecg_rythme>=3 || d.co_ecg_repol===1 || d.co_ecg_cond===1 || d.co_ecg_esv===1 || coQtLong(d));
+}
+function coEcgTexte(d){
+  const lab = (L, v) => (L.find(o=>o.v===v) || {}).l || '', lc = TXT.lc1;
+  const fc = d.ecg_fc!=null ? d.ecg_fc : 'xx', q = d.ecg_qtc!=null ? d.ecg_qtc : 'xx';
+  const ry = {1:'Rythme sinusal', 2:'Tachycardie sinusale', 3:'Fibrillation ou flutter atrial', 4:'Trouble du rythme'}[d.co_ecg_rythme] || 'Rythme';
+  const P = [];
+  if(d.co_ecg_repol===1){
+    const L = (Array.isArray(d.co_ecg_isch) ? d.co_ecg_isch : []).map(v=>lc(lab(CO_ECG_ISCH, v)));
+    P.push((L.length ? TXT.lst(L) : 'trouble de la repolarisation')+(d.co_ecg_isch_loc ? ' (territoire '+lc(TXT.flat(d.co_ecg_isch_loc)).replace(/[.\s]+$/, '')+')' : ''));
+  } else if(d.co_ecg_repol===0) P.push('sans trouble de la repolarisation');
+  if(d.co_ecg_cond===1){
+    const L = (Array.isArray(d.co_ecg_cond_t) ? d.co_ecg_cond_t : []).map(v=>lc(lab(CO_ECG_COND, v)));
+    P.push(L.length ? TXT.lst(L) : 'trouble de la conduction');
+  } else if(d.co_ecg_cond===0) P.push('sans trouble de la conduction');
+  if(d.co_ecg_esv===1) P.push('extrasystoles ventriculaires');
+  return ry+' à '+fc+' bpm'+(P.length ? ', '+P.join(', ') : '')+'. QTc à '+q+' ms'+(coQtLong(d) ? ' (allongé)' : '')+'.';
+}
+function coEcgNote(){
+  const d = REC.d;
+  if(d.im_ecg!==1) return '<div class="note" style="margin:0">Cotez « ECG : OUI » dans « Examens complémentaires » (juste en dessous) : les signes à rechercher s’affichent ici et rédigent le compte rendu de l’ECG.</div>';
+  const ab = coEcgAb(d);
+  return '<div class="note" style="margin:0'+(ab ? ';border-color:#c00000' : '')+'">'+(ab ? '<b style="color:#c00000">ECG anormal : signe d’atteinte myocardique possible.</b> Troponine à répéter, avis cardiologique. ' : 'Rythme, repolarisation (ST, ondes T, ondes Q), conduction, extrasystoles, QTc. ')+
+    (coQtLong(d) ? '<b style="color:#c00000">QTc à '+d.ecg_qtc+' ms : allongé.</b> ' : '')+'Le compte rendu de l’ECG se rédige d’après ces items (modifiable).</div>';
+}
+
+/* la mesure de référence : la 1re HbCO sanguine du dossier, à défaut la SpCO de la fiche */
+function coRef(){
+  const d = REC.d, L = coHbco().filter(x=>x.v!=null);
+  if(L.length){ const x = L[0]; return {v:x.v, hm:x.hm, src:'HbCO '+x.src, spco:false}; }
+  if(d.co_spco!=null) return {v:Number(d.co_spco), hm:d.co_spco_h || '', src:'SpCO', spco:true};
+  return null;
+}
+/* niveau d'HbCO après une suite de phases [{m (minutes, Infinity pour la dernière), th (demi-vie)}], à partir de v0 ; et instant où le seuil est atteint */
+function coDecay(v0, ph, t){ let v = v0, r = t; for(const p of ph){ const m = Math.min(r, p.m); v *= Math.pow(2, -m/p.th); r -= m; if(r <= 0) break; } return v; }
+function coTimeTo(v0, ph, cible){
+  if(v0 <= cible) return 0;
+  let v = v0, t = 0;
+  for(const p of ph){
+    const need = p.th*Math.log2(v/cible);
+    if(need <= p.m) return t + need;
+    v *= Math.pow(2, -p.m/p.th); t += p.m;
+  }
+  return null;
+}
+/* la cinétique estimée : pic à la fin de l'exposition (rétro-extrapolé), délai jusqu'au seuil sous O2 normobare et avec OHB */
+function coCinet(){
+  const d = REC.d, r = coRef(); if(!r || !(r.v > 0)) return null;
+  const fum = Array.isArray(d.tox) && d.tox.indexOf('tabac')>=0, cible = fum ? 10 : 5;
+  const air = d.co_k_air, o2 = d.co_o2_avant_min, th = CO_TH;
+  const back = (tn) => r.v*Math.pow(2, (air||0)/th.air)*Math.pow(2, (o2||0)/tn);
+  const pic = (air!=null || o2!=null) ? {v:back(th.nbo), lo:back(th.nbo+th.nbo_sd), hi:back(th.nbo-th.nbo_sd)} : null;
+  const tp = coTableProp(d), tab = TABLES.find(t=>t.v===d.tb_table) || (tp ? TABLES.find(t=>t.v===tp.v) : null) || TABLES[0];
+  const delai = d.co_k_ohb_delai!=null ? d.co_k_ohb_delai : 0;
+  const nbo = s => [{m:Infinity, th:s}];
+  const ohb = s => [{m:delai, th:s}, {m:tab.m, th:th.ohb}, {m:Infinity, th:s}];
+  const R = {ref:r, cible:cible, fum:fum, air:air, o2:o2, pic:pic, delai:delai, delaiSaisi:d.co_k_ohb_delai!=null, table:tab,
+    tN:coTimeTo(r.v, nbo(th.nbo), cible), tNlo:coTimeTo(r.v, nbo(th.nbo-th.nbo_sd), cible), tNhi:coTimeTo(r.v, nbo(th.nbo+th.nbo_sd), cible),
+    tO:coTimeTo(r.v, ohb(th.nbo), cible), phN:nbo(th.nbo), phO:ohb(th.nbo)};
+  R.gain = (R.tN!=null && R.tO!=null) ? R.tN - R.tO : null;
+  return R;
+}
+const coMinFr = m => { if(m==null) return '?'; const r = Math.round(m/5)*5; return r <= 0 ? '0 min' : TXT.dureeFr(r); };
+const coPct = v => v > 100 ? 'plus de 100 % (non plausible)' : String(Math.round(v*10)/10).replace('.', ',')+' %';
+/* au-delà de 50 % estimés, la rétro-extrapolation amplifie surtout l'incertitude sur la demi-vie */
+const CO_PIC_DOUTE = 50;
+/* la courbe : O2 normobare continu et OHB, la partie rétro-extrapolée en pointillés */
+function coCinetSvg(R){
+  const W = 560, H = 170, ml = 34, mr = 8, mt = 8, mb = 22;
+  const pre = (R.air||0) + (R.o2||0), post = Math.min(720, Math.max(120, (R.tN||240)*1.15));
+  const ymax = Math.max(R.pic ? R.pic.v : R.ref.v, R.ref.v, R.cible)*1.1;
+  const X = t => ml + (t + pre)/(pre + post)*(W - ml - mr), Y = v => mt + (1 - v/ymax)*(H - mt - mb);
+  const path = (f, a, b) => { let p = ''; for(let t = a; t <= b; t += 5) p += (p ? 'L' : 'M')+X(t).toFixed(1)+','+Y(f(t)).toFixed(1); return p; };
+  const backF = t => { const u = -t; const o = Math.min(u, R.o2||0), a = Math.max(0, u - (R.o2||0)); return R.ref.v*Math.pow(2, o/CO_TH.nbo)*Math.pow(2, a/CO_TH.air); };
+  let g = '';
+  for(let k = 0; k <= 4; k++){ const v = ymax*k/4; g += '<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="currentColor" stroke-opacity=".12"/><text x="'+(ml-4)+'" y="'+(Y(v)+3)+'" text-anchor="end" font-size="9" fill="currentColor">'+Math.round(v)+'</text>'; }
+  for(let t = -Math.floor(pre/60)*60; t <= post; t += 60) g += '<text x="'+X(t)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="currentColor">'+(t/60)+' h</text>';
+  g += '<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Y(R.cible)+'" y2="'+Y(R.cible)+'" stroke="#2e7d32" stroke-dasharray="4 3"/><text x="'+(W-mr)+'" y="'+(Y(R.cible)-3)+'" text-anchor="end" font-size="9" fill="#2e7d32">seuil '+R.cible+' %</text>';
+  if(pre > 0) g += '<path d="'+path(backF, -pre, 0)+'" fill="none" stroke="#1f6fb2" stroke-width="1.5" stroke-dasharray="3 3"/>';
+  g += '<path d="'+path(t=>coDecay(R.ref.v, R.phN, t), 0, post)+'" fill="none" stroke="#1f6fb2" stroke-width="2"/>';
+  g += '<path d="'+path(t=>coDecay(R.ref.v, R.phO, t), 0, post)+'" fill="none" stroke="#c0392b" stroke-width="2"/>';
+  g += '<circle cx="'+X(0)+'" cy="'+Y(R.ref.v)+'" r="3.5" fill="currentColor"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:'+W+'px;height:auto;display:block;margin:6px 0" role="img" aria-label="Courbe estimée de l’HbCO">'+g+'</svg>'+
+    '<div style="font-size:12px"><span style="color:#1f6fb2">━ O<sub>2</sub> normobare continu</span> · <span style="color:#c0392b">━ OHB ('+esc(R.table.l)+')</span> · <span style="color:#1f6fb2">┅ rétro-extrapolation</span> · ● mesure de référence</div>';
+}
+function coCinetBox(){
+  const R = coCinet();
+  if(!R) return '<div class="note" style="margin:0">Saisissez une HbCO (gaz du sang) ou une SpCO : la cinétique estimée s’affiche ici.</div>';
+  const h = [];
+  h.push('<b>Mesure de référence :</b> '+esc(R.ref.src)+' '+coPct(R.ref.v)+(R.ref.hm ? ' à '+esc(R.ref.hm) : '')+'.');
+  if(R.ref.spco) h.push('<b style="color:#c00000">SpCO :</b> limites d’agrément de −7,1 à +8,6 points face à l’HbCO sanguine (méta-analyse, Papin 2023) : l’estimation qui en découle est indicative, à confirmer par une HbCO sanguine.');
+  if(R.pic) h.push('<b>HbCO estimée à la fin de l’exposition :</b> '+coPct(R.pic.v)+' (de '+coPct(R.pic.lo)+' à '+coPct(R.pic.hi)+' selon la demi-vie sous O<sub>2</sub> à ± 1 écart-type), après '+coMinFr(R.air||0)+' en air ambiant et '+coMinFr(R.o2||0)+' sous oxygène normobare.'+
+    (R.pic.v > CO_PIC_DOUTE ? ' <b style="color:#c00000">Valeur élevée : plus les durées avant la mesure sont longues, plus l’erreur sur la demi-vie se multiplie ; ordre de grandeur seulement.</b>' : ''));
+  else h.push('Renseignez les durées en air ambiant et sous oxygène avant la mesure pour estimer l’HbCO à la fin de l’exposition.');
+  h.push('<b>Seuil de '+R.cible+' %</b> ('+(R.fum ? 'fumeur' : 'non-fumeur')+') atteint après la mesure en <b>'+coMinFr(R.tN)+'</b> sous O<sub>2</sub> normobare continu (de '+coMinFr(R.tNlo)+' à '+coMinFr(R.tNhi)+'), contre <b>'+coMinFr(R.tO)+'</b> avec une OHB '+esc(R.table.l)+' débutée '+(R.delai ? coMinFr(R.delai)+' après la mesure' : 'dès la mesure')+(R.delaiSaisi ? '' : ' (délai non renseigné : simulation)')+
+    (R.gain!=null && R.gain > 0 ? ' : <b>gain d’environ '+coMinFr(R.gain)+'</b>.' : '.'));
+  h.push('<span style="color:var(--ink2)">L’OHB raccourcit l’élimination du CO, mais la normalisation de l’HbCO n’est pas son objectif : son bénéfice démontré porte sur les séquelles cognitives (25 % contre 46 % à 6 semaines, trois séances en 24 h, Weaver 2002), et les séquelles neuropsychologiques retardées ne sont prédites ni par l’histoire clinique ni par le taux de CO (Thom 1995). <b>Une HbCO normalisée ne retire pas l’indication.</b></span>');
+  h.push('<span style="color:var(--ink2);font-size:12px">Modèle : décroissance exponentielle, demi-vies de '+CO_TH.air+' min en air (Peterson 1970), '+CO_TH.nbo+' ± '+CO_TH.nbo_sd+' min sous O<sub>2</sub> normobare (Weaver 2000), environ '+CO_TH.ohb+' min en OHB (revue, Culnan 2018), appliquée à toute la durée de la table (approximation optimiste : coupures en air non comptées). Sans retour au CO endogène. La durée d’exposition date le début de l’élimination ; elle ne permet pas, seule, d’estimer la charge en CO (il faudrait la concentration ambiante).</span>');
+  return '<div class="note" style="margin:0">'+h.map(x=>'<div style="margin:3px 0">'+x+'</div>').join('')+coCinetSvg(R)+'</div>';
+}
+/* les lignes de la synthèse */
+function coCinetTexte(d){
+  const R = coCinet(); if(!R) return [];
+  const pc = coPct, L = [];
+  if(R.pic) L.push('HbCO estimée à la fin de l’exposition : environ '+pc(R.pic.v)+' (de '+pc(R.pic.lo)+' à '+pc(R.pic.hi)+'), d’après '+R.ref.src+' '+pc(R.ref.v)+' après '+coMinFr(R.air||0)+' en air et '+coMinFr(R.o2||0)+' sous oxygène normobare'+(R.pic.v > CO_PIC_DOUTE ? ' (ordre de grandeur)' : '')+'.');
+  L.push('Seuil de '+R.cible+' % estimé atteint en '+coMinFr(R.tN)+' sous oxygène normobare, en '+coMinFr(R.tO)+' avec oxygénothérapie hyperbare ('+R.table.l+').');
+  if(R.ref.spco) L.push('Estimation fondée sur la SpCO, indicative.');
+  return L;
+}
+
+/* table de recompression proposée (protocole du service) : A18 en présence de signes neurologiques, A15 sinon ; version IOT chez le patient intubé */
+const CO_CRIT_NEURO = ['neuro','coma','cogn'];
+function coTableProp(d){
+  if(!d || d.co_ohb!==1) return null;
+  const cr = (Array.isArray(d.co_crit) && d.co_crit.length) ? d.co_crit : coCritProp();
+  const ne = cr.filter(v=>CO_CRIT_NEURO.indexOf(v)>=0), iot = d.co_iot===1;
+  const v = ne.length ? (iot ? 3 : 4) : (iot ? 2 : 1);
+  return {v:v, l:(TABLES.find(t=>t.v===v) || {}).l, neuro:ne.map(x=>CO_CRIT_T[x])};
+}
+function coTableBox(){
+  const d = REC.d;
+  if(d.co_ohb!==1) return '<div class="note" style="margin:0">La table se propose quand l’oxygénothérapie hyperbare est cotée « Indiquée » : <b>A18</b> en présence de signes neurologiques (signes neurologiques, troubles de la conscience, troubles cognitifs), <b>A15</b> sinon.</div>';
+  const p = coTableProp(d), cur = TABLES.find(t=>t.v===d.tb_table);
+  return '<div class="note" style="margin:0"><b>Table proposée : '+esc(p.l)+'</b> — '+(p.neuro.length ? 'signes neurologiques : '+esc(p.neuro.join(', ')) : 'pas de signe neurologique retenu')+(d.co_iot===1 ? ' ; patient intubé' : '')+'. '+
+    (cur && cur.v===p.v ? '<span style="color:#2e7d32">Table cochée.</span>' : '<button type="button" class="mini" onclick="coTableApply()">cocher '+esc(p.l)+'</button>'+(cur ? ' (table cochée : '+esc(cur.l)+')' : ''))+
+    (d.co_delai_ohb!=null ? '<div style="margin-top:4px">Délai fin de l’exposition → mise en pression : <b>'+TXT.dureeFr(d.co_delai_ohb)+'</b>.</div>' : '')+'</div>';
+}
+function coTableApply(){
+  const p = coTableProp(REC.d); if(!p) return;
+  REC.d.tb_table = p.v; pruneDeps(); touch(); renderForm();
 }
 
 /* =====================================================================
@@ -13137,6 +13359,11 @@ function coGraviteTexte(d){
     const x = d.co_ohb_txt ? ' : '+lc1(flat(d.co_ohb_txt)).replace(/[.;,:\s]+$/, '') : '';
     P.push(d.co_ohb===1 ? bold(fin(t+x)) : fin(t+x));
   } else if(d.co_ohb_txt) P.push(fin(d.co_ohb_txt));
+  if(d.co_fumees===1) P.push(bold('Signes d’inhalation de fumées.'));
+  if(d.co_cyanure===1) P.push(bold('Intoxication cyanhydrique associée suspectée.'));
+  const tp = coTableProp(d), tc = TABLES.find(t=>t.v===d.tb_table);
+  if(tp && !tc) P.push(fin('Table proposée : '+tp.l+(tp.neuro.length ? ' (signes neurologiques)' : '')));
+  if(d.co_delai_ohb!=null && d.tb_h_mep) P.push(fin('Délai fin de l’exposition → mise en pression : '+TXT.dureeFr(d.co_delai_ohb)));
   return P;
 }
 /* « Suivi et prévention » : déclaration, consignes, autres personnes exposées, suivi à distance */
@@ -13155,6 +13382,7 @@ function coBoxes(){
   const a = $('#r_co_hbco_box'), b = $('#r_co_crit_box');
   if(a) a.innerHTML = coHbcoBox();
   if(b) b.innerHTML = coCritBox();
+  [['#r_co_k_box', coCinetBox], ['#r_co_table_box', coTableBox], ['#r_co_ecg_note', coEcgNote]].forEach(x=>{ const e = $(x[0]); if(e) e.innerHTML = x[1](); });
 }
 
 

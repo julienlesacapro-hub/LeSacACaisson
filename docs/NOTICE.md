@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.1.1 (version d'essai)
+# ADP — accident de plongée, version 12.1.2 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1054 colonnes.
+Une ligne = une fiche. 1081 colonnes (1054 avant la 12.1.2).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -493,7 +493,17 @@ la HbCO, l'indication d'OHB et la perte de connaissance sont parmi les dernière
 
 **Les fichiers de données** : 79 colonnes s'ajoutent (voir *Structure des colonnes*) : `bio_co`, `co_*` ; une liste à cases a une colonne par case (`co_source_chauff`…), le dictionnaire donne les codes. Les lignes Excel ADP et COHB se composent sans erreur pour un dossier de CO (pas d'adaptation propre : les colonnes de plongée y sont vides).
 
-**À valider** : le contenu de chaque encart, la liste des critères et le seuil de HbCO (25 %), les libellés, la place de chaque encart, l'absence de table de recompression proposée (l'OHB du CO se cote sous « Recompression », table « Autre (préciser) » à défaut d'une table du service pour le CO), et l'usage des lignes Excel.
+### Depuis la 12.1.2 : interface recentrée sur l'indication
+
+- **Examen neurologique simplifié** : pour ce cadre, la vidéonystagmoscopie, le sens du nystagmus, le signe de Hoffmann, les trépidations, les contractions spontanées, le sphincter anal (VAC, DAP) et les items « hors ASIA » de la force sont masqués (valeurs conservées). Restent : conscience, pupilles, fonctions supérieures, réflexes ostéo-tendineux et cutanés plantaires, motricité globale et déficit par membre, coordination, évaluation cognitive.
+- **Examen cardio-vasculaire** (onglet 3, encart propre ; remplace l'item « Anomalie cardio-vasculaire » de l'examen général, qui en est déduit pour la synthèse) : douleur thoracique (absente, atypique, typique), pouls régulier, souffle, signes d'insuffisance cardiaque, signes d'hypoperfusion, pouls périphériques ; en cas d'incendie, signes d'inhalation de fumées et intoxication cyanhydrique suspectée. Rappel : atteinte myocardique chez 37 % des intoxications modérées à sévères (Satran, JACC 2005, doi:10.1016/j.jacc.2005.01.044), associée à une mortalité à long terme plus élevée (Henry, JAMA 2006, doi:10.1001/jama.295.4.398).
+- **ECG : signes d'atteinte myocardique** (onglet 5, juste au-dessus des examens) : rythme, trouble de la repolarisation (sus- ou sous-décalage du ST, ondes T négatives, ondes Q, territoire), trouble de la conduction (BAV, BBD, BBG), extrasystoles ventriculaires, et le **QTc** jugé allongé à partir de 450 ms chez l'homme, 460 ms chez la femme (seuils usuels). Un ECG anormal s'affiche en rouge, s'écrit en gras dans la synthèse et compte dans le critère « signes cardiaques » (avec le NT-proBNP élevé).
+- **Cinétique de l'HbCO (estimation)** (onglet 5) : à partir de la 1re HbCO sanguine du dossier (à défaut de la SpCO), des minutes en **air ambiant** entre la fin de l'exposition et l'oxygène, et des minutes **sous oxygène normobare** avant la mesure (proposées d'après les heures saisies, modifiables), l'encart estime l'HbCO **à la fin de l'exposition** et le délai jusqu'au **seuil** (5 % ; 10 % chez le fumeur, seuils de Sebbane, Respir Care 2013, doi:10.4187/respcare.02313) sous O₂ normobare continu et avec OHB après le délai saisi, avec une courbe. Demi-vies : 320 min en air (Peterson et Stewart 1970), **74 ± 25 min** sous O₂ normobare (Weaver, Chest 2000, doi:10.1378/chest.117.3.801), environ 20 min en OHB (revue : Culnan 2018, doi:10.1097/SAP.0000000000001351). Le modèle est une décroissance exponentielle simple : l'OHB est appliquée à toute la durée de la table (coupures en air ignorées : optimiste), sans retour au CO endogène ; au-delà de 50 % estimés, la valeur n'est qu'un ordre de grandeur. Une SpCO ne donne qu'une estimation indicative (limites d'agrément de −7,1 à +8,6 points : Papin, Eur J Emerg Med 2023, doi:10.1097/MEJ.0000000000001043). La **durée d'exposition** date le début de l'élimination ; sans la concentration ambiante, elle ne permet pas d'estimer la charge en CO.
+- **L'OHB et le délai** : l'OHB raccourcit l'élimination, mais la normalisation de l'HbCO n'est pas son objectif ; le bénéfice démontré porte sur les séquelles cognitives (25 % contre 46 % à 6 semaines, trois séances en 24 h : Weaver, NEJM 2002, doi:10.1056/NEJMoa013121), et les séquelles retardées ne sont prédites ni par la clinique ni par le taux de CO (Thom, Ann Emerg Med 1995, doi:10.1016/s0196-0644(95)70261-x). **Une HbCO normalisée ne retire pas l'indication.**
+- **Table de recompression proposée** (onglet 6, entre la gravité et la recompression), quand l'OHB est cotée « Indiquée » : **A18** en présence de signes neurologiques (critères « signes neurologiques », « troubles de la conscience » ou « troubles cognitifs ou du comportement »), **A15** sinon ; **A18IOT / A15IOT** si le patient est intubé et ventilé (nouvelle question). Un bouton coche la table ; rien n'est coché d'office. L'encart calcule aussi le **délai fin de l'exposition → mise en pression**. Le délai « 1ers symptômes → recompression », propre à la plongée, est masqué.
+- **Fichiers de données** : 27 colonnes s'ajoutent (`co_cv_*`, `co_fumees`, `co_cyanure`, `co_ecg_*`, `co_k_air`, `co_k_ohb_delai`, `co_iot`, `co_delai_ohb`), à la suite des colonnes du formulaire : les colonnes calculées qui suivent (`pl_dtr_src`, constantes, scores, `created`, `updated`) se décalent, leur nom ne change pas (la relecture du CSV se fait par nom de colonne).
+
+**À valider** : le contenu de chaque encart, la liste des critères et le seuil de HbCO (25 %), les libellés, la place de chaque encart, la règle de proposition de la table (A18 / A15, depuis la 12.1.2 : ce qui compte comme « signe neurologique »), le modèle de cinétique de l'HbCO, et l'usage des lignes Excel.
 
 ---
 
@@ -2042,7 +2052,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1054 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1081 colonnes.
 
 ### Codages principaux
 
