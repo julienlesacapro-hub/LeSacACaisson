@@ -589,7 +589,7 @@ co_cogn_txt;Troubles cognitifs, mnésiques ou de l’attention (Évaluation cogn
 bio_co;Bilan intoxication au CO prélevé (Carboxyhémoglobine et oxygène);"1 = OUI ; 0 = NON"
 co_spco;SpCO (oxymètre de pouls à CO-oxymétrie) (Carboxyhémoglobine et oxygène);numerique (%)
 co_spco_h;Heure de la mesure de SpCO (Carboxyhémoglobine et oxygène);HH:MM
-co_o2_avant_min;Oxygène normobare avant le 1er prélèvement de HbCO (Carboxyhémoglobine et oxygène);numerique (min)
+co_o2_avant_min;Oxygène normobare avant la 1re mesure (HbCO, à défaut SpCO) (Carboxyhémoglobine et oxygène);numerique (min)
 co_grossesse;Grossesse (Gravité et indication d’oxygénothérapie hyperbare);"0 = Non ; 1 = Oui ; 2 = À vérifier (test demandé)"
 co_crit_pci;Critères retrouvés - Perte de connaissance (même brève) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
 co_crit_coma;Critères retrouvés - Troubles de la conscience (Glasgow inférieur à 15) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
@@ -618,6 +618,33 @@ co_suivi_irm;Suivi à distance - IRM cérébrale si symptômes persistants (Suiv
 co_suivi_cardio;Suivi à distance - Bilan cardiologique (Suivi et prévention);"1 = coche ; 0 = non coche"
 co_suivi;Suivi à distance - liste (Suivi et prévention);texte, valeurs separees par |
 co_suivi_txt;Précisions sur le suivi (Suivi et prévention);texte libre
+co_cv_dlr;Douleur thoracique (Examen cardio-vasculaire);"0 = Absente ; 1 = Atypique ; 2 = Typique (angineuse)"
+co_cv_rythme;Pouls régulier (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_cv_souffle;Souffle cardiaque (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_cv_ic;Signes d’insuffisance cardiaque (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_cv_choc;Signes d’hypoperfusion (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_cv_pouls;Pouls périphériques perçus (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_cv_txt;Précisions (Examen cardio-vasculaire);texte libre
+co_fumees;Signes d’inhalation de fumées (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_cyanure;Intoxication cyanhydrique associée suspectée (Examen cardio-vasculaire);"1 = OUI ; 0 = NON"
+co_ecg_rythme;Rythme (ECG : signes d’atteinte myocardique);"1 = Sinusal ; 2 = Tachycardie sinusale ; 3 = Fibrillation ou flutter atrial ; 4 = Autre trouble du rythme"
+co_ecg_repol;Trouble de la repolarisation ou signe ischémique (ECG : signes d’atteinte myocardique);"1 = OUI ; 0 = NON"
+co_ecg_isch_st_sus;Lesquels - Sus-décalage du ST (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_isch_st_sous;Lesquels - Sous-décalage du ST (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_isch_t_neg;Lesquels - Ondes T négatives (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_isch_q;Lesquels - Ondes Q (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_isch;Lesquels - liste (ECG : signes d’atteinte myocardique);texte, valeurs separees par |
+co_ecg_isch_loc;Territoire (ECG : signes d’atteinte myocardique);texte libre
+co_ecg_cond;Trouble de la conduction (ECG : signes d’atteinte myocardique);"1 = OUI ; 0 = NON"
+co_ecg_cond_t_bav;Lesquels - Bloc atrio-ventriculaire (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_cond_t_bbd;Lesquels - Bloc de branche droit (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_cond_t_bbg;Lesquels - Bloc de branche gauche (ECG : signes d’atteinte myocardique);"1 = coche ; 0 = non coche"
+co_ecg_cond_t;Lesquels - liste (ECG : signes d’atteinte myocardique);texte, valeurs separees par |
+co_ecg_esv;Extrasystoles ventriculaires (ECG : signes d’atteinte myocardique);"1 = OUI ; 0 = NON"
+co_k_air;Air ambiant : soustraction → début de l’oxygène (Cinétique de l’HbCO (estimation));numerique (min)
+co_k_ohb_delai;Délai 1re mesure → mise en pression (Cinétique de l’HbCO (estimation));numerique (min)
+co_iot;Patient intubé et ventilé (Table de recompression proposée);"1 = OUI ; 0 = NON"
+co_delai_ohb;Délai fin de l’exposition → mise en pression (Table de recompression proposée);numerique, calcule (min)
 pl_dtr_src;Origine de la DTR;"1 = calculee d apres les heures DF et HS ; 2 = saisie ; 3 = estimee d apres Pmax et les paliers (DTP seule connue) ; 4 = deduite de DTP - DT ; vide = DTR inconnue"
 pl_dtr_att_min;DTR attendue - minimum;"entier, minutes : remontee a 12 m/min, 10 s par metre entre paliers, arrondie a la minute superieure ; vide = Pmax inconnue"
 pl_dtr_att_max;DTR attendue - maximum;"entier, minutes : remontee a 9 m/min, 10 s par metre entre paliers, arrondie a la minute superieure ; vide = Pmax inconnue"
