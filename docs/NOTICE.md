@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.1.2 (version d'essai)
+# ADP — accident de plongée, version 12.2.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -506,6 +506,30 @@ la HbCO, l'indication d'OHB et la perte de connaissance sont parmi les dernière
 **À valider** : le contenu de chaque encart, la liste des critères et le seuil de HbCO (25 %), les libellés, la place de chaque encart, la règle de proposition de la table (A18 / A15, depuis la 12.1.2 : ce qui compte comme « signe neurologique »), le modèle de cinétique de l'HbCO, et l'usage des lignes Excel.
 
 ---
+
+## Afflux massif — intoxication au monoxyde de carbone (depuis la 12.2.1)
+
+Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le menu **Plus**). Elle ouvre un écran à part, pensé pour plusieurs intoxiqués à la fois. Une carte « Événement en cours : n patients — reprendre » rappelle un événement ouvert.
+
+- **Saisie rapide** : un identifiant puis Entrée crée le patient, horodaté, dans le lieu d'arrivée ; la **douchette** fonctionne aussi (même règle d'extraction et même pseudonymisation que pour une fiche) ; la **numérotation automatique** crée d'un coup *n* patients `CO-01`, `CO-02`… (préfixe réglable). Un identifiant déjà saisi est refusé et sa ligne surlignée.
+- **Lieux** : un tableau par lieu, avec les patients qui s'y trouvent. Chaque changement de lieu (menu de la ligne, ou déplacement groupé des patients cochés) est **horodaté** ; « historique » donne le parcours d'un patient. Les lieux se paramètrent (ajout, renommage, retrait d'un lieu inutilisé), ainsi que trois rôles : lieu d'arrivée, lieu après une séance, sortie (le patient quitte l'afflux).
+- **Par patient** : HbCO ou SpCO, signes neurologiques, indication d'OHB (indiquée, non indiquée, à discuter), **contre-indication** (à vérifier, absente, présente avec sa nature), installation (assis, allongé, réanimatoire avec IOT), scope, grossesse, table (automatique : A18 si signes neurologiques, A15 sinon ; version IOT pour un réanimatoire), heure de disponibilité (patient encore en transit), statut. « fiche CO » crée une fiche *Intoxication au monoxyde de carbone* préremplie (identifiant, SpCO, indication, contre-indication, IOT, grossesse, table et heure de mise en pression de la 1re séance validée).
+- **Chambres** (paramétrables : nom, lieu, configurations) — valeurs par défaut :
+
+| Chambre | Configuration | Assis | Allongés | Réanimatoire | Scopés max | Mise en place |
+|---|---|---|---|---|---|---|
+| Chambre 1 | 6 assis | 6 | 0 | — | 1 | 0 min |
+| Chambre 1 | 2 allongés non réanimatoires | 0 | 2 | non | 1 | **10 min** |
+| Chambre d'urgence | 3 assis (nominale) | 3 | 0 | — | 1 | 0 min |
+| Chambre d'urgence | 1 allongé, réanimatoire possible | 0 | 1 | oui | 1 | 0 min |
+| Chambre d'urgence | 6 assis | 6 | 0 | — | 1 | 0 min |
+
+  Règles : un patient assis peut occuper une place allongée libre ; un réanimatoire exige une place allongée « réanimatoire » et compte comme scopé ; une séance réunit des patients **de même table** (A15 ou A18) ; la « mise en place » s'ajoute à l'intervalle entre séances (15 min par défaut) quand la chambre change de configuration (la première séance part de la première configuration de la liste).
+- **Planification** : « Proposer le planning » ne retient que les patients dont l'OHB est **indiquée** et la contre-indication **absente**, non sortis, sans séance ouverte. Algorithme glouton : le patient le plus prioritaire (réanimatoire, signes neurologiques, grossesse, HbCO la plus haute, arrivée la plus ancienne) prend la séance qui commence le plus tôt parmi les chambres et configurations qui l'acceptent ; la séance se complète avec les patients de même table qui y tiennent et sont disponibles. Ce n'est **pas** un optimum garanti : relisez, puis **validez**. Une séance validée, en cours ou terminée ne bouge plus ; les propositions se recalculent. **Démarrer** place les patients dans le lieu de la chambre, **terminer** compte la séance et les place dans le lieu « après une séance » ; « nouvelle séance » remet un patient traité en attente. Un patient peut être retiré d'une séance ou ajouté à une séance compatible.
+- **Exports** : CSV (une ligne par patient, avec le parcours des lieux) et sauvegarde JSON de l'événement (réimportable). « Nouvel événement » garde les paramètres et remplace l'événement : exportez d'abord.
+- **Limite** : l'événement est gardé dans la base locale de **cet appareil** ; il n'est **pas** partagé par le couplage entre appareils.
+
+**À valider** : les capacités par défaut (en particulier le nombre de scopés en configuration « 6 assis » de la chambre d'urgence, et l'absence de place assise en configuration allongée), la règle de la mise en place de 10 min, l'intervalle entre séances, l'ordre de priorité.
 
 ## Les six onglets de saisie
 

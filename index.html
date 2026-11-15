@@ -786,6 +786,48 @@ svg.echo rect.z:hover{stroke-width:2.6;filter:brightness(.96)}
   .pjp.solo img{max-height:150mm}
 }
 @media screen{ .pg{display:none} }
+/* ---------- afflux massif CO (12.2.1) ---------- */
+body.af-on #navbar{display:none!important}
+.af{max-width:1400px;margin:8px auto 30px}
+.af h2{margin:4px 0;font-size:20px}
+.af-top{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-end;margin-bottom:10px}
+.af-nom{font-weight:600;border:1px solid var(--bd);border-radius:6px;padding:4px 8px;min-width:220px;max-width:100%}
+.af-sub{color:var(--ink2);font-size:12px}
+.af-btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.af-saisie{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#af_code{font-size:16px;padding:8px 10px;border:2px solid var(--acc);border-radius:8px;min-width:240px;flex:1 1 240px;max-width:420px}
+.af-or{color:var(--ink2)}
+.af-cnt{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px}
+.af-st{display:inline-block;border:1px solid var(--c);color:var(--c);border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.af-lieux{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.af-lieu{border:1px solid var(--bd);border-radius:8px;padding:6px 8px;background:#fff;min-height:44px}
+.af-lieu.vide{opacity:.55}
+.af-lieu b{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.af-lieu b span{background:#eef2f7;border-radius:999px;padding:0 7px}
+.af-chip{display:inline-block;margin:2px 3px 2px 0;border:1px solid var(--c);border-left-width:4px;background:#fff;border-radius:6px;padding:1px 6px;font-size:12px;cursor:pointer}
+.af-bulk{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.af-scroll{overflow-x:auto}
+.af-t{border-collapse:collapse;width:100%;font-size:12.5px}
+.af-t th,.af-t td{border-bottom:1px solid var(--bd);padding:4px 5px;text-align:left;vertical-align:middle}
+.af-t th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink2);white-space:nowrap}
+.af-t select,.af-t input[type=text],.af-t input[type=time],.af-t input:not([type]){padding:2px 3px;border:1px solid var(--bd);border-radius:4px;max-width:150px}
+.af-nw{white-space:nowrap}
+.af-ci{border-color:#c00000!important;color:#c00000}
+tr.af-hl td{background:#fff6d6;transition:background 1.5s}
+.af-tl{border:1px solid var(--bd);border-radius:8px;padding:6px 8px;background:#fff}
+.af-tlr{display:grid;grid-template-columns:130px 1fr;gap:8px;align-items:center;margin:4px 0}
+.af-tlb{position:relative;height:42px;background:#f3f5f8;border-radius:6px;overflow:hidden}
+.af-tlb i{position:absolute;top:0;bottom:0;border-left:1px dashed #c8cfd8;font-style:normal;font-size:9px;color:var(--ink2);padding-left:2px}
+.af-tlb em{position:absolute;top:0;bottom:0;border-left:2px solid #c00000}
+.af-blk{position:absolute;top:14px;height:24px;border-radius:5px;color:#fff;font-size:11px;line-height:24px;padding:0 4px;overflow:hidden;white-space:nowrap;box-sizing:border-box;border:1px solid rgba(0,0,0,.15)}
+.af-blk.af-proposee{background:#8fb4d9}.af-blk.af-validee{background:#1f6fb2}.af-blk.af-en_cours{background:#7c3aed}.af-blk.af-terminee{background:#6b7280}
+.af-ss{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-top:8px}
+.af-s{border:1px solid var(--bd);border-left:5px solid #1f6fb2;border-radius:8px;padding:6px 8px;background:#fff;display:flex;flex-direction:column;gap:4px}
+.af-s.af-proposee{border-left-color:#8fb4d9}.af-s.af-en_cours{border-left-color:#7c3aed}.af-s.af-terminee{border-left-color:#6b7280;opacity:.8}
+.af-par h4{margin:14px 0 6px}
+.af-pl{margin:4px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.af-pl input{padding:3px 6px;border:1px solid var(--bd);border-radius:4px}
+@media screen and (max-width:560px){ .af-tlr{grid-template-columns:1fr} #af_code{min-width:0} }
 </style>
 </head>
 <body>
@@ -947,6 +989,7 @@ const PLUS_ITEMS = [
   {ic:'adp',     t:'Ligne Excel ADP', fn:'openXls()', cl:'pm-ph'},
   {ic:'cohb',    t:'Ligne Excel COHB', fn:'openXls(\'cohb\')', cl:'pm-ph'},
   {ic:'docs',    t:'Documents de sortie', fn:'openGen()', cl:'pm-ph'},
+  {ic:'cohb',    t:'Afflux massif CO', s:'plusieurs patients, lieux, planification des séances', fn:'openAfflux()'},
   {sep:1, cl:'pm-sm'},
   {ic:'folder',  t:'Dossier de données…', s:'où chaque fiche est écrite en JSON, relue pour la recherche', fn:'openFolders()'},
   {ic:'link',    t:'Couplage entre appareils…', s:'Firebase : les mêmes fiches sur deux appareils', fn:'openFb()'},
@@ -4311,6 +4354,8 @@ function renderForm(){
     if(el){ el.focus(); if(ss!=null){ try{ el.setSelectionRange(ss,se); }catch(e){} } } }
 }
 function renderFormInner(){
+  document.body.classList.toggle('af-on', !!AF_ON);
+  if(AF_ON){ afRender(); updatePatBar(); return; }          // afflux massif CO : un écran à part
   if(REC && REC._attenteCadre){ $('#form').innerHTML = cadreLauncher(); updatePatBar(); return; }          // étape préalable : le choix du cadre de la consultation
   computeAll();
   PREV = prevFiche();
@@ -4925,6 +4970,10 @@ document.addEventListener('keydown', wedgeKey, true);
 
 /* retire la chaîne du champ où elle est tombée par erreur, puis l'applique au dossier */
 async function handleScan(raw, el){
+  if(AF_ON){          // afflux massif : le code scanné crée un patient ; il est retiré du champ où il est tombé
+    if(el && el.id!=='af_code' && el.tagName && /^(INPUT|TEXTAREA)$/.test(el.tagName)){ const v = String(el.value||''); if(v.slice(-raw.length)===raw) el.value = v.slice(0, v.length-raw.length); }
+    await afScan(raw); return;
+  }
   const dossEl = document.getElementById('i_dossier');
   if(el && el !== dossEl && el.tagName && /^(INPUT|TEXTAREA)$/.test(el.tagName)){
     const v = String(el.value || '');
@@ -9891,7 +9940,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.1.2';
+const APP_VERSION = '12.2.1';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -10753,7 +10802,7 @@ function newFiche(){
   if(DIRTY && !confirm('La fiche en cours contient des modifications non enregistrees. Continuer ?')) return;
   if(DICT) dictAbort();
   if(FILTRE_PAT){ FILTRE_PAT = null; const el = $('#search'); if(el) el.value = ''; }      // la liste du patient précédent ne doit pas cacher la fiche du nouveau
-  REC=blank(); REC._attenteCadre=true; DIRTY=false; PAGE=1; TYPE_CHOISI=false; renderForm(); renderList(); updateBar();
+  AF_ON=false; REC=blank(); REC._attenteCadre=true; DIRTY=false; PAGE=1; TYPE_CHOISI=false; renderForm(); renderList(); updateBar();
   window.scrollTo(0,0);
 }
 /* L'étape préalable d'une nouvelle fiche : le choix du cadre de la consultation. Tant qu'il n'est pas fait (REC._attenteCadre), l'écran du formulaire est celui du choix. */
@@ -10761,15 +10810,19 @@ function cadreLauncher(){
   const carte = c => c.actif
     ? '<button type="button" class="cadre actif" id="cadre_'+c.id+'" onclick="choisirCadre('+c.v+')"><b>'+esc(c.l)+'</b><span>'+esc(c.d)+'</span></button>'
     : '<button type="button" class="cadre bientot" id="cadre_'+c.id+'" disabled aria-disabled="true"><b>'+esc(c.l)+'</b><span>'+esc(c.d)+'</span><i>bientôt</i></button>';
+  const nAf = AF && AF.patients ? AF.patients.length : 0;
   return '<div class="cadres" id="cadres"><h2>Cadre de la consultation</h2>'+
     '<p class="cadres-sub">Choisissez le cadre : il détermine l’interface de la fiche et ce que la synthèse met en avant. Il se change ensuite dans l’identification.</p>'+
+    '<h3>Afflux massif</h3><div class="cadregrid"><button type="button" class="cadre actif" id="cadre_afflux" onclick="openAfflux()" style="border-color:#b45309">'+
+    '<b>Afflux massif — intoxication au monoxyde de carbone</b><span>Plusieurs patients : saisie rapide par identifiant, suivi de lieu en lieu, contre-indications à l’OHB, planification des séances sur les chambres de recompression.</span>'+
+    (nAf ? '<span style="color:#b45309;font-weight:600">Événement en cours : '+nAf+' patient'+(nAf>1 ? 's' : '')+' — reprendre</span>' : '')+'</button></div>'+
     '<h3>Urgences hyperbares</h3><div class="cadregrid">'+CADRES.filter(c=>c.g==='urgence').map(carte).join('')+'</div>'+
     '<h3>Consultations programmées</h3><div class="cadregrid">'+CADRES.filter(c=>c.g==='programmee').map(carte).join('')+'</div></div>';
 }
 function choisirCadre(v){
   const c = cadreInfo(v);
   if(!c || !c.actif){ toast('Ce cadre arrive dans une prochaine version'); return; }
-  REC.d.cadre = c.v; delete REC._attenteCadre; PAGE = 1; cadreDefauts(1);
+  AF_ON = false; REC.d.cadre = c.v; delete REC._attenteCadre; PAGE = 1; cadreDefauts(1);
   renderForm(); updateBar(); window.scrollTo(0,0);
   setTimeout(()=>{ const i=$('#i_dossier'); if(i) i.focus(); }, 60);
 }
@@ -10801,7 +10854,7 @@ function seanceDe(dossier){
   const r = blank(), l = s.last.d;
   r.d = {dossier:s.dossier, dossier_pseudo:l.dossier_pseudo || 0};
   ID_KEYS.concat(['examinateur','cadre']).forEach(k=>{ if(l[k]!=null && l[k]!=='') r.d[k] = l[k]; });
-  REC = r; DIRTY = false; newSeance();
+  AF_ON = false; REC = r; DIRTY = false; newSeance();
 }
 /* Séance de recompression cotée en quelques clics, sans examen clinique : une fiche de type 4 pour le dossier de la fiche ouverte, avec l'identité, la date et
    l'heure du moment, la table de la dernière séance (B18 à défaut). Il reste à vérifier la table et l'heure, puis à enregistrer. */
@@ -10822,7 +10875,7 @@ function loadFiche(id, patient){
   const f=DB.find(x=>x.id===id); if(!f) return;
   if(DICT) dictAbort();
   if(patient) filtrerPatient(f.d.dossier);                       // clic sur une pastille : la barre de recherche et la liste du bas suivent ce patient
-  REC=JSON.parse(JSON.stringify(f)); DIRTY=false; EDIT_LOCK=REC.id; PAGE=1; TYPE_CHOISI=true; renderForm(); renderList(); updateBar(); window.scrollTo(0,0);
+  AF_ON=false; REC=JSON.parse(JSON.stringify(f)); DIRTY=false; EDIT_LOCK=REC.id; PAGE=1; TYPE_CHOISI=true; renderForm(); renderList(); updateBar(); window.scrollTo(0,0);
 }
 async function delFiche(id,ev){
   ev.stopPropagation();
@@ -11036,6 +11089,7 @@ function patBarClass(){
 }
 function updatePatBar(){
   const el = $('#patbar'); if(!el || !REC) return;
+  el.style.display = AF_ON ? 'none' : '';          // afflux massif : pas de patient unique, pas de bandeau
   const h = patBarHTML(), cl = patBarClass();
   if(h === PATBAR_HTML && el.className === cl) return;
   PATBAR_HTML = h; el.className = cl; el.innerHTML = h;
@@ -12765,6 +12819,11 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.2.1 (version d’essai) : afflux massif — intoxication au CO.</b><br>'+
+  'Une carte <b>Afflux massif</b> en tête du choix du cadre (et dans <b>Plus</b>) ouvre un écran à part : <b>saisie rapide</b> des patients par identifiant (clavier, douchette ou numérotation automatique), '+
+  '<b>lieux paramétrables</b> (chaque déplacement est horodaté, déplacement groupé des patients cochés), indication et <b>contre-indication à l’OHB</b>, installation (assis, allongé, réanimatoire), scope, '+
+  'et <b>planification des séances</b> sur les deux chambres (capacités et configurations paramétrables, mise en place, intervalle entre séances) : proposer, valider, démarrer, terminer. '+
+  'Exports CSV et JSON ; une fiche CO se crée depuis la ligne d’un patient. L’événement reste sur l’appareil : il n’est pas partagé par le couplage.</p>'+
   '<p><b>Nouveautés de la 12.1.2 (version d’essai) : intoxication au monoxyde de carbone.</b><br>'+
   '<b>Examen neurologique simplifié</b> (sans vidéonystagmoscopie, Hoffmann, trépidations, contractions, sphincter anal). '+
   '<b>Examen cardio-vasculaire</b> détaillé (douleur thoracique, rythme, souffle, insuffisance cardiaque, hypoperfusion, pouls ; inhalation de fumées et cyanure en cas d’incendie). '+
@@ -13385,6 +13444,400 @@ function coBoxes(){
   [['#r_co_k_box', coCinetBox], ['#r_co_table_box', coTableBox], ['#r_co_ecg_note', coEcgNote]].forEach(x=>{ const e = $(x[0]); if(e) e.innerHTML = x[1](); });
 }
 
+
+/* =====================================================================
+   AFFLUX MASSIF — INTOXICATION AU MONOXYDE DE CARBONE (12.2.1)
+   Un écran à part, ouvert depuis le choix du cadre : plusieurs patients saisis vite par leur identifiant (clavier ou douchette), suivis de lieu en lieu (lieux paramétrables, chaque déplacement
+   horodaté), indication et contre-indication à l'oxygénothérapie hyperbare, et planification des séances sur les chambres de recompression (capacités paramétrables).
+   L'événement est gardé dans la base locale (magasin « meta », clé « afflux ») : il n'est pas partagé par le couplage entre appareils. Une fiche CO complète se crée depuis la ligne d'un patient.
+   Planification : algorithme glouton. Le patient le plus prioritaire (réanimatoire, puis signes neurologiques, grossesse, HbCO la plus haute, arrivée la plus ancienne) prend la séance qui commence le plus tôt
+   parmi les chambres et les configurations qui peuvent l'accueillir ; la séance se complète avec les patients de même table (A15 ou A18) qui y tiennent et sont disponibles. Les séances validées,
+   en cours ou terminées ne sont jamais déplacées : seules les propositions se recalculent.
+   ===================================================================== */
+const AF_KEY = 'afflux';
+let AF = null, AF_ON = false, AF_SAVE_T = null, AF_SEL = {}, AF_HL = null;
+const AF_INST = [{v:'assis',l:'Assis'},{v:'allonge',l:'Allongé'},{v:'rea',l:'Réa (IOT)'}];
+const AF_IND = [{v:'',l:'—'},{v:1,l:'Indiquée'},{v:0,l:'Non indiquée'},{v:2,l:'À discuter'}];
+const AF_CI = [{v:'',l:'À vérifier'},{v:0,l:'Absente'},{v:1,l:'Présente'}];
+const AF_ST = {evaluer:['À évaluer','#6b7280'], non:['OHB non indiquée','#2e7d32'], discuter:['OHB à discuter','#b45309'], civ:['CI à vérifier','#b45309'], ci:['Contre-indication','#c00000'],
+               attente:['En attente de séance','#b45309'], propose:['Séance proposée','#1f6fb2'], planifie:['Séance validée','#1f6fb2'], seance:['En séance','#7c3aed'], traite:['Traité','#2e7d32'], sorti:['Sorti','#6b7280']};
+const AF_SS = {proposee:'Proposée', validee:'Validée', en_cours:'En cours', terminee:'Terminée'};
+
+function afDefaut(){
+  const now = new Date();
+  const L = ['Accueil – tri','Urgences (SAU)','Salle d’attente OHB','Chambre 1','Chambre d’urgence','Surveillance après OHB','Réanimation','Hospitalisation','Sortie'];
+  return {v:1, id:'af'+now.getTime(), nom:'Afflux CO du '+frDate(iso(now)), debut:now.toISOString(), seq:0, prefixe:'CO-', num:0,
+    lieux:L.map((l,i)=>({id:'l'+(i+1), l:l})), lieuAccueil:'l1', lieuApres:'l6', lieuSortie:'l9', rotation:15,
+    chambres:[
+      {id:'c1', l:'Chambre 1', lieu:'l4', configs:[
+        {id:'c1_6a', l:'6 assis', assis:6, allonges:0, rea:0, scopes:1, setup:0},
+        {id:'c1_2l', l:'2 allongés non réanimatoires', assis:0, allonges:2, rea:0, scopes:1, setup:10}]},
+      {id:'cu', l:'Chambre d’urgence', lieu:'l5', configs:[
+        {id:'cu_3a', l:'3 assis (nominale)', assis:3, allonges:0, rea:0, scopes:1, setup:0},
+        {id:'cu_1l', l:'1 allongé, réanimatoire possible', assis:0, allonges:1, rea:1, scopes:1, setup:0},
+        {id:'cu_6a', l:'6 assis', assis:6, allonges:0, rea:0, scopes:1, setup:0}]}],
+    patients:[], seances:[]};
+}
+async function afLoad(){ try{ AF = await metaGet(AF_KEY); }catch(e){ AF = null; } }
+function afSave(){ clearTimeout(AF_SAVE_T); AF_SAVE_T = setTimeout(()=>{ if(AF) metaSet(AF_KEY, AF); }, 250); }
+async function openAfflux(){
+  if(DIRTY && !confirm('La fiche en cours contient des modifications non enregistrées. Continuer ?')) return;
+  if(!AF) await afLoad();
+  if(!AF){ AF = afDefaut(); afSave(); }
+  AF_ON = true; DIRTY = false; afRender(); updatePatBar(); window.scrollTo(0,0);
+  setTimeout(()=>{ const i = $('#af_code'); if(i) i.focus(); }, 60);
+}
+function afQuitter(){ AF_ON = false; REC = blank(); REC._attenteCadre = true; renderForm(); updateBar(); }
+
+/* ---------- outils ---------- */
+const afLieu = id => (AF.lieux.find(l=>l.id===id) || {}).l || '—';
+const afPat = id => AF.patients.find(p=>p.id===id);
+const afCh = id => AF.chambres.find(c=>c.id===id);
+const afCfg = (c, id) => c ? c.configs.find(x=>x.id===id) : null;
+const afHM = t => t ? hhmm(new Date(t)) : '';
+const afFin = s => new Date(s.debut).getTime() + s.duree*60000;
+const afBase = p => p.table || (p.neuro===1 ? 'A18' : 'A15');
+const afNum = v => { if(v==='' || v==null) return null; const n = Number(String(v).replace(',', '.')); return isFinite(n) ? n : null; };
+/* l'heure à partir de laquelle le patient est disponible : saisie (HH:MM, le jour de l'événement ou le lendemain), sinon son arrivée */
+function afDispo(p){
+  const a = new Date(p.cree).getTime();
+  if(!p.dispo) return a;
+  const d = new Date(iso(new Date(p.cree))+'T'+p.dispo).getTime();
+  return isNaN(d) ? a : (d < a - 12*3600000 ? d + 86400000 : d);
+}
+const afSeancesDe = id => AF.seances.filter(s=>s.pts.indexOf(id)>=0);
+const afOuverte = id => afSeancesDe(id).find(s=>s.statut!=='terminee');
+function afStatut(p){
+  if(p.lieu===AF.lieuSortie) return 'sorti';
+  const s = afOuverte(p.id);
+  if(s) return s.statut==='en_cours' ? 'seance' : s.statut==='validee' ? 'planifie' : 'propose';
+  if(p.nb > 0 && !p.encore) return 'traite';
+  if(p.ind==null) return 'evaluer';
+  if(p.ind===0) return 'non';
+  if(p.ind===2) return 'discuter';
+  if(p.ci==null) return 'civ';
+  if(p.ci===1) return 'ci';
+  return 'attente';
+}
+const afEligible = p => afStatut(p)==='attente';
+/* priorité : réanimatoire, signes neurologiques, grossesse, HbCO, arrivée */
+function afPrio(a, b){
+  const k = p => [p.inst==='rea' ? 0 : 1, p.neuro===1 ? 0 : 1, p.gross===1 ? 0 : 1, -(p.hbco||0), afDispo(p)];
+  const x = k(a), y = k(b);
+  for(let i = 0; i < x.length; i++) if(x[i]!==y[i]) return x[i] < y[i] ? -1 : 1;
+  return 0;
+}
+/* un groupe de patients tient-il dans une configuration ? Un patient assis peut occuper une place allongée libre ; un réanimatoire exige une place allongée réanimatoire ; un réanimatoire est scopé. */
+function afTient(cfg, pts){
+  const as = pts.filter(p=>p.inst==='assis').length, al = pts.filter(p=>p.inst==='allonge').length, re = pts.filter(p=>p.inst==='rea').length;
+  const sc = pts.filter(p=>p.scope===1 || p.inst==='rea').length;
+  if(re > (cfg.rea ? cfg.allonges : 0)) return false;
+  if(al + re > cfg.allonges) return false;
+  if(as > cfg.assis + (cfg.allonges - al - re)) return false;
+  return sc <= cfg.scopes;
+}
+function afTableDe(pts, base){
+  const t = base+(pts.some(p=>p.inst==='rea') ? 'IOT' : ''), T = TABLES.find(x=>x.l===t);
+  return T ? {l:T.l, m:T.m} : {l:base, m:(TABLES.find(x=>x.l===base) || {m:95}).m};
+}
+const afOcc = (cfg, pts) => {
+  const as = pts.filter(p=>p.inst==='assis').length, al = pts.filter(p=>p.inst!=='assis').length, sc = pts.filter(p=>p.scope===1 || p.inst==='rea').length;
+  return 'assis '+as+'/'+cfg.assis+' · allongés '+al+'/'+cfg.allonges+' · scopés '+sc+'/'+cfg.scopes;
+};
+
+/* ---------- planification ---------- */
+function afPlanifier(silence){
+  const garde = AF.seances.filter(s=>s.statut!=='proposee');
+  AF.seances = garde;
+  const t0 = Math.ceil(Date.now()/300000)*300000, rot = (AF.rotation||0)*60000;
+  const libre = {}, cfgAv = {};
+  AF.chambres.forEach(c=>{
+    const S = garde.filter(s=>s.ch===c.id).sort((a,b)=>a.debut.localeCompare(b.debut)), der = S[S.length-1];
+    libre[c.id] = der ? Math.max(t0, afFin(der) + rot) : t0;
+    cfgAv[c.id] = der ? der.cfg : (c.configs[0] || {}).id;
+  });
+  let cand = AF.patients.filter(afEligible).sort(afPrio);
+  const hors = [];
+  while(cand.length){
+    const P = cand[0], base = afBase(P); let best = null;
+    AF.chambres.forEach(c=>c.configs.forEach(cfg=>{
+      if(!afTient(cfg, [P])) return;
+      const setup = cfg.id!==cfgAv[c.id] ? (cfg.setup||0)*60000 : 0;
+      const st = Math.max(libre[c.id] + setup, Math.ceil(afDispo(P)/300000)*300000);
+      const pts = [P];
+      cand.slice(1).forEach(Q=>{ if(afBase(Q)===base && afDispo(Q) <= st && afTient(cfg, pts.concat([Q]))) pts.push(Q); });
+      if(!best || st < best.st || (st===best.st && pts.length > best.pts.length)) best = {c:c, cfg:cfg, st:st, pts:pts};
+    }));
+    if(!best){ hors.push(P.id); cand.shift(); continue; }
+    const T = afTableDe(best.pts, base);
+    AF.seances.push({id:'s'+(++AF.seq), ch:best.c.id, cfg:best.cfg.id, table:T.l, duree:T.m, debut:new Date(best.st).toISOString(), pts:best.pts.map(x=>x.id), statut:'proposee'});
+    libre[best.c.id] = best.st + T.m*60000 + rot; cfgAv[best.c.id] = best.cfg.id;
+    cand = cand.filter(x=>best.pts.indexOf(x)<0);
+  }
+  AF.hors = hors;
+  afSave(); afRender();
+  if(!silence) toast(AF.seances.filter(s=>s.statut==='proposee').length+' séance(s) proposée(s)'+(hors.length ? ' ; '+hors.length+' patient(s) sans configuration possible' : ''));
+}
+/* une séance : valider, démarrer, terminer, supprimer ; retirer un patient ; ajouter un patient */
+function afSeance(id, act){
+  const s = AF.seances.find(x=>x.id===id); if(!s) return;
+  const c = afCh(s.ch), now = new Date().toISOString();
+  if(act==='valider') s.statut = 'validee';
+  else if(act==='demarrer'){ s.statut = 'en_cours'; s.reel = now; s.pts.forEach(pid=>afDeplacer(pid, c.lieu, true)); }
+  else if(act==='terminer'){ s.statut = 'terminee'; s.finReel = now; s.pts.forEach(pid=>{ const p = afPat(pid); if(p){ p.nb = (p.nb||0)+1; p.encore = 0; afDeplacer(pid, AF.lieuApres, true); } }); }
+  else if(act==='supprimer'){ if(s.statut==='en_cours' && !confirm('Séance en cours : la supprimer ?')) return; AF.seances = AF.seances.filter(x=>x!==s); }
+  afSave(); afRender();
+}
+function afRetirer(sid, pid){
+  const s = AF.seances.find(x=>x.id===sid); if(!s || s.statut==='en_cours' || s.statut==='terminee') return;
+  s.pts = s.pts.filter(x=>x!==pid);
+  if(!s.pts.length) AF.seances = AF.seances.filter(x=>x!==s);
+  else { const T = afTableDe(s.pts.map(afPat).filter(Boolean), s.table.replace('IOT','')); s.table = T.l; s.duree = T.m; }
+  afSave(); afRender();
+}
+/* les séances ouvertes (proposées ou validées) où le patient peut entrer : même table, place dans la configuration */
+function afSeancesPossibles(p){
+  return AF.seances.filter(s=>(s.statut==='proposee' || s.statut==='validee') && s.pts.indexOf(p.id)<0 && s.table.replace('IOT','')===afBase(p))
+    .filter(s=>{ const cfg = afCfg(afCh(s.ch), s.cfg); return cfg && afTient(cfg, s.pts.map(afPat).filter(Boolean).concat([p])); });
+}
+function afAjouter(pid, sid){
+  const p = afPat(pid), s = AF.seances.find(x=>x.id===sid); if(!p || !s) return;
+  const o = afOuverte(pid); if(o && o!==s){ o.pts = o.pts.filter(x=>x!==pid); if(!o.pts.length) AF.seances = AF.seances.filter(x=>x!==o); }
+  s.pts.push(pid); const T = afTableDe(s.pts.map(afPat).filter(Boolean), s.table.replace('IOT','')); s.table = T.l; s.duree = T.m;
+  afSave(); afRender();
+}
+
+/* ---------- patients ---------- */
+function afNouveau(code){
+  code = String(code||'').trim();
+  if(!code){ toast('Identifiant vide'); return null; }
+  if(AF.patients.some(p=>p.code===code)){ toast('Identifiant déjà saisi : '+code); AF_HL = (AF.patients.find(p=>p.code===code) || {}).id; afRender(); return null; }
+  const now = new Date().toISOString();
+  const p = {id:'p'+(++AF.seq), code:code, cree:now, lieu:AF.lieuAccueil, hist:[{lieu:AF.lieuAccueil, l:afLieu(AF.lieuAccueil), t:now}],
+             hbco:null, spco:0, neuro:null, gross:null, inst:'assis', scope:0, ind:null, ci:null, ci_txt:'', table:'', dispo:'', note:'', nb:0, encore:0};
+  AF.patients.push(p); AF_HL = p.id; afSave(); return p;
+}
+function afSaisie(ev){
+  if(ev && ev.key!=='Enter') return;
+  const i = $('#af_code'); if(!i) return;
+  const p = afNouveau(i.value); if(p){ i.value = ''; beep(); afRender(); toast('Patient '+p.code+' ajouté ('+afLieu(p.lieu)+')'); }
+  setTimeout(()=>{ const j = $('#af_code'); if(j) j.focus(); }, 30);
+}
+function afAuto(){
+  const n = Math.max(1, Math.min(50, Number(($('#af_n')||{}).value) || 1)); let k = 0;
+  for(let i = 0; i < n; i++){ let c; do { AF.num = (AF.num||0)+1; c = (AF.prefixe||'')+String(AF.num).padStart(2,'0'); } while(AF.patients.some(p=>p.code===c)); if(afNouveau(c)) k++; }
+  afRender(); toast(k+' patient(s) ajouté(s)');
+}
+/* identifiant scanné à la douchette pendant l'afflux : même extraction et même pseudonymisation que pour une fiche */
+async function afScan(raw){
+  let code = String(raw||'').trim().replace(/[\u0000-\u001F\u007F]/g,'');
+  if(SET.scanRe){ try{ const m = new RegExp(SET.scanRe).exec(code); if(m) code = (m[1]!=null ? m[1] : m[0]); }catch(e){} }
+  if(SET.hash){ const h = await pseudonymize(code); if(!h){ toast('Pseudonymisation impossible'); return; } code = h; }
+  const i = $('#af_code'); if(i) i.value = '';
+  const p = afNouveau(code); if(p){ beep(); afRender(); toast('Patient '+p.code+' ajouté'); }
+}
+function afSet(pid, k, v){
+  const p = afPat(pid); if(!p) return;
+  if(k==='hbco') v = afNum(v);
+  else if(['neuro','gross','ind','ci','scope','spco'].indexOf(k)>=0) v = (v==='' || v==null) ? null : Number(v);
+  p[k] = v;
+  if(k==='ci' && v!==1) p.ci_txt = p.ci_txt || '';
+  /* ce qui change l'éligibilité ou la place d'un patient dans une séance seulement proposée l'en retire : la proposition se recalcule */
+  if(['ind','ci','inst','scope','neuro','table','dispo'].indexOf(k)>=0){
+    const o = afOuverte(pid);
+    if(o && o.statut==='proposee'){ o.pts = o.pts.filter(x=>x!==pid); if(!o.pts.length) AF.seances = AF.seances.filter(x=>x!==o); }
+  }
+  afSave(); afRender();
+}
+function afDeplacer(pid, lieu, sansRendu){
+  const p = afPat(pid); if(!p || !lieu || p.lieu===lieu) return;
+  p.lieu = lieu; p.hist.push({lieu:lieu, l:afLieu(lieu), t:new Date().toISOString()});
+  if(!sansRendu){ afSave(); afRender(); }
+}
+function afDeplacerSel(lieu){
+  const ids = Object.keys(AF_SEL).filter(k=>AF_SEL[k]);
+  if(!lieu || !ids.length){ toast('Cochez des patients, puis choisissez le lieu'); return; }
+  ids.forEach(id=>afDeplacer(id, lieu, true)); AF_SEL = {}; afSave(); afRender(); toast(ids.length+' patient(s) déplacé(s) : '+afLieu(lieu));
+}
+function afEncore(pid){ const p = afPat(pid); if(!p) return; p.encore = 1; afSave(); afRender(); toast('Patient '+p.code+' : nouvelle séance à planifier'); }
+function afSuppr(pid){
+  const p = afPat(pid); if(!p || !confirm('Retirer le patient '+p.code+' de l’afflux ?')) return;
+  AF.seances.forEach(s=>{ if(s.statut==='proposee' || s.statut==='validee') s.pts = s.pts.filter(x=>x!==pid); });
+  AF.seances = AF.seances.filter(s=>s.pts.length);
+  AF.patients = AF.patients.filter(x=>x!==p); afSave(); afRender();
+}
+function afHist(pid){
+  const p = afPat(pid); if(!p) return;
+  const S = afSeancesDe(pid).map(s=>'<li>'+esc(afCh(s.ch) ? afCh(s.ch).l : s.ch)+' — '+esc(s.table)+' — '+afHM(s.debut)+' ('+esc(AF_SS[s.statut])+')</li>').join('');
+  modalHTML('<h3>Patient '+esc(p.code)+'</h3><p><b>Lieux</b></p><ol>'+p.hist.map(h=>'<li>'+afHM(h.t)+' — '+esc(h.l)+'</li>').join('')+'</ol>'+
+    (S ? '<p><b>Séances</b></p><ul>'+S+'</ul>' : '<p>Aucune séance.</p>'));
+}
+/* une fiche « Intoxication au monoxyde de carbone » pour ce patient, préremplie de ce que l'afflux sait */
+function afFiche(pid){
+  const p = afPat(pid); if(!p) return;
+  AF_ON = false; REC = blank(); REC._attenteCadre = true; DIRTY = false; TYPE_CHOISI = false;
+  choisirCadre(4);
+  const d = REC.d; d.dossier = p.code;
+  if(p.spco===1 && p.hbco!=null) d.co_spco = p.hbco;
+  if(p.ind!=null) d.co_ohb = p.ind;
+  if(p.ci===1) d.co_ohb_txt = 'Contre-indication à l’OHB'+(p.ci_txt ? ' : '+p.ci_txt : '');
+  if(p.inst==='rea') d.co_iot = 1;
+  if(p.gross===1) d.co_grossesse = 1;
+  const s = afSeancesDe(pid).filter(x=>x.statut!=='proposee').sort((a,b)=>a.debut.localeCompare(b.debut))[0];
+  if(s){ const T = TABLES.find(t=>t.l===s.table); if(T) d.tb_table = T.v; d.tb_h_mep = afHM(s.reel || s.debut); }
+  touch(); renderForm(); updateBar(); window.scrollTo(0,0);
+  toast('Fiche CO créée pour '+p.code+(p.hbco!=null && p.spco!==1 ? ' (l’HbCO se saisit dans les gaz du sang)' : ''));
+}
+
+/* ---------- exports ---------- */
+function afCSV(){
+  const sep = ';', q = v => { const s = v==null ? '' : String(v); return /[;"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  const H = ['identifiant','arrivee','lieu_actuel','hbco_pct','mesure','signes_neuro','grossesse','installation','scope','indication_ohb','contre_indication','ci_precision','table','disponible_a','seances_realisees','seance_ouverte','statut','historique_lieux'];
+  const R = AF.patients.map(p=>{ const o = afOuverte(p.id), c = o ? afCh(o.ch) : null;
+    return [p.code, afHM(p.cree), afLieu(p.lieu), p.hbco, p.hbco!=null ? (p.spco===1 ? 'SpCO' : 'HbCO') : '', p.neuro, p.gross, p.inst, p.scope, p.ind, p.ci, p.ci_txt, afBase(p)+(p.inst==='rea' ? 'IOT' : ''), p.dispo, p.nb||0,
+            o ? (c ? c.l : o.ch)+' '+afHM(o.debut)+' '+o.table+' ('+AF_SS[o.statut]+')' : '', AF_ST[afStatut(p)][0], p.hist.map(h=>afHM(h.t)+' '+h.l).join(' > ')]; });
+  dl('afflux_co_'+iso(new Date())+'.csv', '﻿'+[H].concat(R).map(r=>r.map(q).join(sep)).join('\r\n'), 'text/csv;charset=utf-8');
+}
+function afJSON(){ dl('afflux_co_'+iso(new Date())+'.json', JSON.stringify(AF, null, 1), 'application/json'); }
+function afImport(inp){
+  const f = inp.files && inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { try{ const o = JSON.parse(r.result); if(!o || !Array.isArray(o.patients) || !Array.isArray(o.chambres)) throw 0;
+      if(AF && AF.patients.length && !confirm('Remplacer l’événement en cours ('+AF.patients.length+' patients) ?')) return;
+      AF = o; afSave(); afRender(); toast('Événement importé : '+o.patients.length+' patients'); }catch(e){ toast('Fichier d’afflux illisible'); } };
+  r.readAsText(f);
+}
+function afNouvelEvt(){
+  if(AF && AF.patients.length && !confirm('Clore cet événement et en ouvrir un nouveau ? Exportez-le d’abord (CSV ou JSON) : il sera remplacé.')) return;
+  const old = AF; AF = afDefaut();
+  if(old){ ['lieux','lieuAccueil','lieuApres','lieuSortie','rotation','chambres','prefixe'].forEach(k=>{ if(old[k]!=null) AF[k] = old[k]; }); }          // les réglages se gardent
+  afSave(); afRender();
+}
+
+/* ---------- paramètres : lieux, chambres, configurations ---------- */
+function afParam(k, v, a, b){
+  if(k==='lieu'){ const l = AF.lieux.find(x=>x.id===a); if(l && v.trim()) l.l = v.trim(); }
+  else if(k==='lieuAdd'){ AF.lieux.push({id:'l'+(++AF.seq), l:'Nouveau lieu'}); }
+  else if(k==='lieuDel'){ if(AF.patients.some(p=>p.lieu===a) || [AF.lieuAccueil, AF.lieuApres, AF.lieuSortie].indexOf(a)>=0 || AF.chambres.some(c=>c.lieu===a)){ toast('Lieu utilisé : il ne peut pas être retiré'); return; } AF.lieux = AF.lieux.filter(x=>x.id!==a); }
+  else if(k==='role') AF[a] = v;
+  else if(k==='rotation') AF.rotation = Math.max(0, Number(v)||0);
+  else if(k==='prefixe') AF.prefixe = v;
+  else if(k==='nom') AF.nom = v;
+  else if(k==='ch'){ const c = afCh(a); if(c) c[b] = v; }
+  else if(k==='cfg'){ const c = afCh(a), x = c && c.configs.find(y=>y.id===b.id); if(x) x[b.k] = b.k==='l' ? v : (b.k==='rea' ? (v ? 1 : 0) : Math.max(0, Number(v)||0)); }
+  else if(k==='cfgAdd'){ const c = afCh(a); if(c) c.configs.push({id:c.id+'_'+(++AF.seq), l:'Nouvelle configuration', assis:0, allonges:0, rea:0, scopes:1, setup:0}); }
+  else if(k==='cfgDel'){ const c = afCh(a); if(c && c.configs.length > 1) c.configs = c.configs.filter(y=>y.id!==b); }
+  afSave(); afRender(); if(k!=='nom') afParamOpen();
+}
+function afParamOpen(){
+  const ls = AF.lieux.map(l=>'<option value="'+l.id+'">'+esc(l.l)+'</option>').join('');
+  const sel = (cur, on) => '<select onchange="'+on+'">'+AF.lieux.map(l=>'<option value="'+l.id+'"'+(l.id===cur ? ' selected' : '')+'>'+esc(l.l)+'</option>').join('')+'</select>';
+  const num = (v, on, w) => '<input type="number" min="0" value="'+v+'" style="width:'+(w||52)+'px" onchange="'+on+'">';
+  let h = '<h3>Paramètres de l’afflux</h3><div class="af-par">';
+  h += '<h4>Lieux</h4><div class="note" style="margin:0 0 6px">Chaque déplacement d’un patient est horodaté. Un lieu occupé ou utilisé par un rôle ne se retire pas.</div>';
+  h += AF.lieux.map(l=>'<div class="af-pl"><input value="'+esc(l.l)+'" onchange="afParam(\'lieu\', this.value, \''+l.id+'\')"> <button class="mini" onclick="afParam(\'lieuDel\', \'\', \''+l.id+'\')">retirer</button></div>').join('');
+  h += '<button class="mini" onclick="afParam(\'lieuAdd\')">+ ajouter un lieu</button>';
+  h += '<div class="af-pl">Arrivée des patients : '+sel(AF.lieuAccueil, "afParam('role', this.value, 'lieuAccueil')")+'</div>';
+  h += '<div class="af-pl">Après une séance : '+sel(AF.lieuApres, "afParam('role', this.value, 'lieuApres')")+'</div>';
+  h += '<div class="af-pl">Sortie (le patient quitte l’afflux) : '+sel(AF.lieuSortie, "afParam('role', this.value, 'lieuSortie')")+'</div>';
+  h += '<h4>Séances</h4><div class="af-pl">Intervalle entre deux séances d’une même chambre : '+num(AF.rotation, "afParam('rotation', this.value)")+' min</div>';
+  h += '<div class="af-pl">Préfixe de la numérotation automatique : <input value="'+esc(AF.prefixe||'')+'" style="width:80px" onchange="afParam(\'prefixe\', this.value)"></div>';
+  AF.chambres.forEach(c=>{
+    h += '<h4>'+esc(c.l)+'</h4><div class="af-pl">Nom : <input value="'+esc(c.l)+'" onchange="afParam(\'ch\', this.value, \''+c.id+'\', \'l\')"> Lieu : '+sel(c.lieu, "afParam('ch', this.value, '"+c.id+"', 'lieu')")+'</div>';
+    h += '<div style="overflow-x:auto"><table class="af-t"><tr><th>Configuration</th><th>Assis</th><th>Allongés</th><th>Réa.</th><th>Scopés max</th><th>Mise en place (min)</th><th></th></tr>'+
+      c.configs.map(x=>{ const on = k => "afParam('cfg', this."+(k==='rea' ? 'checked' : 'value')+", '"+c.id+"', {id:'"+x.id+"', k:'"+k+"'})";
+        return '<tr><td><input value="'+esc(x.l)+'" onchange="'+on('l')+'"></td><td>'+num(x.assis, on('assis'))+'</td><td>'+num(x.allonges, on('allonges'))+'</td><td><input type="checkbox"'+(x.rea ? ' checked' : '')+' onchange="'+on('rea')+'" title="Les places allongées acceptent un patient réanimatoire"></td><td>'+num(x.scopes, on('scopes'))+'</td><td>'+num(x.setup, on('setup'))+'</td><td>'+(c.configs.length > 1 ? '<button class="mini" onclick="afParam(\'cfgDel\', \'\', \''+c.id+'\', \''+x.id+'\')">retirer</button>' : '')+'</td></tr>'; }).join('')+
+      '</table></div><button class="mini" onclick="afParam(\'cfgAdd\', \'\', \''+c.id+'\')">+ configuration</button>';
+  });
+  h += '<div class="note" style="margin-top:10px">La « mise en place » s’ajoute à l’intervalle quand la chambre passe à cette configuration depuis une autre (la première séance d’une chambre part de sa première configuration). Un patient assis peut occuper une place allongée libre ; un réanimatoire exige une place allongée cochée « Réa. » et compte comme scopé.</div></div>';
+  modalHTML(h);
+}
+
+/* ---------- rendu ---------- */
+function afRender(){
+  if(!AF_ON) return;
+  const ae = document.activeElement, fid = ae && ae.id && ae.id.indexOf('af_')===0 ? ae.id : null;
+  document.body.classList.add('af-on');
+  $('#form').innerHTML = afHTML();
+  if(fid){ const e = document.getElementById(fid); if(e) e.focus(); }
+  if(AF_HL){ const r = document.getElementById('afr_'+AF_HL); if(r){ r.classList.add('af-hl'); } AF_HL = null; }
+}
+function afOpts(L, cur){ return L.map(o=>'<option value="'+o.v+'"'+(String(o.v)===String(cur==null ? '' : cur) ? ' selected' : '')+'>'+esc(o.l)+'</option>').join(''); }
+function afHTML(){
+  const P = AF.patients, cnt = {}; P.forEach(p=>{ const s = afStatut(p); cnt[s] = (cnt[s]||0)+1; });
+  const lieuOpts = cur => AF.lieux.map(l=>'<option value="'+l.id+'"'+(l.id===cur ? ' selected' : '')+'>'+esc(l.l)+'</option>').join('');
+  let h = '<div class="af">';
+  h += '<div class="af-top"><div><h2>Afflux massif — intoxication au CO</h2><input class="af-nom" value="'+esc(AF.nom)+'" onchange="afParam(\'nom\', this.value)" aria-label="Nom de l’événement"> <span class="af-sub">ouvert à '+afHM(AF.debut)+' le '+frDate(iso(new Date(AF.debut)))+' · '+P.length+' patient'+(P.length>1 ? 's' : '')+'</span></div>'+
+    '<div class="af-btns"><button class="tb" onclick="afParamOpen()">Paramètres</button><button class="tb" onclick="afCSV()">Exporter CSV</button><button class="tb" onclick="afJSON()">Sauvegarde JSON</button>'+
+    '<label class="tb" style="cursor:pointer">Importer JSON<input type="file" accept=".json,application/json" hidden onchange="afImport(this)"></label><button class="tb" onclick="afNouvelEvt()">Nouvel événement</button><button class="tb" onclick="afQuitter()">Quitter</button></div></div>';
+  /* saisie rapide */
+  h += '<div class="sec"><h3>Saisie rapide</h3><div class="body af-saisie">'+
+    '<input id="af_code" placeholder="Identifiant puis Entrée (ou douchette)" autocomplete="off" onkeydown="afSaisie(event)"> <button class="tb gd" onclick="afSaisie()">Ajouter</button>'+
+    '<span class="af-or">ou</span> <input id="af_n" type="number" min="1" max="50" value="1" style="width:56px"> <button class="tb" onclick="afAuto()">numéroter automatiquement ('+esc(AF.prefixe||'')+'01…)</button>'+
+    '<div class="af-cnt">'+Object.keys(AF_ST).filter(k=>cnt[k]).map(k=>'<span class="af-st" style="--c:'+AF_ST[k][1]+'">'+esc(AF_ST[k][0])+' : '+cnt[k]+'</span>').join('')+'</div></div></div>';
+  /* tableau des lieux */
+  h += '<div class="sec"><h3>Lieux</h3><div class="body"><div class="af-lieux">'+AF.lieux.map(l=>{ const Q = P.filter(p=>p.lieu===l.id);
+      return '<div class="af-lieu'+(Q.length ? '' : ' vide')+'"><b>'+esc(l.l)+' <span>'+Q.length+'</span></b>'+Q.map(p=>'<button class="af-chip" style="--c:'+AF_ST[afStatut(p)][1]+'" onclick="AF_HL=\''+p.id+'\';afRender();document.getElementById(\'afr_'+p.id+'\').scrollIntoView({block:\'center\'})">'+esc(p.code)+'</button>').join('')+'</div>'; }).join('')+'</div>'+
+    '<div class="af-bulk">Patients cochés → <select id="af_bulk"><option value="">choisir un lieu</option>'+lieuOpts('')+'</select> <button class="tb" onclick="afDeplacerSel($(\'#af_bulk\').value)">Déplacer</button></div></div></div>';
+  /* patients */
+  h += '<div class="sec"><h3>Patients</h3><div class="body"><div class="af-scroll"><table class="af-t af-pts"><thead><tr><th></th><th>Identifiant</th><th>Statut</th><th>Lieu</th><th>HbCO %</th><th>Neuro</th><th>OHB</th><th>Contre-indication</th><th>Installation</th><th>Scopé</th><th>Grossesse</th><th>Table</th><th>Séance</th><th>Disponible à</th><th></th></tr></thead><tbody>';
+  P.slice().sort(afPrio).forEach(p=>{
+    const st = afStatut(p), o = afOuverte(p.id), on = k => "afSet('"+p.id+"','"+k+"',this.value)";
+    const poss = (st==='attente' || st==='propose' || st==='planifie') ? afSeancesPossibles(p) : [];
+    const sea = o ? '<span title="'+esc(afOcc(afCfg(afCh(o.ch), o.cfg) || {assis:0,allonges:0,scopes:0}, o.pts.map(afPat).filter(Boolean)))+'">'+esc((afCh(o.ch)||{}).l || o.ch)+' · '+afHM(o.debut)+' · '+esc(o.table)+'</span>'+(o.statut!=='en_cours' ? ' <button class="mini" onclick="afRetirer(\''+o.id+'\',\''+p.id+'\')">retirer</button>' : '')
+              : (AF.hors && AF.hors.indexOf(p.id)>=0 && st==='attente' ? '<span style="color:#c00000">aucune configuration possible</span>' : '');
+    h += '<tr id="afr_'+p.id+'"><td><input type="checkbox"'+(AF_SEL[p.id] ? ' checked' : '')+' onchange="AF_SEL[\''+p.id+'\']=this.checked" aria-label="Sélectionner '+esc(p.code)+'"></td>'+
+      '<td><b>'+esc(p.code)+'</b><br><small class="af-sub">arrivé '+afHM(p.cree)+'</small></td>'+
+      '<td><span class="af-st" style="--c:'+AF_ST[st][1]+'">'+esc(AF_ST[st][0])+'</span>'+(p.nb ? '<br><small>'+p.nb+' séance'+(p.nb>1 ? 's' : '')+' faite'+(p.nb>1 ? 's' : '')+'</small>' : '')+'</td>'+
+      '<td><select onchange="afDeplacer(\''+p.id+'\', this.value)">'+lieuOpts(p.lieu)+'</select></td>'+
+      '<td class="af-nw"><input id="af_h_'+p.id+'" type="text" inputmode="decimal" value="'+(p.hbco!=null ? String(p.hbco).replace('.', ',') : '')+'" style="width:48px" onchange="'+on('hbco')+'"><select onchange="'+on('spco')+'" title="Mesure"><option value="0"'+(p.spco!==1 ? ' selected' : '')+'>HbCO</option><option value="1"'+(p.spco===1 ? ' selected' : '')+'>SpCO</option></select></td>'+
+      '<td><select onchange="'+on('neuro')+'">'+afOpts([{v:'',l:'—'},{v:1,l:'OUI'},{v:0,l:'NON'}], p.neuro)+'</select></td>'+
+      '<td><select onchange="'+on('ind')+'">'+afOpts(AF_IND, p.ind)+'</select></td>'+
+      '<td class="af-nw"><select onchange="'+on('ci')+'"'+(p.ci===1 ? ' class="af-ci"' : '')+'>'+afOpts(AF_CI, p.ci)+'</select>'+(p.ci===1 ? ' <input id="af_ci_'+p.id+'" value="'+esc(p.ci_txt||'')+'" placeholder="laquelle" style="width:110px" onchange="afSet(\''+p.id+'\',\'ci_txt\',this.value)">' : '')+'</td>'+
+      '<td><select onchange="'+on('inst')+'">'+afOpts(AF_INST, p.inst)+'</select></td>'+
+      '<td><input type="checkbox"'+(p.scope===1 || p.inst==='rea' ? ' checked' : '')+(p.inst==='rea' ? ' disabled' : '')+' onchange="afSet(\''+p.id+'\',\'scope\',this.checked?1:0)" aria-label="Scopé"></td>'+
+      '<td><select onchange="'+on('gross')+'">'+afOpts([{v:'',l:'—'},{v:1,l:'OUI'},{v:0,l:'NON'}], p.gross)+'</select></td>'+
+      '<td><select onchange="'+on('table')+'">'+afOpts([{v:'',l:'Auto ('+(p.neuro===1 ? 'A18' : 'A15')+')'},{v:'A15',l:'A15'},{v:'A18',l:'A18'}], p.table)+'</select></td>'+
+      '<td class="af-nw">'+sea+(poss.length ? ' <select onchange="if(this.value)afAjouter(\''+p.id+'\',this.value)"><option value="">'+(o ? 'changer' : 'ajouter à')+'…</option>'+poss.filter(s=>s!==o).map(s=>'<option value="'+s.id+'">'+esc((afCh(s.ch)||{}).l)+' '+afHM(s.debut)+' '+esc(s.table)+'</option>').join('')+'</select>' : '')+
+        (st==='traite' ? ' <button class="mini" onclick="afEncore(\''+p.id+'\')">nouvelle séance</button>' : '')+'</td>'+
+      '<td><input id="af_d_'+p.id+'" type="time" value="'+esc(p.dispo||'')+'" onchange="'+on('dispo')+'"></td>'+
+      '<td class="af-nw"><button class="mini" onclick="afHist(\''+p.id+'\')">historique</button> <button class="mini" onclick="afFiche(\''+p.id+'\')">fiche CO</button> <button class="mini" onclick="afSuppr(\''+p.id+'\')" aria-label="Retirer">×</button></td></tr>';
+  });
+  h += '</tbody></table></div>'+(P.length ? '' : '<p class="af-sub">Aucun patient : saisissez un identifiant ci-dessus.</p>')+
+    '<div class="note" style="margin-top:6px">Ordre : réanimatoire, signes neurologiques, grossesse, HbCO décroissante, arrivée. Table : A18 en présence de signes neurologiques, A15 sinon ; version IOT pour un patient réanimatoire. Un patient n’est planifié que si l’OHB est <b>indiquée</b> et la contre-indication <b>absente</b>.</div></div></div>';
+  /* planning */
+  h += '<div class="sec"><h3>Planification des séances</h3><div class="body">'+
+    '<div class="af-btns" style="margin-bottom:8px"><button class="tb gd" onclick="afPlanifier()">Proposer le planning</button><span class="af-sub">Les séances validées, en cours ou terminées ne bougent pas ; les propositions se recalculent. Intervalle : '+AF.rotation+' min.</span></div>'+afPlanning()+'</div></div>';
+  return h+'</div>';
+}
+function afPlanning(){
+  const S = AF.seances.slice().sort((a,b)=>a.debut.localeCompare(b.debut));
+  if(!S.length) return '<p class="af-sub">Aucune séance. « Proposer le planning » répartit les patients en attente sur les chambres.</p>';
+  const t0 = Math.min(Date.now(), ...S.map(s=>new Date(s.debut).getTime())) - 15*60000, t1 = Math.max(...S.map(afFin)) + 15*60000, W = t1 - t0;
+  const X = t => ((t - t0)/W*100).toFixed(2)+'%';
+  let h = '<div class="af-tl">';
+  AF.chambres.forEach(c=>{
+    h += '<div class="af-tlr"><b>'+esc(c.l)+'</b><div class="af-tlb">';
+    for(let t = Math.ceil(t0/3600000)*3600000; t < t1; t += 3600000) h += '<i style="left:'+X(t)+'">'+hhmm(new Date(t)).slice(0,2)+' h</i>';
+    h += '<em style="left:'+X(Date.now())+'"></em>';
+    S.filter(s=>s.ch===c.id).forEach(s=>{ const a = new Date(s.debut).getTime();
+      h += '<span class="af-blk af-'+s.statut+'" style="left:'+X(a)+';width:'+((s.duree*60000)/W*100).toFixed(2)+'%" title="'+esc(s.table+' '+afHM(s.debut)+'–'+afHM(afFin(s))+' : '+s.pts.map(id=>(afPat(id)||{}).code).join(', '))+'">'+esc(s.table)+' · '+s.pts.length+'</span>'; });
+    h += '</div></div>';
+  });
+  h += '</div><div class="af-ss">';
+  S.forEach(s=>{
+    const c = afCh(s.ch), cfg = afCfg(c, s.cfg) || {l:s.cfg, assis:0, allonges:0, scopes:0}, pts = s.pts.map(afPat).filter(Boolean);
+    const ok = afTient(cfg, pts);
+    h += '<div class="af-s af-'+s.statut+'"><div><b>'+esc(c ? c.l : s.ch)+'</b> · '+afHM(s.debut)+'–'+afHM(afFin(s))+' · <b>'+esc(s.table)+'</b> · '+esc(cfg.l)+' <span class="af-st" style="--c:#1f6fb2">'+esc(AF_SS[s.statut])+'</span></div>'+
+      '<div class="af-sub">'+esc(afOcc(cfg, pts))+(ok ? '' : ' — <b style="color:#c00000">dépasse la configuration</b>')+'</div>'+
+      '<div>'+pts.map(p=>'<span class="af-chip" style="--c:'+AF_ST[afStatut(p)][1]+'">'+esc(p.code)+(p.inst!=='assis' ? ' ⟂' : '')+(p.scope===1 || p.inst==='rea' ? ' ♥' : '')+'</span>').join('')+'</div>'+
+      '<div class="af-btns">'+(s.statut==='proposee' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'valider\')">valider</button>' : '')+
+        ((s.statut==='proposee' || s.statut==='validee') ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'demarrer\')">démarrer</button>' : '')+
+        (s.statut==='en_cours' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'terminer\')">terminer</button>' : '')+
+        (s.statut!=='terminee' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'supprimer\')">supprimer</button>' : '')+'</div></div>';
+  });
+  return h+'</div><div class="af-sub" style="margin-top:4px">⟂ allongé · ♥ scopé. Démarrer place les patients dans le lieu de la chambre ; terminer compte la séance et les place dans le lieu « après une séance ».</div>';
+}
 
 /* =====================================================================
    EXAMENS COMPLÉMENTAIRES DEMANDÉS, RÉSULTAT EN ATTENTE (12.1.1)
@@ -14143,6 +14596,7 @@ async function saveDraft(){ if(DIRTY && REC && !EDIT_ASK) await metaSet('draft',
   $('#patholder').innerHTML = patternDefs();
   try{ await openDB(); }catch(e){ alert("Impossible d'ouvrir la base locale du navigateur : "+e); }
   DB = await idbAll();
+  await afLoad();
   const s = await metaGet('settings');
   if(s){ SET.poste=s.poste||''; SET.sep=s.sep||';'; SET.pii=!!s.pii;
          SET.wedge = s.wedge!==false; SET.scanRe=s.scanRe||''; SET.hash=!!s.hash; SET.hashLen=s.hashLen||12;
