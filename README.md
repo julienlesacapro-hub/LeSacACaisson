@@ -1,1 +1,228 @@
-# LeSacACaisson
+# ADP — accident de plongée
+
+Outil de saisie pour la prise en charge d'un accident de plongée en médecine
+hyperbare : consultation initiale en urgence, consultations de suivi, compte
+rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.1.1 (**version d'essai**, à valider avant la version principale).
+
+Deux sorties, depuis la même saisie :
+
+1. un document A4 imprimable et enregistrable en PDF, dont la forme suit le type
+   de consultation (compte rendu de prise en charge, fiche de suivi, compte rendu
+   de séjour) ;
+2. un fichier `donnees_neuro.csv` unique qui s'incrémente, une ligne par fiche,
+   1054 colonnes, prêt pour R, Python, SPSS, Jamovi ou Excel.
+
+Depuis la consultation de sortie, le générateur de courriers du service (courriers,
+ordonnances, certificats) s'ouvre rempli avec ce que la fiche sait, et deux lignes à
+coller dans les fichiers Excel du service se composent à partir de toutes les fiches d'un
+dossier : la ligne Excel ADP (89 colonnes, fichier maître) et la ligne Excel COHB (31 colonnes,
+feuille « Activité COHB »). Le générateur n'est **pas** dans `index.html` (il porte les signatures
+et les numéros RPPS des médecins, et ce dépôt peut être public) : ADP en fait choisir
+une copie une fois, puis la garde dans la base locale du navigateur.
+
+Aucune donnée ne quitte l'appareil. Pas de serveur, pas de compte, pas de requête
+réseau. **Deux exceptions, facultatives :** la **dictée vocale** de Chrome et d'Edge, qui
+confie l'audio à un service de transcription du navigateur (voir `docs/NOTICE.md`,
+« Dictée vocale »), et, depuis la 11.1.1, le **couplage entre appareils** par Firebase
+Realtime Database (désactivé par défaut ; fiches chiffrées de bout en bout ; voir
+`docs/COUPLAGE_FIREBASE.md`). Le code entier tient dans `index.html`.
+
+---
+
+## Utiliser l'outil
+
+### Sans rien installer
+
+Ouvrez `index.html` par double-clic. Tout fonctionne : saisie, impression,
+export. C'est la méthode à retenir pour un poste isolé.
+
+### Comme application installée (recommandé sur téléphone et tablette)
+
+Publiez ce dépôt sur GitHub Pages (voir plus bas), puis ouvrez l'adresse
+obtenue sur l'appareil :
+
+| Appareil | Geste |
+|---|---|
+| Android (Chrome, Edge, Samsung Internet) | menu ⋮ › **Installer l'application** |
+| iPhone, iPad (Safari) | bouton **Partager** › **Sur l'écran d'accueil** |
+| Windows, macOS (Chrome, Edge) | icône d'installation dans la barre d'adresse |
+
+L'application obtient une icône, s'ouvre en plein écran et démarre sans réseau.
+Le menu **Installation hors ligne** de l'outil reprend ces étapes et affiche
+l'état du cache.
+
+---
+
+## Publier sur GitHub Pages
+
+**La procédure détaillée, pas à pas, est dans [`docs/PUBLIER.md`](docs/PUBLIER.md)** :
+interface web et ligne de commande, authentification par jeton, activation de Pages,
+vérification du déploiement, et les pièges. Ce qui suit en est le résumé.
+
+
+```bash
+git clone https://github.com/julienlesacapro-hub/Fiche-Neuro-Standardisee.git
+cd Fiche-Neuro-Standardisee
+
+# copiez ici le contenu de ce dossier (index.html, icons/, manifest, sw.js, docs/, native/)
+
+git add .
+git commit -m "ADP v10.1.1"
+git push origin main
+```
+
+Puis dans le dépôt : **Settings › Pages › Source = Deploy from a branch**,
+branche `main`, dossier `/ (root)`. Sauvegardez.
+
+L'adresse publique devient :
+
+```
+https://julienlesacapro-hub.github.io/Fiche-Neuro-Standardisee/
+```
+
+Comptez une à deux minutes avant la première mise en ligne. GitHub Pages sert
+en HTTPS, condition nécessaire pour l'installation et le service worker.
+
+### Publier une mise à jour
+
+Modifiez `index.html`, incrémentez `VERSION` en tête de `sw.js`
+(`v10.1.1` → `v10.1.2`), poussez. Sans ce changement de version, les appareils
+déjà installés gardent l'ancienne copie en cache.
+
+```bash
+sed -i "s/const VERSION = 'v10.1.1'/const VERSION = 'v10.1.2'/" sw.js
+git commit -am "v10.1.2" && git push
+```
+
+Au lancement suivant avec réseau, l'application signale la mise à jour et
+propose de l'appliquer.
+
+### Ce que vous publiez
+
+GitHub Pages rend ce dépôt **public**. Ne versionnez jamais de fiche remplie,
+de `donnees_neuro.csv`, de fiche ou de sauvegarde JSON (`187-2026_50987654-EX1.json`), de ligne
+Excel exportée, ni le sel de pseudonymisation, ni **le fichier du générateur de courriers** (signatures scannées
+et numéros RPPS des médecins : il se choisit dans l'application, jamais dans le dépôt).
+Le `.gitignore` fourni bloque déjà ces noms de fichiers. Vérifiez quand même
+avec `git status` avant chaque `commit`.
+
+Pour un usage strictement interne, un dépôt privé avec GitHub Pages exige un
+abonnement payant. L'alternative gratuite : servez le dossier depuis un
+serveur interne à l'établissement, ou distribuez `index.html` par clé USB.
+
+---
+
+## Contenu du dépôt
+
+```
+index.html                 application complète, fichier unique, 912 ko
+manifest.webmanifest       déclaration d'installation (nom, icônes, plein écran)
+sw.js                      service worker : démarrage hors ligne, mises à jour
+icons/                     icônes 32 à 1024 px, dont deux masquables Android
+brand_logo_source.png      le blason, fichier maître, pour régénérer les icônes
+docs/
+  PUBLIER.md                   publier et mettre à jour, pas à pas
+  dictionnaire_variables.csv   1054 variables, libellé et codage de chacune
+  COUPLAGE_FIREBASE.md         coupler deux appareils : mise en place, sécurité, dépannage
+  regles_firebase.json         règles de sécurité à copier dans la console Firebase
+  NOTICE.md                    mode d'emploi clinique et technique
+native/                    projet Capacitor pour Android et iOS
+.nojekyll                  désactive le moteur Jekyll de GitHub Pages
+```
+
+---
+
+## Aides à l'examen
+
+Un bouton **?** ouvre, à côté des items techniques, la manœuvre, le résultat normal,
+ce qui compte comme pathologique et les pièges. Dix-huit fiches, quatre avec un schéma au trait.
+
+## Pièces jointes photographiques
+
+Un encart en fin de fiche reçoit jusqu'à douze photos, chacune avec un titre. Elles sont
+réduites à 1600 pixels, enregistrées avec la fiche, et imprimées sur une page dédiée du PDF.
+Elles n'entrent pas dans le fichier de données, qui ne reçoit que leur nombre et leurs titres.
+
+Une photographie de patient reste une donnée de santé identifiante, visage ou pas. Cadrez au
+plus juste, recueillez le consentement, et chiffrez le support de toute sauvegarde JSON qui
+en contient.
+
+---
+
+## Sauvegarde des données
+
+Les fiches vivent à trois endroits, du plus fragile au plus solide :
+
+1. **la base locale du navigateur** (IndexedDB) : effacée si vous videz les
+   données de navigation, perdue si l'appareil l'est ;
+2. **le dossier de données**, choisi une seule fois (bouton *Dossier de données*
+   ou premier enregistrement), sur Chrome et Edge pour ordinateur : à chaque
+   enregistrement l'outil y écrit la fiche en JSON (un fichier par fiche, sous-dossier
+   `fiches`, nommé `xxx-aaaa_bbbbbbbb-EXc.json` : numéro d'accident, année de prise en
+   charge, numéro de dossier, numéro d'examen, par exemple `187-2026_50987654-EX1.json`)
+   et réécrit `donnees_neuro.csv` ; à chaque ouverture il le relit pour la
+   recherche d'un patient. Les fichiers JSON contiennent l'identité : dossier protégé ;
+3. **l'export manuel**, disponible partout, y compris sur iPhone et Firefox :
+   le CSV, la sauvegarde JSON d'un seul fichier, et **Exporter tout en JSON**, qui écrit
+   une fiche par fichier dans un dossier choisi (le sélecteur s'ouvre sur Téléchargements,
+   Chrome et Edge) ou les réunit dans une archive ZIP enregistrée dans Téléchargements par défaut.
+
+Vider le cache de l'application ne touche pas aux fiches. Effacer les données
+de site, si.
+
+Sur iPhone, iPad et Firefox, l'écriture directe dans un dossier n'existe pas. Le
+bouton *Dossier de données* l'explique (avec un diagnostic du navigateur) et propose
+ce qui reste possible : télécharger le JSON de chaque fiche à chaque enregistrement
+(case à cocher), ou exporter une archive ZIP en fin de vacation. Puis fusionnez sur
+le poste principal avec *Importer / Fusionner*, qui lit un fichier JSON, une archive
+ZIP ou un dossier entier. La fusion se fait sur l'identifiant de fiche, sans doublon
+ni écrasement.
+
+---
+
+## Score ASIA : lisez ceci
+
+L'outil calcule les totaux ISNCSCI, les niveaux sensitifs et moteurs, le NLI
+et le grade AIS, à partir des cotations portées sur la silhouette métamérique
+ou dans le tableau des 28 métamères. Ce calcul reste **indicatif**.
+
+Les totaux, le niveau sensitif et le niveau moteur des segments pourvus d'un
+myotome clé suivent la norme. Dans les segments qui en sont dépourvus (C1 à C4,
+T2 à L1, S2 à S5), la norme présume le niveau moteur égal au niveau sensitif
+« si la fonction motrice sus-jacente est normale ». L'outil applique cette
+condition de façon mécanique, là où un examinateur juge.
+
+Vérifiez sur la grille officielle avant toute décision thérapeutique ou avant
+publication.
+
+---
+
+## Statut réglementaire
+
+Cet outil calcule un score de Glasgow, un nombre d'anomalies, un indicateur de
+cohérence, une synthèse rédigée, un grade AIS et une interprétation du couple
+Weber / Rinne. Le MDCG 2019-11 classe ce
+type d'aide à la décision en dispositif médical de classe IIa au minimum
+(règle 11 du règlement UE 2017/745).
+
+Deux conséquences :
+
+- **Usage interne.** L'article 5(5) du règlement 2017/745 exempte de marquage
+  CE les dispositifs fabriqués et utilisés au sein d'un même établissement de
+  santé, sous conditions : justification du besoin, système qualité,
+  documentation, déclaration publique. C'est la voie réaliste ici.
+- **Distribution externe ou magasin d'applications.** Le marquage CE devient
+  obligatoire, avec organisme notifié. Comptez plusieurs dizaines de milliers
+  d'euros et douze à dix-huit mois.
+
+Les données saisies relèvent de l'article 9 du RGPD (données de santé).
+Le mode pseudonymisation de l'outil remplace l'identifiant scanné par une
+empreinte SHA-256 salée. Le sel ne figure dans aucun export. Conservez-le
+séparément : sans lui, personne ne peut remonter à l'identité, vous non plus.
+
+---
+
+## Licence
+
+Tous droits réservés, Dr Julien Lesaca. Diffusion et réutilisation soumises à
+son accord.

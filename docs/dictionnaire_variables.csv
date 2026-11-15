@@ -1,0 +1,1055 @@
+﻿variable;libelle;codage
+fiche_id;Identifiant unique de la fiche;texte (cle primaire, sert au dedoublonnage)
+dossier;N. de dossier / identifiant du patient;texte (cle patient : relie les examens repetes)
+dossier_pseudo;Identifiant pseudonymise ?;"1 = empreinte salee SHA-256 d un identifiant scanne ou saisi (prefixe P-) ; 0 = valeur saisie telle quelle ; vide = non renseigne"
+num_ex;Rang de l'examen pour ce patient;"entier >= 1, ordonne par date et heure ; une seance de recompression sans examen (fiche_type 4) porte le rang du dernier examen qui la precede (0 si aucun)"
+num_ex_lettre;Lettre de la seance de recompression sans examen;"b, c, d... : EX3b est la premiere seance saisie sans examen apres l examen 3, EX3c la suivante ; vide pour une consultation"
+date_ex;Date de l'examen;AAAA-MM-JJ
+heure_ex;Heure de l'examen;HH:MM
+examinateur;Examinateur;texte
+poste;Poste de saisie;texte (renseigne dans les reglages, utile a la fusion)
+date_acc;Date de l'accident;AAAA-MM-JJ
+heure_acc;Heure de l'accident;HH:MM
+delai_min;Delai accident vers examen;"entier, minutes (calcule ; consultation initiale seulement, vide sur les fiches suivantes)"
+fiche_type;Type de consultation;"1 = consultation initiale (prise en charge en urgence) ; 2 = consultation de suivi ; 3 = consultation de sortie / CRH ; 4 = seance de recompression sans examen clinique (fiche rapide, numeros EX3b, EX3c...) ; vide = non renseigne (a lire comme 1)"
+cadre;Cadre de la consultation;"1 = Accident de plongee (ADD) ; 2 = Œdeme pulmonaire d’immersion (OPI) ; 3 = Mixte (accident de desaturation et OPI) ; 4 = Intoxication au monoxyde de carbone ; 5 = Embolie gazeuse ; 6 = Autre urgence hyperbare ; 7 = Consultation d’hyperbarie chronique (hors urgence) ; 8 = Consultation specialisee hors AMM (off-label) ; 9 = Consultation d’expertise (professionnelle ou de loisir) ; les cadres 5 a 9 sont annonces pour les prochaines versions ; vide = fiche d avant la 11.1.1 (accident de plongee, a lire comme 1)"
+sexe;Sexe;"1 = M ; 2 = F ; 3 = Autre"
+age;Age a la date de l'examen;entier, annees revolues (calcule)
+age_mois;Age - mois en plus des annees (mineur);"entier 0 a 11, calcule ; seulement pour un patient de moins de 18 ans, vide pour un adulte"
+nationalite;Nationalité (Identité complémentaire);"1 = Française ; 2 = Belge ; 3 = Allemande ; 4 = Suisse ; 5 = Italienne ; 6 = Espagnole ; 7 = Américaine (US) ; 8 = Anglaise ; 9 = Autre"
+nationalite_autre;Nationalité — à préciser (Identité complémentaire);texte libre
+profession;Profession (Identité complémentaire);texte libre
+ad_num;Accident de plongée n° (Mode d'entrée et prise en charge initiale);texte libre
+date_arr;Date d'arrivée (Mode d'entrée et prise en charge initiale);AAAA-MM-JJ
+heure_arr;Heure d'arrivée (Mode d'entrée et prise en charge initiale);HH:MM
+medecin;Médecin (Mode d'entrée et prise en charge initiale);texte libre
+infirmier;Infirmier(e) (Mode d'entrée et prise en charge initiale);texte libre
+adresse_par;Adressé par (Mode d'entrée et prise en charge initiale);"1 = SAMU 83 ; 2 = SCMM ; 3 = Autre SAMU ; 5 = SAU HNIA SA ; 4 = Autre"
+adresse_samu;Autre SAMU — à préciser (Mode d'entrée et prise en charge initiale);texte libre
+adresse_etab_type;Type d’établissement (Mode d'entrée et prise en charge initiale);"1 = SAU (service d’accueil des urgences) ; 2 = Centre hyperbare ; 3 = Non défini"
+adresse_etab;Établissement — à préciser (Mode d'entrée et prise en charge initiale);texte libre
+heure_appel;Heure d'appel (Mode d'entrée et prise en charge initiale);HH:MM
+loc_appel;Localisation de l’accidenté au moment de l’appel (Mode d'entrée et prise en charge initiale);"1 = En mer ; 2 = À quai ; 3 = Dans un SAU ; 4 = Autre"
+loc_appel_autre;Autre lieu — à préciser (Mode d'entrée et prise en charge initiale);texte libre
+evac_moyen;Moyen d'évacuation (Mode d'entrée et prise en charge initiale);"1 = Moyens propres ; 2 = VSAV / pompiers ; 3 = SMUR routier ; 7 = Hélicoptère médicalisé ; 8 = Hélicoptère non médicalisé ; 6 = Autre"
+evac_autre;Autre moyen — à préciser (Mode d'entrée et prise en charge initiale);texte libre
+pl_h_symp;Heure des 1ers symptômes (Mode d'entrée et prise en charge initiale);HH:MM
+heure_soins;Heure des 1ers soins sur place (Mode d'entrée et prise en charge initiale);HH:MM
+soin_o2;Oxygène normobare sur place (Mode d'entrée et prise en charge initiale);"1 = OUI ; 0 = NON"
+soin_o2_debit;Débit (L/min) (Mode d'entrée et prise en charge initiale);numerique (L/min)
+soin_o2_duree;Durée (min) (Mode d'entrée et prise en charge initiale);numerique, calcule (min)
+soin_aspirine;Aspirine (Mode d'entrée et prise en charge initiale);"1 = OUI ; 0 = NON"
+soin_hydrat;Hydratation (mL) (Mode d'entrée et prise en charge initiale);numerique (mL)
+soin_autres;Autres soins sur place (Mode d'entrée et prise en charge initiale);texte libre
+heure_pec;Heure de prise en charge au SMHEP (Mode d'entrée et prise en charge initiale);HH:MM
+delai_symp_pec;Délai 1ers symptômes → prise en charge (min) (Mode d'entrée et prise en charge initiale);numerique, calcule
+poids;Poids (kg) (Le plongeur);numerique (kg)
+taille;Taille (cm) (Le plongeur);numerique (cm)
+imc;IMC (Le plongeur);numerique, calcule (kg/m²)
+atcd_med_aucun_med;Antécédents - Aucun antécédent médical notable (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med_aucun_chir;Antécédents - Aucun antécédent chirurgical notable (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med_hta;Antécédents - HTA (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med_diabete;Antécédents - Diabète (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med_asthme;Antécédents - Asthme (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med_cardio;Antécédents - Cardiopathie (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med_pneumo;Antécédents - Pneumothorax (Le plongeur);"1 = coche ; 0 = non coche"
+atcd_med;Antécédents - liste (Le plongeur);texte, valeurs separees par |
+atcd_cardio;Cardiopathie — préciser (Le plongeur);texte libre
+atcd_pneumo_type;Pneumothorax — type (Le plongeur);"1 = Spontané ; 2 = Post-traumatique ; 3 = Iatrogène"
+atcd_pneumo_date;Pneumothorax — date (ou année) (Le plongeur);texte libre
+atcd;Autres antécédents (Le plongeur);texte libre
+tox_aucune;Habitudes toxiques - Aucune (Le plongeur);"1 = coche ; 0 = non coche"
+tox_tabac;Habitudes toxiques - Tabagisme actif (Le plongeur);"1 = coche ; 0 = non coche"
+tox_tabac_sevre;Habitudes toxiques - Tabagisme sevré (Le plongeur);"1 = coche ; 0 = non coche"
+tox_alcool;Habitudes toxiques - Consommation d’alcool (Le plongeur);"1 = coche ; 0 = non coche"
+tox_alcool_sevre;Habitudes toxiques - Alcool sevré (Le plongeur);"1 = coche ; 0 = non coche"
+tox_cannabis;Habitudes toxiques - Cannabis (Le plongeur);"1 = coche ; 0 = non coche"
+tox_autre;Habitudes toxiques - Autre (Le plongeur);"1 = coche ; 0 = non coche"
+tox;Habitudes toxiques - liste (Le plongeur);texte, valeurs separees par |
+tabac_cig;Tabac — cigarettes par jour (Le plongeur);numerique (cig/j)
+tabac_ans;Tabac — depuis (durée en années) (Le plongeur);numerique (ans)
+tabac_pa;Tabac — paquets-années (PA) (Le plongeur);numerique, calcule (PA)
+tabac_sevre_date;Tabagisme sevré depuis le (Le plongeur);AAAA-MM-JJ
+alcool_stade;Alcool — évaluation en 4 stades (Le plongeur);"1 = Stade 1 — usage à faible risque ; 2 = Stade 2 — usage à risque ; 3 = Stade 3 — usage nocif ; 4 = Stade 4 — dépendance"
+alcool_sevre_date;Alcool sevré depuis le (Le plongeur);AAAA-MM-JJ
+alcool_sevre_stade;Alcool sevré — évaluation antérieure en 4 stades (Le plongeur);"1 = Stade 1 — usage à faible risque ; 2 = Stade 2 — usage à risque ; 3 = Stade 3 — usage nocif ; 4 = Stade 4 — dépendance"
+cannabis_freq;Cannabis — fréquence (Le plongeur);"1 = Quotidienne ; 2 = Régulière ; 3 = Festive ; 4 = Exceptionnelle"
+tox_autre_txt;Autre toxique — préciser (Le plongeur);texte libre
+toxiques;Habitudes toxiques — précisions (Le plongeur);texte libre
+traitement;Traitement habituel (Le plongeur);texte libre
+allergie;Allergies (Le plongeur);texte libre
+contracept;Contraception orale (Le plongeur);"1 = OUI ; 0 = NON"
+regles;Date des dernières règles (Le plongeur);AAAA-MM-JJ
+rachianesth;Rachianesthésie récente (Le plongeur);"1 = OUI ; 0 = NON"
+atcdp_aucun;Antécédents en plongée - Aucun antécédent en plongée antérieur (Le plongeur);"1 = coche ; 0 = non coche"
+atcdp_add;Antécédents en plongée - ADD (Le plongeur);"1 = coche ; 0 = non coche"
+atcdp_opi;Antécédents en plongée - OPI (Le plongeur);"1 = coche ; 0 = non coche"
+atcdp_baro;Antécédents en plongée - Barotraumatisme (Le plongeur);"1 = coche ; 0 = non coche"
+atcdp_bio;Antécédents en plongée - Biochimique (Le plongeur);"1 = coche ; 0 = non coche"
+atcdp;Antécédents en plongée - liste (Le plongeur);texte, valeurs separees par |
+atcdp_add_txt;ADD — préciser type et date (Le plongeur);texte libre
+atcdp_opi_txt;OPI — préciser la date (Le plongeur);texte libre
+atcdp_baro_txt;Barotraumatisme — préciser type et date (Le plongeur);texte libre
+atcdp_bio_txt;Biochimique — préciser type et date (Le plongeur);texte libre
+atcd_plongee;Antécédents en plongée — précisions (Le plongeur);texte libre
+niv_loisir;Niveau de plongée loisir (Le plongeur);"1 = Baptême / non breveté ; 2 = N1 (1★) ; 3 = N2 (2★) ; 4 = N3 (3★) ; 5 = N4 (4★) — guide de palanquée ; 6 = N5 — directeur de plongée ; 7 = PADI Open Water Diver ; 8 = PADI Advanced Open Water Diver ; 9 = PADI Rescue Diver ; 99 = Autre (préciser)"
+niv_loisir_autre;Niveau loisir — à préciser (Le plongeur);texte libre
+niv_pro;Niveau de plongée professionnel (Le plongeur);"1 = Scaphandrier civil — CAH classe I ; 2 = Scaphandrier civil — CAH classe II ; 3 = Scaphandrier civil — CAH classe III ; 4 = Plongeur de bord ; 5 = Plongeur d’armes (Marine nationale) ; 6 = Plongeur d’armes (armée de terre) ; 7 = Plongeur sapeur-pompier / sécurité civile ; 8 = Plongeur scientifique ; 9 = Plongeur à saturation / offshore ; 99 = Autre (préciser)"
+niv_pro_autre;Niveau professionnel — à préciser (Le plongeur);texte libre
+niv_ens;Niveau de plongée d’enseignement (Le plongeur);"1 = E1 — initiateur ; 2 = E2 ; 3 = E3 — moniteur fédéral 1er degré (MF1) ; 4 = E4 — moniteur fédéral 2e degré (MF2) ; 5 = BPJEPS plongée subaquatique ; 6 = DEJEPS plongée subaquatique ; 7 = DESJEPS plongée subaquatique ; 8 = PADI Divemaster ; 9 = PADI Instructor ; 99 = Autre (préciser)"
+niv_ens_autre;Niveau d’enseignement — à préciser (Le plongeur);texte libre
+organisme;Organisme (Le plongeur);"1 = FFESSM ; 2 = CMAS ; 3 = PADI ; 4 = SSI ; 5 = NAUI ; 6 = ANMP ; 7 = FSGT ; 8 = UCPA ; 9 = Armées / Marine nationale ; 10 = Sécurité civile / sapeurs-pompiers ; 99 = Autre (préciser)"
+organisme_autre;Organisme — à préciser (Le plongeur);texte libre
+niveau_date;Date d'obtention du niveau (Le plongeur);AAAA-MM-JJ
+plongee_depuis;Plongée depuis (année) (Le plongeur);numerique
+nb_plongees_total;Nombre total de plongées réalisées (Le plongeur);numerique (plongées)
+nb_plongees_an;Nombre moyen de plongées par an (Le plongeur);numerique (/an)
+certif_date;Date du dernier certificat médical (Le plongeur);AAAA-MM-JJ
+certif_medecin;Qualification du médecin (Le plongeur);"1 = Médecin fédéral ; 2 = Médecin du sport ; 3 = DIU hyperbare ; 4 = Médecin généraliste ; 5 = Médecin rééducateur ; 9 = Autre"
+certif_medecin_autre;Qualification — à préciser (Le plongeur);texte libre
+certif_absent;Certificat médical (Le plongeur);"1 = coche ; vide = non coche"
+certif_comment;Commentaire (précisions) (Le plongeur);texte libre
+cadre_plongee;Cadre de la plongée (Le plongeur);"1 = Plongée club ; 2 = Plongée hors club ; 3 = Plongée professionnelle"
+auto_encadre;Auto-encadré (Le plongeur);"1 = OUI ; 0 = NON"
+club_nom;Club — nom (Le plongeur);texte libre
+club_tel;Club — téléphone (Le plongeur);texte libre
+club_resp;Club — responsable (Le plongeur);texte libre
+pl_lieu;Lieu / site (Paramètres de la plongée accidentelle);texte libre
+pl_type;Type de plongée (Paramètres de la plongée accidentelle);"1 = Loisir ; 2 = Instruction ; 3 = Professionnelle ; 4 = Militaire ; 5 = Apnée"
+pl_tenue;Type de tenue (Paramètres de la plongée accidentelle);"1 = Humide ; 2 = Semi-étanche ; 3 = Étanche ; 9 = Autre"
+pl_tenue_autre;Préciser la tenue (Paramètres de la plongée accidentelle);texte libre
+pl_deseq;Déséquipement sur le lieu de plongée (Paramètres de la plongée accidentelle);"1 = OUI ; 0 = NON"
+pl_gaz;Mélange respiré (Paramètres de la plongée accidentelle);"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Héliox ; 5 = Oxygène ; 9 = Autre"
+pl_gaz_autre;Préciser le mélange (Paramètres de la plongée accidentelle);texte libre
+pl_proc;Procédure de décompression (Paramètres de la plongée accidentelle);"1 = Ordinateur ; 2 = Tables MN23 ; 5 = Tables MT 92 ; 3 = Autres tables (préciser) ; 4 = Sans procédure"
+pl_ordi_modele;Ordinateur — marque / modèle (Paramètres de la plongée accidentelle);texte libre
+pl_ordi_reglage;Ordinateur — réglage (GF, etc.) (Paramètres de la plongée accidentelle);texte libre
+pl_proc_autre;Autres tables — préciser (Paramètres de la plongée accidentelle);texte libre
+pl_profil_type;Type de profil (Paramètres de la plongée accidentelle);"1 = Carré ; 2 = Inversé ; 3 = Yoyo ; 4 = Remontée progressive ; 5 = Apnée"
+pl_h_immersion;Départ surface — DS (heure d'immersion) (Paramètres de la plongée accidentelle);HH:MM
+pl_h_depart_fond;Départ fond — DF (heure) (Paramètres de la plongée accidentelle);HH:MM
+pl_h_sortie;Heure de sortie de l'eau — HS (Paramètres de la plongée accidentelle);HH:MM
+pl_prof;Profondeur maximale atteinte — Pmax (m) (Paramètres de la plongée accidentelle);numerique (m)
+pl_prof1;Profondeur de la 1re phase (m) (Paramètres de la plongée accidentelle);numerique (m)
+pl_h_inv;Heure du passage à Pmax (Paramètres de la plongée accidentelle);HH:MM
+pl_dpmax;Durée à la profondeur maximale (min) (Paramètres de la plongée accidentelle);numerique (min)
+pl_prof_df;Profondeur au départ du fond (m) (Paramètres de la plongée accidentelle);numerique (m)
+pl_yoyo_nb;Nombre de remontées (Paramètres de la plongée accidentelle);numerique
+pl_yoyo_amp;Amplitude des variations (m) (Paramètres de la plongée accidentelle);numerique (m)
+pl_yoyo_surf;Les remontées atteignent la surface (Paramètres de la plongée accidentelle);"1 = OUI ; 0 = NON"
+pl_yoyo_int;Intervalle de surface le plus long (min) (Paramètres de la plongée accidentelle);numerique (min)
+ap_nb;Nombre d’apnées (Paramètres de la plongée accidentelle);numerique
+ap_interval;Intervalle de surface entre les apnées (min) (Paramètres de la plongée accidentelle);numerique (min)
+ap_decomp;Décompression après les apnées (Paramètres de la plongée accidentelle);"0 = Aucune ; 1 = Par réimmersion ; 2 = En surface"
+ap_rim_int;Réimmersion — intervalle après la dernière apnée (min) (Paramètres de la plongée accidentelle);numerique (min)
+ap_rim_duree;Réimmersion — durée (min) (Paramètres de la plongée accidentelle);numerique (min)
+ap_rim_prof;Réimmersion — profondeur (m) (Paramètres de la plongée accidentelle);numerique (m)
+ap_rim_gaz;Réimmersion — type de gaz (Paramètres de la plongée accidentelle);"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Héliox ; 5 = Oxygène ; 9 = Autre"
+ap_surf_int;Décompression en surface — intervalle après la dernière apnée (min) (Paramètres de la plongée accidentelle);numerique (min)
+ap_surf_duree;Décompression en surface — durée (min) (Paramètres de la plongée accidentelle);numerique (min)
+ap_surf_gaz;Décompression en surface — gaz respiré (Paramètres de la plongée accidentelle);"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Héliox ; 5 = Oxygène ; 9 = Autre"
+pl_dt;Durée de travail — DT (Paramètres de la plongée accidentelle);numerique, calcule (min)
+pl_dtr;Durée totale de remontée — DTR (Paramètres de la plongée accidentelle);numerique (min)
+pl_duree_tot;Durée totale de plongée — DTP (Paramètres de la plongée accidentelle);numerique (min)
+pl_paliers;Commentaire sur les paliers et la remontée (Paramètres de la plongée accidentelle);texte libre
+pl_reimm_type;Type de remontée (Paramètres de la plongée accidentelle);"1 = Remontée rapide (RR) ; 2 = Remontée non conforme"
+pl_reimm_faite;Procédure de ré-immersion (Paramètres de la plongée accidentelle);"1 = Réalisée ; 0 = Non réalisée"
+pl_rr_emersion;Émersion (surface atteinte) (Paramètres de la plongée accidentelle);"1 = OUI ; 0 = NON"
+pl_rr_delai;Délai de ré-immersion (min) (Paramètres de la plongée accidentelle);numerique (min)
+pl_rr_prof;Profondeur de ré-immersion (m) (Paramètres de la plongée accidentelle);numerique (m)
+pl_rr_duree;Durée à cette profondeur (min) (Paramètres de la plongée accidentelle);numerique (min)
+pl_rr_pal6;Palier à 6 m (min) (Paramètres de la plongée accidentelle);numerique (min)
+pl_rr_pal3;Palier à 3 m (min) (Paramètres de la plongée accidentelle);numerique (min)
+pl_reimm_txt;Description de la procédure (Paramètres de la plongée accidentelle);texte libre
+pl_delai_symp;Délai sortie de l’eau → 1ers symptômes (min) (Paramètres de la plongée accidentelle);numerique, calcule
+plp_faite;Plongée dans les 24 heures précédentes (Paramètres de la plongée précédente);"1 = OUI ; 0 = NON"
+plp_date;Date (Paramètres de la plongée précédente);AAAA-MM-JJ
+plp_heure;Heure de sortie de l’eau (Paramètres de la plongée précédente);HH:MM
+plp_prof;Profondeur maximale (m) (Paramètres de la plongée précédente);numerique (m)
+plp_duree_fond;Durée au fond (min) (Paramètres de la plongée précédente);numerique (min)
+plp_duree_tot;Durée totale (min) (Paramètres de la plongée précédente);numerique (min)
+plp_paliers;Paliers (Paramètres de la plongée précédente);texte libre
+plp_interval;Intervalle de surface (min) (Paramètres de la plongée précédente);numerique, calcule
+ff_proc;Respect de la procédure de décompression (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_progress;Progressivité respectée (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_entrainement;Manque d’entraînement à la plongée profonde (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_ludion;Plongées ludion (yo-yo) (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_fatigue;Fatigue (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_effort;Travail musculaire intense (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_instruction;Plongée d’instruction (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_insomnie;Insomnie (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_exercice24;Exercice physique dans les 24 h (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_froid;Eau froide (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_deshydrat;Déshydratation (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_courant;Courant (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_houle;Houle de surface (Facteurs favorisants);"1 = OUI ; 0 = NON"
+ff_visib;Visibilité (Facteurs favorisants);"1 = Bonne ; 2 = Mauvaise ; 3 = Inférieure à 1 m"
+ff_env;Conditions environnementales — précisions (Facteurs favorisants);texte libre
+histoire;Histoire de la maladie (Anamnèse);texte libre
+sf_arrivee;Signes fonctionnels à l’arrivée (Anamnèse);texte libre
+evol_avant_rec;Évolution avant recompression (Anamnèse);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
+pp_lien;Personne à prévenir — lien (Contacts);"1 = Conjoint / Compagnon ; 2 = Parent ; 3 = Enfant ; 4 = Ami ; 5 = Autre"
+pp_lien_autre;Lien — à préciser (Contacts);texte libre
+ex_cv;Anomalie cardio-vasculaire (Examen clinique général);"1 = OUI ; 0 = NON"
+ex_cv_txt;Préciser (Examen clinique général);texte libre
+ex_pneumo;Anomalie respiratoire (Examen clinique général);"1 = OUI ; 0 = NON"
+ex_pneumo_txt;Préciser (Examen clinique général);texte libre
+ex_abdo;Anomalie abdominale (Examen clinique général);"1 = OUI ; 0 = NON"
+ex_abdo_txt;Préciser (Examen clinique général);texte libre
+ex_loco;Anomalie locomotrice (Examen clinique général);"1 = OUI ; 0 = NON"
+ex_loco_txt;Préciser (Examen clinique général);texte libre
+avpu;AVPU (Conscience);"1 = Alert ; 2 = Verbal ; 3 = Pain ; 4 = Unresponsive"
+gcs_y;Glasgow — Ouverture des yeux (Y) (Conscience);"1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; NC = NC"
+gcs_v;Glasgow — Réponse verbale (V) (Conscience);"1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5 ; NC = NC"
+gcs_m;Glasgow — Réponse motrice (M) (Conscience);"1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5 ; 6 = 6 ; NC = NC"
+gcs_tot;Score de Glasgow total (/15) (Conscience);numerique, calcule
+pup_sym;Pupilles symétriques (Fonctions supérieures);"1 = OUI ; 0 = NON"
+pup_aniso;Anisocorie (Fonctions supérieures);"1 = OUI ; 0 = NON"
+pup_aniso_cote;Pupille la plus large (Fonctions supérieures);"1 = D ; 2 = G"
+pup_myd;Mydriase (Fonctions supérieures);"1 = OUI ; 0 = NON"
+pup_myd_cote;Côté (Fonctions supérieures);"1 = D ; 2 = G ; 3 = Bilat."
+pup_myo;Myosis (Fonctions supérieures);"1 = OUI ; 0 = NON"
+pup_myo_cote;Côté (Fonctions supérieures);"1 = D ; 2 = G ; 3 = Bilat."
+pup_rpm;Réflexe photomoteur présent (Fonctions supérieures);"1 = OUI ; 0 = NON"
+pup_rpm_cote;Côté déficitaire (Fonctions supérieures);"1 = D ; 2 = G ; 3 = Bilat."
+fs_comport;Troubles du comportement (Fonctions supérieures);"1 = OUI ; 0 = NON"
+fs_dts;Désorientation temporo-spatiale (DTS) (Fonctions supérieures);"1 = OUI ; 0 = NON"
+fs_parole;Troubles de la parole (Fonctions supérieures);"1 = OUI ; 0 = NON"
+fs_visuel;Troubles visuels (Fonctions supérieures);"1 = OUI ; 0 = NON"
+fs_visuel_cote;Côté (Fonctions supérieures);"1 = D ; 2 = G ; 3 = Bilat."
+fs_audition;Troubles de l'audition (Fonctions supérieures);"1 = OUI ; 0 = NON"
+fs_audition_cote;Côté (Fonctions supérieures);"1 = D ; 2 = G ; 3 = Bilat."
+fs_acouph;Acouphènes (Fonctions supérieures);"1 = OUI ; 0 = NON"
+fs_acouph_cote;Côté (Fonctions supérieures);"1 = D ; 2 = G ; 3 = Bilat."
+fs_vertiges;Vertiges (Fonctions supérieures);"1 = OUI ; 0 = NON"
+nys;Nystagmus (Fonctions supérieures);"1 = OUI ; 0 = NON"
+nys_cote;Côté de la secousse rapide (Fonctions supérieures);"1 = D ; 2 = G"
+nys_regard_centre;Position(s) du regard - Regard centré (Fonctions supérieures);"1 = coche ; 0 = non coche"
+nys_regard_lat_d;Position(s) du regard - Regard latéral droit (Fonctions supérieures);"1 = coche ; 0 = non coche"
+nys_regard_lat_g;Position(s) du regard - Regard latéral gauche (Fonctions supérieures);"1 = coche ; 0 = non coche"
+nys_regard_haut;Position(s) du regard - Regard vers le haut (Fonctions supérieures);"1 = coche ; 0 = non coche"
+nys_regard_bas;Position(s) du regard - Regard vers le bas (Fonctions supérieures);"1 = coche ; 0 = non coche"
+nys_regard;Position(s) du regard - liste (Fonctions supérieures);texte, valeurs separees par |
+nys_type;Sens du nystagmus (Fonctions supérieures);"1 = Même sens que la secousse rapide ; 2 = Sens inverse ; 3 = Girato-rotatoire"
+vns;VNS (vidéonystagmoscopie) réalisée (Fonctions supérieures);"1 = OUI ; 0 = NON"
+vns_spont;Nystagmus spontané sous VNS (Fonctions supérieures);"1 = OUI ; 0 = NON"
+vns_spont_cote;Côté (secousse rapide) (Fonctions supérieures);"1 = D ; 2 = G"
+vns_spont_regard_centre;Position(s) du regard - Regard centré (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_spont_regard_lat_d;Position(s) du regard - Regard latéral droit (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_spont_regard_lat_g;Position(s) du regard - Regard latéral gauche (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_spont_regard_haut;Position(s) du regard - Regard vers le haut (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_spont_regard_bas;Position(s) du regard - Regard vers le bas (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_spont_regard;Position(s) du regard - liste (Fonctions supérieures);texte, valeurs separees par |
+vns_sensib;VNS sensibilisée (Fonctions supérieures);"1 = OUI ; 0 = NON"
+vns_niv;NIV — nystagmus induit par vibration (Fonctions supérieures);"1 = OUI ; 0 = NON"
+vns_niv_cote;Côté (secousse rapide) (Fonctions supérieures);"1 = D ; 2 = G"
+vns_niv_regard_centre;Position(s) du regard - Regard centré (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_niv_regard_lat_d;Position(s) du regard - Regard latéral droit (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_niv_regard_lat_g;Position(s) du regard - Regard latéral gauche (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_niv_regard_haut;Position(s) du regard - Regard vers le haut (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_niv_regard_bas;Position(s) du regard - Regard vers le bas (Fonctions supérieures);"1 = coche ; 0 = non coche"
+vns_niv_regard;Position(s) du regard - liste (Fonctions supérieures);texte, valeurs separees par |
+oto_D;Otoscopie — oreille DROITE (ORL et barotraumatisme);"0 = Normal ; 1 = Stade 1 ; 2 = Stade 2 ; 3 = Stade 3 ; 4 = Stade 4 ; 5 = Stade 5"
+oto_G;Otoscopie — oreille GAUCHE (ORL et barotraumatisme);"0 = Normal ; 1 = Stade 1 ; 2 = Stade 2 ; 3 = Stade 3 ; 4 = Stade 4 ; 5 = Stade 5"
+oto_epanch_D;Épanchement rétro-tympanique DROIT (ORL et barotraumatisme);"1 = OUI ; 0 = NON"
+oto_epanch_G;Épanchement rétro-tympanique GAUCHE (ORL et barotraumatisme);"1 = OUI ; 0 = NON"
+valsalva_D;Perméabilité tubaire (Valsalva) DROITE (ORL et barotraumatisme);"2 = Perméable ; 1 = Difficile ; 0 = Impossible"
+valsalva_G;Perméabilité tubaire (Valsalva) GAUCHE (ORL et barotraumatisme);"2 = Perméable ; 1 = Difficile ; 0 = Impossible"
+weber;Test de Weber (ORL et barotraumatisme);"0 = Non latéralisé ; 1 = Latéralisé à DROITE ; 2 = Latéralisé à GAUCHE"
+rinne_D;Test de Rinne DROIT (ORL et barotraumatisme);"1 = Positif (CA > CO) ; 0 = Négatif (CO > CA)"
+rinne_G;Test de Rinne GAUCHE (ORL et barotraumatisme);"1 = Positif (CA > CO) ; 0 = Négatif (CO > CA)"
+orl_txt;Commentaire ORL (ORL et barotraumatisme);texte libre
+sf_ceph;Céphalées (Signes fonctionnels);"1 = OUI ; 0 = NON"
+sf_rachis;Douleur rachidienne (Signes fonctionnels);"1 = OUI ; 0 = NON"
+sf_rachis_loc_cervicale;Localisation - Cervicale (Signes fonctionnels);"1 = coche ; 0 = non coche"
+sf_rachis_loc_dorsale;Localisation - Dorsale (Signes fonctionnels);"1 = coche ; 0 = non coche"
+sf_rachis_loc_lombaire;Localisation - Lombaire (Signes fonctionnels);"1 = coche ; 0 = non coche"
+sf_rachis_loc;Localisation - liste (Signes fonctionnels);texte, valeurs separees par |
+eva_type;Échelle de douleur utilisée (Signes fonctionnels);"1 = EVA (visuelle analogique) ; 2 = EN (échelle numérique) ; 3 = Non évaluable"
+eva_score;Intensité de la douleur (/10) (Signes fonctionnels);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5 ; 6 = 6 ; 7 = 7 ; 8 = 8 ; 9 = 9 ; 10 = 10"
+eva_loc;Siège de la douleur cotée (Signes fonctionnels);texte libre
+sf_subj;Signes subjectifs (Signes fonctionnels);"1 = OUI ; 0 = NON"
+sf_subj_cote;Côté (Signes fonctionnels);"1 = D ; 2 = G ; 3 = Bilat."
+ref_bicip_D;Bicipital DROIT (Réflexes — membres supérieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_bicip_D_poly;Bicipital DROIT - reflexe polycinétique (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_bicip_D_etendu;Bicipital DROIT - reflexe étendu (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_bicip_G;Bicipital GAUCHE (Réflexes — membres supérieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_bicip_G_poly;Bicipital GAUCHE - reflexe polycinétique (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_bicip_G_etendu;Bicipital GAUCHE - reflexe étendu (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_tricip_D;Tricipital DROIT (Réflexes — membres supérieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_tricip_D_poly;Tricipital DROIT - reflexe polycinétique (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_tricip_D_etendu;Tricipital DROIT - reflexe étendu (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_tricip_G;Tricipital GAUCHE (Réflexes — membres supérieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_tricip_G_poly;Tricipital GAUCHE - reflexe polycinétique (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_tricip_G_etendu;Tricipital GAUCHE - reflexe étendu (Réflexes — membres supérieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+hoffman_D;Signe de Hoffmann DROIT (Réflexes — membres supérieurs);"1 = OUI ; 0 = NON"
+hoffman_G;Signe de Hoffmann GAUCHE (Réflexes — membres supérieurs);"1 = OUI ; 0 = NON"
+ref_rot_D;Rotulien DROIT (Réflexes — membres inférieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_rot_D_poly;Rotulien DROIT - reflexe polycinétique (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_rot_D_etendu;Rotulien DROIT - reflexe étendu (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_rot_G;Rotulien GAUCHE (Réflexes — membres inférieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_rot_G_poly;Rotulien GAUCHE - reflexe polycinétique (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_rot_G_etendu;Rotulien GAUCHE - reflexe étendu (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_ach_D;Achilléen DROIT (Réflexes — membres inférieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_ach_D_poly;Achilléen DROIT - reflexe polycinétique (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_ach_D_etendu;Achilléen DROIT - reflexe étendu (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_ach_G;Achilléen GAUCHE (Réflexes — membres inférieurs);"0 = Absent ; 1 = Présent ; 2 = Très vif"
+ref_ach_G_poly;Achilléen GAUCHE - reflexe polycinétique (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+ref_ach_G_etendu;Achilléen GAUCHE - reflexe étendu (Réflexes — membres inférieurs);"1 = present ; 0 = absent ; vide = reflexe non teste"
+bbk_D;Cutané plantaire (BBK) DROIT (Réflexes — membres inférieurs);"0 = Flexion ; 1 = Neutre ; 2 = Extension"
+bbk_G;Cutané plantaire (BBK) GAUCHE (Réflexes — membres inférieurs);"0 = Flexion ; 1 = Neutre ; 2 = Extension"
+trep_pied;Trépidation du pied (Réflexes — membres inférieurs);"1 = OUI ; 0 = NON"
+trep_pied_cote;Côté (Réflexes — membres inférieurs);"1 = D ; 2 = G ; 3 = Bilat."
+trep_pied_qual_D;Caractère à DROITE (Réflexes — membres inférieurs);"1 = Épuisable ; 2 = Inépuisable"
+trep_pied_qual_G;Caractère à GAUCHE (Réflexes — membres inférieurs);"1 = Épuisable ; 2 = Inépuisable"
+trep_rot;Trépidation de la rotule (Réflexes — membres inférieurs);"1 = OUI ; 0 = NON"
+trep_rot_cote;Côté (Réflexes — membres inférieurs);"1 = D ; 2 = G ; 3 = Bilat."
+trep_rot_qual_D;Caractère à DROITE (Réflexes — membres inférieurs);"1 = Épuisable ; 2 = Inépuisable"
+trep_rot_qual_G;Caractère à GAUCHE (Réflexes — membres inférieurs);"1 = Épuisable ; 2 = Inépuisable"
+contract;Contractions musculaires spontanées (Réflexes — membres inférieurs);"1 = OUI ; 0 = NON"
+contract_cote;Côté (Réflexes — membres inférieurs);"1 = D ; 2 = G ; 3 = Bilat."
+contract_loc;Localisation (Réflexes — membres inférieurs);texte libre
+par_fac;Paralysie faciale (Motricité et force motrice);"1 = OUI ; 0 = NON"
+par_fac_cote;Côté (Motricité et force motrice);"1 = D ; 2 = G ; 3 = Bilat."
+par_oeil;Absence de fermeture de l'œil (Motricité et force motrice);"1 = OUI ; 0 = NON"
+barre;Chute au BARRÉ (Motricité et force motrice);"1 = OUI ; 0 = NON"
+barre_cote;Côté (Motricité et force motrice);"1 = D ; 2 = G ; 3 = Bilat."
+ming;Chute au MINGAZZINI (Motricité et force motrice);"1 = OUI ; 0 = NON"
+ming_cote;Côté (Motricité et force motrice);"1 = D ; 2 = G ; 3 = Bilat."
+def_msd;Déficit du membre supérieur DROIT (Motricité et force motrice);"1 = OUI ; 0 = NON"
+def_msg;Déficit du membre supérieur GAUCHE (Motricité et force motrice);"1 = OUI ; 0 = NON"
+def_mid;Déficit du membre inférieur DROIT (Motricité et force motrice);"1 = OUI ; 0 = NON"
+def_mig;Déficit du membre inférieur GAUCHE (Motricité et force motrice);"1 = OUI ; 0 = NON"
+f_c5_D;C5 — flexion du coude (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c6_D;C6 — extension du poignet (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c7_D;C7 — extension du coude (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c8_D;C8 — flexion des doigts (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_t1_D;T1 — abduction du 5e doigt (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_epaule_D;Élévation de l'épaule (hors ASIA) (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_main_D;Serrage de main (hors ASIA) (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c5_G;C5 — flexion du coude (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c6_G;C6 — extension du poignet (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c7_G;C7 — extension du coude (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_c8_G;C8 — flexion des doigts (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_t1_G;T1 — abduction du 5e doigt (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_epaule_G;Élévation de l'épaule (hors ASIA) (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_main_G;Serrage de main (hors ASIA) (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l2_D;L2 — flexion de hanche (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l3_D;L3 — extension du genou (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l4_D;L4 — flexion dorsale de cheville (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l5_D;L5 — extension de l'hallux (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_s1_D;S1 — flexion plantaire (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l2_G;L2 — flexion de hanche (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l3_G;L3 — extension du genou (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l4_G;L4 — flexion dorsale de cheville (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_l5_G;L5 — extension de l'hallux (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+f_s1_G;S1 — flexion plantaire (Motricité et force motrice);"0 = 0 ; 1 = 1 ; 2 = 2 ; 3 = 3 ; 4 = 4 ; 5 = 5"
+def_sph;Trouble sphinctérien ou anesthésie périnéale (Motricité et force motrice);"1 = OUI ; 0 = NON"
+vac;Contraction anale volontaire (VAC) (Motricité et force motrice);"1 = OUI ; 0 = NON"
+dap;Pression anale profonde perçue (DAP) (Motricité et force motrice);"1 = OUI ; 0 = NON"
+mict;Miction depuis l'accident (Miction);"1 = OUI ; 0 = NON"
+mict_type;Caractéristiques (Miction);"1 = Normale ; 2 = Avec effort ; 3 = Rétention"
+mict_residu_pre;Résidu pré-mictionnel (mL) (Miction);numerique (mL)
+mict_residu_post;Résidu post-mictionnel (mL) (Miction);numerique (mL)
+vertic;Verticalisation possible (Coordination, équilibre et marche);"1 = OUI ; 0 = NON"
+equil_yo;Équilibre statique conservé — yeux OUVERTS (Coordination, équilibre et marche);"1 = OUI ; 0 = NON"
+equil_yf;Équilibre statique conservé — yeux FERMÉS (Coordination, équilibre et marche);"1 = OUI ; 0 = NON"
+marche;Marche possible (Coordination, équilibre et marche);"1 = OUI ; 0 = NON"
+marche_yo;Marche yeux OUVERTS (Coordination, équilibre et marche);"0 = Normale ; 1 = Anormale"
+marche_yf;Marche yeux FERMÉS (Coordination, équilibre et marche);"0 = Normale ; 1 = Anormale"
+devia_cote;Marche — côté de la déviation (Coordination, équilibre et marche);"1 = D ; 2 = G"
+talon_genou;Talon-genou réalisé correctement (Coordination, équilibre et marche);"1 = OUI ; 0 = NON"
+talon_genou_cote;Côté déficitaire (Coordination, équilibre et marche);"1 = D ; 2 = G ; 3 = Bilat."
+doigt_nez;Doigt-nez réalisé correctement (Coordination, équilibre et marche);"1 = OUI ; 0 = NON"
+doigt_nez_cote;Côté déficitaire (Coordination, équilibre et marche);"1 = D ; 2 = G ; 3 = Bilat."
+romberg;Romberg (Examen vestibulaire);"0 = Négatif ; 1 = Positif"
+romberg_cote;Romberg — côté de la chute (Examen vestibulaire);"1 = D ; 2 = G ; 3 = Non latéralisée"
+fukuda;Fukuda (Examen vestibulaire);"0 = Normale ; 1 = Anormale"
+fukuda_cote;Fukuda — côté de la rotation ou de la déviation (Examen vestibulaire);"1 = D ; 2 = G"
+etoile;Marche en étoile (Examen vestibulaire);"0 = Normale ; 1 = Anormale"
+etoile_cote;Marche en étoile — côté de la déviation (Examen vestibulaire);"1 = D ; 2 = G"
+funambule;Marche funambule (Examen vestibulaire);"0 = Normale ; 1 = Anormale"
+funambule_cote;Marche funambule — côté de la déviation (Examen vestibulaire);"1 = D ; 2 = G"
+sens_examinee;Examen des sensibilités réalisé (Sensibilités);"1 = OUI ; 0 = NON"
+sc_masquer_msh;Score MEDSUBHYP - ne pas le mentionner dans la synthese, le CRH et l impression (Scores dans la synthèse);"1 = coche ; vide = non coche"
+sc_masquer_vest;Score vestibulaire - ne pas le mentionner dans la synthese, le CRH et l impression (Scores dans la synthèse);"1 = coche ; vide = non coche"
+conclusion;Conclusion de l'examen (Conclusion de l'examen clinique);"1 = Examen neurologique normal ; 2 = Examen neurologique anormal ; 3 = À recontrôler"
+cut_present;Lésions cutanées présentes (Lésions cutanées de désaturation);"1 = OUI ; 0 = NON"
+cut_delai;Délai d'apparition après émersion (min) (Lésions cutanées de désaturation);numerique (min)
+cut_evol;Évolution sous oxygène (Lésions cutanées de désaturation);"1 = Régression ; 2 = Stable ; 3 = Extension"
+cut_txt;Commentaire (Lésions cutanées de désaturation);texte libre
+tb_table;Table utilisée (Recompression);"1 = A15 ; 2 = A15IOT ; 3 = A18IOT ; 4 = A18 ; 5 = B18 ; 6 = A18HeOx ; 7 = B18HeOx ; 8 = C18 ; 9 = Autre (préciser)"
+tb_table_autre;Table — à préciser (Recompression);texte libre
+tb_duree;Durée de la table (min) (Recompression);numerique, calcule (min)
+tb_h_mep;Heure de mise en pression (Recompression);HH:MM
+tb_h_fin;Heure de fin (Recompression);HH:MM
+tb_delai;Délai 1ers symptômes → recompression (min) (Recompression);numerique, calcule
+tb_complic;Complication thérapeutique (Recompression);"1 = OUI ; 0 = NON"
+tb_complic_txt;Préciser (Recompression);texte libre
+ac_vvp;Voie veineuse périphérique (Actes);"1 = OUI ; 0 = NON"
+bio_add;Bilan accident de plongée prélevé (Actes);"1 = OUI ; 0 = NON"
+bio_opi;Bilan œdème pulmonaire d’immersion prélevé (Actes);"1 = OUI ; 0 = NON"
+bio_etude;Prélèvement pour étude complémentaire (Actes);"1 = OUI ; 0 = NON"
+bio_autre;Autres prélèvements (Actes);texte libre
+bio_res;Résultats marquants (Actes);texte libre
+ac_sonde;Sonde vésicale (Actes);"2 = Sonde à demeure ; 3 = Sondage évacuateur ; 0 = NON"
+ac_sonde_vol;Volume initial évacué (mL) (Actes);numerique (mL)
+im_ecg;ECG (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+ecg_fc;ECG — fréquence cardiaque (Examens complémentaires);numerique (bpm)
+ecg_qtc;ECG — QTc (Examens complémentaires);numerique (ms)
+ecg_txt;ECG — compte rendu (Examens complémentaires);texte libre
+im_rp;Radiographie thoracique (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_rp_res;Radiographie thoracique — résultat (Examens complémentaires);texte libre
+im_tdm_thor;Scanner thoracique (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_tdm_thor_res;Scanner thoracique — résultat (Examens complémentaires);texte libre
+im_tdm_cer;Scanner cérébral (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_tdm_cer_res;Scanner cérébral — résultat (Examens complémentaires);texte libre
+im_irm_cer;IRM cérébrale (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_irm_cer_res;IRM cérébrale — résultat (Examens complémentaires);texte libre
+im_irm_med;IRM médullaire (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_irm_med_res;IRM médullaire — résultat (Examens complémentaires);texte libre
+im_irm_med_fc;IRM médullaire — facteur compressif (Examens complémentaires);"1 = OUI ; 0 = NON"
+im_irm_med_fc_type;IRM médullaire — type de facteur compressif (Examens complémentaires);texte libre
+im_irm_med_conc;IRM médullaire — concordance radio-clinique (Examens complémentaires);"1 = OUI ; 0 = NON"
+im_eto;Échographie cardiaque (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_eto_fop;Échographie cardiaque — recherche de FOP (Examens complémentaires);"1 = coche ; vide = non coche"
+im_eto_res;Échographie cardiaque — résultat (Examens complémentaires);texte libre
+im_effort;Épreuve d’effort (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_effort_res;Épreuve d’effort — résultat (Examens complémentaires);"0 = Normale ; 1 = Anormale"
+im_effort_txt;Épreuve d’effort — commentaire (Examens complémentaires);texte libre
+im_mapa;MAPA (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_mapa_res;MAPA — résultat (Examens complémentaires);"0 = Normale ; 1 = Anormale"
+im_mapa_txt;MAPA — commentaire (Examens complémentaires);texte libre
+im_dtc;Doppler transcrânien (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+dtc_repos;Doppler transcrânien — sans sensibilisation (Examens complémentaires);"0 = Absence de shunt D-G ; 1 = Shunt de bas grade ; 2 = Shunt de haut grade"
+dtc_sensib;Doppler transcrânien — après sensibilisation allongée (Examens complémentaires);"0 = Absence de shunt D-G ; 1 = Shunt de bas grade ; 2 = Shunt de haut grade"
+dtc_flack;Doppler transcrânien — après sensibilisation en expiration forcée (10 s, 40 cmH2O) (Examens complémentaires);"0 = Absence de shunt D-G ; 1 = Shunt de bas grade ; 2 = Shunt de haut grade"
+dtc_txt;Doppler transcrânien — commentaire (Examens complémentaires);texte libre
+im_echopp;Échographie pleuro-pulmonaire (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_biopsie;Biopsie cutanée (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_biopsie_res;Biopsie cutanée — résultat (Examens complémentaires);texte libre
+im_capillaro;Capillaroscopie (Examens complémentaires);"1 = OUI ; 0 = NON ; 2 = Demandé, en attente"
+im_capillaro_res;Capillaroscopie — résultat (Examens complémentaires);texte libre
+im_autre;Autres examens et résultats (Examens complémentaires);texte libre
+im_demande;Examens demandés, en attente (Examens complémentaires);texte libre
+ech_txt;Commentaire (Échographie pleuro-pulmonaire);texte libre
+rx_o2;Oxygène normobare (Traitements prescrits);"1 = OUI ; 0 = NON"
+rx_o2_mode;Modalité (Traitements prescrits);"1 = Masque à haute concentration ; 2 = VNI"
+rx_o2_debit;Débit (Traitements prescrits);numerique (L/min)
+rx_vni_pep;PEP (Traitements prescrits);numerique (cmH₂O)
+rx_vni_ai;Aide inspiratoire (AI) (Traitements prescrits);numerique (cmH₂O)
+rx_vni_fr;Fréquence respiratoire (FR) (Traitements prescrits);numerique (/min)
+rx_vni_fio2;FiO₂ (Traitements prescrits);numerique (%)
+rx_solu;(Méthyl)prednisolone (Traitements prescrits);"1 = OUI ; 0 = NON"
+rx_solu_dose;Dose quotidienne (Traitements prescrits);numerique (mg/jour)
+rx_solu_jours;Durée (jours) (Traitements prescrits);numerique (j)
+rx_solu_h;Heure de la 1re dose (Traitements prescrits);HH:MM
+rx_nacl;Remplissage (Traitements prescrits);"1 = OUI ; 0 = NON"
+rx_nacl_vol;Volume (mL) (Traitements prescrits);numerique (mL)
+rx_antalg;Antalgiques (Traitements prescrits);texte libre
+rx_autres;Autres traitements (Traitements prescrits);texte libre
+ev_seances;Séances réalisées depuis la dernière consultation (Évolution depuis la consultation précédente);numerique
+ev_complic;Complication thérapeutique depuis la dernière consultation (Évolution depuis la consultation précédente);"1 = OUI ; 0 = NON"
+ev_complic_txt;Préciser (Évolution depuis la consultation précédente);texte libre
+ev_sens;Évolution clinique (Évolution depuis la consultation précédente);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
+ev_txt;Commentaire d’évolution (Évolution depuis la consultation précédente);texte libre
+ev_exam_faits;Examens complémentaires réalisés depuis (Évolution depuis la consultation précédente);texte libre
+ev_exam_demandes;Examens complémentaires demandés (Évolution depuis la consultation précédente);texte libre
+dg_liste_add;Diagnostic(s) retenu(s) - Accident de désaturation (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_liste_opi;Diagnostic(s) retenu(s) - Œdème pulmonaire d’immersion (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_liste_baro;Diagnostic(s) retenu(s) - Barotraumatisme (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_liste_bioch;Diagnostic(s) retenu(s) - Accident biochimique (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_liste_noyade;Diagnostic(s) retenu(s) - Noyade (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_liste;Diagnostic(s) retenu(s) - liste (Diagnostic retenu);texte, valeurs separees par |
+dg_add_types_medullaire;Accident de désaturation — type - Médullaire (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_add_types_cerebral;Accident de désaturation — type - Cérébral (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_add_types_vestibulaire;Accident de désaturation — type - Vestibulaire (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_add_types_cutane;Accident de désaturation — type - Cutané (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_add_types_articulaire;Accident de désaturation — type - Ostéo-articulaire (bend) (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_add_types_pulmonaire;Accident de désaturation — type - Pulmonaire (chokes) (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_add_types;Accident de désaturation — type - liste (Diagnostic retenu);texte, valeurs separees par |
+dg_add_grave;Accident de désaturation — gravité (Diagnostic retenu);"1 = coche ; vide = non coche"
+dg_baro_types_orm;Barotraumatisme — type - Oreille moyenne (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_baro_types_ori;Barotraumatisme — type - Oreille interne (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_baro_types_sinus;Barotraumatisme — type - Sinus (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_baro_types_pulm;Barotraumatisme — type - Surpression pulmonaire (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_baro_types_dent;Barotraumatisme — type - Dentaire (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_baro_types_masque;Barotraumatisme — type - Plaquage de masque (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_baro_types;Barotraumatisme — type - liste (Diagnostic retenu);texte, valeurs separees par |
+dg_bioch_types_hyperoxie;Accident biochimique — type - Hyperoxie (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_bioch_types_hypercapnie;Accident biochimique — type - Hypercapnie (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_bioch_types_narcose;Accident biochimique — type - Narcose (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_bioch_types_co;Accident biochimique — type - Intoxication au monoxyde de carbone (Diagnostic retenu);"1 = coche ; 0 = non coche"
+dg_bioch_types;Accident biochimique — type - liste (Diagnostic retenu);texte, valeurs separees par |
+dg_principal;Diagnostic principal (Diagnostic retenu);"add = Accident de désaturation ; opi = Œdème pulmonaire d’immersion ; baro = Barotraumatisme ; bioch = Accident biochimique ; noyade = Noyade"
+dg_txt;Autre diagnostic ou précisions (Diagnostic retenu);texte libre
+mjoas;Score MJOAS (Sortie : séquelles et arrêt de travail);numerique (/ 17)
+at_jours;Arrêt de travail (AT) — nombre de jours (Sortie : séquelles et arrêt de travail);numerique (jours)
+sortie_exam_second;Examens à réaliser secondairement (Sortie : examens à prévoir et aptitude à la plongée);texte libre
+inapt_type;Inaptitude à la plongée (Sortie : examens à prévoir et aptitude à la plongée);"1 = Temporaire (durée en mois) ; 2 = Définitive"
+inapt_mois;Durée de l’inaptitude (mois) (Sortie : examens à prévoir et aptitude à la plongée);numerique (mois)
+orientation;Orientation (Orientation et commentaires);"1 = Retour au domicile ; 2 = Hospitalisation en service de médecine ; 3 = Hospitalisation en surveillance continue ; 4 = Hospitalisation en soins intensifs ; 5 = Transfert vers une autre structure ; 6 = Hospitalisation de jour"
+orientation_autre;Préciser la structure (Orientation et commentaires);texte libre
+hdj_lieu;Hospitalisation de jour - lieu d hebergement (Orientation et commentaires);"1 = Domicile ; 2 = Hôtel patient ; 3 = Autre établissement"
+hdj_lieu_autre;Hospitalisation de jour - autre etablissement (precision) (Orientation et commentaires);texte libre
+orientation_txt;Précisions sur l'orientation (Orientation et commentaires);texte libre
+notes;Commentaires libres (Orientation et commentaires);texte libre
+gds_date;Date du prélèvement (Gaz du sang veineux);AAAA-MM-JJ
+gds_h;Heure du prélèvement (Gaz du sang veineux);HH:MM
+gds_ph;pH veineux (Gaz du sang veineux);"numerique decimal ; valeurs normales : 7,33 - 7,38 ; un signe < ou > peut preceder la valeur"
+gds_po2;pO₂ veineux (Gaz du sang veineux);"numerique decimal (mmHg) ; valeurs normales : 33 - 37 ; un signe < ou > peut preceder la valeur"
+gds_pco2;pCO₂ veineux (Gaz du sang veineux);"numerique decimal (mmHg) ; valeurs normales : 40 - 50 ; un signe < ou > peut preceder la valeur"
+gds_hco3;HCO₃⁻ veineux (Gaz du sang veineux);"numerique decimal (mmol/L) ; valeurs normales : 24 - 30 ; un signe < ou > peut preceder la valeur"
+gds_hb;Hb (Gaz du sang veineux);"numerique decimal (g/dL) ; valeurs normales : femme 12 - 16 ; homme 13,5 - 17,5 ; un signe < ou > peut preceder la valeur"
+gds_ht;Ht (Gaz du sang veineux);"numerique decimal (%) ; valeurs normales : femme 37 - 46 ; homme 40 - 50 ; un signe < ou > peut preceder la valeur"
+gds_lac;Lactates veineux (Gaz du sang veineux);"numerique decimal (mmol/L) ; valeurs normales : 0,5 - 2,2 ; un signe < ou > peut preceder la valeur"
+gds_hbco;HbCO (carboxyhémoglobine) (Gaz du sang veineux);"numerique decimal (%) ; valeurs normales : 0 - 2 ; un signe < ou > peut preceder la valeur"
+gds_methb;MetHb (méthémoglobine) (Gaz du sang veineux);"numerique decimal (%) ; valeurs normales : 0 - 1,5 ; un signe < ou > peut preceder la valeur"
+lab_date;Date du prélèvement (Biologie);AAAA-MM-JJ
+lab_h;Heure du prélèvement (Biologie);HH:MM
+lab_leuco;Leucocytes (Biologie);"numerique decimal (G/L) ; valeurs normales : femme 4,020 - 11,420 ; homme 4,090 - 11,000 ; un signe < ou > peut preceder la valeur"
+lab_hb;Hb (Biologie);"numerique decimal (g/dL) ; valeurs normales : femme 12 - 16 ; homme 13,5 - 17,5 ; un signe < ou > peut preceder la valeur"
+lab_ht;Ht (Biologie);"numerique decimal (%) ; valeurs normales : femme 37 - 46 ; homme 40 - 50 ; un signe < ou > peut preceder la valeur"
+lab_plq;Plaquettes (Biologie);"numerique decimal (G/L) ; valeurs normales : femme 185 - 445 ; homme 161 - 398 ; un signe < ou > peut preceder la valeur"
+lab_pnn;Neutrophiles (Biologie);"numerique decimal (G/L) ; valeurs normales : femme 1,78 - 6,946 ; homme 1,692 - 7,500 ; un signe < ou > peut preceder la valeur"
+lab_fib;Fibrinogène (Biologie);"numerique decimal (g/L) ; valeurs normales : 2,0 - 4,0 ; un signe < ou > peut preceder la valeur"
+lab_dd;D-dimères (Biologie);"numerique decimal (µg/mL) ; valeurs normales : 0,00 - 0,50 ; un signe < ou > peut preceder la valeur"
+lab_prot;Protéines totales (Biologie);"numerique decimal (g/L) ; valeurs normales : 64,0 - 83,0 ; un signe < ou > peut preceder la valeur"
+lab_gly;Glycémie (Biologie);"numerique decimal (mmol/L) ; valeurs normales : 4,1 - 6,1 ; un signe < ou > peut preceder la valeur"
+lab_creat;Créatinine (Biologie);"numerique decimal (µmol/L) ; valeurs normales : femme 45,0 - 84,0 ; homme 59,0 - 104,0 ; un signe < ou > peut preceder la valeur"
+lab_dfg;DFG CKD-EPI (Biologie);"numerique decimal (mL/min/1,73 m²) ; valeurs normales : 90 - 150 ; un signe < ou > peut preceder la valeur"
+lab_tg;Triglycérides (Biologie);"numerique decimal (mmol/L) ; valeurs normales : 0,10 - 1,70 ; un signe < ou > peut preceder la valeur"
+lab_chol;Cholestérol total (Biologie);"numerique decimal (mmol/L) ; valeurs normales : 3,00 - 5,20 ; un signe < ou > peut preceder la valeur"
+lab_hdl;HDL cholestérol (Biologie);"numerique decimal (mmol/L) ; valeurs normales : 1,03 - 1,55 ; un signe < ou > peut preceder la valeur"
+lab_ldl;LDL cholestérol (Biologie);"numerique decimal (mmol/L) ; valeurs normales : 1,75 - 3,40 ; un signe < ou > peut preceder la valeur ; proposition calculee (formule de Friedewald, en mmol/L) : cholesterol total - HDL - triglycerides / 2,2 ; modifiable"
+lab_ck;CK (Biologie);"numerique decimal (UI/L) ; valeurs normales : femme 26 - 192 ; homme 39 - 308 ; un signe < ou > peut preceder la valeur"
+lab_crp;CRP (Biologie);"numerique decimal (mg/L) ; valeurs normales : < 5,0 ; un signe < ou > peut preceder la valeur"
+lab_alb;Albumine (Biologie);"numerique decimal (g/L) ; valeurs normales : 35,0 - 52,0 ; un signe < ou > peut preceder la valeur"
+lab_myo;Myoglobine (Biologie);"numerique decimal (µg/L) ; valeurs normales : femme 25,0 - 58,0 ; homme 28,0 - 72 ; un signe < ou > peut preceder la valeur"
+lab_tropo;Troponine (Biologie);"numerique decimal (ng/L) ; valeurs normales : 0 - 14 ; un signe < ou > peut preceder la valeur"
+lab_ntbnp;NT-pro-BNP (Biologie);"numerique decimal (ng/L) ; valeurs normales : femme 10 - 202 ; homme 10 - 63 ; un signe < ou > peut preceder la valeur"
+gaa_date;Date du prélèvement (Gaz du sang artériel);AAAA-MM-JJ
+gaa_h;Heure du prélèvement (Gaz du sang artériel);HH:MM
+gaa_fio2;FiO₂ (Gaz du sang artériel);"numerique decimal (%) ; valeurs normales : sans objet ; un signe < ou > peut preceder la valeur"
+gaa_ph;pH artériel (Gaz du sang artériel);"numerique decimal ; valeurs normales : 7,35 - 7,45 ; un signe < ou > peut preceder la valeur"
+gaa_po2;PaO₂ (Gaz du sang artériel);"numerique decimal (mmHg) ; valeurs normales : 80 - 100 ; un signe < ou > peut preceder la valeur"
+gaa_pco2;PaCO₂ (Gaz du sang artériel);"numerique decimal (mmHg) ; valeurs normales : femme 32 - 45 ; homme 35 - 48 ; un signe < ou > peut preceder la valeur"
+gaa_hco3;HCO₃⁻ artériel (Gaz du sang artériel);"numerique decimal (mmol/L) ; valeurs normales : 22 - 26 ; un signe < ou > peut preceder la valeur"
+gaa_sao2;SaO₂ (Gaz du sang artériel);"numerique decimal (%) ; valeurs normales : 95 - 100 ; un signe < ou > peut preceder la valeur"
+gaa_lac;Lactates artériels (Gaz du sang artériel);"numerique decimal (mmol/L) ; valeurs normales : 0,5 - 1,6 ; un signe < ou > peut preceder la valeur"
+gaa_hbco;HbCO (carboxyhémoglobine) (Gaz du sang artériel);"numerique decimal (%) ; valeurs normales : 0 - 2 ; un signe < ou > peut preceder la valeur"
+gaa_methb;MetHb (méthémoglobine) (Gaz du sang artériel);"numerique decimal (%) ; valeurs normales : 0 - 1,5 ; un signe < ou > peut preceder la valeur"
+co_source_chauff;Source présumée - Chauffage d’appoint (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_chaud;Source présumée - Chaudière ou chauffe-eau (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_poele;Source présumée - Poêle ou cheminée (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_brasero;Source présumée - Braséro ou barbecue (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_groupe;Source présumée - Groupe électrogène ou outil thermique (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_vehic;Source présumée - Moteur de véhicule (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_incendie;Source présumée - Fumées d’incendie (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_chicha;Source présumée - Narguilé (chicha) (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_plongee;Source présumée - Air respirable de plongée (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source_autre;Source présumée - Autre (Circonstances de l’intoxication);"1 = coche ; 0 = non coche"
+co_source;Source présumée - liste (Circonstances de l’intoxication);texte, valeurs separees par |
+co_source_txt;Précisions sur la source (appareil, état, ventilation) (Circonstances de l’intoxication);texte libre
+co_lieu;Lieu (Circonstances de l’intoxication);"1 = Domicile ; 2 = Lieu de travail ; 3 = Véhicule ; 4 = Bateau ; 5 = Établissement recevant du public ; 9 = Autre"
+co_lieu_txt;Lieu — à préciser (Circonstances de l’intoxication);texte libre
+co_contexte;Contexte (Circonstances de l’intoxication);"1 = Accidentelle ; 2 = Volontaire (tentative d’autolyse) ; 3 = Professionnelle ; 4 = Indéterminée"
+co_deb_date;Début de l’exposition (estimé) — date (Circonstances de l’intoxication);AAAA-MM-JJ
+co_deb_h;Début de l’exposition (estimé) — heure (Circonstances de l’intoxication);HH:MM
+co_fin_date;Fin de l’exposition (soustraction) — date (Circonstances de l’intoxication);AAAA-MM-JJ
+co_fin_h;Fin de l’exposition (soustraction) — heure (Circonstances de l’intoxication);HH:MM
+co_duree;Durée d’exposition estimée (Circonstances de l’intoxication);numerique, calcule (min)
+co_nb_expo;Personnes exposées (nombre) (Circonstances de l’intoxication);numerique
+co_nb_symp;dont symptomatiques (nombre) (Circonstances de l’intoxication);numerique
+co_animaux;Animaux domestiques malades ou morts (Circonstances de l’intoxication);"1 = OUI ; 0 = NON"
+co_detecteur;Détecteur de CO dans le local (Circonstances de l’intoxication);"1 = OUI ; 0 = NON"
+co_sympt_ceph;Symptômes - Céphalées (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_vert;Symptômes - Vertiges (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_nausee;Symptômes - Nausées ou vomissements (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_asth;Symptômes - Asthénie (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_visuel;Symptômes - Troubles visuels (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_confus;Symptômes - Confusion (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_mnes;Symptômes - Troubles mnésiques ou de la concentration (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_marche;Symptômes - Troubles de la marche (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_dlr_thor;Symptômes - Douleur thoracique (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_dyspnee;Symptômes - Dyspnée (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_palpit;Symptômes - Palpitations (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_myalgie;Symptômes - Myalgies ou crampes (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_compo;Symptômes - Irritabilité ou troubles du comportement (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt_somnol;Symptômes - Somnolence (Symptômes et évolution initiale);"1 = coche ; 0 = non coche"
+co_sympt;Symptômes - liste (Symptômes et évolution initiale);texte, valeurs separees par |
+co_pci;Perte de connaissance initiale (Symptômes et évolution initiale);"0 = Non ; 1 = Oui, brève ; 2 = Oui, prolongée ; 3 = Coma"
+co_pci_duree;Durée de la perte de connaissance (min) (Symptômes et évolution initiale);numerique (min)
+co_convuls;Convulsions (Symptômes et évolution initiale);"1 = OUI ; 0 = NON"
+co_histoire;Histoire de la maladie (Symptômes et évolution initiale);texte libre
+co_evol;Évolution depuis la soustraction à l’exposition (Symptômes et évolution initiale);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
+co_moca;MoCA (/30) (Évaluation cognitive);numerique (/ 30)
+co_mmse;MMSE (/30) (Évaluation cognitive);numerique (/ 30)
+co_cogn_txt;Troubles cognitifs, mnésiques ou de l’attention (Évaluation cognitive);texte libre
+bio_co;Bilan intoxication au CO prélevé (Carboxyhémoglobine et oxygène);"1 = OUI ; 0 = NON"
+co_spco;SpCO (oxymètre de pouls à CO-oxymétrie) (Carboxyhémoglobine et oxygène);numerique (%)
+co_spco_h;Heure de la mesure de SpCO (Carboxyhémoglobine et oxygène);HH:MM
+co_o2_avant_min;Oxygène normobare avant le 1er prélèvement de HbCO (Carboxyhémoglobine et oxygène);numerique (min)
+co_grossesse;Grossesse (Gravité et indication d’oxygénothérapie hyperbare);"0 = Non ; 1 = Oui ; 2 = À vérifier (test demandé)"
+co_crit_pci;Critères retrouvés - Perte de connaissance (même brève) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_coma;Critères retrouvés - Troubles de la conscience (Glasgow inférieur à 15) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_neuro;Critères retrouvés - Signes neurologiques (déficit, signes cérébelleux, convulsions) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_cogn;Critères retrouvés - Troubles cognitifs ou du comportement (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_cardio;Critères retrouvés - Signes cardiaques (douleur thoracique, palpitations, anomalie cardio-vasculaire, troponine élevée) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_gross;Critères retrouvés - Grossesse (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_hbco;Critères retrouvés - HbCO élevée (25 % ou plus) (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit_lac;Critères retrouvés - Lactates élevés (Gravité et indication d’oxygénothérapie hyperbare);"1 = coche ; 0 = non coche"
+co_crit;Critères retrouvés - liste (Gravité et indication d’oxygénothérapie hyperbare);texte, valeurs separees par |
+co_ohb;Oxygénothérapie hyperbare (Gravité et indication d’oxygénothérapie hyperbare);"1 = Indiquée ; 0 = Non indiquée ; 2 = À discuter (avis spécialisé)"
+co_ohb_txt;Précisions (indication, contre-indication, avis demandé) (Gravité et indication d’oxygénothérapie hyperbare);texte libre
+co_declar_cap;Déclaration, signalement - Centre antipoison (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_declar_ars;Déclaration, signalement - ARS (déclaration obligatoire) (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_declar_pomp;Déclaration, signalement - Sapeurs-pompiers (mesures sur site) (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_declar_travail;Déclaration, signalement - Médecine ou inspection du travail (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_declar_maritime;Déclaration, signalement - Affaires maritimes (matériel de plongée) (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_declar_autre;Déclaration, signalement - Autre (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_declar;Déclaration, signalement - liste (Suivi et prévention);texte, valeurs separees par |
+co_declar_txt;Précisions sur la déclaration (Suivi et prévention);texte libre
+co_conseils;Prévention (Suivi et prévention);"1 = coche ; vide = non coche"
+co_expo_autres;Autres personnes exposées : examinées ou orientées (Suivi et prévention);texte libre
+co_suivi_neuropsy;Suivi à distance - Bilan neuropsychologique à distance (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_suivi_consult;Suivi à distance - Consultation de contrôle à 1 mois (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_suivi_irm;Suivi à distance - IRM cérébrale si symptômes persistants (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_suivi_cardio;Suivi à distance - Bilan cardiologique (Suivi et prévention);"1 = coche ; 0 = non coche"
+co_suivi;Suivi à distance - liste (Suivi et prévention);texte, valeurs separees par |
+co_suivi_txt;Précisions sur le suivi (Suivi et prévention);texte libre
+pl_dtr_src;Origine de la DTR;"1 = calculee d apres les heures DF et HS ; 2 = saisie ; 3 = estimee d apres Pmax et les paliers (DTP seule connue) ; 4 = deduite de DTP - DT ; vide = DTR inconnue"
+pl_dtr_att_min;DTR attendue - minimum;"entier, minutes : remontee a 12 m/min, 10 s par metre entre paliers, arrondie a la minute superieure ; vide = Pmax inconnue"
+pl_dtr_att_max;DTR attendue - maximum;"entier, minutes : remontee a 9 m/min, 10 s par metre entre paliers, arrondie a la minute superieure ; vide = Pmax inconnue"
+pl_vit_remontee;Vitesse de remontee deduite de la DTR;"m/min, une decimale ; vide = DTR estimee, inconnue ou incoherente avec les paliers"
+pl_pal_nb;Paliers - nombre de paliers saisis;"entier ; vide = aucun palier saisi"
+pl_pal_secu;Paliers - paliers de securite realises;"1 = au moins un palier de securite ; 0 = paliers saisis, aucun de securite ; vide = aucun palier saisi"
+pl_pal_secu_nb;Paliers - nombre de paliers de securite (non obligatoires);"entier ; vide = aucun palier saisi"
+pl_pal_obl_nb;Paliers - nombre de paliers obligatoires;"entier ; vide = aucun palier saisi"
+pl_pal_duree;Paliers - duree cumulee;"entier, minutes (calcule) ; vide = aucune duree saisie"
+pl_pal_prof_max;Paliers - profondeur du palier le plus profond;"metres ; vide = aucune profondeur saisie"
+pl_pal_txt;Paliers - liste detaillee;texte : duree a profondeur (gaz, obligatoire ou securite), separes par |
+pl_pal1_gaz;Palier 1 - gaz;"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Heliox ; 5 = Oxygene ; 9 = Autre ; vide = palier non saisi"
+pl_pal1_prof;Palier 1 - profondeur;"metres ; vide = non renseigne"
+pl_pal1_duree;Palier 1 - duree a la profondeur;"minutes ; vide = non renseigne"
+pl_pal1_secu;Palier 1 - palier de securite;"1 = de securite (non obligatoire) ; 0 = obligatoire ; vide = palier non saisi"
+pl_pal2_gaz;Palier 2 - gaz;"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Heliox ; 5 = Oxygene ; 9 = Autre ; vide = palier non saisi"
+pl_pal2_prof;Palier 2 - profondeur;"metres ; vide = non renseigne"
+pl_pal2_duree;Palier 2 - duree a la profondeur;"minutes ; vide = non renseigne"
+pl_pal2_secu;Palier 2 - palier de securite;"1 = de securite (non obligatoire) ; 0 = obligatoire ; vide = palier non saisi"
+pl_pal3_gaz;Palier 3 - gaz;"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Heliox ; 5 = Oxygene ; 9 = Autre ; vide = palier non saisi"
+pl_pal3_prof;Palier 3 - profondeur;"metres ; vide = non renseigne"
+pl_pal3_duree;Palier 3 - duree a la profondeur;"minutes ; vide = non renseigne"
+pl_pal3_secu;Palier 3 - palier de securite;"1 = de securite (non obligatoire) ; 0 = obligatoire ; vide = palier non saisi"
+pl_pal4_gaz;Palier 4 - gaz;"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Heliox ; 5 = Oxygene ; 9 = Autre ; vide = palier non saisi"
+pl_pal4_prof;Palier 4 - profondeur;"metres ; vide = non renseigne"
+pl_pal4_duree;Palier 4 - duree a la profondeur;"minutes ; vide = non renseigne"
+pl_pal4_secu;Palier 4 - palier de securite;"1 = de securite (non obligatoire) ; 0 = obligatoire ; vide = palier non saisi"
+pl_pal5_gaz;Palier 5 - gaz;"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Heliox ; 5 = Oxygene ; 9 = Autre ; vide = palier non saisi"
+pl_pal5_prof;Palier 5 - profondeur;"metres ; vide = non renseigne"
+pl_pal5_duree;Palier 5 - duree a la profondeur;"minutes ; vide = non renseigne"
+pl_pal5_secu;Palier 5 - palier de securite;"1 = de securite (non obligatoire) ; 0 = obligatoire ; vide = palier non saisi"
+pl_pal6_gaz;Palier 6 - gaz;"1 = Air ; 2 = Nitrox ; 3 = Trimix ; 4 = Heliox ; 5 = Oxygene ; 9 = Autre ; vide = palier non saisi"
+pl_pal6_prof;Palier 6 - profondeur;"metres ; vide = non renseigne"
+pl_pal6_duree;Palier 6 - duree a la profondeur;"minutes ; vide = non renseigne"
+pl_pal6_secu;Palier 6 - palier de securite;"1 = de securite (non obligatoire) ; 0 = obligatoire ; vide = palier non saisi"
+pj_nb;Nombre de photographies jointes;"entier ; vide = aucune"
+pj_titres;Titres des photographies jointes;texte, separes par |
+gcs_nc;Glasgow : modalites non cotables;"entier 1 a 3 ; vide = aucune modalite NC. Un total gcs_tot vide avec gcs_nc renseigne signifie score non calculable, et non score manquant"
+orl_interp;Interpretation acoumetrique (deduite de Weber et Rinne);"0 = acoumetrie symetrique ; 1 = transmission droite ; 2 = transmission gauche ; 3 = transmission bilaterale ; 4 = perception droite ; 5 = perception gauche ; 8 = resultats discordants ; vide = Weber ou Rinne non renseigne"
+orl_interp_txt;Interpretation acoumetrique - phrase;texte (deduit, ne remplace pas l audiometrie)
+sens_obj;Signes objectifs sensitifs;"1 = OUI ; 0 = NON (deduit des cotations) ; vide = sensibilites non examinees"
+sens_lt_score;Tact léger - score total;"entier 0-112 ; les NT sont exclus du total"
+sens_lt_score_D;Tact léger - score DROITE;entier 0-56
+sens_lt_score_G;Tact léger - score GAUCHE;entier 0-56
+sens_lt_nt;Tact léger - nombre de metameres non testables;entier 0-56
+sens_lt_nb;Tact léger - nombre de metameres anormaux;entier 0-56
+sens_lt_zones;Tact léger - liste des metameres anormaux;texte, separes par |
+sens_lt_c2_D;Tact léger - metamere C2 D (Protubérance occipitale externe);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c2_G;Tact léger - metamere C2 G (Protubérance occipitale externe);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c3_D;Tact léger - metamere C3 D (Creux sus-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c3_G;Tact léger - metamere C3 G (Creux sus-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c4_D;Tact léger - metamere C4 D (Sommet de l’articulation acromio-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c4_G;Tact léger - metamere C4 G (Sommet de l’articulation acromio-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c5_D;Tact léger - metamere C5 D (Face latérale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c5_G;Tact léger - metamere C5 G (Face latérale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c6_D;Tact léger - metamere C6 D (Pouce, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c6_G;Tact léger - metamere C6 G (Pouce, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c7_D;Tact léger - metamere C7 D (Majeur, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c7_G;Tact léger - metamere C7 G (Majeur, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c8_D;Tact léger - metamere C8 D (Auriculaire, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_c8_G;Tact léger - metamere C8 G (Auriculaire, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t1_D;Tact léger - metamere T1 D (Face médiale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t1_G;Tact léger - metamere T1 G (Face médiale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t2_D;Tact léger - metamere T2 D (Apex du creux axillaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t2_G;Tact léger - metamere T2 G (Apex du creux axillaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t3_D;Tact léger - metamere T3 D (3e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t3_G;Tact léger - metamere T3 G (3e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t4_D;Tact léger - metamere T4 D (4e espace intercostal, ligne mamelonnaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t4_G;Tact léger - metamere T4 G (4e espace intercostal, ligne mamelonnaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t5_D;Tact léger - metamere T5 D (5e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t5_G;Tact léger - metamere T5 G (5e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t6_D;Tact léger - metamere T6 D (Appendice xiphoïde);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t6_G;Tact léger - metamere T6 G (Appendice xiphoïde);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t7_D;Tact léger - metamere T7 D (7e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t7_G;Tact léger - metamere T7 G (7e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t8_D;Tact léger - metamere T8 D (8e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t8_G;Tact léger - metamere T8 G (8e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t9_D;Tact léger - metamere T9 D (9e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t9_G;Tact léger - metamere T9 G (9e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t10_D;Tact léger - metamere T10 D (Ombilic);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t10_G;Tact léger - metamere T10 G (Ombilic);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t11_D;Tact léger - metamere T11 D (11e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t11_G;Tact léger - metamere T11 G (11e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t12_D;Tact léger - metamere T12 D (Milieu du ligament inguinal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_t12_G;Tact léger - metamere T12 G (Milieu du ligament inguinal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l1_D;Tact léger - metamere L1 D (Mi-distance entre T12 et L2);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l1_G;Tact léger - metamere L1 G (Mi-distance entre T12 et L2);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l2_D;Tact léger - metamere L2 D (Face antéro-médiale de cuisse, tiers moyen);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l2_G;Tact léger - metamere L2 G (Face antéro-médiale de cuisse, tiers moyen);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l3_D;Tact léger - metamere L3 D (Condyle fémoral médial);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l3_G;Tact léger - metamere L3 G (Condyle fémoral médial);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l4_D;Tact léger - metamere L4 D (Malléole médiale);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l4_G;Tact léger - metamere L4 G (Malléole médiale);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l5_D;Tact léger - metamere L5 D (Dos du pied, 3e articulation métatarso-phalangienne);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_l5_G;Tact léger - metamere L5 G (Dos du pied, 3e articulation métatarso-phalangienne);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s1_D;Tact léger - metamere S1 D (Face latérale du talon);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s1_G;Tact léger - metamere S1 G (Face latérale du talon);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s2_D;Tact léger - metamere S2 D (Creux poplité, ligne médiane);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s2_G;Tact léger - metamere S2 G (Creux poplité, ligne médiane);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s3_D;Tact léger - metamere S3 D (Tubérosité ischiatique);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s3_G;Tact léger - metamere S3 G (Tubérosité ischiatique);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s45_D;Tact léger - metamere S4-5 D (Région périanale, à moins d’un centimètre de la marge);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_lt_s45_G;Tact léger - metamere S4-5 G (Région périanale, à moins d’un centimètre de la marge);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_score;Piqûre - score total;"entier 0-112 ; les NT sont exclus du total"
+sens_pp_score_D;Piqûre - score DROITE;entier 0-56
+sens_pp_score_G;Piqûre - score GAUCHE;entier 0-56
+sens_pp_nt;Piqûre - nombre de metameres non testables;entier 0-56
+sens_pp_nb;Piqûre - nombre de metameres anormaux;entier 0-56
+sens_pp_zones;Piqûre - liste des metameres anormaux;texte, separes par |
+sens_pp_c2_D;Piqûre - metamere C2 D (Protubérance occipitale externe);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c2_G;Piqûre - metamere C2 G (Protubérance occipitale externe);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c3_D;Piqûre - metamere C3 D (Creux sus-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c3_G;Piqûre - metamere C3 G (Creux sus-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c4_D;Piqûre - metamere C4 D (Sommet de l’articulation acromio-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c4_G;Piqûre - metamere C4 G (Sommet de l’articulation acromio-claviculaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c5_D;Piqûre - metamere C5 D (Face latérale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c5_G;Piqûre - metamere C5 G (Face latérale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c6_D;Piqûre - metamere C6 D (Pouce, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c6_G;Piqûre - metamere C6 G (Pouce, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c7_D;Piqûre - metamere C7 D (Majeur, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c7_G;Piqûre - metamere C7 G (Majeur, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c8_D;Piqûre - metamere C8 D (Auriculaire, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_c8_G;Piqûre - metamere C8 G (Auriculaire, face dorsale P1);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t1_D;Piqûre - metamere T1 D (Face médiale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t1_G;Piqûre - metamere T1 G (Face médiale du pli du coude);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t2_D;Piqûre - metamere T2 D (Apex du creux axillaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t2_G;Piqûre - metamere T2 G (Apex du creux axillaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t3_D;Piqûre - metamere T3 D (3e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t3_G;Piqûre - metamere T3 G (3e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t4_D;Piqûre - metamere T4 D (4e espace intercostal, ligne mamelonnaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t4_G;Piqûre - metamere T4 G (4e espace intercostal, ligne mamelonnaire);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t5_D;Piqûre - metamere T5 D (5e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t5_G;Piqûre - metamere T5 G (5e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t6_D;Piqûre - metamere T6 D (Appendice xiphoïde);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t6_G;Piqûre - metamere T6 G (Appendice xiphoïde);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t7_D;Piqûre - metamere T7 D (7e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t7_G;Piqûre - metamere T7 G (7e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t8_D;Piqûre - metamere T8 D (8e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t8_G;Piqûre - metamere T8 G (8e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t9_D;Piqûre - metamere T9 D (9e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t9_G;Piqûre - metamere T9 G (9e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t10_D;Piqûre - metamere T10 D (Ombilic);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t10_G;Piqûre - metamere T10 G (Ombilic);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t11_D;Piqûre - metamere T11 D (11e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t11_G;Piqûre - metamere T11 G (11e espace intercostal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t12_D;Piqûre - metamere T12 D (Milieu du ligament inguinal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_t12_G;Piqûre - metamere T12 G (Milieu du ligament inguinal);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l1_D;Piqûre - metamere L1 D (Mi-distance entre T12 et L2);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l1_G;Piqûre - metamere L1 G (Mi-distance entre T12 et L2);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l2_D;Piqûre - metamere L2 D (Face antéro-médiale de cuisse, tiers moyen);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l2_G;Piqûre - metamere L2 G (Face antéro-médiale de cuisse, tiers moyen);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l3_D;Piqûre - metamere L3 D (Condyle fémoral médial);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l3_G;Piqûre - metamere L3 G (Condyle fémoral médial);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l4_D;Piqûre - metamere L4 D (Malléole médiale);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l4_G;Piqûre - metamere L4 G (Malléole médiale);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l5_D;Piqûre - metamere L5 D (Dos du pied, 3e articulation métatarso-phalangienne);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_l5_G;Piqûre - metamere L5 G (Dos du pied, 3e articulation métatarso-phalangienne);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s1_D;Piqûre - metamere S1 D (Face latérale du talon);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s1_G;Piqûre - metamere S1 G (Face latérale du talon);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s2_D;Piqûre - metamere S2 D (Creux poplité, ligne médiane);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s2_G;Piqûre - metamere S2 G (Creux poplité, ligne médiane);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s3_D;Piqûre - metamere S3 D (Tubérosité ischiatique);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s3_G;Piqûre - metamere S3 G (Tubérosité ischiatique);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s45_D;Piqûre - metamere S4-5 D (Région périanale, à moins d’un centimètre de la marge);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pp_s45_G;Piqûre - metamere S4-5 G (Région périanale, à moins d’un centimètre de la marge);"2 = normale ; 1 = hypoesthesie ; 3 = hyperesthesie ; 0 = anesthesie ; 9 = non testable (NT) ; vide = non renseigne. Score ASIA : 2 vaut 2, 1 et 3 valent 1, 0 vaut 0, NT est exclu du total"
+sens_pal_nb;Pallesthesie - nombre de reliefs anormaux;"entier 0-23 ; vide = non examine"
+sens_pal_nb_D;Pallesthesie - nombre a DROITE;entier
+sens_pal_nb_G;Pallesthesie - nombre a GAUCHE;entier
+sens_pal_nb_hypo;Pallesthesie - nombre cotes Diminuée;entier
+sens_pal_nb_hyper;Pallesthesie - nombre cotes Exagérée;entier
+sens_pal_nb_an;Pallesthesie - nombre cotes Abolie;entier
+sens_pal_tetecou_D;Pallesthesie - atteinte Tête / cou D;"1 = atteinte ; 0 = aucune"
+sens_pal_tetecou_G;Pallesthesie - atteinte Tête / cou G;"1 = atteinte ; 0 = aucune"
+sens_pal_MS_D;Pallesthesie - atteinte Membre supérieur D;"1 = atteinte ; 0 = aucune"
+sens_pal_MS_G;Pallesthesie - atteinte Membre supérieur G;"1 = atteinte ; 0 = aucune"
+sens_pal_tronc_D;Pallesthesie - atteinte Tronc D;"1 = atteinte ; 0 = aucune"
+sens_pal_tronc_G;Pallesthesie - atteinte Tronc G;"1 = atteinte ; 0 = aucune"
+sens_pal_MI_D;Pallesthesie - atteinte Membre inférieur D;"1 = atteinte ; 0 = aucune"
+sens_pal_MI_G;Pallesthesie - atteinte Membre inférieur G;"1 = atteinte ; 0 = aucune"
+sens_pal_zones;Pallesthesie - liste detaillee;texte, separes par |
+sens_pal_crane;Pallesthesie - Crâne (median);"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_clavicule_D;Pallesthesie - Clavicule D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_clavicule_G;Pallesthesie - Clavicule G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_epaule_D;Pallesthesie - Épaule D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_epaule_G;Pallesthesie - Épaule G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_coude_D;Pallesthesie - Coude D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_coude_G;Pallesthesie - Coude G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_poignet_D;Pallesthesie - Poignet D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_poignet_G;Pallesthesie - Poignet G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_doigt_D;Pallesthesie - Doigt D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_doigt_G;Pallesthesie - Doigt G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_costal_D;Pallesthesie - Grill costal D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_costal_G;Pallesthesie - Grill costal G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_eias_D;Pallesthesie - EIAS D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_eias_G;Pallesthesie - EIAS G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_rotule_D;Pallesthesie - Rotule D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_rotule_G;Pallesthesie - Rotule G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_malleole_int_D;Pallesthesie - Malléole interne D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_malleole_int_G;Pallesthesie - Malléole interne G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_malleole_ext_D;Pallesthesie - Malléole externe D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_malleole_ext_G;Pallesthesie - Malléole externe G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_orteil_D;Pallesthesie - Orteil D;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+sens_pal_orteil_G;Pallesthesie - Orteil G;"1 = diminuee ; 2 = exageree ; 3 = abolie ; 0 = normale ; vide = non examine"
+asia_lt;ASIA - score tact leger total;entier 0-112 (calcule)
+asia_pp;ASIA - score piqure total;entier 0-112 (calcule)
+asia_uems;ASIA - score moteur membres superieurs;entier 0-50 (calcule)
+asia_lems;ASIA - score moteur membres inferieurs;entier 0-50 (calcule)
+asia_sens_D;ASIA - niveau sensitif DROIT;texte, metamere (calcule)
+asia_sens_G;ASIA - niveau sensitif GAUCHE;texte, metamere (calcule)
+asia_mot_D;ASIA - niveau moteur DROIT;texte, metamere (calcule, regle simplifiee)
+asia_mot_G;ASIA - niveau moteur GAUCHE;texte, metamere (calcule, regle simplifiee)
+asia_nli;ASIA - niveau neurologique de la lesion;texte, metamere (calcule)
+asia_sacral;ASIA - preservation sacree;"1 = oui ; 0 = non ; vide = non determinable"
+asia_ais;ASIA - grade AIS;A, B, C, D ou E (calcul indicatif, a verifier)
+subj_nb;Signes subjectifs - nombre total de zones;entier 0-48
+subj_nb_D;Signes subjectifs - zones a DROITE;entier
+subj_nb_G;Signes subjectifs - zones a GAUCHE;entier
+subj_fourmillements_nb;Signes subjectifs - zones : Fourmillements;entier
+subj_picotements_nb;Signes subjectifs - zones : Picotements;entier
+subj_cartonnee_nb;Signes subjectifs - zones : Peau cartonnée;entier
+subj_brulures_nb;Signes subjectifs - zones : Brûlures;entier
+subj_decharges_nb;Signes subjectifs - zones : Décharges électriques;entier
+subj_engourdissement_nb;Signes subjectifs - zones : Engourdissement;entier
+subj_tetecou_D;Signes subjectifs - atteinte Tête / cou D;"1 = oui ; 0 = non"
+subj_tetecou_G;Signes subjectifs - atteinte Tête / cou G;"1 = oui ; 0 = non"
+subj_MS_D;Signes subjectifs - atteinte Membre supérieur D;"1 = oui ; 0 = non"
+subj_MS_G;Signes subjectifs - atteinte Membre supérieur G;"1 = oui ; 0 = non"
+subj_tronc_D;Signes subjectifs - atteinte Tronc D;"1 = oui ; 0 = non"
+subj_tronc_G;Signes subjectifs - atteinte Tronc G;"1 = oui ; 0 = non"
+subj_MI_D;Signes subjectifs - atteinte Membre inférieur D;"1 = oui ; 0 = non"
+subj_MI_G;Signes subjectifs - atteinte Membre inférieur G;"1 = oui ; 0 = non"
+subj_zones;Signes subjectifs - liste detaillee;texte, separees par |
+subj_ant_tete_D;Signes subjectifs - Face D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_tete_G;Signes subjectifs - Face G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_cou_D;Signes subjectifs - Cou ant. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_cou_G;Signes subjectifs - Cou ant. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_epaule_D;Signes subjectifs - Épaule / deltoïde D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_epaule_G;Signes subjectifs - Épaule / deltoïde G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_troncsup_D;Signes subjectifs - Thorax ant. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_troncsup_G;Signes subjectifs - Thorax ant. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_troncinf_D;Signes subjectifs - Abdomen D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_troncinf_G;Signes subjectifs - Abdomen G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_bassin_D;Signes subjectifs - Aine / pli inguinal D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_bassin_G;Signes subjectifs - Aine / pli inguinal G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_bras_D;Signes subjectifs - Bras ant. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_bras_G;Signes subjectifs - Bras ant. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_avantbras_D;Signes subjectifs - Avant-bras ant. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_avantbras_G;Signes subjectifs - Avant-bras ant. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_main_D;Signes subjectifs - Main (palmaire) D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_main_G;Signes subjectifs - Main (palmaire) G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_cuisse_D;Signes subjectifs - Cuisse ant. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_cuisse_G;Signes subjectifs - Cuisse ant. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_jambe_D;Signes subjectifs - Jambe ant. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_jambe_G;Signes subjectifs - Jambe ant. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_pied_D;Signes subjectifs - Pied (dos) D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_ant_pied_G;Signes subjectifs - Pied (dos) G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_tete_D;Signes subjectifs - Occiput D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_tete_G;Signes subjectifs - Occiput G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_cou_D;Signes subjectifs - Nuque D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_cou_G;Signes subjectifs - Nuque G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_epaule_D;Signes subjectifs - Épaule post. / trapèze D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_epaule_G;Signes subjectifs - Épaule post. / trapèze G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_troncsup_D;Signes subjectifs - Dos (région scapulaire) D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_troncsup_G;Signes subjectifs - Dos (région scapulaire) G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_troncinf_D;Signes subjectifs - Lombes D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_troncinf_G;Signes subjectifs - Lombes G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_bassin_D;Signes subjectifs - Fesse D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_bassin_G;Signes subjectifs - Fesse G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_bras_D;Signes subjectifs - Bras post. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_bras_G;Signes subjectifs - Bras post. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_avantbras_D;Signes subjectifs - Avant-bras post. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_avantbras_G;Signes subjectifs - Avant-bras post. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_main_D;Signes subjectifs - Main (dorsale) D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_main_G;Signes subjectifs - Main (dorsale) G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_cuisse_D;Signes subjectifs - Cuisse post. D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_cuisse_G;Signes subjectifs - Cuisse post. G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_jambe_D;Signes subjectifs - Mollet D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_jambe_G;Signes subjectifs - Mollet G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_pied_D;Signes subjectifs - Plante D;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+subj_post_pied_G;Signes subjectifs - Plante G;"1 = Fourmillements ; 2 = Picotements ; 3 = Peau cartonnée ; 4 = Brûlures ; 5 = Décharges électriques ; 6 = Engourdissement ; 0 = aucun ; vide = non renseigne"
+cut_nb;Lesions cutanees - nombre total de zones;entier 0-48
+cut_nb_D;Lesions cutanees - zones a DROITE;entier
+cut_nb_G;Lesions cutanees - zones a GAUCHE;entier
+cut_marbrures_nb;Lesions cutanees - zones : Marbrures (type non précisé);entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_erytheme_nb;Lesions cutanees - zones : Érythème;entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_oedeme_nb;Lesions cutanees - zones : Œdème;entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_prurit_nb;Lesions cutanees - zones : Prurit;entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_papules_nb;Lesions cutanees - zones : Papules, plaques;entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_emphyseme_nb;Lesions cutanees - zones : Emphysème sous-cutané;entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_livedo_ret_nb;Lesions cutanees - zones : Marbrures (livedo réticulé);entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_livedo_ram_nb;Lesions cutanees - zones : Marbrures (livedo ramifié);entier (une zone qui porte plusieurs lesions compte pour chacune)
+cut_tetecou_D;Lesions cutanees - atteinte Tête / cou D;"1 = oui ; 0 = non"
+cut_tetecou_G;Lesions cutanees - atteinte Tête / cou G;"1 = oui ; 0 = non"
+cut_MS_D;Lesions cutanees - atteinte Membre supérieur D;"1 = oui ; 0 = non"
+cut_MS_G;Lesions cutanees - atteinte Membre supérieur G;"1 = oui ; 0 = non"
+cut_tronc_D;Lesions cutanees - atteinte Tronc D;"1 = oui ; 0 = non"
+cut_tronc_G;Lesions cutanees - atteinte Tronc G;"1 = oui ; 0 = non"
+cut_MI_D;Lesions cutanees - atteinte Membre inférieur D;"1 = oui ; 0 = non"
+cut_MI_G;Lesions cutanees - atteinte Membre inférieur G;"1 = oui ; 0 = non"
+cut_zones;Lesions cutanees - liste detaillee;texte, separees par |
+cut_ant_tete_D;Lesions cutanees - Face D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_tete_G;Lesions cutanees - Face G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_cou_D;Lesions cutanees - Cou ant. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_cou_G;Lesions cutanees - Cou ant. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_epaule_D;Lesions cutanees - Épaule / deltoïde D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_epaule_G;Lesions cutanees - Épaule / deltoïde G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_troncsup_D;Lesions cutanees - Thorax ant. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_troncsup_G;Lesions cutanees - Thorax ant. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_troncinf_D;Lesions cutanees - Abdomen D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_troncinf_G;Lesions cutanees - Abdomen G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_bassin_D;Lesions cutanees - Aine / pli inguinal D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_bassin_G;Lesions cutanees - Aine / pli inguinal G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_bras_D;Lesions cutanees - Bras ant. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_bras_G;Lesions cutanees - Bras ant. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_avantbras_D;Lesions cutanees - Avant-bras ant. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_avantbras_G;Lesions cutanees - Avant-bras ant. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_main_D;Lesions cutanees - Main (palmaire) D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_main_G;Lesions cutanees - Main (palmaire) G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_cuisse_D;Lesions cutanees - Cuisse ant. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_cuisse_G;Lesions cutanees - Cuisse ant. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_jambe_D;Lesions cutanees - Jambe ant. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_jambe_G;Lesions cutanees - Jambe ant. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_pied_D;Lesions cutanees - Pied (dos) D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_ant_pied_G;Lesions cutanees - Pied (dos) G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_tete_D;Lesions cutanees - Occiput D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_tete_G;Lesions cutanees - Occiput G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_cou_D;Lesions cutanees - Nuque D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_cou_G;Lesions cutanees - Nuque G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_epaule_D;Lesions cutanees - Épaule post. / trapèze D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_epaule_G;Lesions cutanees - Épaule post. / trapèze G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_troncsup_D;Lesions cutanees - Dos (région scapulaire) D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_troncsup_G;Lesions cutanees - Dos (région scapulaire) G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_troncinf_D;Lesions cutanees - Lombes D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_troncinf_G;Lesions cutanees - Lombes G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_bassin_D;Lesions cutanees - Fesse D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_bassin_G;Lesions cutanees - Fesse G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_bras_D;Lesions cutanees - Bras post. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_bras_G;Lesions cutanees - Bras post. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_avantbras_D;Lesions cutanees - Avant-bras post. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_avantbras_G;Lesions cutanees - Avant-bras post. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_main_D;Lesions cutanees - Main (dorsale) D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_main_G;Lesions cutanees - Main (dorsale) G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_cuisse_D;Lesions cutanees - Cuisse post. D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_cuisse_G;Lesions cutanees - Cuisse post. G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_jambe_D;Lesions cutanees - Mollet D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_jambe_G;Lesions cutanees - Mollet G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_pied_D;Lesions cutanees - Plante D;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+cut_post_pied_G;Lesions cutanees - Plante G;"1 = Marbrures (type non précisé) ; 2 = Érythème ; 3 = Œdème ; 4 = Prurit ; 5 = Papules, plaques ; 6 = Emphysème sous-cutané ; 7 = Marbrures (livedo réticulé) ; 8 = Marbrures (livedo ramifié) ; plusieurs lesions sur la meme zone : codes reunis par + (exemple 4+7) ; 0 = aucune ; vide = non renseigne ; 1 = marbrures dont le type n etait pas precise (fiches d avant la 11.1.1)"
+pl_yoyo_crit;Plongee a yoyo - criteres remplis;"1 = variations d au moins 10 m et, si la surface est atteinte, intervalle de surface <= 15 min ; 0 = un critere non rempli ; vide = type de profil autre que yoyo ou amplitude non renseignee"
+ech_a_D_s_lat;Echographie pleuro-pulmonaire - poumon droit anterieur superieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_D_s_mdn;Echographie pleuro-pulmonaire - poumon droit anterieur superieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_D_s_mdl;Echographie pleuro-pulmonaire - poumon droit anterieur superieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_D_i_lat;Echographie pleuro-pulmonaire - poumon droit anterieur inferieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_D_i_mdn;Echographie pleuro-pulmonaire - poumon droit anterieur inferieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_D_i_mdl;Echographie pleuro-pulmonaire - poumon droit anterieur inferieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_G_s_lat;Echographie pleuro-pulmonaire - poumon gauche anterieur superieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_G_s_mdn;Echographie pleuro-pulmonaire - poumon gauche anterieur superieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_G_s_mdl;Echographie pleuro-pulmonaire - poumon gauche anterieur superieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_G_i_lat;Echographie pleuro-pulmonaire - poumon gauche anterieur inferieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_G_i_mdn;Echographie pleuro-pulmonaire - poumon gauche anterieur inferieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_a_G_i_mdl;Echographie pleuro-pulmonaire - poumon gauche anterieur inferieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_D_s_lat;Echographie pleuro-pulmonaire - poumon droit posterieur superieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_D_s_mdn;Echographie pleuro-pulmonaire - poumon droit posterieur superieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_D_s_mdl;Echographie pleuro-pulmonaire - poumon droit posterieur superieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_D_i_lat;Echographie pleuro-pulmonaire - poumon droit posterieur inferieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_D_i_mdn;Echographie pleuro-pulmonaire - poumon droit posterieur inferieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_D_i_mdl;Echographie pleuro-pulmonaire - poumon droit posterieur inferieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_G_s_lat;Echographie pleuro-pulmonaire - poumon gauche posterieur superieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_G_s_mdn;Echographie pleuro-pulmonaire - poumon gauche posterieur superieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_G_s_mdl;Echographie pleuro-pulmonaire - poumon gauche posterieur superieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_G_i_lat;Echographie pleuro-pulmonaire - poumon gauche posterieur inferieur lateral;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_G_i_mdn;Echographie pleuro-pulmonaire - poumon gauche posterieur inferieur median;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_p_G_i_mdl;Echographie pleuro-pulmonaire - poumon gauche posterieur inferieur medial;"1 = A (profil A) ; 2 = B (lignes B) ; 3 = B++ (lignes B coalescentes) ; 4 = C (condensation) ; 5 = PNO (pneumothorax) ; vide = zone non examinee"
+ech_nb;Echographie pleuro-pulmonaire - nombre de zones cotees;"entier 0-24 ; vide = echographie non realisee"
+ech_nb_A;Echographie pleuro-pulmonaire - zones cotees A;"entier ; vide = echographie non realisee"
+ech_nb_B;Echographie pleuro-pulmonaire - zones cotees B;"entier ; vide = echographie non realisee"
+ech_nb_Bpp;Echographie pleuro-pulmonaire - zones cotees B++;"entier ; vide = echographie non realisee"
+ech_nb_C;Echographie pleuro-pulmonaire - zones cotees C;"entier ; vide = echographie non realisee"
+ech_nb_PNO;Echographie pleuro-pulmonaire - zones cotees PNO;"entier ; vide = echographie non realisee"
+ech_anom_D;Echographie pleuro-pulmonaire - zones anormales (hors A) du poumon droit;"entier ; vide = echographie non realisee"
+ech_anom_G;Echographie pleuro-pulmonaire - zones anormales (hors A) du poumon gauche;"entier ; vide = echographie non realisee"
+ech_pno;Echographie pleuro-pulmonaire - pneumothorax;"1 = au moins une zone cotee PNO ; 0 = aucune ; vide = echographie non realisee"
+ech_zones;Echographie pleuro-pulmonaire - liste des zones anormales;texte, separees par |
+cst_nb;Constantes - nombre de releves;"entier ; vide = aucun releve"
+cst_h_debut;Constantes - heure du premier releve;HH:MM
+cst_h_fin;Constantes - heure du dernier releve;HH:MM
+cst_duree;Constantes - duree de surveillance;entier, minutes (calcule du premier au dernier releve)
+cst_pouls_1;Constantes - Pouls : premiere valeur;numerique (/min)
+cst_pouls_n;Constantes - Pouls : derniere valeur;numerique (/min)
+cst_pouls_min;Constantes - Pouls : minimum;numerique (/min)
+cst_pouls_max;Constantes - Pouls : maximum;numerique (/min)
+cst_tas_1;Constantes - PAS : premiere valeur;numerique (mmHg)
+cst_tas_n;Constantes - PAS : derniere valeur;numerique (mmHg)
+cst_tas_min;Constantes - PAS : minimum;numerique (mmHg)
+cst_tas_max;Constantes - PAS : maximum;numerique (mmHg)
+cst_tad_1;Constantes - PAD : premiere valeur;numerique (mmHg)
+cst_tad_n;Constantes - PAD : derniere valeur;numerique (mmHg)
+cst_tad_min;Constantes - PAD : minimum;numerique (mmHg)
+cst_tad_max;Constantes - PAD : maximum;numerique (mmHg)
+cst_temp_1;Constantes - T° : premiere valeur;numerique (°C)
+cst_temp_n;Constantes - T° : derniere valeur;numerique (°C)
+cst_temp_min;Constantes - T° : minimum;numerique (°C)
+cst_temp_max;Constantes - T° : maximum;numerique (°C)
+cst_spo2_1;Constantes - SpO₂ : premiere valeur;numerique (%)
+cst_spo2_n;Constantes - SpO₂ : derniere valeur;numerique (%)
+cst_spo2_min;Constantes - SpO₂ : minimum;numerique (%)
+cst_spo2_max;Constantes - SpO₂ : maximum;numerique (%)
+cst_gcs_1;Constantes - Glasgow : premiere valeur;numerique (/15)
+cst_gcs_n;Constantes - Glasgow : derniere valeur;numerique (/15)
+cst_gcs_min;Constantes - Glasgow : minimum;numerique (/15)
+cst_gcs_max;Constantes - Glasgow : maximum;numerique (/15)
+cst_eva_1;Constantes - EVA : premiere valeur;numerique (/10)
+cst_eva_n;Constantes - EVA : derniere valeur;numerique (/10)
+cst_eva_min;Constantes - EVA : minimum;numerique (/10)
+cst_eva_max;Constantes - EVA : maximum;numerique (/10)
+cst_mict_nb;Constantes - nombre de mictions notees oui;entier
+msh_moment;MEDSUBHYP - moment de la cotation;"t0 = a l'arrivee ; t12 = a 12 heures ; t24 = a 24 heures ; nr = au-dela de 24 heures, score non renseigne ; vide = ni choisi ni deductible. Valeur retenue pour le calcul, choisie ou deduite du delai accident vers examen"
+msh_moment_auto;MEDSUBHYP - moment deduit ou choisi;"1 = deduit du delai accident vers examen ; 0 = choisi par l'examinateur ; vide = aucun moment retenu"
+msh_age;MEDSUBHYP - Age ≥ 42 ans;"0 = Non (0 point) ; 1 = Oui (1 point) ; vide = non cote. Valeur deduite de la fiche sauf cotation manuelle"
+msh_rachis;MEDSUBHYP - Douleur vertebrale;"0 = Non (0 point) ; 1 = Oui (1 point) ; vide = non cote. Valeur deduite de la fiche sauf cotation manuelle"
+msh_evol;MEDSUBHYP - Evolution avant recompression;"0 = Ameliore (0 point) ; 1 = Stable (3 points) ; 2 = Aggrave (5 points) ; vide = non cote. Valeur deduite de la fiche sauf cotation manuelle"
+msh_sens;MEDSUBHYP - Signes sensitifs objectifs;"0 = Non (0 point) ; 1 = Oui (4 points) ; vide = non cote. Valeur deduite de la fiche sauf cotation manuelle"
+msh_mot;MEDSUBHYP - Signes moteurs;"0 = Non (0 point) ; 1 = Paresies (4 points) ; 2 = Paraplegie (5 points) ; vide = non cote. Valeur deduite de la fiche sauf cotation manuelle"
+msh_sphi;MEDSUBHYP - Atteinte du sphincter urinaire;"0 = Non (0 point) ; 1 = Oui (6 points) ; vide = non cote. Valeur deduite de la fiche sauf cotation manuelle"
+msh_total;MEDSUBHYP - score total;"entier 0-22 ; vide = un item au moins sans valeur, ou cotation au-dela de 24 heures"
+msh_grave;MEDSUBHYP - au-dessus du seuil;"1 = score >= 8 ; 0 = score < 8 ; vide = score non calcule"
+msh_manuels;MEDSUBHYP - items cotes a la main;"entier 0-6 ; un item cote a la main diverge de la valeur deduite de la fiche"
+vest_total;Score vestibulaire - score total;"entier 0-19 ; vide = un item au moins sans valeur"
+vest_vertige;Score vestibulaire - Vertige rotatoire;"0 = Absent (0 point) ; 1 = Non permanent ou simple sensation vertigineuse (1 point) ; 2 = Permanent (2 points) ; vide = non cote. Valeur deduite de l examen sauf cotation manuelle"
+vest_nystagmus;Score vestibulaire - Nystagmus;"0 = Absent (0 point) ; 1 = Present dans le regard decentre dans le sens de la secousse rapide (1 point) ; 2 = Present dans le regard centre (2 points) ; 3 = Present dans le regard decentre dans le sens de la secousse lente (3 points) ; vide = non cote. Valeur deduite de l examen sauf cotation manuelle"
+vest_nv;Score vestibulaire - Signes neurovegetatifs;"0 = Absents (0 point) ; 1 = Nausees (1 point) ; 2 = Nausees et rares vomissements, notamment apres mobilisation (2 points) ; 3 = Vomissements frequents (plus de 3) ou permanents (3 points) ; vide = non cote. Valeur deduite de l examen sauf cotation manuelle"
+vest_instab;Score vestibulaire - Instabilite;"0 = Absente (0 point) ; 1 = Presente debout yeux fermes (1 point) ; 2 = Presente debout yeux ouverts (2 points) ; 3 = Verticalisation impossible (3 points) ; vide = non cote. Valeur deduite de l examen sauf cotation manuelle"
+vest_cochl;Score vestibulaire - Symptomes cochleaires (surdite ou acouphenes);"0 = Absents (0 point) ; 1 = Presents (8 points) ; vide = non cote. Valeur deduite de l examen sauf cotation manuelle"
+created;Horodatage de creation;ISO 8601
+updated;Horodatage de derniere modification;ISO 8601

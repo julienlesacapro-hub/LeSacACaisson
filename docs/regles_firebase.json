@@ -1,0 +1,71 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "adp": {
+      "$room": {
+        ".read": "$room.matches(/^[A-Za-z0-9_-]{32}$/)",
+        ".write": "$room.matches(/^[A-Za-z0-9_-]{32}$/)",
+        "h": {
+          ".validate": "newData.hasChildren(['t','c'])",
+          "t": {
+            ".validate": "newData.isNumber()"
+          },
+          "c": {
+            ".validate": "newData.isString() && newData.val().length <= 30000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "d": {
+          "$fid": {
+            "$h": {
+              ".validate": "newData.hasChildren(['t','c']) && $fid.matches(/^[A-Za-z0-9_-]{4,60}$/) && $h.matches(/^[A-Za-z0-9_-]{16}$/)",
+              "t": {
+                ".validate": "newData.isNumber()"
+              },
+              "c": {
+                ".validate": "newData.isString() && newData.val().length <= 30000"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        },
+        "m": {
+          "$fid": {
+            ".validate": "newData.hasChildren(['t','c']) && $fid.matches(/^[A-Za-z0-9_-]{4,60}$/)",
+            "t": {
+              ".validate": "newData.isNumber()"
+            },
+            "c": {
+              ".validate": "newData.isString() && newData.val().length <= 30000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "p": {
+          "$dev": {
+            ".validate": "newData.hasChildren(['t','c']) && $dev.matches(/^[A-Za-z0-9_-]{6,40}$/)",
+            "t": {
+              ".validate": "newData.isNumber()"
+            },
+            "c": {
+              ".validate": "newData.isString() && newData.val().length <= 30000"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

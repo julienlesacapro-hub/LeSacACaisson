@@ -1,0 +1,3570 @@
+# ADP — accident de plongée, version 12.1.1 (version d'essai)
+
+Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
+entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
+Double-cliquez dessus, il s'ouvre dans votre navigateur et tout fonctionne.
+
+ADP couvre la prise en charge complète d'un accident de plongée : la consultation initiale en
+urgence, les consultations de suivi, et le compte rendu de séjour. L'examen neurologique standardisé
+en est le cœur. Depuis la 11.1.1, chaque fiche a un **cadre** (accident de plongée, œdème pulmonaire d'immersion, mixte) et, depuis la 12.1.1,
+l'**intoxication au monoxyde de carbone** a son interface propre (voir *Le cadre de la consultation* et *L'intoxication au monoxyde de carbone*).
+
+Sur téléphone et tablette, installez-le plutôt comme application : icône sur l'écran d'accueil,
+plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablette* plus bas.
+
+---
+
+## Les deux sorties
+
+| Sortie | Fichier | Comment l'obtenir |
+|---|---|---|
+| Document imprimable et enregistrable | PDF, 5 à 6 pages A4 (une page pour une séance de recompression) | Bouton **Enregistrer en PDF** de la barre du haut (icône PDF) : choisir *Enregistrer au format PDF* (ou *Microsoft Print to PDF*), puis le dossier ; le fichier est proposé sous le nom `NOM_Prénom_IPP_numéro de dossier_EX1.pdf` : le numéro d'examen termine le nom (voir *Enregistrer en PDF : le nom du fichier*) |
+| Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
+
+Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
+Une ligne = une fiche. 1054 colonnes.
+
+Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
+dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
+patient : voir *Mise en place, une seule fois*.
+
+Sur une consultation de sortie, la fiche propose aussi le **compte rendu d'hospitalisation** : un texte enrichi
+à copier, sans en-tête, écrit à partir de toutes les fiches du dossier (voir *Le compte rendu d'hospitalisation*).
+
+Pour emporter **toutes les fiches en JSON d'un coup**, le bouton **Tout transférer en ZIP** de la barre du haut les réunit en une archive ZIP ;
+**Plus** › **Exporter tout en JSON** les écrit aussi une par fichier dans un dossier de votre choix (Téléchargements par défaut) :
+voir *Exporter tout en JSON*.
+
+Les pages du PDF, selon le type de consultation :
+
+| Page | Consultation initiale | Consultation de suivi | Consultation de sortie |
+|---|---|---|---|
+| 1 | Accueil, plongée, plongeur, anamnèse et contacts | — | Accueil, plongée, plongeur, anamnèse et contacts |
+| 2 | Examen clinique, ORL, échographie pleuro-pulmonaire | Examen clinique, ORL, échographie pleuro-pulmonaire | Examen clinique, ORL, échographie pleuro-pulmonaire |
+| 3 | Examen neurologique | Examen neurologique | Examen neurologique |
+| 4 | Grille ASIA | Grille ASIA | Grille ASIA |
+| 5 | Schémas corporels, pallesthésie, scores, conclusion de l'examen clinique | Schémas corporels, pallesthésie, scores, conclusion de l'examen clinique | Schémas corporels, pallesthésie, scores, conclusion de l'examen clinique |
+| 6 | Prise en charge, diagnostic retenu, orientation | Prise en charge, évolution, diagnostic, orientation | Prise en charge, évolution, diagnostic, orientation |
+
+Les photographies jointes s'ajoutent en fin de document, six par page. Une **séance de recompression sans examen** s'imprime sur **une seule page** :
+identité, numéro d'examen (3b), recompression.
+
+---
+
+## Enregistrer en PDF : le nom du fichier
+
+Le bouton **Enregistrer en PDF** (barre du haut) ouvre la fenêtre d'impression du navigateur. Choisissez la destination **Enregistrer au format PDF** (dans Firefox : *Enregistrer au format PDF*, puis *Enregistrer* ; dans Edge ou
+Chrome : *Enregistrer au format PDF* ; sous Windows, *Microsoft Print to PDF* fait de même) : le navigateur ouvre alors **sa fenêtre d'enregistrement, qui demande le dossier**, avec le nom déjà écrit :
+
+`NOM_Prénom_IPP_numéro de dossier_EX1.pdf`, par exemple `DUPONT_Jean_IPP_50894855_EX1.pdf` (consultation initiale) ou `DUPONT_Jean_IPP_50894855_EX3b.pdf` (séance de recompression sans examen, après le 3ᵉ examen).
+
+- **NOM** en majuscules et **Prénom** avec l'initiale en majuscule, comme ils sont inscrits dans la fiche (voir *Noms et prénoms : mise en forme automatique*) ; **« IPP »** est écrit tel quel ; **le numéro de dossier** est celui de la fiche, tel qu'il y est inscrit.
+- **Le numéro d'examen termine le nom** (`EX1`, `EX2`, `EX3`…) : c'est le « N° d'examen pour ce patient » de la fiche, celui du bandeau (« Examen n° 3b ») et de la fin du nom des fichiers JSON, et il **distingue les fiches d'un même patient**.
+  Les consultations (initiale, suivi, sortie) sont numérotées 1, 2, 3… dans l'ordre de la date et de l'heure de l'examen ; une **séance de recompression sans examen** porte le numéro du dernier examen qui la précède, suivi d'une lettre : `EX3b`, `EX3c`…
+  (`EX0b` si elle précède tout examen). Le numéro est **calculé à l'instant** d'après les fiches enregistrées du même numéro de dossier, la fiche en cours comprise même si elle n'est pas encore enregistrée : la bulle du bouton PDF le suit quand vous changez la date de l'examen, le type de la fiche ou le numéro de dossier.
+- Ce que Windows interdit dans un nom de fichier (`\ / : * ? " < > |`) devient « - » ; les espaces et points de fin sont retirés ; **une partie absente est omise** (sans prénom : `DUPONT_IPP_50894855_EX1.pdf` ; sans numéro de dossier : `DUPONT_Jean.pdf`, sans numéro d'examen non plus puisque ce numéro se compte par dossier ; sans rien : `Fiche_ADP_<date>.pdf`).
+- C'est le **titre de la page** que le navigateur propose comme nom de fichier : ADP le remplace par ce nom au moment de l'impression, puis rend le titre « ADP — accident de plongée » à la fin (ou au bout de deux minutes si le navigateur n'annonce pas la fin). Avec **Ctrl+P**, l'événement « beforeprint » pose aussi le titre, mais certains navigateurs le lisent avant : pour être sûr du nom, utilisez le bouton PDF.
+  Cela a été vérifié dans le code d'impression de Firefox 137 (le titre est lu à l'ouverture de la fenêtre d'impression, « .pdf » est ajouté, les caractères interdits sont remplacés). La **bulle du bouton PDF** annonce le nom qui sera proposé.
+- Une page web **ne peut pas écrire elle-même** un fichier dans le dossier de votre choix : c'est la fenêtre d'enregistrement du navigateur qui demande le dossier. Selon le navigateur, elle reprend le dernier dossier utilisé.
+- Grâce au numéro d'examen, **deux fiches du même patient n'ont plus le même nom** (`…_EX1.pdf`, `…_EX2.pdf`, `…_EX2b.pdf`…) : Windows ne propose plus de remplacer l'une par l'autre. Il le propose encore si vous enregistrez deux fois le PDF de la même fiche, ou deux fiches **sans numéro de dossier**.
+- **Le numéro est celui de l'instant.** Si vous saisissez plus tard une fiche datée avant d'autres, les numéros des suivantes se décalent (comme dans le nom des fichiers JSON) ; un PDF déjà enregistré n'est pas renommé et garde l'ancien numéro.
+
+---
+
+## La barre du haut et le menu Plus
+
+La barre du haut (fond bleu foncé) ne porte que des boutons à **icône**. Dès que la souris pointe un bouton, ou que le clavier l'atteint, une **bulle de texte** s'ouvre
+toute seule et dit ce qu'il fait ; elle se referme quand on le quitte.
+
+| Icône | Bouton | Ce qu'il fait |
+|---|---|---|
+| liste | **Volet de gauche** | affiche ou masque le volet de gauche : les patients en cours et la liste des fiches enregistrées (grands écrans ; voir *Le volet de gauche : les patients en cours*) |
+| fiche et « + » (bleu) | **Nouvelle fiche** | ouvre une fiche vide |
+| stéthoscope | **Ré-examen du patient** | ouvre une consultation de suivi pour le même patient, avec l'identité de la fiche ouverte |
+| caisson à hublot (brun) | **Séance de recompression** | cote une séance **sans examen clinique** (voir *La séance de recompression sans examen*) |
+| disquette (vert) | **Enregistrer** | enregistre la fiche (aussi Ctrl+S) |
+| page « PDF » | **Enregistrer en PDF** | prépare le document imprimable : choisir *Enregistrer au format PDF* ou *Microsoft Print to PDF*, puis le dossier ; nom proposé `NOM_Prénom_IPP_numéro de dossier_EX1.pdf` (la bulle l'annonce) |
+| page à fermeture éclair | **Tout transférer en ZIP** | toutes les fiches du poste, une par fichier JSON, réunies en une archive ZIP ; **sa bulle rappelle la manipulation du service** (ci-dessous) |
+| flèche vers un plateau | **Importer** | importe ou fusionne un fichier JSON, une archive ZIP ou un dossier entier ; **sa bulle rappelle la manipulation du service** (ci-dessous) |
+| masque de plongée | **Ligne Excel ADP** | compose la ligne du fichier Excel maître (accident de plongée) d'après le dossier ouvert |
+| courbe d'activité | **Ligne Excel COHB** | compose la ligne de la feuille « Activité COHB » |
+| page d'ordonnance (« Rx ») | **Documents de sortie** | ouvre le générateur de courriers, d'ordonnances et de certificats, rempli d'après la fiche |
+| flèche circulaire | **Actualiser** | relit le dossier de données connecté, pour remettre à jour la communication avec lui ; l'icône tourne pendant la relecture (voir *Le bouton Actualiser*, ci-dessous) |
+| « … Plus » | **Plus** | tous les autres boutons (ci-dessous) |
+
+Les trois boutons **lignes Excel ADP et COHB** et **documents de sortie** sont **disponibles quel que soit le type de consultation**, même sur une fiche
+incomplète, même sans numéro de dossier (la fiche ouverte forme alors, à elle seule, le « dossier »). Ils ne figurent plus dans l'en-tête du compte rendu
+d'hospitalisation, qui garde « copier le CRH » ; la fenêtre *Exporter les données* garde ses deux boutons de lignes Excel, et l'encart « Sortie » son bouton de
+documents (avec le lien « Fichier du générateur… »).
+
+**Plus** ouvre un menu : **Dossier de données…**, **Exporter les données…** (CSV, dictionnaire, sauvegarde JSON, réglages), **Exporter tout en JSON…** (dossier au choix ou
+archive ZIP), **Douchette et pseudonymisation…**, **Dictionnaire des variables**, **Aides à l'examen**, **Installation hors ligne**, **Mode d'emploi**. Sur une tablette il
+propose aussi les **fiches enregistrées** (les patients en cours, puis la liste) ; sur un téléphone, la barre ne garde que *nouvelle fiche*, *enregistrer*, *PDF*, *Actualiser* et *Plus*, et le menu reprend tout le reste. Un bouton
+**Installer** (ou **Mise à jour**) apparaît à côté de *Plus* quand l'installation, ou une nouvelle version, est possible.
+
+**Import-export des fiches JSON : la bulle de la manipulation du service.** Depuis la 9.5.1, la bulle des boutons **Tout transférer en ZIP** et **Importer** (et celle des entrées du menu Plus *Exporter tout en JSON…*,
+*Importer / fusionner* et *Tout transférer en archive ZIP*) garde la description du bouton et y ajoute : « Import-export des fiches JSON : exporter l'ensemble des fiches JSON dans le dossier « T:\Services\Smhep\Commun\Personnels SMHEP\MEDECIN CAISSON F\ADP- Export JSON ». »
+La fenêtre *Exporter tout en JSON* dit la même chose en tête. (Le rappel de 11 h 45 et de 16 h 00 que la 9.5.1 ajoutait, et qui répétait ce texte, a été **retiré** en 10.1.1.)
+
+### Le bouton Actualiser
+
+Le bouton **Actualiser** (flèche circulaire), placé **à droite des petites icônes** de la barre du haut, juste avant *Plus*, **relit le dossier de données connecté** pour remettre à jour la communication avec lui. Il reste visible sur téléphone.
+
+- **La base du navigateur est relue d'abord** : une fiche enregistrée depuis un autre onglet apparaît dans la liste, et le compteur de fiches est remis à jour.
+- **Le dossier de données est relu ensuite** (voir *Mise en place, une seule fois*) : les fiches ajoutées ou modifiées par un autre poste sont lues, celles que le dossier n'a pas encore lui sont écrites, le fichier de données et le dictionnaire sont remis à jour ;
+  le dossier de recherche, s'il est distinct, est relu aussi. Le message dit ce qui a changé (« Dossier de données : 1 fiche ajoutée, 1 mise à jour ») ou « Dossier relu : rien de nouveau ».
+- **L'autorisation est revérifiée.** Un dossier « à autoriser » (nouvelle session du navigateur) ou dont le navigateur a retiré l'accès est autorisé de nouveau **dans ce même clic** (le navigateur n'accepte la demande que sur un geste de l'utilisateur : il affiche sa propre
+  fenêtre d'autorisation) ; un dossier « introuvable » est retenté ; un dossier réellement disparu (déplacé, renommé, disque absent) est signalé par un message et par le bandeau habituel.
+- **La fiche affichée** est remplacée par la version plus récente du dossier **si vous ne l'avez pas modifiée** ; une fiche en cours de modification n'est **jamais écrasée** (votre saisie est gardée, la version du dossier est dans la base).
+- **Pendant la relecture**, l'icône tourne et le bouton attend : un second clic ne relance rien.
+- **Sans dossier connecté**, le message le dit et la fenêtre *Dossier de données* s'ouvre pour en choisir un. Sur **Firefox, Safari et les navigateurs de téléphone et de tablette**, qui n'écrivent pas dans un dossier, le bouton relit seulement la liste des fiches de la base du navigateur, et le dit.
+
+Les icônes sont dessinées dans le fichier lui-même : ni image, ni réseau.
+
+---
+
+## Le volet de gauche : les patients en cours
+
+Le volet de gauche (bouton « liste » de la barre du haut pour l'afficher ou le masquer ; grands écrans) a **deux parties**, sous le titre et la barre de recherche, qui n'ont pas changé :
+
+1. **En haut, les patients en cours** : une **pastille par patient**, qui porte **NOM Prénom** et l'**âge**, aux **couleurs du bandeau** : rose pour une femme, bleu pour un homme, vert pour un enfant
+   (moins de 18 ans), gris-bleu quand le sexe n'est pas renseigné. L'âge d'un mineur s'écrit en années et mois (« 14 ans et 5 mois »).
+2. **En dessous, la liste des fiches enregistrées**, telle qu'elle était, qui défile dans la place que les pastilles laissent : plus il y a de patients en cours, moins elle est haute. Au-delà de la moitié
+   de la hauteur du volet, ce sont les pastilles qui défilent, la liste gardant une hauteur utile.
+
+**Qui est « en cours ».** Un patient (identifié, comme partout, par son **numéro de dossier**) est en cours tant que sa **consultation de sortie n'est pas enregistrée à la date de la veille ou avant**.
+Une consultation de sortie enregistrée aujourd'hui laisse donc la pastille affichée jusqu'à minuit : elle **disparaît le lendemain**. Sans consultation de sortie, le patient reste en cours. Précisions :
+
+- la date retenue est celle de la **consultation de sortie** (la date de la fiche), à défaut le jour où la fiche a été créée ; s'il y a plusieurs consultations de sortie dans le dossier, la plus récente compte ;
+- une consultation de sortie qui **oriente le patient vers l'hospitalisation de jour** (rubrique *Orientation* de l'onglet « Conclusion et évolution », avec l'hébergement : domicile, hôtel patient ou autre
+  établissement) ne le fait **pas sortir** : il reste en cours, avec la mention **HDJ** sur sa pastille, pendant toute la durée de l'hospitalisation de jour (les fiches de suivi et les séances de ces jours-là ne changent rien).
+  Il **disparaît le lendemain d'une nouvelle consultation de sortie, plus récente, dont l'orientation n'est plus l'hospitalisation de jour** : c'est la sortie de l'hospitalisation de jour, que vous cotez ainsi.
+  La consultation de sortie qui compte est toujours la plus récente (à date égale, la plus tardive dans la journée) ;
+- une fiche **non enregistrée** ne compte pas : la pastille d'un nouveau patient apparaît à l'enregistrement de sa première fiche ;
+- une fiche **sans numéro de dossier** ne forme pas de patient (comme dans la recherche d'un patient) ;
+- une fiche enregistrée **après** la consultation de sortie (un contrôle à un mois, par exemple) ne remet pas le patient en cours ;
+- à **minuit**, un minuteur recalcule les pastilles ; il le fait aussi au retour sur l'onglet si la nuit est passée entre-temps (ordinateur en veille).
+
+**Ce que fait une pastille.** Un clic **ouvre la fiche la plus récente** du patient (consultation ou séance) ; l'application demande confirmation s'il y a des modifications non enregistrées. Il **inscrit aussi le numéro
+d'accident de plongée du patient dans la barre de recherche** (celui de sa fiche initiale ; à défaut celui d'une autre de ses fiches, à défaut son numéro de dossier) : **la liste du bas ne montre alors que les fiches de ce patient**, jamais celles d'un autre dossier dont les chiffres
+contiendraient le même numéro (le filtre est exact sur le dossier tant que le texte de la barre n'est pas modifié ; une recherche ordinaire de « 187 » ramènerait aussi un dossier « 50918731 »). Videz la barre pour revoir toutes les fiches. *Nouvelle fiche* (un autre patient)
+lève le filtre ; *Ré-examen du patient* et *Séance de recompression* le gardent ; ouvrir une fiche de la liste filtrée le garde aussi. Le patient dont une fiche est ouverte est **cerclé**. Au survol, une bulle donne le dossier, le nombre d'examens et de séances, la dernière fiche et, pour un patient sorti aujourd'hui, l'avertissement que sa pastille disparaîtra demain ; pour un patient en hospitalisation de jour, depuis quand et avec quel hébergement.
+Les patients sont classés **par ordre alphabétique** (nom, puis prénom, sans tenir compte des accents ni de la casse) ; un patient sans nom est désigné par son dossier. L'âge est celui de la dernière fiche,
+comme dans le bandeau de cette fiche.
+
+**La recherche** (en haut du volet) ne filtre que la liste du bas : les pastilles restent toutes affichées. Une recherche saisie à la main reste une recherche ordinaire (sous-chaînes, dans le dossier, le numéro d'accident, l'examinateur, le nom, le prénom et la naissance).
+
+Sur **tablette et téléphone**, où le volet n'existe pas, **Plus** › **Fiches enregistrées** ouvre une fenêtre qui montre les mêmes deux parties : les patients en cours, puis toutes les fiches (un clic sur une pastille y ouvre la fiche sans toucher à la recherche, qui n'est pas visible).
+
+---
+
+## Mise en place, une seule fois
+
+1. Ouvrez `index.html` dans **Chrome** ou **Edge**.
+2. Cliquez **Enregistrer** (icône de disquette, ou Ctrl+S) sur votre première fiche : l'outil vous demande un dossier de votre
+   disque. Choisissez-le et autorisez l'écriture. On peut aussi le choisir à l'avance avec **Plus** › **Dossier de données**.
+
+Le dossier n'est ensuite **jamais redemandé** : le navigateur le mémorise. À chaque enregistrement,
+l'outil y écrit :
+
+- `fiches/xxx-aaaa_bbbbbbbb-EXc.json` — la fiche entière, **un fichier par fiche**, par exemple
+  `fiches/187-2026_50987654-EX1.json` : numéro d'accident, année de prise en charge, numéro de dossier, numéro
+  d'examen (voir *Le nom des fichiers JSON*). Le nom ne porte ni nom, ni prénom, ni date de naissance ; le
+  contenu reprend l'enveloppe de la sauvegarde JSON, avec un bloc `resume` (dossier, nom, prénom, naissance,
+  dates) pour l'œil ;
+- `donnees_neuro.csv` — vos données, toutes fiches confondues ;
+- `dictionnaire_variables.csv` — le codage de chaque colonne.
+
+Choisissez un **sous-dossier dédié** (par exemple `ADP-fiches`) : Chrome et Edge refusent Documents,
+Téléchargements et les dossiers système.
+
+### À l'ouverture : la recherche lit le dossier
+
+À chaque **ouverture**, l'outil relit ce dossier. Les fiches qu'il contient et que ce poste ne connaît
+pas encore rejoignent la base locale : la recherche par nom, prénom, date de naissance, numéro de
+dossier ou d'accident les retrouve, **y compris celles enregistrées sur un autre poste** qui partage
+le même dossier. Une fiche n'est remplacée que par une version **plus récente** ; un fichier déjà lu
+et inchangé n'est pas relu. Le premier chargement d'un gros dossier peut prendre quelques secondes,
+la barre du haut indique l'avancement.
+
+À l'inverse, une fiche de ce poste qui manque au dossier (enregistrée avant son choix, ou quand il
+n'était pas accessible) y est écrite à la connexion suivante : le dossier rejoint toujours l'état de
+la base locale.
+
+### Une autorisation par session, pas un nouveau choix
+
+Chrome et Edge peuvent redemander, à l'ouverture, l'**autorisation** d'accéder au dossier. Ce n'est
+pas un nouveau choix de dossier. Un bandeau le signale ; le premier clic dans la page, le bouton
+**Autoriser**, ou **Enregistrer** ouvre la demande du navigateur. Choisissez **« Autoriser à chaque
+visite »** pour qu'elle ne revienne plus. Si l'autorisation est refusée ou le dossier introuvable,
+rien n'est perdu : la fiche est enregistrée dans le navigateur, et les fichiers se mettent à jour à
+la prochaine connexion.
+
+### Un dossier de recherche distinct (facultatif)
+
+Par défaut, la recherche lit le dossier où l'outil écrit (« le même », réglage par défaut).
+**Plus** › **Dossier de données** permet de désigner un **autre** dossier, par exemple un dossier partagé
+par le service. Il n'est que **lu** : l'outil n'y écrit jamais. Le dossier d'enregistrement reste lu
+aussi.
+
+### Les autres actions de la fenêtre « Dossier de données »
+
+- **Relire le dossier maintenant** : relit sans attendre la prochaine ouverture. Le bouton **Actualiser** de la barre du haut fait la même relecture sans ouvrir cette fenêtre, et revérifie l'autorisation du dossier (voir *Le bouton Actualiser*).
+- **Réécrire tout le dossier** : relit, puis réécrit **toutes** les fiches, le CSV et le dictionnaire.
+- **Ne plus l'utiliser** : oublie le dossier mémorisé, sans rien effacer sur le disque.
+
+### Supprimer une fiche
+
+Supprimer une fiche dans l'outil **n'efface rien sur le disque** : son fichier est déplacé dans
+`fiches/supprimees`, avec une copie complète (nom habituel suivi de `~` et de l'identifiant de la fiche). La
+suppression est mémorisée : une relecture du dossier ne la ressuscite pas, sauf si la fiche a été modifiée depuis,
+ou si vous la réimportez à la main. Les autres examens du dossier changent de rang, et leurs fichiers de nom.
+Pour retirer vraiment une fiche du dossier, videz `fiches/supprimees` à la main.
+
+### Fichiers lus
+
+Sont lus : tous les `.json` du sous-dossier `fiches`, quel que soit leur nom, et à la racine les
+`sauvegarde_neuro*.json`, les `fiche_*.json` et les fichiers au nom `xxx-aaaa_bbbbbbbb-EXc.json` (les sauvegardes
+agrégées des versions précédentes ou une exportation déposée là, par exemple). Un fichier illisible
+est compté et ignoré. Les dates, heures et nombres d'une fiche lue sont contrôlés avant son
+enregistrement.
+
+### Quand le navigateur ne propose pas de dossier
+
+Le choix d'un dossier repose sur une fonction de **Chrome et d'Edge pour ordinateur** (API File System
+Access). Firefox, Safari, les navigateurs de téléphone et de tablette ne l'ont pas, et certains réglages la
+retirent : mode protégé du navigateur, extension, stratégie de l'établissement, page ouverte en HTTP ou
+dans un cadre d'une autre page. **Plus** › **Dossier de données** ne s'arrête plus sur une erreur sans
+issue : il dit **pourquoi**, affiche un **diagnostic du navigateur** (copiable), et propose ce qui reste
+possible :
+
+- **Exporter tout en JSON** dans une archive ZIP (voir plus bas) ;
+- **Télécharger le JSON de la fiche à chaque enregistrement** : une case à cocher. Le fichier
+  `xxx-aaaa_bbbbbbbb-EXc.json` (par exemple `187-2026_50987654-EX1.json`) part alors dans le dossier de
+  téléchargement du navigateur. Pour le fixer une fois pour toutes, réglez le navigateur (Paramètres ›
+  Téléchargements › Emplacement) et désactivez *Demander où enregistrer chaque fichier avant de le télécharger*.
+  Le navigateur numérote les copies d'une même fiche (`187-2026_50987654-EX1.json`, puis
+  `187-2026_50987654-EX1 (1).json`) : à l'import, la version la plus récente l'emporte ;
+- **Importer** (barre du haut) un fichier, une archive ZIP ou un dossier entier.
+
+Si Windows ouvre `index.html` dans un autre navigateur que Chrome ou Edge, faites un clic droit sur
+`index.html`, **Ouvrir avec**, puis choisissez Edge ou Chrome. Le diagnostic donne le nom du navigateur
+utilisé.
+
+Si le navigateur offre le choix d'un dossier mais **refuse** celui que vous avez désigné (dossier système,
+Documents ou Téléchargements eux-mêmes, accès bloqué), l'erreur est expliquée avec un bouton **Réessayer** :
+choisissez alors un **sous-dossier dédié**.
+
+---
+
+## Exporter tout en JSON
+
+**Plus** › **Exporter tout en JSON** (le bouton **Tout transférer en ZIP** de la barre du haut fait directement la seconde façon ci-dessous) écrit **toutes les fiches** de ce
+poste au format JSON, **une fiche par fichier** nommé `xxx-aaaa_bbbbbbbb-EXc.json` (numéro d'accident, année
+de prise en charge, numéro de dossier, numéro d'examen : `187-2026_50987654-EX1.json`, voir *Le nom des
+fichiers JSON*), le format du dossier de données. Deux façons de le faire :
+
+- **Dans un dossier de votre choix** (Chrome, Edge sur ordinateur). Le sélecteur s'ouvre sur
+  **Téléchargements**. Chrome et Edge refusent que Téléchargements lui-même soit choisi : créez-y un
+  sous-dossier (bouton *Nouveau dossier* du sélecteur), par exemple `ADP-JSON`, puis validez. Les fiches sont
+  écrites **directement** dans ce dossier. Ce qui s'y trouve déjà n'est jamais supprimé, et un nouvel export
+  met à jour les mêmes fichiers sans créer de doublon. Chaque fichier écrit est contrôlé (taille) et l'écran
+  donne le nombre de fiches écrites, ou la raison de l'échec.
+- **Dans une archive ZIP** (tous les navigateurs). Un seul fichier, `fiches_neuro_AAAA-MM-JJ.zip`, proposé dans
+  **Téléchargements** ; selon le navigateur, vous pouvez choisir un autre emplacement, sinon il est enregistré
+  directement dans son dossier de téléchargement. L'archive contient les mêmes fichiers, se décompresse avec
+  l'Explorateur de fichiers et se réimporte telle quelle.
+
+Pour reprendre ces fichiers sur un autre poste : le bouton **Importer** de la barre du haut (« Importer / Fusionner ») accepte un fichier `.json`, plusieurs
+fichiers à la fois, une archive `.zip`, ou un **dossier entier** (tous les `.json` qu'il contient,
+sous-dossiers compris ; le sous-dossier `supprimees` et les `.csv` sont ignorés). La fusion se fait sur
+l'identifiant de fiche : une fiche n'est remplacée que par une version plus récente.
+
+**Données de santé.** Chaque fichier contient l'identité du patient et ses pièces jointes, sans protection :
+gardez-les sur un support chiffré ou à accès restreint, et supprimez-les de Téléchargements une fois copiés.
+
+---
+
+## Le nom des fichiers JSON
+
+Chaque fiche exportée en JSON, que ce soit dans le dossier de données, par **Exporter tout en JSON** (dossier choisi ou
+archive ZIP) ou par le téléchargement à chaque enregistrement, porte un nom de la forme :
+
+```
+xxx-aaaa_bbbbbbbb-EXc.json        par exemple :  187-2026_50987654-EX1.json
+```
+
+| Élément | Signification | Règle |
+|---|---|---|
+| `xxx` | numéro d'accident | Au moins **trois chiffres** : le 1er de l'année donne `001`, le 187e `187`. Il est lu dans « Accident de plongée n° » de la **fiche initiale du dossier** (à défaut, dans un autre examen du dossier) ; seuls les chiffres comptent (`AD 12` donne `012`). Numéro absent : `000`. |
+| `aaaa` | année de la prise en charge | Année du **premier examen du dossier**, la date d'« Entrée » du bandeau. Sans date d'examen : date d'arrivée, puis date de l'accident ; sinon `0000`. |
+| `bbbbbbbb` | numéro de dossier | Le numéro saisi, **nettoyé** pour un nom de fichier : espaces retirés, accents supprimés, tout autre signe remplacé par `-`, 40 caractères au plus. Un numéro pseudonymisé (`P-…`) reste tel quel. Dossier absent : `sans-dossier`. |
+| `c` | numéro d'examen | Le rang de la fiche dans le dossier, le même que « Examen n° » du bandeau : `EX1` pour le premier examen. Une **séance de recompression saisie sans examen** porte le numéro du **dernier examen qui la précède**, suivi d'une **lettre minuscule** : `EX3b`, `EX3c`… (`EX0b` si elle précède tout examen). |
+
+Tous les fichiers d'un dossier portent ainsi le même accident, la même année et le même dossier, et se rangent par
+examen dans l'Explorateur de fichiers. Le nom ne contient **ni nom, ni prénom, ni date de naissance**, mais il contient
+le **numéro de dossier** et le numéro d'accident : voir *Données personnelles*.
+
+**Deux fiches ne partagent jamais un fichier.** Quand le nom voulu est déjà pris par une autre fiche (deux numéros de
+dossier qui ne diffèrent que par des espaces ou la casse, un fichier venu d'ailleurs, un fichier illisible), la fiche prend
+le même nom suivi de `_` et de son identifiant : `187-2026_50987654-EX1_FMUV3SC519OI4.json`. Le fichier de l'autre fiche
+n'est jamais écrasé. Dans un export (dossier ou ZIP), la même règle évite deux fichiers de même nom, majuscules et
+minuscules étant confondues comme sous Windows. Un fichier de même nom déjà présent dans le dossier d'un export est remplacé.
+
+**Dans le dossier de données, le nom suit la fiche.** Le numéro d'examen faisant partie du nom, il change quand les
+examens du dossier changent de rang : un examen supprimé, un examen daté avant un autre, un examen plus ancien importé (et la lettre d'une séance
+quand une consultation s'insère avant elle, ou qu'une séance précédente est supprimée : `EX2b` devient `EX3b`, `EX3c` devient `EX3b`).
+Il change aussi quand on corrige le numéro d'accident de la fiche initiale ou le numéro de dossier. À l'enregistrement,
+l'outil **renomme** alors les fichiers concernés : chacun est écrit sous son nouveau nom (il contient la fiche entière), puis
+l'ancien est retiré, sauf s'il a été modifié depuis la dernière lecture ou s'il porte une version plus récente (il est alors
+gardé, et relu à l'ouverture suivante). Rien n'est perdu : deux examens qui échangent leurs rangs échangent leurs noms. Seuls
+les fichiers qui contiennent **une seule fiche** sont renommés ; une sauvegarde agrégée n'est jamais touchée.
+
+**Les fichiers des versions précédentes** (`fiches/fiche_<identifiant>.json`) restent lus. Ils ne sont pas renommés d'office
+à l'ouverture : chacun l'est quand sa fiche est enregistrée, avec les autres examens du même dossier. **Réécrire tout le
+dossier** (fenêtre *Dossier de données*, qui compte les fichiers encore à l'ancien nom) les renomme tous d'un coup.
+
+**Dans `fiches/supprimees`**, le fichier d'une fiche supprimée porte son nom habituel suivi de `~` et de son identifiant
+(`187-2026_50987654-EX1~FMUV3SC519OI4.json`) : deux fiches supprimées l'une après l'autre avec le même numéro d'examen ne
+s'écrasent jamais.
+
+**À l'import**, seul le contenu compte : n'importe quel nom de fichier convient. Utilisez la **même version** d'ADP sur tous
+les postes qui partagent un dossier : une version antérieure ne lit pas les noms de la corbeille et ne renomme rien.
+
+---
+
+## Installer sur téléphone et tablette
+
+Le fichier HTML seul fonctionne déjà hors ligne. L'installation ajoute une icône, le plein écran
+et un démarrage immédiat.
+
+Il faut pour cela servir l'outil en HTTPS. Deux voies :
+
+1. **GitHub Pages**, gratuit. Suivez `README.md` du dépôt.
+2. **Serveur interne** de l'établissement, si vous préférez ne rien exposer.
+
+Ensuite, sur l'appareil :
+
+| Appareil | Geste |
+|---|---|
+| Android (Chrome, Edge, Samsung Internet) | menu ⋮ › **Installer l'application** |
+| iPhone, iPad (Safari uniquement) | bouton **Partager** › **Sur l'écran d'accueil** |
+| Windows, macOS (Chrome, Edge) | icône d'installation dans la barre d'adresse |
+
+Le menu **Installation hors ligne** de l'outil affiche ces étapes selon l'appareil, signale les
+mises à jour disponibles et permet de vider le cache. Vider le cache n'efface aucune fiche.
+
+Sur iPhone et iPad, l'écriture directe dans un dossier n'existe pas : Safari n'implémente pas cette API.
+Exportez à la main (**Exporter tout en JSON**, ou le téléchargement du JSON de chaque fiche à
+l'enregistrement), puis fusionnez sur le poste principal.
+
+---
+
+## Quatre types de fiche, un seul outil
+
+Le premier champ de la fiche, **Type de consultation**, décide de ce que la fiche demande et de
+ce que le document imprimé raconte.
+
+| Type | Ce que la fiche demande | Ce que le document produit |
+|---|---|---|
+| **Consultation initiale** | Tout : accueil, plongée, plongée précédente, facteurs favorisants, plongeur, anamnèse, examen complet | Un compte rendu de prise en charge en urgence |
+| **Consultation de suivi** | L'examen clinique, l'examen neurologique et un encart d'évolution | Une fiche neurologique standardisée augmentée du paragraphe d'évolution |
+| **Consultation de sortie / CRH** | Tout, plus l'évolution | Un compte rendu de séjour |
+| **Séance de recompression (sans examen)** | Seulement l'identification et la recompression : table, heures, complication | Un document d'une page |
+
+Sur une consultation de suivi, les encarts de plongée, de plongée précédente, de facteurs
+favorisants, de plongeur et d'anamnèse **disparaissent** : ces données appartiennent à la fiche
+initiale et ne se ressaisissent pas. Seuls l'anamnèse, l'examen général et l'examen neurologique sont
+proposés en grisé depuis l'examen précédent ; les actes, les examens complémentaires et la conclusion ne sont jamais repris.
+Quelques éléments suivent le dossier d'une fiche à l'autre, sans rien imposer : le poids de la fiche initiale (pour les doses), le
+diagnostic retenu, la prednisolone encore à prescrire et les séances depuis la consultation précédente (voir *Consultation de suivi ou de sortie*).
+
+Le **délai accident → examen** (identification) n'a d'intérêt que pour le premier examen : il n'est **calculé et affiché que sur la consultation initiale**. Sur un suivi, une sortie ou une séance il n'est ni calculé ni affiché
+(une valeur enregistrée avant la 9.3.2 disparaît au prochain calcul) ; la colonne `delai_min` du fichier de données reste, vide hors consultation initiale.
+
+Le type est proposé, jamais imposé : la première fiche d'un dossier part sur *initiale*, les
+suivantes sur *suivi*. Vous changez d'un clic, la fiche se recompose aussitôt (ce qui est masqué n'est pas effacé). La *séance de recompression* n'est jamais proposée
+d'office : on la choisit, ou on la crée d'un clic avec le bouton **Séance de recompression**.
+
+### La séance de recompression sans examen
+
+Une séance de recompression thérapeutique se cote **en quelques clics, sans examen clinique**. Ouvrez une fiche du patient (sa pastille, la liste de gauche ou *Rechercher un patient*), puis
+cliquez **Séance de recompression** dans la barre du haut (icône de caisson) ; sans fiche de patient ouverte, le bouton ouvre la recherche et crée la séance pour le patient choisi.
+Une fiche de type *séance* s'ouvre pour le même dossier :
+
+- l'**identité** est reprise ; la **date** est celle du jour (modifiable : « Date de la séance »), l'**heure** celle du moment ;
+- la **table** est celle de la dernière recompression cotée du dossier (B18 faute de recompression) ; un clic en choisit une autre ;
+- l'**heure de mise en pression** est proposée (l'heure d'enregistrement) : elle **date la fiche** ; corrigez-la si la séance a eu lieu plus tôt (« + » ou espace écrit l'heure
+  du moment) ; l'**heure de fin** se calcule d'après la table ;
+- la **complication thérapeutique** (OUI ou NON, facultative), avec son texte.
+
+Puis **Enregistrer**. Deux clics suffisent quand la table proposée est la bonne. La fiche n'affiche que ces deux encarts (identification et recompression) : ni examen, ni
+anamnèse, ni diagnostic, ni « tout normal ». On peut aussi choisir ce type dans « Type de consultation ».
+
+**Numérotation.** Les consultations (initiale, suivi, sortie) gardent leurs numéros 1, 2, 3… Une séance sans examen **ne prend pas de numéro** : elle porte celui du **dernier examen
+qui la précède**, suivi d'une **lettre minuscule**, dans l'ordre : **EX3b**, EX3c… (la première séance après l'examen 3 est EX3b, la suivante EX3c ; EX0b avant tout examen). Les
+rangs se recalculent à chaque enregistrement, suppression ou import, d'après la date et l'heure : une consultation saisie après coup entre deux séances les renumérote, et les fichiers
+sont renommés. La lettre figure dans le bandeau (« Examen n° 3b »), la liste des fiches (« ex. 3b »), le nom du PDF (`…_ex3b`) et **le nom du fichier JSON**
+(`187-2026_50987654-EX3b.json` : dossier de données, export, ZIP, téléchargement, corbeille ; voir *Le nom des fichiers JSON*).
+
+**Ce que la séance change ailleurs.**
+
+- *Fichier de données* : `fiche_type` = 4, `num_ex` = le numéro du dernier examen (il n'est donc plus unique dans le dossier : filtrez sur `fiche_type`), `num_ex_lettre` = `b`, `c`… ;
+  tout le reste est vide, sauf la table et les heures de la recompression.
+- *Recompressions* : une séance sans examen compte **une séance**, de son type de table (ou « type non précisé » sans table), au compte rendu et dans les lignes Excel.
+- *« Séances depuis la dernière consultation »* : la recompression de la consultation précédente **plus** les séances saisies sans examen depuis.
+- *Compte rendu d'hospitalisation* : la séance figure dans la **prise en charge**, datée (« Le 06/10/2026 à 14 h 00 (J1) : Table A15 (mise en pression à 14 h 00, fin à 15 h 35). »), et dans le
+  décompte ; elle ne figure ni dans l'évolution, ni dans les examens, ni dans les scores.
+- *Lignes Excel* : la séance est comptée dans la colonne de sa table (ligne COHB, heures ouvrables ou « HNO » d'après son heure de mise en pression ; colonnes BS et BT de la ligne ADP) ;
+  la « dernière consultation » (séquelles, inaptitude) reste celle de la dernière consultation.
+- *Examen précédent* : l'examen proposé en grisé pour une nouvelle consultation est la dernière **consultation**, jamais une séance. La séance ne reprend ni diagnostic, ni prednisolone, ni poids.
+
+---
+
+## Le cadre de la consultation
+
+Depuis la 11.1.1, toute **nouvelle fiche** commence par une étape préalable : le **choix du cadre de la consultation**. Le cadre dit de quoi parle la consultation ; il détermine ce que la synthèse met en avant
+et prépare les futures interfaces du logiciel (une par cadre). Cliquez la carte du cadre : le formulaire s'ouvre, le curseur est sur le numéro de dossier.
+
+| Cadre | Code (colonne `cadre`) | État |
+|---|---|---|
+| Accident de plongée (ADD) | `1` | actif : l'interface actuelle |
+| Œdème pulmonaire d'immersion (OPI) | `2` | actif : même fiche, **sans score ASIA et sans table de recompression cochée d'office** (depuis la 12.1.1) ; l'examen cardio-respiratoire est mis en avant dans la synthèse |
+| Mixte (accident de désaturation et OPI) | `3` | actif : l'examen neurologique puis l'examen cardio-respiratoire sont mis en avant |
+| Intoxication au monoxyde de carbone | `4` | **actif depuis la 12.1.1** : interface propre, **proposée, à valider** (voir *L'intoxication au monoxyde de carbone*) |
+| Embolie gazeuse | `5` | annoncé |
+| Autre urgence hyperbare | `6` | annoncé |
+| Consultation d'hyperbarie chronique (hors urgence) | `7` | annoncé |
+| Consultation spécialisée hors AMM (off-label) | `8` | annoncé |
+| Consultation d'expertise (professionnelle ou de loisir) | `9` | annoncé |
+
+- Les cadres annoncés se voient mais ne se choisissent pas : un message dit qu'ils arrivent dans une prochaine version.
+- Le cadre se change ensuite dans l'onglet *Administratif* (champ **Cadre de la consultation**) ; le bandeau patient le rappelle (« OPI · Consultation initiale »). Choisir le cadre ne marque pas la fiche comme modifiée.
+- Un **ré-examen** et une **séance de recompression** reprennent le cadre de la fiche ouverte et ne repassent pas par l'écran du choix. Une fiche **enregistrée avant la 11.1.1** n'a pas de cadre : c'est une fiche d'accident de plongée (colonne `cadre` vide).
+- Dans `index.html`, le registre `CADRES` porte le code, le nom, le nom court (bandeau) et l'état de chaque cadre ; une section du `SPEC` peut se limiter à certains cadres avec la clé `cadres:[codes]`, et, depuis la 12.1.1, un **champ** aussi
+  (`cadres:[…]` : il n'est plus affiché pour les autres cadres, sa valeur reste dans la fiche) ; le titre d'une section peut changer selon le cadre (`tc:{4:'Terrain du patient'}`), comme le titre et le sous-titre d'un onglet (`lc`, `sc` de `PAGES`). C'est la base des interfaces à venir.
+- **Changer de cadre ne perd rien** : ce qui n'est plus affiché reste dans la fiche et réapparaît si l'on revient au cadre d'avant. Les valeurs proposées d'office que le nouveau cadre ne propose pas sont retirées quand elles n'ont pas été modifiées (la table B18 reste si une heure de
+  mise en pression ou une complication la fonde) ; sur une fiche pas encore enregistrée, celles que le nouveau cadre propose sont données aux cases vides.
+- **Œdème pulmonaire d'immersion seul** (depuis la 12.1.1) : quand le diagnostic retenu est l'œdème pulmonaire d'immersion **sans accident de désaturation** (à défaut de diagnostic : quand le cadre est « OPI »), il n'y a **aucun score ASIA** : la section « Score ASIA » de l'onglet
+  Examen neurologique disparaît, aucune colonne `asia_*` n'est calculée ni enregistrée, et la synthèse, le compte rendu d'hospitalisation, le texte court, le papier et la ligne Excel n'en parlent pas. Le cadre **mixte** et l'accident de désaturation gardent le score ASIA.
+  Sous le cadre OPI, **aucune table de recompression n'est cochée d'office** (la B18 reste proposée sous les cadres accident de plongée et mixte) ; une table choisie à la main, ou fondée sur une heure de mise en pression, reste. Un diagnostic « œdème pulmonaire d'immersion » retenu sous un autre cadre n'écrit pas non plus, dans la synthèse et le compte rendu,
+  une B18 restée seule (sans heure de mise en pression, de fin ni complication).
+
+---
+
+## L'intoxication au monoxyde de carbone (cadre 4)
+
+Depuis la **12.1.1**, le cadre **Intoxication au monoxyde de carbone** (code `4`, nom court « CO ») ouvre une **interface proposée, à valider** : elle remplace les encarts propres à la plongée par ceux de l'intoxication. Elle s'ouvre depuis la carte du cadre à la création d'une fiche,
+ou depuis le champ *Cadre de la consultation* de l'onglet Administratif (changer de cadre ne perd rien, voir *Le cadre de la consultation*). Le bandeau patient dit « CO · Consultation initiale » et n'a plus de « Accident n° ».
+
+**Ce qui est retiré pour ce cadre** (les valeurs déjà saisies restent dans la fiche) : la plongée, la plongée précédente, les facteurs favorisants et l'anamnèse de plongée ; dans l'encart du plongeur, les niveaux, l'organisme, l'expérience, le certificat et les antécédents de plongée (l'encart devient **Terrain du patient** :
+poids, taille, IMC, antécédents, tabac, traitement, allergies) ; l'ORL, le vestibulaire, les signes subjectifs, les lésions cutanées de désaturation, la miction, les sensibilités, la grille **ASIA**, les scores MEDSUBHYP et vestibulaire (masqués) ; la douleur rachidienne ; les bilans « accident de plongée » et « œdème pulmonaire d'immersion », la prednisolone,
+le numéro d'accident, la localisation à l'appel, l'aspirine ; à la sortie, les séquelles MJOAS et l'inaptitude à la plongée. **Aucune valeur n'est proposée d'office** (ni B18, ni aspirine, ni bilans, ni profil, ni déséquipement, ni MJOAS) et le diagnostic **Accident biochimique — intoxication au monoxyde de carbone** est proposé sur une fiche neuve
+(il s'en va si l'on quitte le cadre sans l'avoir modifié). « Tout renseigner comme NORMAL » ne cote ni les sensibilités ni les champs retirés.
+
+**Les onglets** (consultation initiale) :
+
+| Onglet | Encarts |
+|---|---|
+| 2 · Anamnèse et intoxication | **Terrain du patient** ; **Circonstances de l'intoxication** ; **Symptômes et évolution initiale** |
+| 3 · Examen clinique général | constantes, conscience, fonctions supérieures, examen par appareil, signes fonctionnels (céphalées, douleur cotée) |
+| 4 · Examen neurologique | réflexes, force, coordination, équilibre et marche, **Évaluation cognitive**, conclusion de l'examen clinique |
+| 5 · Examens complémentaires | **Carboxyhémoglobine et oxygène** ; actes ; gaz du sang veineux et artériel (HbCO, méthémoglobine) ; biologie ; examens |
+| 6 · Conclusion et évolution | **Gravité et indication d'oxygénothérapie hyperbare** ; recompression ; traitements ; diagnostic retenu ; **Suivi et prévention** ; orientation |
+
+Sur une consultation de suivi ou de sortie, l'onglet 2 disparaît (comme celui de la plongée) ; l'évaluation cognitive, le CO, la gravité et le suivi restent.
+
+- **Circonstances** : *source présumée* (chauffage d'appoint, chaudière ou chauffe-eau, poêle ou cheminée, braséro ou barbecue, groupe électrogène ou outil thermique, moteur de véhicule, fumées d'incendie, narguilé, air respirable de plongée, autre) et ses précisions ; *lieu* (domicile, lieu de travail, véhicule, bateau,
+  établissement recevant du public, autre) ; *contexte* (accidentelle, volontaire — tentative d'autolyse, écrite en gras —, professionnelle, indéterminée) ; **début et fin d'exposition estimés**, d'où la **durée d'exposition calculée** en minutes (rien si la fin précède le début ou si une date manque) ; nombre de personnes exposées et de symptomatiques ; animaux domestiques malades ou morts ;
+  détecteur de CO dans le local.
+- **Symptômes** : quatorze cases (céphalées, vertiges, nausées ou vomissements, asthénie, troubles visuels, confusion, troubles mnésiques ou de la concentration, troubles de la marche, douleur thoracique, dyspnée, palpitations, myalgies ou crampes, irritabilité ou troubles du comportement, somnolence) ; **perte de connaissance initiale** (non, brève,
+  prolongée, coma) et sa durée ; convulsions ; histoire de la maladie (avec des phrases à cliquer) ; évolution depuis la soustraction à l'exposition.
+- **Évaluation cognitive** : **MoCA** et **MMSE** sur 30 (en gras sous 26 et sous 27) et les troubles décrits.
+- **Carboxyhémoglobine et oxygène** : bilan CO prélevé ; **rappel des HbCO saisies** dans les gaz du sang du dossier (en rouge au-dessus de 2 %) ; **SpCO** et son heure ; **minutes d'oxygène normobare avant le 1er prélèvement** (sous oxygène la HbCO baisse vite : la première valeur sous-estime l'exposition). La HbCO se saisit dans les encarts *Gaz du sang artériel* ou *veineux*.
+- **Gravité et indication d'oxygénothérapie hyperbare** : une **aide**, jamais une décision. L'encart propose, **d'après la fiche**, les critères retrouvés : perte de connaissance (même brève) ; troubles de la conscience (Glasgow inférieur à 15, AVPU altéré, coma) ; signes neurologiques (déficit moteur ou de coordination, signe pyramidal, paralysie faciale, troubles de la parole ou visuels, convulsions) ;
+  troubles cognitifs ou du comportement (MoCA inférieur à 26, MMSE inférieur à 27, confusion, troubles mnésiques, désorientation) ; signes cardiaques (douleur thoracique, palpitations, anomalie cardio-vasculaire à l'examen, troponine au-dessus de 14 ng/L) ; **grossesse** (question posée aux femmes seulement : non, oui, à vérifier) ;
+  **HbCO de 25 % ou plus** (constante `CO_HBCO_SEUIL`) ; lactates au-dessus des valeurs normales. Le bouton **reprendre ces critères** les coche ; **les critères cochés et l'indication (Indiquée, Non indiquée, À discuter — avis spécialisé) restent ceux du médecin**, avec un texte de précisions. L'encart se remet à jour à chaque saisie.
+- **Suivi et prévention** : déclaration ou signalement (centre antipoison, ARS, sapeurs-pompiers, médecine ou inspection du travail, affaires maritimes, autre) ; consignes de prévention données (case) ; autres personnes exposées, examinées ou orientées ; suivi à distance (bilan neuropsychologique, consultation de contrôle à 1 mois, IRM cérébrale si symptômes persistants, bilan cardiologique).
+
+**La synthèse, le compte rendu, le texte court et le papier** suivent. La synthèse remplace *Le plongeur* et *La plongée* par **Le patient** et **Circonstances de l'intoxication**, écrit **Histoire des symptômes** (récit, symptômes, perte de connaissance en gras, convulsions, évolution), ajoute le **SpCO** aux constantes, dit l'examen **neurologique puis cardio-respiratoire** en détail,
+ajoute **Évaluation cognitive**, une ligne **Carboxyhémoglobine** aux examens paracliniques (en gras au-dessus de 2 %, avec les minutes d'oxygène avant le 1er prélèvement), **Gravité et indication d'oxygénothérapie hyperbare** (après le diagnostic retenu) et **Suivi et prévention** (après la conduite à tenir). Aucune table n'y est écrite sans qu'on l'ait cochée. Le tableau du gaz du sang artériel porte la HbCO en rouge. Dans le **texte court**,
+la HbCO, l'indication d'OHB et la perte de connaissance sont parmi les dernières phrases retirées. Le **compte rendu d'hospitalisation** reprend les paragraphes de la fiche initiale, la gravité et l'indication d'OHB **de la première fiche qui les porte** (l'admission), le suivi et la prévention **de la plus récente** ; ni score MJOAS ni aptitude à la plongée. Le **papier** est titré « INTOXICATION AU MONOXYDE DE CARBONE »
+(« Date / heure de l'intoxication », « Délai intoxication→examen ») : sa première page porte l'entrée, le terrain, les circonstances et les symptômes ; l'examen neurologique se termine par l'évaluation cognitive et la conclusion ; la page de la prise en charge porte le CO, la gravité et le suivi ; **ni grille ASIA, ni schémas sensitifs, ni pallesthésie, ni miction, ni ORL, ni scores**.
+
+**Les fichiers de données** : 79 colonnes s'ajoutent (voir *Structure des colonnes*) : `bio_co`, `co_*` ; une liste à cases a une colonne par case (`co_source_chauff`…), le dictionnaire donne les codes. Les lignes Excel ADP et COHB se composent sans erreur pour un dossier de CO (pas d'adaptation propre : les colonnes de plongée y sont vides).
+
+**À valider** : le contenu de chaque encart, la liste des critères et le seuil de HbCO (25 %), les libellés, la place de chaque encart, l'absence de table de recompression proposée (l'OHB du CO se cote sous « Recompression », table « Autre (préciser) » à défaut d'une table du service pour le CO), et l'usage des lignes Excel.
+
+---
+
+## Les six onglets de saisie
+
+La fiche est découpée en six onglets, dans l'ordre réel de la consultation. Les onglets en haut mènent
+directement à l'un d'eux, le bouton **Suivant** du bas de page avance d'un onglet, **Précédent** recule. Le bandeau
+patient porte aussi, à droite, un bouton **Suivant** qui nomme l'onglet à venir (Anamnèse, Examen, Neuro,
+Examens compl., Conclusion) et y mène sans descendre en bas de page. Chaque onglet porte son compte de champs remplis, et se borde
+de vert quand il est complet.
+
+| Onglet | Contenu |
+|---|---|
+| 1. Administratif | Identification, mode d'entrée et prise en charge initiale (arrivée, médecin, adressé par, alerte avec le **lieu de l'accidenté au moment de l'appel**, évacuation, soins sur place), **identité complémentaire** (nationalité, profession, adresse, téléphone, e-mail), contacts |
+| 2. Anamnèse et plongée | Le plongeur (poids, taille et IMC, antécédents, habitudes toxiques, traitement, niveaux de plongée, avec photo de l'ordonnance), plongée (profil, apnée, durées, paliers, procédure de ré-immersion), plongée précédente, facteurs favorisants et conditions environnementales, anamnèse |
+| 3. Examen clinique général | Constantes et surveillance, examen par appareil, conscience, pupilles et fonctions supérieures, ORL et barotraumatisme, **examen vestibulaire**, signes fonctionnels, signes subjectifs, lésions cutanées |
+| 4. Examen neurologique | Réflexes, force motrice, miction, **coordination, équilibre et marche**, sensibilités, grille ASIA, scores de sévérité, conclusion de l'examen clinique |
+| 5. Examens complémentaires | **Actes** (voie veineuse, bilan biologique, sondage vésical), **gaz du sang veineux** et **biologie** (horodatés, avec leurs valeurs normales), examens complémentaires (ECG, radiographie et scanners, IRM, échographie cardiaque, **épreuve d'effort, MAPA**, doppler transcrânien, autres examens, examens demandés), échographie pleuro-pulmonaire |
+| 6. Conclusion et évolution | Recompression, traitements prescrits, évolution (suivi et sortie), diagnostic retenu, **séquelles (score MJOAS) et arrêt de travail** (consultation de sortie), sortie (consultation de sortie), orientation et commentaires, compte rendu d'hospitalisation (consultation de sortie), pièces jointes |
+
+Sur une **consultation de suivi ou de sortie**, l'onglet « Anamnèse et plongée » n'a plus rien à montrer (la
+plongée reste sur la fiche initiale) : il disparaît, et les onglets se renumérotent. Une **séance de recompression sans examen** n'a qu'**un seul onglet**.
+
+La synthèse rédigée reste visible en permanence, sous la fiche, quel que soit l'onglet.
+
+### Le bandeau patient
+
+Sous la barre d'outils, un **bandeau reste affiché en permanence**, quel que soit l'onglet et le défilement :
+**nom, prénom, date de naissance (avec l'âge), numéro d'accident de plongée, numéro de dossier, numéro de
+l'examen, date d'entrée et dernier diagnostic retenu**. À droite, le type de consultation et le bouton **Suivant** (voir
+plus haut) : il porte le nom court de l'onglet suivant, ne s'affiche pas sur le dernier onglet, et propose *Examen* sur une
+consultation de suivi ou de sortie, qui n'a pas d'onglet Anamnèse.
+
+- La **date d'entrée** est celle du **premier examen du dossier** (la fiche la plus ancienne).
+- Le **dernier diagnostic retenu** est celui de la fiche la plus récente du dossier qui en porte un, fiche ouverte
+  comprise, écrit comme dans la synthèse (« Accident de désaturation (médullaire et vestibulaire) ») sans l'indication
+  du diagnostic principal ; le texte complet est dans l'infobulle quand il est coupé.
+- La **couleur** du bandeau suit le patient : **rose** pour une femme, **bleu** pour un homme, **vert** pour un **enfant** (moins de 18 ans, quel que soit le sexe),
+  **gris-bleu** tant que le sexe n'est pas renseigné (ou « autre »).
+- L'**âge** s'écrit à côté de la date de naissance, à la date de l'examen : « 38 ans » ; pour un **mineur**, en **années et mois** (« 14 ans et 5 mois »).
+- Le **numéro d'examen** s'écrit « 3b » pour une séance de recompression sans examen.
+
+Il suit la saisie ; une valeur absente s'affiche « — ». Un clic sur le bandeau ramène à l'onglet Administratif.
+Sur téléphone, il passe sur plusieurs lignes. Il ne s'imprime pas.
+
+### L'âge
+
+L'âge est calculé **à la date de l'examen** d'après la date de naissance. Adulte : « 38 ans ». **Mineur** (moins de 18 ans) : en **années et mois**, « 14 ans et 5 mois »
+(« 14 ans » à l'anniversaire exact, « 8 mois » avant un an, « moins d'un mois » avant un mois). Un mois n'est compté qu'au même quantième (né le 31, le 30 du mois suivant :
+pas encore un mois). Cette écriture se retrouve dans le champ « Âge », le bandeau, la synthèse (« Plongeuse de 14 ans et 5 mois »), le compte rendu et le papier. Le **fichier de
+données** garde `age` (années révolues, entier) et ajoute `age_mois` (mois en plus, de 0 à 11, pour un mineur seulement, vide pour un adulte) ; la ligne Excel ADP (colonne F) reste en années.
+
+### Le nombre total de plongées
+
+L'encart « Le plongeur » (onglet « Anamnèse et plongée ») demande le **nombre total de plongées réalisées** (carnet de plongée), avec le nombre
+moyen par an. Les deux figurent dans la synthèse (« 1200 plongées au total ; 80 par an en moyenne ») et dans le
+CSV (`nb_plongees_total`).
+
+---
+
+## Le profil de plongée et les durées
+
+L'encart « Paramètres de la plongée accidentelle » (onglet « Anamnèse et plongée ») décrit la plongée : heures, profondeur,
+paliers, type de profil et, le cas échéant, la procédure de ré-immersion. Le schéma se dessine seul,
+se redessine à chaque frappe et s'imprime en noir et blanc sur la page 1 du PDF.
+
+Depuis la 9.3.5, l'encart porte aussi, sous le type de plongée, le **type de tenue** (humide, semi-étanche, étanche, ou autre à préciser : `pl_tenue`, `pl_tenue_autre`) et le **déséquipement sur le lieu de plongée**
+(OUI / NON : `pl_deseq`), **OUI proposé d'office** sur une consultation initiale et modifiable (une fiche enregistrée avant la 9.3.5 n'est pas remplie d'office : rien n'est inventé). La synthèse écrit la tenue dans la phrase de la plongée
+(« …, à l'air, tenue étanche, 40 m, … ») et le déséquipement avec les soins sur place (« déséquipement sur le lieu de plongée », ou « pas de déséquipement… » si vous cochez NON) ; le papier les imprime avec les autres
+paramètres, et la **ligne Excel ADP** les reprend (colonnes AC et AY : voir *La ligne Excel ADP*).
+
+### Heures, profondeur et paliers
+
+- **DS** départ surface (heure d'immersion), **DF** départ fond (heure), **HS** heure de sortie de
+  l'eau, **Pmax** profondeur maximale atteinte.
+- **Paliers** : une ligne par palier, avec le gaz, la profondeur et la durée à la profondeur. La case
+  *paliers de sécurité réalisés (non obligatoires)* propose 1 min à 6 m et 5 min à 3 m, modifiables.
+
+### Les cinq types de profil
+
+Un bouton à vignette choisit le type. **La remontée progressive est proposée d'office** sur une consultation
+initiale, et c'est elle qui est dessinée quand aucun type n'est choisi (c'était le profil carré dans la 7.4.0). Le
+titre du type est inscrit sur le schéma.
+
+| Type | Ce que dessine le schéma | Données propres au type |
+|---|---|---|
+| **Carré** | descente, séjour au fond, remontée | aucune |
+| **Inversé** | plus profond en fin de plongée : un premier plateau moins profond, puis le passage à Pmax | profondeur de la 1re phase ; heure d'arrivée à Pmax (facultative : sans elle, le passage est dessiné aux deux tiers du séjour au fond) |
+| **Yoyo** | remontées et réimmersions répétées | nombre de remontées, amplitude, remontées jusqu'à la surface ou non, intervalle de surface le plus long |
+| **Remontée progressive** | descente à Pmax, **plateau à Pmax**, puis remontée lente et ondulée **pendant DT**, jusqu'au départ du fond (DF) ; la remontée finale (DTR) part ensuite de cette profondeur | **durée à la profondeur maximale** (`pl_dpmax`, en minutes, comptée dans DT ; sans valeur, une minute ou deux sont dessinées, et au plus 80 % de DT) ; profondeur au départ du fond ; sans valeur, 40 % de Pmax est dessiné (au moins 3 m au-dessus du premier palier) |
+| **Apnée** | pas de schéma : l'apnée se décrit par ses paramètres (voir ci-dessous) | nombre d'apnées, intervalle de surface, décompression éventuelle |
+
+Une plongée à **yoyo** se définit par des remontées et des réimmersions d'**au moins 10 m** de
+variation de profondeur ; si elles atteignent la surface, l'**intervalle de surface** doit être
+**inférieur ou égal à 15 minutes**. Une alerte signale le cas contraire, ainsi que l'absence de coche
+sur le facteur favorisant « Plongées ludion (yo-yo) ». Le CSV porte une colonne calculée
+`pl_yoyo_crit`.
+
+### L'apnée
+
+Le type de profil **Apnée** change les paramètres demandés. Il se choisit de deux façons équivalentes : le bouton
+« Apnée » du **type de profil**, ou « Apnée » du **type de plongée** (les deux boutons se suivent : choisir l'un
+choisit l'autre, et en sortir en sort aussi ; un type de plongée de contexte, loisir, instruction, professionnelle ou
+militaire, n'est jamais écrasé par le choix du profil).
+
+| Paramètre | Champ |
+|---|---|
+| Profondeur maximale des apnées | `pl_prof` (Pmax : le champ s'intitule alors « Profondeur maximale des apnées (m) ») |
+| Nombre d'apnées | `ap_nb` |
+| Intervalle de surface entre les apnées (min) | `ap_interval` |
+| Décompression après les apnées | `ap_decomp` : `0` aucune, `1` par réimmersion, `2` en surface |
+| Par réimmersion | `ap_rim_int` (intervalle après la dernière apnée, min), `ap_rim_duree` (min), `ap_rim_prof` (m), `ap_rim_gaz` (type de gaz) |
+| En surface | `ap_surf_int` (intervalle, min), `ap_surf_duree` (min), `ap_surf_gaz` (gaz respiré) |
+
+L'heure d'immersion (DS), l'heure de sortie de l'eau (HS) et la durée totale (DTP) restent disponibles : HS sert au
+délai « sortie de l'eau → premiers symptômes ». **Sont masqués**, et leurs valeurs retirées, le mélange respiré, la
+procédure de décompression, DF, DT, DTR, les paliers et la procédure de ré-immersion, qui ne s'appliquent pas à
+une apnée. Revenir à un autre type de profil les rend visibles, mais ne les rétablit pas. La synthèse écrit « Plongée en
+apnée … 12 apnées, intervalle de surface 2 min, décompression par réimmersion (intervalle 10 min, durée 15 min,
+profondeur 6 m, oxygène) » ; le papier imprime une ligne « Apnées » à la place du schéma.
+
+### DT, DTR et DTP : les heures ou les durées
+
+Les relations : **DT = DF − DS**, **DTR = HS − DF**, **DTP = HS − DS = DT + DTR**. Les heures ne sont
+pas obligatoires : la DTR et la DTP sont des champs ordinaires, proposés d'après les heures, que l'on
+peut aussi **saisir directement**. Une valeur saisie n'est jamais recalculée.
+
+| Ce que vous renseignez | Ce que l'outil en tire |
+|---|---|
+| DS, DF et HS | DT, DTR et DTP |
+| DTR et DTP | DT = DTP − DTR |
+| DTP seule (avec Pmax et les paliers) | DTR **estimée** d'après le modèle ci-dessous, puis DT = DTP − DTR ; le schéma écrit « (estimée) » |
+| DTR seule | DT inconnue : le schéma dessine un séjour au fond de durée nominale |
+
+La colonne `pl_dtr_src` du CSV dit d'où vient la DTR : `1` d'après les heures, `2` saisie, `3`
+estimée, `4` déduite de DTP − DT.
+
+### Les heures qui manquent se complètent seules
+
+Dans l'autre sens, **DS, DF et HS se déduisent** quand les autres données suffisent. L'outil part de
+ce qui a été **saisi à la main**, heures et durées, et applique les relations ci-dessus :
+
+| Vous avez saisi | L'outil propose |
+|---|---|
+| HS et DTP | DS = HS − DTP |
+| DS et DTP | HS = DS + DTP |
+| HS et DTR | DF = HS − DTR |
+| DF et DTR | HS = DF + DTR |
+| DS, DTP et DTR | DF = DS + (DTP − DTR) |
+| DF, DTP et DTR | DS = DF − (DTP − DTR) |
+
+Les déductions se combinent (HS, DTR et DTP donnent DS et DF) et passent minuit (HS à 00:10 et DTP de
+30 min donnent DS à 23:40). Les heures proposées se retrouvent dans le schéma, la synthèse, le PDF et
+le CSV.
+
+Elles restent **modifiables** : une heure ou une durée saisie à la main n'est jamais remplacée, même
+quand une autre donnée la contredit (une alerte sous le schéma le signale). Une proposition ne repose
+que sur des valeurs saisies, jamais sur une autre proposition : une heure déduite de la DTP ne
+« confirme » donc pas cette DTP. La **DTR estimée** d'après la profondeur et les paliers n'est qu'une
+estimation, elle ne sert pas à déduire une heure.
+
+### Le modèle de remontée
+
+- **Vitesse de remontée standard : entre 9 et 12 m/min** jusqu'au premier palier ;
+- **entre deux paliers, et du dernier palier à la surface : 10 secondes par mètre** ;
+- les durées s'additionnent en secondes, et l'**arrondi à la minute supérieure se fait une seule
+  fois, à la fin de la DTR** (pas à chaque changement de palier).
+
+La **DTR attendue** s'affiche en fourchette : la vitesse la plus rapide (12 m/min) donne le minimum,
+la plus lente (9 m/min) le maximum. Exemple : 40 m, 3 min à 6 m et 5 min à 3 m, soit 12 à 13 min.
+La DTR estimée est le milieu de la fourchette, arrondi à la minute supérieure.
+
+Quand la DTR est connue, l'outil en **déduit la vitesse de remontée** (distance jusqu'au premier
+palier ÷ temps de montée, une fois retirés les paliers et les changements de palier). Au-dessus de
+12 m/min, une alerte indique une remontée plus rapide que la vitesse standard. Le CSV porte
+`pl_dtr_att_min`, `pl_dtr_att_max` et `pl_vit_remontee`.
+
+Pour une remontée progressive, la remontée finale part de la profondeur du départ du fond, et non
+de Pmax : c'est elle qui sert au calcul de la DTR attendue.
+
+### Remontée rapide ou non conforme : procédure de ré-immersion
+
+Un encart décrit la procédure, toujours modifiable. Les valeurs proposées sont celles de la
+procédure usuelle :
+
+- **Remontée rapide (RR)** : ré-immersion **en moins de 3 min** après l'émersion (sans émersion, le
+  plongeur a décidé d'interrompre sa remontée), retour à **mi-profondeur** pendant **5 min**, puis
+  remontée à la vitesse standard (9 à 12 m/min), puis **au minimum 1 min à 6 m et 5 min à 3 m** ;
+- **Remontée non conforme** : au minimum 1 min à 6 m et 5 min à 3 m.
+
+On indique si la procédure a été réalisée, l'émersion et son délai, la profondeur de ré-immersion
+(la moitié de Pmax est proposée), les durées. La description est **rédigée d'après ces paramètres**,
+reste modifiable à la main, et passe dans la synthèse et sur le PDF.
+
+---
+
+## Facteurs favorisants et conditions environnementales
+
+L'encart « Facteurs favorisants » (onglet « Anamnèse et plongée ») compte onze questions OUI / NON : les dix d'origine et, depuis la 9.3.5, **« Progressivité respectée »** (`ff_progress`), juste sous le respect de la procédure
+de décompression. OUI est la réponse normale (« Tout normal » la coche) ; NON est un facteur favorisant : la synthèse écrit « progressivité non respectée » avec les autres facteurs, et « procédure de décompression et progressivité
+respectées » quand aucun facteur n'est retrouvé. La ligne Excel ADP n'a pas de colonne pour elle : elle n'y figure pas (la colonne « Observations » reste vide depuis la 9.5.1). Sous ces questions, un
+bloc **Conditions environnementales** cote à chaque plongée :
+
+- le **courant** : OUI ou NON (`ff_courant`) ;
+- la **houle de surface** : OUI ou NON (`ff_houle`) ;
+- la **visibilité** : bonne, mauvaise ou inférieure à 1 m (`ff_visib`, codes `1`, `2`, `3`) ;
+- un **texte libre** de précisions (`ff_env`), avec quelques phrases à cliquer, qui complète.
+
+La synthèse les écrit dans une phrase à part (« Conditions environnementales : courant, pas de houle de surface,
+mauvaise visibilité, mer agitée. »). Ces quatre éléments **ne sont pas des facteurs favorisants** : ils n'entrent ni
+dans la phrase « Facteurs favorisants », ni dans la règle « pas de facteur favorisant retrouvé », et « Tout normal »
+n'y touche pas. Sur le papier, ils s'impriment avec les facteurs favorisants.
+
+---
+
+## Prise en charge : recompression, actes, examens, traitements, diagnostic
+
+Cette section suit l'ordre de la prise en charge. Les **actes** (point 2, en tête de l'onglet depuis la 9.0.0), les **examens complémentaires**
+(point 3), l'**échographie pleuro-pulmonaire** (point 4) et la **biologie** (voir plus bas) ont leur propre onglet, « Examens complémentaires » ;
+la recompression, les traitements, l'évolution, le diagnostic et l'orientation restent dans « Conclusion et évolution ».
+
+1. **Recompression** : table, heures de mise en pression et de fin, complications. **Une recompression cotée sur une fiche est une séance** : l'encart
+   n'a plus de « nombre de séances réalisées » (retiré dans la 9.0.0). Les tables
+   proposées sont A15 (nommée OHB15 jusqu'à la 8.1.3), A15IOT, A18IOT, A18, B18, A18HeOx, B18HeOx, C18, et « autre » ; **B18** est
+   proposée d'office sur une consultation initiale (elle ne compte comme séance, au compte rendu et dans les lignes Excel, que si l'encart est
+   rempli : voir *Les recompressions, par type de table*).
+   L'**heure de fin** est calculée (mise en pression
+   plus durée de la table : **95** (A15, portée de 90 à 95 min dans la 8.0.0), 115, 115, 90, 150, 110, 150 et
+   300 min dans l'ordre ci-dessus) et reste modifiable.
+2. **Actes**, en tête de l'onglet « Examens complémentaires », dans cet ordre : voie veineuse périphérique, **bilan biologique** (bilan accident de
+   plongée et bilan œdème pulmonaire d'immersion cochés d'office sur une consultation initiale), puis
+   **sondage vésical** (à demeure, évacuateur, ou non) avec le **volume initial évacué**.
+3. **Examens complémentaires** : chaque examen réalisé (OUI) ouvre son **résultat** ; depuis la 12.1.1, un examen dont le résultat n'est pas encore connu se coche **« Demandé, en attente »** (voir *Les examens en attente de résultat*). ECG ; radiographie
+   thoracique ; scanner thoracique (le plus fréquent) ou cérébral ; IRM cérébrale (la plus fréquente en
+   consultation initiale) ou médullaire ; échographie cardiaque ; épreuve d'effort ; MAPA ; doppler transcrânien ;
+   échographie pleuro-pulmonaire ; autres examens ; examens demandés.
+   - **Échographie cardiaque** : la recherche de shunt droite-gauche se fait au doppler transcrânien.
+     Quand l'échographie est faite pour chercher un FOP, cochez **Recherche de FOP**, qui apparaît dès
+     que l'examen est coché OUI : la mention passe dans la synthèse et sur le PDF.
+   - **ECG** : fréquence cardiaque (bpm) et QTc (ms) ; le compte rendu est rédigé tout seul
+     (« RSR à xx bpm, d'axe non dévié, sans trouble de la conduction ni de la repolarisation. QTc à xx
+     ms. »), modifiable, et repris dans la synthèse. Il n'est rédigé qu'une fois la fréquence ou le QTc
+     saisi.
+   - **Doppler transcrânien** : le résultat se note pour trois conditions, **sans sensibilisation**,
+     **après sensibilisation allongée** et **après sensibilisation en expiration forcée** (10 s à 40 cmH₂O ; ce n'est pas le test de Flack, qui dure 40 s : l'ancien libellé est retiré depuis la 11.1.1) :
+     absence de shunt D-G, shunt de bas grade, shunt de haut grade.
+   - **Échographie pleuro-pulmonaire** : cocher OUI ouvre l'encart du même nom, plus bas.
+   - **IRM médullaire** : OUI ouvre le **résultat** (texte libre) puis, depuis la 9.4.1, trois réponses : **facteur compressif** (OUI / NON), son **type** (texte libre, avec des phrases à cliquer : hernie discale,
+     protrusion discale, canal rachidien étroit, ostéophytes, hématome épidural ; il ne se demande que si le facteur compressif est OUI) et **concordance radio-clinique** (OUI / NON). Répondre NON à l'IRM, ou NON au facteur
+     compressif, retire ce qui en dépend. La synthèse les écrit dans une seule phrase (« IRM médullaire : hypersignal médullaire dorsal ; facteur compressif (hernie discale) ; concordance radio-clinique. »), le
+     compte rendu et le papier les reprennent, et la ligne Excel ADP les met dans les colonnes CE, CF et CG.
+   - **Épreuve d'effort** et **MAPA** (depuis la 9.4.1, juste après l'échographie cardiaque) : OUI ouvre le **résultat**, *Normale* ou *Anormale*, et un **commentaire** libre. Les deux vont dans la synthèse
+     (« Épreuve d'effort : anormale ; positive à 150 W. », « MAPA : normale. »), le compte rendu, le papier et la ligne Excel ADP (colonnes CI et CJ). « Réalisée » seul est écrit quand aucun résultat n'est coté.
+   - **Examens en attente de résultat** (depuis la 12.1.1) : les treize examens (ECG, radiographie et scanner thoracique, scanner et IRM cérébrale, IRM médullaire, échographie cardiaque, épreuve d'effort, MAPA, Doppler transcrânien, échographie pleuro-pulmonaire, biopsie cutanée, capillaroscopie) ont **trois
+     réponses** : *OUI*, *NON*, *Demandé, en attente* (en orange ; code `2` dans le fichier de données). Voir *Les examens en attente de résultat*.
+4. **Échographie pleuro-pulmonaire** : douze champs par poumon, soit 24, sur deux thorax dessinés (face
+   antérieure, patient vu de face ; face postérieure, patient vu de dos). Chaque poumon porte deux
+   rangées (supérieure, inférieure) de trois champs, de l'extérieur vers la ligne médiane :
+   **latéral, médian, médial**. On choisit une cotation (**A**, **B**, **B++**, **C**, **PNO**) puis on
+   clique les champs ; un second clic avec la même cotation efface le champ. *Champs vides → A* cote A
+   les champs restés vides, *Gomme* efface, et **Appliquer … aux 24 champs** applique d'un coup la
+   cotation choisie à tous les champs, ceux déjà cotés compris (avec la gomme, le bouton efface les 24
+   champs). Un champ non coté est non examiné. La synthèse et le PDF
+   (page 2) donnent le nombre de zones et la liste des anomalies ; un pneumothorax est signalé en rouge.
+5. **Traitements prescrits** : oxygène normobare, avec sa modalité (**masque à haute concentration**,
+   15 L/min proposés, ou **VNI** avec PEP, aide inspiratoire, fréquence respiratoire et FiO₂),
+   **(méthyl)prednisolone** (dose quotidienne calculée à 1 mg/kg d'après le poids, 3 jours, l'une et
+   l'autre modifiables), remplissage, antalgiques, autres traitements. Chaque traitement **commence à gauche** de la ligne ; la méthylprednisolone et le
+   remplissage se plaçaient, jusqu'à la 8.2.1, à droite de l'oxygène. Le poids de la dose est celui de la fiche, ou, sur une fiche de suivi ou de sortie,
+   celui de la **fiche initiale** ; la prednisolone prescrite sur une fiche précédente est reprise (voir plus bas).
+6. **Évolution** (consultations de suivi et de sortie) : séances depuis la dernière consultation (proposées d'après les fiches précédentes),
+   complication, évolution jugée, commentaire, examens réalisés et, hors consultation de sortie, examens demandés.
+7. **Diagnostic retenu** : un ou plusieurs diagnostics associés, parmi accident de désaturation
+   (types : médullaire, cérébral, vestibulaire, cutané, ostéo-articulaire, pulmonaire ; case *Sévère*),
+   œdème pulmonaire d'immersion, barotraumatisme (oreille moyenne, oreille interne, sinus, surpression
+   pulmonaire, dentaire, plaquage de masque), accident biochimique (hyperoxie, hypercapnie, narcose,
+   intoxication au monoxyde de carbone), noyade. Quand plusieurs diagnostics sont retenus, un **diagnostic
+   principal** peut être désigné, s'il est déterminé. Le diagnostic figure dans la synthèse, entre les
+   examens paracliniques et la conduite à tenir. Sur une fiche de suivi ou de sortie, celui de la fiche précédente est repris à la création de la fiche.
+8. **Orientation et commentaires**, puis les **pièces jointes**.
+
+La **conclusion de l'examen clinique** (examen neurologique normal, anormal ou à recontrôler) ferme
+l'onglet « Examen neurologique ».
+
+### Les examens en attente de résultat (depuis la 12.1.1)
+
+Un examen **demandé dont le résultat n'est pas encore connu** se coche **« Demandé, en attente »**, au lieu de OUI ou NON ; on saisit son résultat sur une **consultation ultérieure** (en cochant OUI sur la fiche où il est réalisé, ou en cliquant **saisir le résultat** dans l'encart de la première page).
+
+- **L'encart « Examens en attente de résultat »** (check-list) s'affiche **tout en haut du premier onglet, uniquement s'il reste au moins un résultat à saisir** : sur une consultation de suivi ou de sortie ou sur une initiale d'un dossier qui en porte, avec une **case** par examen, la date de la demande, et deux boutons par ligne : **saisir le résultat**
+  (ouvre l'onglet des examens complémentaires, l'examen est coché OUI et son résultat ouvert) et **annuler la demande** (l'examen passe à NON sur la fiche ouverte). Il disparaît dès qu'il ne reste rien en attente. Les cases ne servent qu'à pointer ; elles n'enregistrent rien.
+- **Une demande est en attente tant qu'aucune fiche postérieure ne porte l'examen réalisé (OUI) ou annulé (NON)** ; la chaîne se lit de fiche en fiche (un examen redemandé repart d'une nouvelle date). Un examen simplement réalisé (OUI) n'apparaît jamais dans la liste.
+- **Dans la synthèse, le compte rendu, le texte court et le papier** : « IRM cérébrale demandée, résultat en attente. » (accord au féminin) ; ce n'est pas une anomalie (pas de gras). Dans le texte court, ces phrases ont la priorité 62. Le compte rendu d'hospitalisation de sortie met les examens encore en attente dans **« Examens à réaliser secondairement »**.
+- **L'encart n'est jamais imprimé** (c'est une aide de saisie). Le code `2` est dans le dictionnaire (« 2 = Demandé, en attente ») ; aucune colonne ne s'ajoute.
+
+### Consultation de suivi ou de sortie
+
+Seuls l'anamnèse, l'examen général et l'examen neurologique sont proposés **en grisé** depuis l'examen
+précédent. La recompression, les actes, les examens complémentaires et la conclusion ne sont **jamais repris** : ils sont
+nécessairement différents, et un examen coché de nouveau est un **nouvel examen**.
+
+Depuis la 9.0.0, quatre éléments suivent pourtant le dossier d'une fiche à l'autre. Tout est **proposé, modifiable, et ne remplace jamais ce que vous avez saisi** :
+
+| Élément | Ce qui est repris |
+|---|---|
+| **Poids** | Pour la dose de (méthyl)prednisolone, le poids de la **fiche initiale** (l'onglet « Anamnèse et plongée » n'existe pas sur une fiche de suivi), ou de la première fiche du dossier qui en porte un. Le poids de la fiche ouverte prime s'il y en a un. |
+| **Séances depuis la dernière consultation** | Proposées d'après les fiches **précédentes** : **1** si la dernière consultation porte une recompression cotée, **plus 1 par séance de recompression saisie sans examen** depuis, **0** sinon. Modifiables. Le 0 n'est écrit dans aucun texte. |
+| **Diagnostic retenu** | À la **création** d'une fiche de suivi ou de sortie, le diagnostic de la **fiche précédente qui en porte un** : diagnostics, types, gravité, diagnostic principal et précisions. Fait **une seule fois** : une fiche déjà enregistrée n'est jamais modifiée d'office, un diagnostic que vous videz ne revient pas, et rien de ce qui est déjà saisi n'est remplacé. |
+| **(Méthyl)prednisolone** | La prescription de la dernière fiche qui se prononce, **OUI** ou **NON** (un NON l'arrête), est reprise à la création de la fiche : OUI, **même dose** quotidienne, et pour **durée les jours restants**. Les jours se comptent en **jours calendaires** depuis la date de l'examen de la fiche qui l'a prescrite : 3 jours prescrits le 02/10 laissent 2 jours le 03/10, 1 jour le 04/10, et rien à partir du 05/10 (traitement terminé). L'heure de la première dose n'est pas reprise. |
+
+Le texte rédigé (synthèse, compte rendu) **ne répète pas** la prednisolone d'une fiche à l'autre tant que la dose ne change pas : elle s'écrit à la
+fiche qui la prescrit et à celle qui la modifie.
+
+**À la sortie**, l'encart d'évolution ne demande plus les « Examens complémentaires demandés » : ils se disent dans l'encart **Sortie : examens à
+prévoir et aptitude à la plongée** (la zone reste visible quand la fiche en porte déjà un texte). Cet encart propose en outre les **examens à réaliser
+secondairement** d'après le ou les diagnostics retenus (voir *La sortie*).
+
+---
+
+## Examens complémentaires : la biologie
+
+L'onglet « Examens complémentaires » commence par les **Actes**, puis par trois encarts de biologie, **Gaz du sang veineux**, **Gaz du sang artériel** (depuis la 12.1.1) puis **Biologie**, avant
+l'ECG, l'imagerie et les autres examens. Chaque encart est **horodaté** : la date et l'heure du prélèvement sont celles de la
+fiche dès qu'une valeur est saisie, et restent modifiables (un bilan rendu le lendemain se date du lendemain).
+
+Chaque résultat est un **champ décimal** : virgule ou point, et un « < » ou un « > » devant la valeur est accepté (« < 5 »
+pour une CRP sous le seuil de dosage). Sous le libellé, les **valeurs normales (VN)** ; à droite, l'**unité**. Une valeur
+**hors des VN** s'écrit en **gras et en rouge**, dans la fiche et dans la synthèse, **sans autre mention** (la 8.2.0 a retiré les
+mots « au-dessus des VN » et « en dessous des VN », ainsi que l'encart orange d'explication en tête de l'encart). L'en-tête de
+l'encart dit seulement combien de valeurs sont saisies. Une saisie qui n'est
+pas un nombre est refusée à la sortie du champ (la valeur enregistrée reste celle d'avant). Les bornes sont comprises dans les VN,
+sauf pour la CRP (« < 5,0 » : 5,0 est hors VN).
+
+Les valeurs normales, paramètre par paramètre, sont dans le tableau de *Les valeurs normales s'adaptent au sexe*, plus bas : celles de
+la femme sont celles de votre feuille, celles de l'homme viennent de vos annotations.
+
+L'**hémoglobine et l'hématocrite du bilan** sont reprises du gaz du sang **du même jour** tant que vous ne les saisissez pas
+vous-même (même mécanique que l'heure de fin de table : proposées, puis modifiables) ; si la date du bilan diffère de celle du
+gaz du sang, rien n'est repris et la valeur reprise est retirée.
+
+Le **gaz du sang artériel** (12.1.1) saisit la **FiO₂**, le **pH**, la **PaO₂**, la **PaCO₂**, les **HCO₃⁻**, la **SaO₂**, les **lactates** artériels, la **carboxyhémoglobine (HbCO)** et la **méthémoglobine (MetHb)** ; la **HbCO** et la **MetHb** s'ajoutent aussi au gaz du sang veineux. Les valeurs normales sont
+celles du laboratoire, **homme et femme** quand elles diffèrent (PaCO₂ : femme 32 - 45, homme 35 - 48 mmHg) ; la FiO₂ n'a pas de valeur normale. Voir le tableau plus bas.
+
+Ces champs ne comptent pas dans la complétude de l'onglet (aucune valeur n'est attendue) et ne sont **jamais proposés en grisé**
+depuis l'examen précédent : le prélèvement d'hier n'est pas celui d'aujourd'hui. Ils figurent dans le CSV (45 colonnes depuis la 12.1.1 : les 32 suivantes, plus `gds_hbco`, `gds_methb` et les onze colonnes artérielles `gaa_date`, `gaa_h`, `gaa_fio2`, `gaa_ph`, `gaa_po2`, `gaa_pco2`, `gaa_hco3`, `gaa_sao2`, `gaa_lac`, `gaa_hbco`, `gaa_methb` ; les 32 :
+`gds_date`, `gds_h`, `gds_ph`, `gds_po2`, `gds_pco2`, `gds_hco3`, `gds_hb`, `gds_ht`, `gds_lac`, puis `lab_date`, `lab_h`,
+`lab_leuco`, `lab_hb`, `lab_ht`, `lab_plq`, `lab_pnn`, `lab_fib`, `lab_dd`, `lab_prot`, `lab_gly`, `lab_creat`, `lab_dfg`, `lab_tg`, `lab_chol`,
+`lab_hdl`, `lab_ldl`, `lab_ck`, `lab_crp`, `lab_alb`, `lab_myo`, `lab_tropo`, `lab_ntbnp`), en nombres à point décimal ; une valeur saisie avec « < » ou « > »
+y reste du texte (`<5`). Les VN (celles de la femme et de l'homme quand elles diffèrent) et les unités sont dans le dictionnaire.
+
+### Les valeurs normales s'adaptent au sexe
+
+Depuis la 8.2.0, les VN suivent le **sexe** renseigné dans l'onglet Administratif (« Sexe » : M, F ou Autre) ou, à défaut, sur la première fiche du dossier qui
+le porte. Votre feuille donne les VN de la **femme** ; vos annotations donnent celles de l'**homme** quand elles diffèrent (11 paramètres sur 28) :
+
+| Encart | Paramètre | Unité | VN femme (feuille) | VN homme (annotation) |
+|---|---|---|---|---|
+| Gaz du sang artériel (12.1.1) | pH artériel | | 7,35 - 7,45 | identique |
+| | PaO₂ | mmHg | 80 - 100 | identique |
+| | **PaCO₂** | mmHg | **32 - 45** | **35 - 48** |
+| | HCO₃⁻ | mmol/L | 22 - 26 | identique |
+| | SaO₂ | % | 95 - 100 | identique |
+| | lactates artériels | mmol/L | 0,5 - 1,6 | identique |
+| | HbCO (carboxyhémoglobine) | % | 0 - 2 (non-fumeur ; jusqu'à 10 % chez le gros fumeur) | identique |
+| | MetHb (méthémoglobine) | % | 0 - 1,5 | identique |
+| Gaz du sang veineux | HbCO, MetHb (12.1.1) | % | comme les artérielles | identique |
+| Gaz du sang veineux | pH veineux | | 7,33 - 7,38 | identique |
+| | pO₂ veineux | mmHg | 33 - 37 | identique |
+| | pCO₂ veineux | mmHg | 40 - 50 | identique |
+| | HCO₃⁻ veineux | mmol/L | 24 - 30 | identique |
+| | **Hb** | g/dL | 12 - 16 | **13,5 - 17,5** |
+| | **Ht** | % | 37 - 46 | **40 - 50** |
+| | lactates veineux | mmol/L | 0,5 - 2,2 | identique |
+| Biologie | **leucocytes** | G/L | 4,020 - 11,420 | **4,090 - 11,000** |
+| | **Hb** | g/dL | 12 - 16 | **13,5 - 17,5** |
+| | **Ht** | % | 37 - 46 | **40 - 50** |
+| | **plaquettes** | G/L | 185 - 445 | **161 - 398** |
+| | **neutrophiles** | G/L | 1,78 - 6,946 | **1,692 - 7,500** |
+| | fibrinogène | g/L | 2,0 - 4,0 | identique |
+| | D-dimères | µg/mL | 0,00 - 0,50 | identique |
+| | protéines totales | g/L | 64,0 - 83,0 | identique |
+| | glycémie | mmol/L | 4,1 - 6,1 | identique |
+| | **créatinine** | µmol/L | 45,0 - 84,0 | **59,0 - 104,0** |
+| | DFG CKD-EPI | mL/min/1,73 m² | 90 - 150 | identique |
+| | triglycérides | mmol/L | 0,10 - 1,70 | identique |
+| | cholestérol total | mmol/L | 3,00 - 5,20 | identique |
+| | HDL cholestérol | mmol/L | 1,03 - 1,55 | identique |
+| | LDL cholestérol (calculé, modifiable) | mmol/L | 1,75 - 3,40 | identique |
+| | **CK** | UI/L | 26 - 192 | **39 - 308** |
+| | CRP | mg/L | < 5,0 | identique |
+| | albumine | g/L | 35,0 - 52,0 | identique |
+| | **myoglobine** | µg/L | 25,0 - 58,0 | **28,0 - 72** |
+| | troponine | ng/L | 0 - 14 | identique |
+| | **NT-pro-BNP** | ng/L | 10 - 202 | **10 - 63** (à vérifier, voir la fin des changements de la 8.2.0) |
+
+- **Un homme** : le texte sous le libellé donne la VN de l'homme (« VN homme 13,5 - 17,5 »), qui décide aussi du gras et du rouge, de la colonne
+  « VN » du tableau de la synthèse et du compte rendu, et de la ligne du dictionnaire.
+- **Une femme** : mêmes emplacements, avec la VN de la femme (« VN femme 12 - 16 »).
+- **Un paramètre identique pour les deux sexes** garde « VN 7,33 - 7,38 », sans mention du sexe.
+- **Sexe non renseigné, ou « autre »** : l'application ne choisit pas. Elle écrit les deux fourchettes (« VN F 12 - 16 ; H 13,5 - 17,5 ») et ne
+  met en gras et en rouge qu'une valeur **hors des deux** (pour l'hémoglobine : sous 12 ou au-dessus de 17,5).
+- Le **sexe de la fiche ouverte** prime ; changer le sexe réaffiche aussitôt les VN et recolore les valeurs déjà saisies. Le CSV ne contient que
+  les valeurs saisies : il ne change pas, les VN (femme et homme) sont dans le dictionnaire.
+- Les « < » et « > » suivent la VN du sexe (« < 13 » en hémoglobine est sous les VN d'un homme, pas d'une femme).
+
+### Glycémie et bilan lipidique
+
+La 9.2.0 ajoute à l'encart **Biologie** **cinq paramètres**, en mmol/L, avec les mêmes VN pour les deux sexes : la **glycémie** (4,1 - 6,1), entre les protéines totales et la
+créatinine ; puis, avant la CK, les **triglycérides** (0,10 - 1,70), le **cholestérol total** (3,00 - 5,20), le **HDL cholestérol** (1,03 - 1,55) et le **LDL cholestérol** (1,75 - 3,40).
+
+Le **LDL est calculé** : **LDL = cholestérol total − HDL − triglycérides ÷ 2,2** (formule de Friedewald, résultat arrondi à deux décimales). Il est **proposé et modifiable** : il se met à
+jour tant que vous ne l'avez pas saisi vous-même, et n'est plus recalculé dès que vous le corrigez. Rien n'est proposé si l'une des trois valeurs manque ou s'écrit avec « < » ou « > », ni si
+le résultat n'est pas positif. La formule n'est plus valable quand les triglycérides dépassent environ 4,5 mmol/L : l'application la calcule quand même, c'est à vous de corriger.
+
+### Dans la synthèse et le compte rendu
+
+La synthèse écrit, après les examens paracliniques, un bloc **Résultats biologiques** : un **tableau** pour le gaz du sang, un
+pour la biologie, avec une ligne par paramètre saisi au moins une fois (paramètre, VN, unité) et **une colonne par prélèvement
+du dossier, le plus récent à gauche** (date et heure en tête). Les tableaux s'enrichissent donc de jour en jour : la synthèse
+d'une fiche montre les prélèvements du dossier **jusqu'à cette fiche** ; le compte rendu d'hospitalisation montre **tous** ceux du
+dossier. Les valeurs hors VN sont en gras et en rouge (en style en ligne : il suit la copie vers un traitement de texte) ; la colonne « VN » donne les valeurs normales du sexe
+du patient (les deux fourchettes si le sexe n'est pas renseigné) ; dans
+le texte brut, le tableau est un texte à tabulations. Les Hb et Ht du bilan reprises du gaz du sang ne font pas, à elles seules, un
+tableau « Biologie » : elles figurent déjà dans celui du gaz du sang. Sur le papier, les tableaux s'impriment dans l'encart
+« Synthèse » (une douzaine de centimètres de plus quand les 28 paramètres sont saisis).
+
+---
+
+## Habitudes toxiques et ordonnance
+
+- **Alcool** : *consommation d'alcool* (évaluation en quatre stades) ou *alcool sevré* (depuis le,
+  avec l'évaluation antérieure en quatre stades). Les deux réponses s'excluent. Le bouton **?** ouvre
+  l'aide d'après Santé publique France : repères de consommation à moindre risque, verre standard,
+  pyramide de sévérité et critères CIM-10 de la dépendance. Les définitions des stades « à risque » et
+  « nocif » reprennent la typologie usuelle, la page de Santé publique France ne les détaillant pas.
+- **Ordonnance** : dans l'encart « Antécédents et traitements », le bouton **Photo de l'ordonnance**
+  joint une photographie à la fiche. C'est une pièce jointe comme les autres (titre « Ordonnance
+  médicamenteuse », même limite de douze photos), visible en miniature dans l'encart et imprimée avec
+  les pièces jointes. La synthèse ne la mentionne pas.
+
+---
+
+## Constantes et surveillance
+
+Un relevé par ligne, horodaté, comme sur la fiche papier. **+ Ajouter un relevé** crée une ligne
+à l'heure courante, la croix la retire. Vingt-quatre relevés au maximum.
+
+**L'heure d'un relevé se tape comme les autres heures de la fiche** (depuis la 9.5.2). Tapez **HHMM** (« 1145 ») : les deux points se posent tout seuls (« 11:45 ») et l'heure enregistrée est toujours au format
+HH:MM. Une heure **impossible** (« 2400 », « 1160 ») ou **incomplète** (« 11 ») reste en **rouge** et n'est pas enregistrée : l'heure précédente du relevé est conservée, et la sortie de la case le dit (« Heure
+impossible : attendu HH:MM »). La touche **+** ou la **barre d'espace** y écrit l'heure du moment. Un nouveau relevé porte déjà l'heure du moment : pour la changer, sélectionnez-la (**Ctrl + A** dans la case) puis tapez
+la nouvelle.
+
+Le PDF imprime le tableau complet. Le fichier de données porte une ligne par fiche : il reçoit la
+**première et la dernière valeur**, le **minimum** et le **maximum** de chaque paramètre, la durée
+de surveillance et le nombre de mictions notées. Le détail relevé par relevé reste dans la fiche
+et sur le PDF ; il ne part pas dans le CSV, où une ligne par fiche est la règle.
+
+---
+
+## Scores de sévérité
+
+L'encart se trouve en fin d'onglet « Examen neurologique », après la grille ASIA.
+
+### Ne pas mentionner un score
+
+MEDSUBHYP n'a de sens que pour un **accident de désaturation médullaire**, le score vestibulaire que pour une **atteinte vestibulaire** : un accident vestibulaire n'a pas à porter un MEDSUBHYP, ni un accident médullaire un score
+vestibulaire à zéro, et un barotraumatisme, un œdème pulmonaire d'immersion ou une noyade n'ont ni l'un ni l'autre. **Chaque score a sa case**, dans l'encart **Scores dans la synthèse** (juste sous les scores, onglet « Examen
+neurologique ») : **« Score MEDSUBHYP — ne pas le mentionner dans la synthèse »** (`sc_masquer_msh`) et **« Score vestibulaire — ne pas le mentionner dans la synthèse »** (`sc_masquer_vest`). Cochée, une case retire **son** score,
+l'autre restant mentionné (les deux sont décochées par défaut : les deux scores sont mentionnés) :
+
+- de la **synthèse rédigée** ;
+- du **compte rendu d'hospitalisation**, dès qu'une fiche du dossier porte la case (le score ASIA reste) ;
+- de l'**impression** (le score concerné n'est plus dans l'encart « Scores de sévérité », qui n'est plus imprimé quand les deux sont retirés, et le titre de la page ne les cite plus) ;
+- de la **ligne Excel ADP** (MEDSUBHYP : colonne BI vide ; score vestibulaire : colonne BJ à « ns »).
+
+Les scores restent **calculés dans la fiche** (colonnes `msh_total`, `vest_total` du CSV) et visibles à l'écran, avec un bandeau qui dit lequel est retiré et lequel reste mentionné. Les cases sont **reprises sur les autres fiches
+du dossier** (nouvelle fiche, ré-examen, séance). Quand le **diagnostic retenu** n'est pas un accident de décompression, un **rappel** s'affiche en tête de l'encart des scores, avec un bouton qui coche les deux cases : elles ne sont jamais
+cochées à votre place. *Avant la 9.3.5, une seule case (`sc_masquer`) retirait les deux scores : une fiche enregistrée avec cette case s'ouvre avec les deux nouvelles cases cochées, et la colonne `sc_masquer` du fichier de données est
+remplacée par `sc_masquer_msh` et `sc_masquer_vest`.*
+
+### MEDSUBHYP
+
+Les six items du score se **déduisent de ce que vous avez déjà saisi** : l'âge, la douleur
+vertébrale, l'évolution avant recompression, les signes sensitifs objectifs, les myotomes clés
+des membres inférieurs, et l'atteinte sphinctérienne. La valeur déduite est encadrée de vert.
+Un clic sur une autre modalité tranche à votre place ; l'item passe alors en fond ambré et la
+fiche retient qu'il a été coté à la main.
+
+Le score se cote **à l'arrivée, à 12 heures et à 24 heures**. Le moment est proposé à partir du
+délai accident → examen, vous le corrigez d'un clic. **Au-delà de 24 heures le score n'a plus
+d'intérêt pronostique : il n'est pas renseigné**, et l'encart le dit.
+
+Le seuil de gravité est **8** (6 jusqu'à la 11.1.1 : il a été relevé dans la 12.1.1). Le score et le seuil viennent du travail du service publié dans
+*Emergency Medicine Journal* (André *et al.*, 2022, DOI 10.1136/emermed-2021-211227).
+
+> **Un point à confirmer.** Le poids de la modalité « parésies » de l'item moteur ne figure pas
+> sur la fiche A3 du service : la case du barème est vide. La valeur **4** retenue ici est une
+> hypothèse, alignée sur la progression des autres modalités (paraplégie 5, signes sensitifs 4).
+> L'encart et le PDF le signalent. Confirmez-la avant d'exploiter les scores pour une analyse.
+
+### Score vestibulaire
+
+La grille est celle du service, intégrée à l'outil. Cinq items, de 0 à **19 points** :
+
+| Item (colonne) | Modalités et points |
+|---|---|
+| Vertige rotatoire (`vest_vertige`) | absent 0 · non permanent ou simple sensation vertigineuse 1 · permanent 2 |
+| Nystagmus (`vest_nystagmus`) | absent 0 · présent dans le regard décentré dans le sens de la secousse rapide 1 · présent dans le regard centré 2 · présent dans le regard décentré dans le sens de la secousse lente 3 |
+| Signes neurovégétatifs (`vest_nv`) | absents 0 · nausées 1 · nausées et rares vomissements, notamment après mobilisation 2 · vomissements fréquents (plus de 3) ou permanents 3 |
+| Instabilité (`vest_instab`) | absente 0 · présente debout yeux fermés 1 · présente debout yeux ouverts 2 · verticalisation impossible 3 |
+| Symptômes cochléaires, surdité ou acouphènes (`vest_cochl`) | absents 0 · présents 8 |
+
+Comme pour MEDSUBHYP, chaque item est **déduit de ce que vous avez déjà saisi**, la valeur déduite
+est encadrée, et un clic sur une autre modalité tranche à votre place :
+
+- **nystagmus** : d'après les positions du regard où il est vu, rapportées au côté de sa secousse
+  rapide (seulement vers la secousse rapide 1, aussi regard centré 2, aussi vers la secousse
+  lente 3) ; « non » à la question *Nystagmus* donne 0 ;
+- **instabilité** : verticalisation impossible 3, équilibre perdu yeux ouverts 2, perdu yeux fermés
+  seulement 1 (un **Romberg positif** compte comme tel), conservé dans les deux cas 0 ;
+- **symptômes cochléaires** : troubles de l'audition ou acouphènes ;
+- **vertige** : « non » à la question *Vertiges* donne 0 ; « oui » ne dit pas s'il est permanent,
+  vous tranchez ;
+- **signes neurovégétatifs** : rien de ce qui est saisi ne les renseigne, vous les cotez ici.
+
+Le total n'est calculé que si les cinq items ont une valeur. La grille ne définit aucun seuil de
+gravité, l'outil n'en affiche donc pas. Le total (`vest_total`) et les cinq items (valeur
+retenue, cotée ou déduite) sont des colonnes du CSV. L'éditeur de grille des premiers essais est
+retiré : la grille s'écrit dans la constante `VEST`, en tête du script de `index.html`.
+
+---
+
+## La synthèse rédigée
+
+Elle reste visible sous la fiche, quelle que soit la page, et s'imprime en page 6 du PDF. Elle suit le plan d'une
+observation d'entrée, en **paragraphes distincts dont le titre est en gras et souligné** : *Le plongeur*,
+*La plongée* (pour une intoxication au CO : *Le patient*, *Circonstances de l'intoxication*, voir *L'intoxication au monoxyde de carbone*), *Histoire des symptômes*, *Prise en charge initiale*, *Antécédents et terrain*, *Constantes*,
+*À l'examen général, on retrouve*, *À l'examen neurologique, on retrouve*, *Au total*, *Examens paracliniques*,
+*Diagnostic retenu*, *Conduite à tenir*. Chaque phrase vient d'un champ renseigné ; une négation (« absence
+de… ») n'est écrite que si l'item a été examiné. Le bouton **copier le texte intégral** (dans l'en-tête de la synthèse ; il s'appelait « copier le texte » avant la 10.1.1) met le texte dans le presse-papiers **en
+texte enrichi** (titres soulignés et anomalies en gras, pour un traitement de texte ou un dossier patient) et en
+texte brut pour un champ simple, où il n'y a ni gras ni souligné ; sur Firefox, aussi en **RTF**, que lisent les éditeurs de
+dossier patient qui ignorent le HTML (voir *Copier vers un traitement de texte ou le dossier patient*).
+Sur une **consultation initiale**, un second petit bouton, **copier Avis Spécialisé Résurgences**, copie un **texte court** de 3 800 caractères au plus, sans tableau, pour une demande d'avis (voir *Le texte court « Avis Spécialisé Résurgences »*).
+
+### Ce qui est anormal est en gras
+
+Tout constat anormal de l'examen ; dans l'histoire, les **facteurs favorisants** (dont la procédure de décompression
+non respectée), la **remontée rapide ou non conforme**, la **plongée dans les 24 heures précédentes** et une
+évolution **aggravée** avant la recompression ; un résultat paraclinique qui n'est pas dit normal (un résultat saisi en texte
+libre est tenu pour normal s'il commence par « normal », « sans anomalie », « absence de », « pas de »,
+« négatif » ou « bilan sans particularité » ; sinon il est en gras) ; un Doppler transcrânien avec shunt ; une
+échographie pleuro-pulmonaire qui n'est pas A partout ; un score ASIA dont l'AIS n'est pas E ; une complication
+thérapeutique ; la conclusion « examen neurologique anormal » ou « à recontrôler ».
+
+### L'examen qui ressort (depuis la 11.1.1)
+
+La synthèse dit **en premier, et en détail, l'examen qui compte pour le diagnostic retenu** ; les autres examens restent condensés (un syndrome par ligne, puis « En revanche, »). Le diagnostic est celui de la fiche
+ou, à défaut, le plus récent du dossier.
+
+| Diagnostic retenu | L'examen qui ressort |
+|---|---|
+| Accident de désaturation **neurologique** (médullaire, cérébral) ou **mixte** (un type neurologique parmi d'autres), ou de type non précisé | l'**examen neurologique** |
+| **Œdème pulmonaire d'immersion** | l'**examen cardio-respiratoire** (nouveau paragraphe « À l'examen cardio-respiratoire, on retrouve », le cardio-vasculaire et le respiratoire en sortent de l'examen général) |
+| Accident de désaturation d'un autre type (vestibulaire, cutané, ostéo-articulaire, pulmonaire), barotraumatisme, accident biochimique (hyperoxie, hypercapnie, narcose), noyade | l'**examen général** |
+| Accident biochimique **— intoxication au monoxyde de carbone** (12.1.1) | l'**examen neurologique** puis l'**examen cardio-respiratoire** |
+| Accident de désaturation neurologique **et** OPI | les deux : le neurologique puis le cardio-respiratoire (l'inverse si l'OPI est le diagnostic principal) |
+| **Aucun diagnostic** encore | le cadre de la consultation (OPI : cardio-respiratoire ; mixte et intoxication au CO : neurologique puis cardio-respiratoire), puis ce qui est anormal (le neurologique d'abord, le général ensuite) ; rien d'anormal : l'ancien plan, examen général puis neurologique |
+
+L'examen qui ressort s'écrit **domaine par domaine**, une ligne par domaine : ce qui est anormal en gras, ce qui est normal dit en positif (« force musculaire normale », « sensibilité normale aux trois modes »). Un
+domaine non examiné n'est pas écrit. Exemple, accident de désaturation médullaire :
+
+```
+À l'examen neurologique, on retrouve
+Conscience et signes cérébraux : pas de signe cérébral, GCS 15.
+Motricité : déficit moteur de type monoparésie du membre inférieur droit : L2 (flexion de hanche) droit coté 3/5.
+Sensibilités : sensibilité normale aux trois modes (tact léger, piqûre et pallesthésie).
+Réflexes et signes pyramidaux : syndrome pyramidal droit : signe de Hoffmann positif à droite.
+Coordination, équilibre et marche : coordination normale, équilibre et marche normaux.
+Sphincters : pas de miction depuis l'accident.
+Atteinte médullaire : niveau neurologique L2, AIS D.
+À l'examen général, on retrouve
+examen cardio-vasculaire, respiratoire, abdominal et locomoteur sans anomalie, examen ORL normal, …
+```
+
+Le **compte rendu d'hospitalisation** (examen d'admission, examen de sortie) et le **texte court** suivent le même ordre ; dans le texte court, l'examen qui ressort garde la priorité la plus haute quand il faut retirer des phrases.
+Le paragraphe « Au total » et la ligne Excel ADP ne changent pas.
+
+### L'examen est dit en syndromes
+
+Sous « À l'examen neurologique, on retrouve » (et « à l'examen général »), **un syndrome par ligne**, en gras, avec
+ce qui le fonde ; puis « En revanche, » ce qui a été examiné et trouvé normal. Un domaine non examiné n'est dit ni
+normal ni anormal.
+
+| Domaine | Examiné et normal | Anormal |
+|---|---|---|
+| Conscience, signes cérébraux | « absence de signe cérébral », « GCS 15 » | « des signes cérébraux : » conscience altérée, troubles du comportement, désorientation, parole, vue, paralysie faciale, pupilles ; un Glasgow inférieur à 15 |
+| Vestibulo-cochléaire (dit avec l'**examen général**, voir ci-dessous) | « absence de syndrome vestibulaire », « absence de signe cochléaire » | « un syndrome vestibulaire : » vertiges, nystagmus (côté, regard, sens), VNS, NIV, Romberg, Fukuda, marche en étoile, marche funambule. Avec une atteinte de l'audition ou des acouphènes : « syndrome vestibulo-cochléaire » ; sans atteinte vestibulaire : « signes cochléaires » |
+| Motricité | « absence de déficit moteur » | « un déficit moteur de type » paraparésie, tétraparésie, hémiparésie droite ou gauche, monoparésie d'un membre, « des deux membres supérieurs », ou « multifocal » ; **plégie** quand tous les myotomes atteints sont cotés 0 ; puis le détail myotome par myotome |
+| Sensibilités | « absence de déficit sensitif aux trois modes (tact léger, piqûre et pallesthésie) » | « un déficit sensitif aux trois modes » ; **dissocié** quand un mode au moins est conservé (« modes épargnés : pallesthésie ») ; l'étendue en intervalles de métamères, avec le côté ; les signes subjectifs à part |
+| Réflexes | « absence de syndrome pyramidal » | « un syndrome pyramidal droit, gauche ou bilatéral : » ROT vifs ou polycinétiques, signe de Hoffmann, trépidation épileptoïde, cutané plantaire en extension. L'abolition des ROT reste une « anomalie des réflexes » distincte |
+| Coordination | « absence de syndrome cérébelleux », « équilibre et marche normaux » | « un syndrome cérébelleux cinétique » (talon-genou, doigt-nez), « et statique » si l'équilibre ou la marche sont atteints aussi ; sans signe cinétique : « des troubles de l'équilibre et de la marche » |
+| Miction, sphincter anal | « absence de trouble vésico-sphinctérien » | « des troubles vésico-sphinctériens : » pas de miction, rétention, résidu post-mictionnel de plus de 100 mL, contraction anale volontaire absente, pression anale profonde non perçue |
+| Score ASIA | | « une atteinte médullaire : niveau neurologique…, AIS… » quand l'AIS va de A à D |
+| Examen général | « examen cardio-vasculaire, respiratoire… sans anomalie », « examen ORL normal », « pas de lésion cutanée », « pas de céphalée ni de douleur rachidienne » | « une anomalie respiratoire (…) », « des anomalies ORL », « des lésions cutanées de désaturation », « une symptomatologie douloureuse » |
+
+**Le syndrome vestibulaire est dit avec l'examen général** (depuis la 10.1.1). Les signes vestibulaires (vertiges, nystagmus, épreuves de Romberg, de Fukuda, marche en étoile ou funambule) et les **signes cochléaires** (audition, acouphènes) s'écrivent dans le
+paragraphe « À l'examen général, on retrouve », **à la suite de l'ORL** : l'ordre est celui de l'onglet « Examen clinique général » (général, ORL, vestibulaire, lésions cutanées, douleur), et plus dans « À l'examen neurologique, on retrouve ». C'est le cas dans la **synthèse** (copiée et imprimée en page 6 du PDF),
+dans le **compte rendu d'hospitalisation** (examen d'admission, examen de sortie, évolution) et dans le texte court « Avis Spécialisé Résurgences ». Les **pages de saisie du PDF** ne changent pas : les épreuves vestibulaires y gardent leur place
+dans l'encart « Coordination et examen vestibulaire » de la page de l'examen neurologique. Les négations (« absence de syndrome vestibulaire », « absence de signe cochléaire ») ne s'écrivent toujours
+que si l'examen a été fait. La conclusion **« Au total »** continue de citer le syndrome vestibulaire parmi les syndromes du tableau clinique.
+
+Ces règles sont une **proposition à valider** : elles s'écrivent dans les fonctions `examFindings` (les constats)
+et `syndromes` (leur traduction), en fin de script de `index.html`.
+
+### Le reste du texte, allégé et sans signe spécial
+
+- **Aucun exposant, indice, barre verticale, étoile ni flèche.** SpO2, cmH2O et FiO2 s'écrivent en
+  lettres, un niveau de plongée sans ses étoiles (« N2 »), les listes de zones se séparent par des
+  points-virgules, les durées s'écrivent en « min », la température en degrés. Un filtre final
+  (`TXT.clean`) réécrit aussi ceux qui viendraient d'un texte libre : flèche en « puis », degré,
+  signes de comparaison, tirets longs.
+- **Scores** : MEDSUBHYP et score vestibulaire par leur **seule valeur** (« Score MEDSUBHYP : 9 », avec
+  le moment de la cotation quand le dossier en compte plusieurs), sans maximum, sans seuil de gravité,
+  sans le détail des items.
+- **ASIA** : les totaux, puis les niveaux quand l'examen n'est pas normal. La **préservation sacrée
+  n'est écrite que si elle est absente** ; sa présence est la règle et ne se dit pas.
+- **Omis** : la voie veineuse, le **bilan biologique prélevé** (seuls ses résultats marquants et leur interprétation s'écrivent, quand ils sont saisis), le numéro
+  de dossier et le rang de l'examen, le club, la photo de l'ordonnance et la liste des pièces jointes.
+- **Antécédents et terrain** : une ligne par rubrique, dans cet ordre : antécédents médico-chirurgicaux, traitement habituel, **allergies** (sur leur propre ligne),
+  habitudes toxiques, antécédents de plongée, certificat médical.
+- **Table de recompression** : « **Table B18** (mise en pression à 10 h 30, fin à 12 h 05) puis… » : seul le nom de la table est en gras ; les heures entre
+  parenthèses et la suite ne le sont pas. Le nombre de séances ne s'écrit plus.
+- **Corticothérapie** : écrite à la fiche qui la prescrit, et à celle qui la modifie ; pas répétée tant que la dose ne change pas.
+- **Examen anal** : « contraction anale volontaire absente » et « pression anale profonde non perçue » ne
+  s'écrivent que s'ils sont anormaux, dans les troubles vésico-sphinctériens. Normaux ou non testés, ils
+  n'apparaissent pas.
+
+Chacun de ces choix est une ligne de la fonction `narrativeBlocks`, en fin de script.
+
+### Le texte court « Avis Spécialisé Résurgences »
+
+Sur une **consultation initiale**, l'en-tête de la synthèse porte deux petits boutons : **copier Avis Spécialisé Résurgences** et **copier le texte intégral**. Le second copie la synthèse complète, tableaux de biologie compris, en texte enrichi, comme avant. Le premier copie un
+**texte court**, pour une demande d'avis spécialisé :
+
+- **3 800 caractères au plus** (espaces comprises), **sans tableau**, en **texte brut** (ni gras ni souligné : il se colle dans n'importe quel champ). **Un retour à la ligne compte pour deux caractères** (CR + LF, comme dans un champ de Windows qui reçoit le texte collé) :
+  le texte tient donc dans la limite avec n'importe quel compteur, au prix d'une trentaine de caractères. Le nombre de caractères ainsi compté est donné à la copie (« Avis Spécialisé Résurgences copié : 3 770 caractères sur 3 800 ») et sur la ligne de l'aperçu.
+- **Il est fait des mêmes phrases que la synthèse** : le même texte rédigé, les mêmes paragraphes dans le même ordre (type de consultation, date et heure de prise en charge ; *Le plongeur*, *La plongée*, *Histoire des symptômes*, *Prise en charge initiale*, *Antécédents et terrain*, *Constantes*,
+  *À l'examen général*, *À l'examen neurologique*, *Au total*, *Examens paracliniques*, *Diagnostic retenu*, *Conduite à tenir*), **sans l'identité du patient ni l'examinateur**. Une fiche qui tient en 3 800 caractères est copiée **en entier**, avec le même contenu que la synthèse.
+- **La biologie devient une phrase** par tableau : les valeurs **hors des normes** (la plus récente de chaque paramètre), ou « Valeurs dans les limites des normes. ».
+- **Quand la fiche est trop longue**, chaque phrase a une **priorité** : ADP raccourcit puis retire d'abord les moins importantes (conditions environnementales, lieu à l'appel, certificat médical, actes, ECG, biologie normale, examens normaux, poids et taille…), jamais le **diagnostic retenu**,
+  la **table de recompression et l'orientation**, les **premiers symptômes**, la description de la plongée ni les anomalies de l'examen et la conclusion « Au total » ; puis il **remet** ce qui peut l'être tant que le texte tient dans la limite. Dans tous les cas, le texte ne dépasse jamais 3 800 caractères.
+  **Ce qui a été retiré ou abrégé est annoncé** à la copie (« … retiré pour tenir dans la limite : … ; abrégé : … ») et sous l'aperçu.
+- **Un aperçu** se déplie sous la synthèse (ligne « Avis Spécialisé Résurgences : N caractères sur 3 800 au plus, sans tableau ») : il montre exactement le texte qui sera copié et se met à jour à chaque saisie.
+- Les autres types de fiche (suivi, sortie, séance) n'ont **que** « copier le texte intégral » ; il n'y a ni bouton ni aperçu du texte court. Sans rien d'écrit dans la synthèse, il n'y a rien à copier (« Rien à copier : renseignez la fiche »).
+
+Les priorités et les coupes sont dans les fonctions `avisClasse`, `avisFit` et `avisTexte` de `index.html` ; la limite est la constante `AVIS_MAX`.
+
+### Copier vers un traitement de texte ou le dossier patient
+
+**copier le texte intégral** (synthèse) et **Copier le CRH** posent le texte dans le presse-papiers sous plusieurs formes à la fois ; le logiciel qui reçoit
+prend celle qu'il sait lire :
+
+| Où l'on colle | Ce qui est collé |
+|---|---|
+| un champ de texte simple | le texte brut, sans gras ni souligné |
+| Word, LibreOffice, un courriel | le HTML (ou le RTF) : titres en gras et soulignés, anomalies en gras, tableaux de biologie |
+| l'éditeur de texte du dossier patient | le **RTF**, s'il le lit : gras, souligné, rouge et tableaux, **directement**, sans passer par Word |
+
+Un navigateur n'écrit, dans le presse-papiers, que du texte brut et du HTML. Beaucoup d'éditeurs intégrés à un dossier patient ne lisent pas le
+HTML : ils prennent le texte brut, et le gras disparaît. Word, lui, lit le HTML puis écrit du RTF quand on copie depuis lui : c'est très probablement
+pourquoi le détour par Word fonctionnait (je n'ai pas pu examiner votre éditeur). Depuis la 8.2.0, ADP écrit lui-même le RTF, mais **seul Firefox le permet** :
+
+- **sous Firefox**, un clic envoie les trois formats (texte brut, HTML, RTF). Le RTF est écrit en ASCII (accents et signes en `\uN`), avec les
+  mêmes titres en gras et soulignés que le HTML, les anomalies en gras, les valeurs de biologie hors des VN en gras et en rouge, et les
+  tableaux de biologie (bordures, ligne d'en-tête grisée) ;
+- **sous Chrome et Edge**, rien ne change : aucun navigateur de cette famille ne laisse une page écrire du RTF. La copie reste en HTML et en
+  texte brut, et le gras ne passe pas dans un éditeur qui ne lit que le RTF. Ouvrez ADP dans Firefox pour copier, ou gardez le détour par Word.
+
+Dans **Plus** › **Exporter les données**, la case « Copie du texte : ajouter le format RTF… » (cochée par défaut) désactive cette option : décochez-la si le collage
+affiche du code (« {\rtf1… ») ou des signes étranges dans votre éditeur ; la copie est alors celle de la 8.1.3. Le réglage est mémorisé avec les autres.
+
+---
+
+## Le paragraphe d'évolution pour le compte rendu
+
+Sur une consultation de suivi ou de sortie, l'encart **Évolution** demande le nombre de séances (proposé d'après les fiches précédentes),
+la présence de complications thérapeutiques, le sens de l'évolution, les examens réalisés et, hors consultation de sortie, les
+examens demandés (à la sortie, ils se disent dans l'encart **Sortie**).
+
+Sous l'encart, un cadre bleu assemble ces réponses en un **paragraphe rédigé**, prêt pour le
+compte rendu de sortie. Il se recalcule à chaque frappe. Le bouton **Copier** le met dans le
+presse-papiers.
+
+---
+
+## Le compte rendu d'hospitalisation (CRH)
+
+Sur une **consultation de sortie**, l'encart **Compte rendu d'hospitalisation**, en fin d'onglet « Conclusion et
+évolution », écrit un texte enrichi **sans en-tête** à partir de **toutes les fiches du dossier**, la fiche ouverte
+comprise même si elle n'est pas enregistrée. Il se recalcule à la saisie. Le bouton **Copier le CRH** le place dans
+le presse-papiers en texte enrichi (titres soulignés, anomalies en gras, tableaux ; sur Firefox aussi en RTF, voir *Copier vers un
+traitement de texte ou le dossier patient*) et en texte brut. Il n'est pas ajouté au
+PDF. C'est un **brouillon à relire** avant de le coller dans le dossier du patient.
+
+Les fiches sont rangées par date et heure d'examen ; **J0** est la date de la première.
+
+| Paragraphe | D'où vient le texte |
+|---|---|
+| Le plongeur, La plongée, Histoire des symptômes, Prise en charge initiale, Antécédents et terrain | la fiche initiale (la première fiche de type initial du dossier) |
+| Constantes et examen à l'admission | la fiche initiale : « À l'admission, à l'examen général / neurologique, on retrouve », avec les syndromes de la synthèse |
+| Prise en charge | la fiche initiale (table, oxygène, corticoïdes, remplissage, actes), puis chaque fiche qui porte une recompression ou un traitement, avec sa date ; la prednisolone reprise à l'identique d'une fiche à l'autre n'est **pas répétée** ; en dernière ligne, le **décompte des recompressions par type de table** (voir ci-dessous) |
+| Examens paracliniques | **tous** les examens du dossier, **par fiche et par date**, un examen par ligne ; les examens « demandés, en attente » en sont écartés ; le bilan biologique prélevé ne s'écrit pas (ses résultats marquants, si saisis, et les tableaux de biologie) ; les scores n'y sont plus : ils ont leur paragraphe (ci-dessous) |
+| Résultats biologiques | **tous** les prélèvements du dossier (gaz du sang veineux, biologie), en **tableaux** : une colonne par prélèvement, le plus récent à gauche ; valeurs hors des valeurs normales en gras et en rouge |
+| Évolution | tout ce qui **diffère d'une fiche à l'autre**, horodaté (voir ci-dessous) |
+| Examen de sortie | la dernière fiche : « À la sortie, à l'examen général / neurologique, on retrouve » |
+| Évolution des scores | MEDSUBHYP, score vestibulaire, score ASIA et **score MJOAS**, en un paragraphe **avant le diagnostic retenu** (voir ci-dessous) |
+| Diagnostic retenu | le plus récent des diagnostics saisis |
+| Orientation | l'orientation de la fiche de sortie (retour au domicile, hospitalisation, transfert, **hospitalisation de jour avec son hébergement** : « Hospitalisation de jour, hébergement à l'hôtel patient. ») et ses précisions |
+| Examens à réaliser secondairement | le champ de la consultation de sortie (proposé d'après le diagnostic retenu et le générateur, modifiable), puis les examens demandés de la dernière fiche quand elle en porte |
+| Aptitude à la plongée | « Inaptitude temporaire à la plongée de N mois » ou « Inaptitude définitive à la plongée » (en gras) ; rien si non précisée |
+
+### L'évolution, fiche à fiche
+
+Pour chaque fiche après la première, une ligne **datée** (« Le 03/10/2026 à 9 h 00 (J1) : »), puis une ligne par
+catégorie :
+
+- **Amélioration** : un constat disparu (« vertiges : disparition »), une force musculaire qui remonte
+  (« L2 (flexion de hanche) droit : coté 4/5 (auparavant coté 3/5) »), une récupération complète, une
+  normalisation de la sensibilité ou des réflexes, une étendue de déficit sensitif qui se réduit, un score ASIA
+  qui s'améliore ;
+- **Aggravation** (en gras) : un constat nouveau (« acouphènes : apparition (à gauche) »), une force qui baisse, un
+  score ASIA qui s'aggrave ;
+- **Autres modifications** : un changement sans sens clinique évident, ou un constat nouveau dont l'item **n'avait pas
+  été examiné** à la fiche précédente (« non examiné auparavant ») ;
+- **Examen clinique inchangé** quand rien ne diffère ;
+- puis ce que dit l'encart **Évolution** de la fiche : séances de recompression depuis la consultation précédente,
+  complication thérapeutique (en gras), évolution jugée, commentaire.
+
+La comparaison se fait **constat par constat** (muscle, réflexe, épreuve vestibulaire, étendue sensitive…), pas sur
+le texte. Une anomalie n'est dite **disparue** que si l'item a été **réexaminé** à la fiche suivante : un item laissé
+vide n'est jamais tenu pour normal.
+
+### L'évolution des scores
+
+Un paragraphe **Évolution des scores**, juste **avant le diagnostic retenu**, réunit ce qui était dispersé dans les examens paracliniques :
+
+- **MEDSUBHYP** : le score d'entrée, puis ceux du premier jour quand ils ont été cotés (« Score MEDSUBHYP : 9 à l'arrivée, 7 à H12, 6 à H24. »).
+  Le score se cote à l'arrivée, à 12 heures et à 24 heures : au-delà, il n'est pas renseigné ;
+- le **score vestibulaire initial** (le premier connu du dossier) ;
+- le **score ASIA d'entrée**, puis le **plus péjoratif** s'il diffère de celui d'entrée et de celui de sortie (avec sa date), puis celui de **sortie** (« Score ASIA
+  d'entrée : AIS C, niveau neurologique T10, tact léger 70/112… »). Un score dont l'AIS n'est pas E s'écrit en gras. Un seul examen : « Score ASIA : … ».
+- le **score MJOAS** de fin de séjour (depuis la 9.4.1), celui de la consultation la plus récente qui en porte un : « Score MJOAS à la sortie : 15/17. », en gras quand il est inférieur à 17.
+
+Les cases « ne pas mentionner » retirent chacune son score (MEDSUBHYP, score vestibulaire) de ce paragraphe, pas le score ASIA ni le score MJOAS. Un dossier sans score n'a pas de paragraphe.
+
+### Les recompressions, par type de table
+
+La dernière ligne du paragraphe « Prise en charge » compte les séances du dossier **par type de table** :
+« Recompressions : 5 séances au total (A15 : 3 ; B18 : 1 ; type non précisé : 1). » Depuis la 9.0.0, **une recompression cotée sur une fiche est une
+séance** (l'encart n'a plus de « nombre de séances réalisées ») et la règle est la **même qu'à la ligne Excel COHB** :
+
+- une fiche compte **une séance** quand une recompression y est **réellement cotée** : une **table** choisie sur une fiche de suivi ou de sortie (rien n'y est
+  proposé d'office), une table autre que la B18 proposée d'office sur une fiche initiale, ou cette B18 d'office accompagnée d'une **heure de mise en pression**,
+  d'une **heure de fin** ou d'une **complication** « OUI » ;
+- une **heure de mise en pression sans table** est une séance de **type non précisé** ;
+- une **séance de recompression saisie sans examen** (fiche « séance ») compte **une séance** : de son type de table si elle en porte une, sinon « type non précisé » ;
+- les « séances réalisées depuis la dernière consultation » de l'encart d'évolution **ne comptent pas en plus** : elles sont proposées d'après ces mêmes fiches ;
+- une table **hors liste** compte sous le nom saisi (« Table Comex 30 : 2 ») ; les noms identiques à la casse près se
+  regroupent ;
+- les types s'écrivent dans l'ordre de la liste des tables (A15, A15IOT, A18IOT, A18, B18, A18HeOx, B18HeOx,
+  C18, autre).
+
+La table **B18 proposée d'office** sur une fiche initiale ne compte donc plus **seule** : saisissez l'heure de mise en pression quand la recompression a eu
+lieu, ou videz le champ quand elle n'a pas eu lieu. Le texte de la synthèse, lui, écrit « Table B18 » dès que la table est choisie. Le compte rendu, la ligne Excel
+ADP (colonnes BK, BS et BT) et la ligne Excel COHB suivent la même règle (*La ligne Excel COHB (activité COHB)*).
+
+### Sortie : le score MJOAS et l'arrêt de travail
+
+Depuis la 9.4.1, la consultation de sortie porte, dans l'onglet « Conclusion et évolution », juste avant l'encart *Sortie : examens à prévoir et aptitude à la plongée*, un encart **Sortie : séquelles et arrêt de travail**
+(`mjoas`, `at_jours`). Il n'existe que sur une consultation de sortie.
+
+- **Score MJOAS** (Modified Japanese Orthopedic Association) : un nombre de 0 à 17, **coté 17 d'office** (le score normal) quand la fiche devient une consultation de sortie, modifiable. Le bouton **?** à côté du libellé
+  ouvre la **grille du service** (celle de votre protocole « Accidents de plongée SMHEP 2024 ») : six items — motricité des membres supérieurs (0 à 4), motricité des membres inférieurs (0 à 4), sensibilité des membres
+  supérieurs, du thorax-abdomen et des membres inférieurs (0 à 2 chacune), fonction sphinctérienne (0 à 3) —, un niveau à cocher par item (« RAS » est coché au départ), un total qui se calcule (« Score MJOAS : 15 / 17 —
+  séquelles ») et le bouton **Reporter ce score dans la fiche**, qui écrit le total dans le champ. La fiche ne garde que le total (pas le détail des items). Le 17 d'office n'est donné qu'à une consultation de sortie : une fiche
+  qui change de type le perd s'il n'a pas été modifié, et une consultation de sortie enregistrée avant la 9.4.1 n'est pas remplie d'office (rien n'est inventé). La grille est aussi dans *Aides à l'examen*.
+- **Arrêt de travail (AT) — nombre de jours** : les jours d'AT prescrits à la sortie. Un encart sous le champ donne la durée d'**hospitalisation** (de la date d'entrée, celle du premier examen du dossier, à la date de la
+  consultation de sortie, **les deux jours extrêmes compris** : du 02/10 au 05/10, 4 jours) et le calcul fait pour la ligne Excel ADP : **nombre j AT = jours d'AT + jours d'hospitalisation** (20 jours d'AT donnent 24).
+  **Sans jours d'AT saisis**, la ligne reçoit les jours d'hospitalisation seuls (4). L'encart se met à jour à la frappe et dit ce que la colonne contiendra.
+- Le score s'écrit dans la synthèse (« Score MJOAS : 15/17. », avec les autres scores, en gras s'il est inférieur à 17), dans le compte rendu (*L'évolution des scores*) et sur le papier (encart « Sortie : séquelles et
+  arrêt de travail », avec les jours d'AT) ; le fichier de données reçoit `mjoas` et `at_jours`, et la ligne Excel ADP les colonnes **BX** (score MJOAS) et **BY** (nombre j AT).
+
+### La sortie
+
+La consultation de sortie ajoute un encart **Sortie : examens à prévoir et aptitude à la plongée** :
+**examens à réaliser secondairement** (texte libre, avec des phrases à cliquer) et **inaptitude à la plongée**,
+*temporaire* avec sa **durée en mois**, ou *définitive*. Il figure sur le PDF de la fiche de sortie.
+
+**Les examens à réaliser secondairement sont proposés** d'après le ou les **diagnostics retenus** et le **générateur de documents** (section suivante) : ADP relève
+les examens que le générateur **coche d'office** dans les documents qu'il prépare pour ce diagnostic, et les écrit **un par ligne** (« IRM médullaire, à la recherche de
+facteurs compressifs médullaires. »). La proposition est modifiable ; **vider le champ** est un choix, et la proposition ne revient pas pour cette fiche.
+
+| Diagnostic retenu | Documents du générateur concernés | Examens proposés (cochés d'office dans le générateur) |
+|---|---|---|
+| Accident de désaturation | ordonnance d'imagerie | IRM médullaire, à la recherche de facteurs compressifs médullaires |
+| Accident de désaturation avec atteinte vestibulaire | l'ordonnance d'imagerie et le courrier ORL | l'IRM médullaire, un audiogramme tonal et vocal, une tympanométrie, un examen vestibulaire (vidéonystagmographie) |
+| Œdème pulmonaire d'immersion | courrier au cardiologue, courrier au pneumologue | évaluation tensionnelle par holter sur 24 h, ETT, épreuve d'effort, holter ECG des 24 h, EFR avec calcul des débits et mesure des volumes, DLCO (**pas d'IRM médullaire** : elle ne concerne que l'accident de désaturation) |
+| Barotraumatisme, accident biochimique, noyade, diagnostic en texte libre | aucun | rien n'est proposé |
+
+Plusieurs diagnostics : les examens de chacun, sans doublon. Les listes sont **lues dans le fichier du générateur** quand il est chargé dans ADP (tableaux `PRESETS`,
+`EXAMENS_CARDIO`, `EXAMENS_PNEUMO`, `EXAMENS_ORL` et `EXAMENS_IMAGERIE`) : si le générateur change ses cases cochées d'office, la proposition suit. Sans fichier chargé, ou
+si ces tableaux sont illisibles, ADP utilise la copie de la **première version** du générateur.
+
+---
+
+## Documents de sortie : le générateur de courriers du service
+
+Le **générateur de courriers du SMHEP** (fichier autonome `Generateur-courriers-SMHEP.html` : courrier au médecin
+traitant, courriers d'avis, ordonnances, certificats, recommandations, plans de soin) **s'ouvre depuis ADP**, utilisé tel
+quel. Le bouton **Documents de sortie** de la barre du haut (icône d'ordonnance), **quel que soit le type de consultation**, même sur une fiche incomplète ou sans numéro de
+dossier, ou le bouton **Documents de sortie : courriers, ordonnances, certificats…** de l'encart « Sortie » d'une consultation de sortie, ouvre le générateur **en plein écran, avec les
+éléments connus déjà remplis** (ce que la fiche ne sait pas reste vide). Depuis une séance de recompression sans examen, l'inaptitude et la date de sortie sont celles de la dernière
+consultation. Tout reste modifiable.
+
+**Première utilisation : choisir le fichier du générateur.** ADP **ne contient pas le générateur** : il porte les
+**signatures scannées** et les **numéros RPPS** des médecins du service, qui ne doivent pas se retrouver dans une page
+publiée sur Internet (GitHub Pages est public). À la première ouverture, ADP demande de **choisir votre copie** de
+`Generateur-courriers-SMHEP.html` ; il la **garde dans la base locale de ce navigateur**, sur cet ordinateur (elle n'est
+envoyée nulle part et ne figure dans aucun export), et ne la redemande plus. Il faut la choisir de nouveau dans un autre
+navigateur, sur un autre appareil, ou après avoir vidé les données de navigation. Le lien **Fichier du générateur…** (encart
+« Sortie ») montre le fichier chargé et permet de le **remplacer** (nouvelle version) ou de l'**oublier**. Le fichier choisi
+**s'exécute avec les mêmes droits qu'ADP** : ne chargez que votre propre copie.
+
+| Champ du générateur | Repris de |
+|---|---|
+| Genre, civilité | le sexe de la fiche (M : Homme, Mr ; F : Femme, Mme ; « Autre » : le réglage du générateur reste) |
+| NOM, Prénom, Date de naissance | la fiche |
+| Date de l'accident | la fiche (initiale) |
+| Motif, précision, précision complémentaire | le **dernier diagnostic retenu** du dossier (tableau ci-dessous) |
+| Hospitalisation, début | la **date d'entrée** : le premier examen du dossier |
+| Hospitalisation, fin | la date de la consultation de sortie |
+| Signataire | le médecin ou l'examinateur reconnu parmi LESACA, BLATTEAU, DRUELLE, CASTAGNA, MORIN, RUBY, DAUBRESSE, LEHOT ; sinon le réglage du générateur reste |
+| Certificat médical : inaptitude à la plongée | l'inaptitude de la sortie : *jusqu'à réévaluation* avec sa durée en mois, ou *définitive* |
+| Certificat de premières constatations : « Présente cliniquement » | les signes fonctionnels à l'arrivée et les syndromes de la fiche initiale (« À l'examen, on retrouve : … ») |
+| Certificat de premières constatations : « Examens complémentaires réalisés » | les examens paracliniques du dossier, par date, sans les scores |
+| Ordonnance : ligne « PREDNISOLONE xx mg le matin pendant 3 jours » | la **dose** quotidienne et les **jours restants** à la date de sortie d'après les fiches (voir ci-dessous) |
+
+**La prednisolone de l'ordonnance.** La ligne du générateur est « PREDNISOLONE xx mg le matin pendant 3 jours ». ADP y écrit la **dose** de la fiche (xx devient
+80) et les **jours restants** à la date de la consultation de sortie (3 devient 2 quand il reste deux jours ; « 1 jour » au singulier), comptés comme dans
+*Consultation de suivi ou de sortie*. La ligne est **décochée** quand le traitement est terminé (son texte reste), et **laissée telle quelle** quand aucune
+prednisolone n'a été prescrite dans le dossier. ADP repère la ligne à son début « PREDNISOLONE » : si le générateur la change, ADP le dit
+(« Introuvable : ordonnance (prednisolone) »).
+
+Le motif suit le diagnostic, et **c'est le générateur lui-même qui coche ensuite les documents habituels** de la
+situation (recommandations post-ADD, ordonnances, imagerie, certificats ; avec « vestibulaire » dans la précision :
+courrier ORL et kinésithérapie vestibulaire ; pour un œdème pulmonaire d'immersion : recommandations post-OPI,
+cardiologue, pneumologue) :
+
+| Diagnostic retenu | Motif | Précision |
+|---|---|---|
+| Accident de désaturation | un accident de désaturation | un seul type : médullaire, cérébral, vestibulaire (« avec atteinte cochléaire » si des acouphènes ou une baisse de l'audition sont notés, sinon « sans »), cutané, ostéo-myo-articulaire, pulmonaire ; plusieurs types : *médullaire et vestibulaire*, *médullaire et cérébral*, *cérébral, médullaire et vestibulaire*, *cérébral et vestibulaire*, sinon *mixte* |
+| Œdème pulmonaire d'immersion | un œdème pulmonaire d'immersion | — |
+| Barotraumatisme | un barotraumatisme | de l'oreille moyenne, de l'oreille interne, sinusien, pulmonaire, dentaire, par plaquage de masque |
+| Accident biochimique | un accident biochimique | par hyperoxie, par hypercapnie, par narcose, par intoxication au monoxyde de carbone |
+| Noyade | une noyade | — |
+| Diagnostic saisi seulement en texte libre | « motif rédigé librement » | — |
+
+**Fonctionnement.** *Retour à la fiche* referme la fenêtre **sans rien perdre** : la rouvrir pour la même fiche reprend là
+où vous en étiez. Une autre fiche recharge le générateur. *Reprendre les éléments de la fiche* remplit à nouveau
+l'identité, le motif, les dates, le signataire, l'inaptitude et les deux textes du certificat de premières constatations
+(après confirmation). *Ouvrir dans un onglet* ouvre le même générateur dans un onglet du navigateur, rempli de la même
+façon. La production des PDF et l'impression se font avec les boutons du générateur, qui rappelle ses réglages
+d'impression.
+
+**Rien n'est enregistré** : ni le générateur ni ADP ne gardent les documents, et les éléments de la fiche passent d'un
+bloc à l'autre en mémoire, sans réseau.
+
+**Mettre à jour le générateur** : *Fichier du générateur…*, puis *Remplacer le fichier*, avec la nouvelle version.
+Seul un fichier qui porte le titre « Générateur de courriers » et ses champs est accepté. L'intégration ne dépend que des
+champs `genre`, `civilite`, `nom`, `prenom`, `ddn`, `dateAccident`, `motif1`, `motif2`, `motif3`, `motifLibre`,
+`hospDebut`, `hospFin`, `signataire`, `inaptitude`, `delaiReeval`, `cmpcClinique`, `cmpcExamens`, plus les lignes `ordoFixe` de l'ordonnance (la prednisolone) : si l'un d'eux disparaît
+d'une version du générateur, ADP le dit au lieu de se taire (« Introuvable : … »). Hors ligne, tout continue de
+fonctionner : le fichier est dans le navigateur.
+
+**Variante locale, jamais publiable.** Un `index.html` qui porterait lui-même le générateur (bloc
+`<script type="application/json" id="gensrc">`) l'utilise sans rien demander ; cette variante contient les signatures des
+médecins et ne doit jamais être publiée. ADP n'est pas livré ainsi.
+
+**Limites.** Le générateur est fait pour un écran de bureau (formulaire à gauche, aperçu A4 à droite) : il n'est pas
+adapté à un téléphone. Si l'impression lancée depuis la fenêtre intégrée devait imprimer la page ADP au lieu des courriers
+(à vérifier sous Firefox), utilisez *Ouvrir dans un onglet*.
+
+---
+
+## La ligne Excel ADP (fichier Excel maître)
+
+Le fichier maître du service compte **89 colonnes (A à CK)** : identité, plongeur, plongée, alerte et prise en charge,
+évolution, recompression, examens. Le bouton **Ligne Excel ADP** de la barre du haut (icône de masque de plongée ; aussi dans la fenêtre *Exporter les données*), **quel que soit le type de
+consultation** et même sur une fiche incomplète, compose **une ligne** à partir de **toutes les fiches du dossier**, la fiche ouverte comprise (les séances de recompression saisies sans
+examen comptent comme séances, mais ne sont pas des consultations : la « dernière fiche » des séquelles et de l'inaptitude est la dernière consultation). Rien n'est enregistré : la ligne est recalculée à chaque ouverture de la fenêtre.
+**Quelle que soit la fiche ouverte** (initiale, suivi, séance, sortie, ou un contrôle postérieur à la sortie), **la ligne est la même** : elle reprend la totalité des données de l'ensemble des fiches du dossier. La fenêtre dit
+combien de fiches elle a lues, avec leurs dates. Les fiches sont réunies par leur **numéro de dossier** : une fiche du même patient saisie sous un autre numéro n'en fait pas partie, et une fiche sans numéro de dossier est lue seule
+(la fenêtre le signale).
+Votre fichier maître n'est ni lu ni modifié.
+
+La fenêtre affiche, pour chaque colonne, sa **valeur** et la **règle** suivie ; les colonnes vides sont grisées. Vérifiez,
+puis :
+
+1. **Copier la ligne** : le texte (une ligne, 89 cellules séparées par des tabulations) se colle dans la **première
+   cellule** d'une ligne vide d'Excel (Ctrl+V). Les dates (JJ/MM/AAAA) et les heures (HH:MM) sont reconnues au
+   format français ;
+2. ou **Télécharger le classeur .xlsx** (`ligne_excel_ADP_AAAA-MM-JJ.xlsx`) : une feuille « Feuil1 », en-têtes identiques à
+   votre fichier (légendes de codes comprises) en ligne 1, la ligne du dossier en ligne 2, dates et heures en vrais
+   nombres au même format. Copiez la ligne 2 et collez-la dans le fichier maître, en « valeurs » si vous voulez garder
+   sa mise en forme.
+
+La case **inclure le nom et le prénom (colonne A)** est cochée par défaut, la colonne A du fichier maître étant
+« NOM Prénom » ; décochez-la pour laisser la colonne vide. Le nom du fichier téléchargé ne porte aucune donnée du patient.
+
+### D'où vient chaque colonne
+
+La **fiche initiale** (la première de type initial) donne l'identité, le plongeur, la plongée, l'alerte, les soins sur
+place, le premier examen et la table initiale ; la **fiche proche de H+24** (entre 12 h et 40 h après l'arrivée, la plus
+proche de 24 h) et la **première fiche de suivi** donnent l'évolution ; la **dernière fiche** donne les séquelles ;
+**toutes les fiches** donnent le diagnostic (le dernier), les recompressions, le doppler transcrânien, les échographies,
+l'IRM (image, facteur compressif, concordance), l'épreuve d'effort, la MAPA et les traitements ; la **fiche la plus récente qui les porte** donne le score MJOAS, les jours d'AT et l'inaptitude (la consultation de
+sortie, qu'une fiche de contrôle saisie après elle ne masque pas).
+
+| Col. | Colonne du fichier maître | Source dans ADP et règle de codage |
+|---|---|---|
+| A | NOM Prénom | nom en majuscules, puis prénom (identité) |
+| B | n° dossier (SMHEP) | numéro d’accident de plongée du service |
+| C | Numero Dossier | numéro de dossier de la fiche |
+| D | Sexe | M = 1, F = 0 |
+| E | Date de naissance (JJ:MM:AA) | date de naissance |
+| F | Age | âge à la date du premier examen |
+| G | Diagnostic | dernier diagnostic retenu du dossier, codé 1 à 13 (voir la notice) |
+| H | Année début plongée | année de début de la plongée |
+| I | Nb total de plongée | nombre total de plongées réalisées |
+| J | Nb moyen plongée par an (2 dernières années) | nombre moyen de plongées par an |
+| K | Plongeur pro (militaire ou civil) | 1 si niveau professionnel, plongée professionnelle ou militaire |
+| L | Organisme d'affiliation actuel | rien de choisi (« — ») : 0 ; FFESSM 1, FSGT 2, UCPA 3, ANMP 4, CMAS 6, PADI 7, autres 8 |
+| M | Niveau plongeur loisir | N1 / Open Water 1 … N5 5 ; baptême, non breveté ou rien de choisi (« — ») : 0 |
+| N | Niveau enseignement loisir | rien de choisi (« — ») : 0 ; E1 / BPJEPS 1, E2 2, E3 / MF1 3, E4 / MF2 / DEJEPS / DESJEPS 4 |
+| O | Niveau plongeur pro (classe et mention) | rien de choisi (« — ») : « Aucun » (la 8.2.0 écrivait 0) ; sinon le libellé du niveau ; la mention (A à D) n’est pas recueillie |
+| P | Niveau plongeur militaire/ | libellé pour un plongeur d’armes ; sinon 0 (niveau civil ou rien de choisi) ; la catégorie n’est pas recueillie |
+| Q | Date dernier certifical médical (JJ:MM:AA) | date du dernier certificat médical |
+| R | Qualification médecin assurant suivi plongée | fédéral 1, du sport 2, DIU 3, rééducateur 4, autre 5 |
+| S | ATCD | antécédents médico-chirurgicaux ; « ras » si aucun |
+| T | ATCD plongée | 1 si un accident de plongée antérieur, 0 si aucun |
+| U | Plongée en structure (associative/commerciale) | plongée en club : 1 ; hors club ou professionnelle : 0 |
+| V | Plongée auto-encadrée | plongée auto-encadrée : 1 ou 0 |
+| W | Date de l'accident (JJ:MM:AA) | date de l’accident |
+| X | Plongée pro | plongée professionnelle ou militaire : 1 |
+| Y | Lieu/site de l'accident | reconnu dans le texte du lieu (école, Var, parc national) ; sinon vide |
+| Z | Appareil utilisé | apnée 1 ; sinon circuit ouvert 2 par défaut (l’appareil n’est pas recueilli) |
+| AA | Mélange uilisé | air 1, nitrox 2, trimix 3, autres 4 |
+| AB | Procédure de décompression | tables 1, ordinateur 2, autre 3 |
+| AC | Combinaison | type de tenue : humide 1, semi-étanche 2, étanche 3 ; « autre » : le texte précisé (« autre » sans précision) ; vide si la tenue n'est pas cotée |
+| AD | Heure immersion (hh:mm) | heure d’immersion (DS) |
+| AE | Profondeur max (msw) | profondeur maximale (Pmax) ; en apnée, celle des apnées |
+| AF | Durée de travail (hh:mm) | durée de travail (DT) |
+| AG | Réalisation de paliers | 1 si un palier obligatoire est saisi, 0 sinon (plongée renseignée) |
+| AH | Heure sortie de l'eau (hh:mm) | heure de sortie de l’eau (HS) |
+| AI | Durée totale plongée (hh:mm) | durée totale de plongée (DTP) |
+| AJ | Heure premiers symptômes (hh:mm) 00:00 si premiers symptômes en plongée | 00:00 si les symptômes sont apparus entre l’immersion et la sortie de l’eau |
+| AK | Respect procédure décompression | respect de la procédure de décompression (facteur favorisant) : 1 ou 0 |
+| AL | Plongée ludion | facteur « plongées ludion » ; profil à yoyo si non renseigné |
+| AM | Plongée successive | plongée dans les 24 heures précédentes |
+| AN | Plongée d'instruction | facteur favorisant « plongée d’instruction », sinon type de plongée « instruction » |
+| AO | Travail musculaire intense en et/ou après plongée | travail musculaire intense (facteur favorisant) : 1 ou 0 |
+| AP | Fatigue avant plongée | fatigue (facteur favorisant) : 1 ou 0 |
+| AQ | Nb de plongées 15 derniers jours (< 20 m / > 20 m) | non recueilli |
+| AR | Heure d'appel SMHEP (hh:mm) | heure d’appel |
+| AS | Identité de l'appelant | SAMU 1 (SAMU 83, SCMM, autre SAMU), SAU HNIA SA 2, autre SAU 3, autre 5 |
+| AT | Localisation accidenté moment de l'appel | lieu de l’accidenté au moment de l’appel (prise en charge initiale) : en mer 1, à quai 2, dans un SAU 3, autre 4 (la précision d’« autre » n’est pas reprise) ; vide si non coté |
+| AU | Moyen d'évacuation vers SMHEP | hélicoptère 1, SMUR 2, VSAV 3, autre 5 |
+| AV | Heure début des soins (hh:mm) | heure des 1ers soins sur place |
+| AW | Circonstances de survenue de l'accident | remontée, profil, commentaire des paliers, histoire de la maladie |
+| AX | Signes initiaux | signes fonctionnels à l’arrivée |
+| AY | Déséquipement + protection thermique | déséquipement sur le lieu de plongée : 1 ou 0 (la protection thermique n'est pas recueillie) ; OUI proposé d'office sur une consultation initiale |
+| AZ | Oxygénothérapie normobare | oxygène sur place : 1 (masque à haute concentration) ou 0 |
+| BA | Hydratation per os et IV (ml) | hydratation sur place (mL) |
+| BB | Aspirine | aspirine sur place : 1 ou 0 |
+| BC | Heure de prise en charge SMHEP (hh:mm) | heure de prise en charge au SMHEP |
+| BD | Evolution avant arrivée SMHEP : | amélioré 2, stable 3, aggravé 4 |
+| BE | Signes au SMHEP | syndromes anormaux du premier examen |
+| BF | Signes au SMHEP : | déficit moteur 3, déficit sensitif objectif 2, paresthésies isolées 1, aucun 0 |
+| BG | Douleur vertébrale | douleur rachidienne du premier examen : 1 ou 0 |
+| BH | Troubles sphictériens | troubles vésico-sphinctériens du premier examen |
+| BI | Score MEDSUBHYP | à l’arrivée si coté, sinon le premier disponible ; vide si la case « ne pas mentionner » le score MEDSUBHYP est cochée |
+| BJ | Score sévérité OI | score vestibulaire du premier examen coté ; « ns » sinon, ou si la case « ne pas mentionner » le score vestibulaire est cochée |
+| BK | Table Initiale | O2 2,5 ATA 1 (A15, A15IOT), A18 2, B18 3, C18 4, héliox 5, autre 6, aucune 0 ; **seulement si la recompression de la fiche initiale est cotée** (la B18 d'office seule vaut « aucune ») |
+| BL | Heure de mise en pression (hh:mm) | heure de mise en pression de la table initiale |
+| BM | Délai de recompression après 1ers symptômes (hh:mm) | délai 1ers symptômes → mise en pression |
+| BN | Traitements médicamenteux, y compris ceux avant arrivée au SMHEP: (le ou les chiffres) | chiffres séparés par des espaces : ONB 1 ou 2, hydratation > 500 mL 3, aspirine 4, corticoïdes 5, lidocaïne 6, fluoxétine 7, autres 8 ; 0 si aucun |
+| BO | Evolution après la table initiale (par rapport arrivée SMHEP): | première fiche de suivi : régression totale 1, amélioration 2, stabilisation 3, aggravation 4 |
+| BP | Signes après la table initiale | syndromes anormaux de la première fiche de suivi |
+| BQ | Evolution à 24h (par rapport arrivée SMHEP): | fiche la plus proche de H+24 (entre 12 h et 40 h) |
+| BR | Signes à 24h | syndromes anormaux de la fiche proche de H+24 |
+| BS | Nb séances d'OHB complémentaires (table héliox, 2,8 ou 4 ATA) | séances **cotées** du dossier à 2,8 ATA ou héliox (A18, B18, C18, héliox), la table initiale déduite |
+| BT | Nb séances d'OHB complémentaires (table O2, 2,5 ATA) | séances **cotées** du dossier à l’oxygène 2,5 ATA (A15, A15IOT), la table initiale déduite |
+| BU | Séquelles sortie service | dernier examen : signes objectifs 2, signes subjectifs 1, aucun 0 |
+| BV | Médecin ayant pris en charge le patient | médecin de la fiche initiale (sinon l’examinateur) |
+| BW | Observations | **non recueillie** : c’est votre case d’observations, ADP n’y écrit rien (depuis la 9.5.1) |
+| BX | Score MJOAS | score MJOAS de la consultation de sortie (la fiche la plus récente qui en porte un) ; 17 = normal |
+| BY | nombre j AT | jours d’arrêt de travail de la consultation de sortie **+ jours d’hospitalisation**, du jour d’entrée (premier examen du dossier) au jour de sortie **compris** (du 02/10 au 05/10 : 4 jours) ; **sans jours d’AT saisis, les jours d’hospitalisation seuls** (jusqu’à la consultation de sortie la plus récente) ; vide sans consultation de sortie |
+| BZ | nombre j inaptitude plongée | inaptitude temporaire : mois × 30 jours ; « définitive » sinon ; lue sur la fiche la plus récente qui la porte |
+| CA | GF ORDINATEUR | marque et modèle de l’ordinateur, suivis de ses réglages, dans la même case (« Suunto D5 - GF 35/75 ») ; l’un des deux seulement si l’autre est vide |
+| CB | Echodoppler transcrânien | meilleur grade de shunt noté au doppler transcrânien (0, 1, 2) |
+| CC | IRM délai/accident (jours) | jours entre l’accident et la première IRM médullaire |
+| CD | IRM Image | IRM médullaire : image anormale 1, normale 0 |
+| CE | IRM Facteur compressif | facteur compressif à l’IRM médullaire (la première IRM où il est coté) : oui 1, non 0 (les codes 2, 3 et 4 de votre légende — en regard de la lésion, en dessous, au-dessus — ne sont pas recueillis) |
+| CF | IRM Facteur compressif Type | type du facteur compressif (texte, sans point final), quand il y en a un |
+| CG | IRM concordance radio clinique | concordance radio-clinique de l’IRM médullaire (la première IRM où elle est cotée) : oui 1, non 0 |
+| CH | Echographie cardiaque anormale | résultat de l’échographie cardiaque : anormal 1, normal 0 |
+| CI | Epreuve d'effort anormale | épreuve d’effort réalisée : anormale 1 (dans une fiche du dossier au moins), normale 0 ; vide si elle n’est pas faite ou sans résultat |
+| CJ | MAPA anormale | MAPA réalisée : anormale 1 (dans une fiche du dossier au moins), normale 0 ; vide si elle n’est pas faite ou sans résultat |
+| CK | G | colonne sans équivalent |
+
+Les colonnes qu'ADP **ne recueille pas** (AQ, BW, CK) restent vides. La colonne Z
+(appareil utilisé) est **« circuit ouvert » par défaut** hors apnée : ADP ne demande ni recycleur ni caisson. Les niveaux
+professionnel et militaire (O, P) sont repris en toutes lettres, la mention (A à D) et la catégorie n'étant pas recueillies.
+
+**Rien de choisi = 0, ou « Aucun » en O** (0 depuis la 8.2.0 ; « Aucun » en O depuis la 8.2.1). Quand la fiche initiale du dossier laisse « — » dans l'organisme
+d'affiliation (L), le niveau de plongeur de loisir (M) ou le niveau d'enseignement (N), la case correspondante du fichier maître reçoit **0** au lieu de rester vide ;
+la colonne P (militaire) reçoit 0 pour un niveau civil ou quand rien n'est choisi ; la colonne O (niveau de plongeur professionnel) reçoit **« Aucun »** quand rien
+n'est choisi. Un dossier **sans fiche initiale** laisse ces cinq cases vides (les menus se posent sur la fiche initiale : sans elle, une case vide veut dire
+« inconnu »). La colonne R (qualification du médecin) reste vide quand rien n'est choisi : la légende de votre fichier n'y prévoit pas de 0.
+
+### Le diagnostic (colonne G)
+
+Le **dernier diagnostic retenu** du dossier est codé ; quand plusieurs diagnostics sont retenus, c'est le diagnostic
+principal s'il est désigné, sinon le premier dans l'ordre accident de désaturation, œdème pulmonaire d'immersion,
+barotraumatisme, accident biochimique, noyade.
+
+| Code | Libellé du fichier maître | Dans ADP |
+|---|---|---|
+| 1 | ADD neurologique | accident de désaturation, type médullaire et / ou cérébral seul |
+| 2 | ADD OI | accident de désaturation, type vestibulaire seul |
+| 3 | ADD cutané | accident de désaturation, type cutané seul |
+| 4 | ADD OMA | accident de désaturation, type ostéo-articulaire seul |
+| 5 | ADD mixte | accident de désaturation de plusieurs familles de types (par exemple médullaire et vestibulaire) |
+| 6 | ADD ambigu | accident de désaturation dont le type n'est pas précisé |
+| 7 | OPI | œdème pulmonaire d'immersion |
+| 8 | BT OI | barotraumatisme dont l'oreille interne fait partie |
+| 9 | BT pulmonaire | barotraumatisme dont la surpression pulmonaire fait partie (sans oreille interne) |
+| 10 | BT sinusien | barotraumatisme dont les sinus font partie (sans oreille interne ni poumon) |
+| 11 | autres barotrauma | oreille moyenne, dentaire, plaquage de masque, ou type non précisé |
+| 12 | accident biochimique | accident biochimique |
+| 13 | autre | noyade, accident de désaturation pulmonaire (chokes) seul, diagnostic saisi seulement en texte libre |
+
+---
+
+## La ligne Excel COHB (activité COHB)
+
+Le service tient aussi une feuille **« Activité COHB »** : une ligne par dossier clos, **31 colonnes (A à AE)**. Même mécanique
+que la ligne Excel ADP : le bouton **Ligne Excel COHB** de la barre du haut (icône d'activité ; aussi dans la fenêtre *Exporter les données*), quel que soit le type de consultation. La fenêtre propose les deux lignes en haut, affiche la **valeur** et la **règle** de chaque colonne,
+puis **Copier la ligne** (texte à tabulations, 31 cellules, à coller dans la première cellule d'une ligne vide) ou **Télécharger le
+classeur .xlsx** (`ligne_excel_COHB_AAAA-MM-JJ.xlsx` : les en-têtes de votre feuille en ligne 1, la ligne du dossier en ligne 2, sur
+le fond bleu des lignes « plongée »). La case « inclure le nom et le prénom » concerne la colonne B. Rien n'est enregistré, votre
+feuille n'est ni lue ni modifiée. Comme la ligne ADP, **la ligne COHB est la même quelle que soit la fiche ouverte** : elle est composée à partir de toutes les fiches du dossier.
+
+| Col. | En-tête | Règle |
+|---|---|---|
+| A | Date cloture | date de la dernière fiche du dossier (séances de recompression sans examen comprises) |
+| B | Nom prénom | nom en majuscules, puis prénom |
+| C | IPP | numéro de dossier de la fiche |
+| D | Diagnostic | dernier diagnostic retenu, abrégé comme dans votre feuille (« ADD médullaire + cutané », « Barotraumatisme oreille moyenne », « Intoxication CO »), le diagnostic principal d'abord |
+| E | Classement ARS | « accident de plongée » ; « intoxication CO » si le diagnostic comprend une intoxication au monoxyde de carbone |
+| F | CS | nombre de consultations du dossier (une par fiche, **sauf les séances de recompression saisies sans examen**) |
+| G | 1ere en urgence | période de la mise en pression de la table initiale, quand elle est réellement cotée : **O** heures ouvrables (lundi au vendredi, de 7 h 45 à 16 h 00, hors jours fériés), **N** en semaine hors de ces heures, **W** week-end ou jour férié |
+| H, I | nbre seance en repose pied, nbre seance Alité | non recueillis (la position du patient n'est pas saisie) |
+| J à U | A15, A15HNO, B18Hx, B18HxHNO, IOT, IOTHNO, A18, A18HNO, B 18, B18HNO, C18, C18HNO | séances cotées, voir ci-dessous |
+| V, W, X | Pansements, PRF, PTcO2 | non recueillis |
+| Y | DTC | nombre de doppler transcrâniens réalisés (fiches du dossier) |
+| Z | Audio / Tympan | non recueilli |
+| AA | Complication | nombre de fiches du dossier avec une complication thérapeutique |
+| AB | EE / plateau technique | nombre d'**épreuves d'effort** (EE) réalisées : les fiches du dossier où l'épreuve d'effort est cochée OUI (comme le DTC en Y ; une épreuve cochée de nouveau sur une autre fiche est une nouvelle épreuve) ; vide s'il n'y en a pas |
+| AC, AD | Echo-doppler, CACI plongée | non recueillis (le doppler transcrânien est compté en Y) |
+| AE | Résidence | voir ci-dessous |
+
+**Séances cotées.** Depuis la 8.2.1, la ligne ne compte une séance que lorsqu'elle est **réellement cotée dans l'encart « Recompression »** : une fiche n'est
+pas une séance d'office. Une fiche compte **une séance au plus** (une recompression cotée est une séance : depuis la 9.0.0, l'encart n'a plus de « nombre de séances
+réalisées »), rangée dans la colonne de son type de table, en heures ouvrables ou dans la colonne « HNO » qui la suit d'après l'heure de mise en pression
+(heures ouvrables faute d'heure). Règle :
+
+- sur une consultation de **suivi** ou de **sortie**, une **table choisie** compte : rien n'y est proposé d'office ;
+- sur une consultation **initiale**, la table **B18 est proposée d'office** : seule, elle ne prouve pas qu'une recompression a eu lieu et **n'est pas comptée**.
+  Elle l'est dès que l'encart est rempli : **heure de mise en pression** (ou de fin), ou **complication thérapeutique** « OUI ». Une autre table que B18, choisie par le
+  praticien, compte d'emblée ;
+- les « séances réalisées depuis la dernière consultation » de l'encart Évolution **ne comptent pas** ;
+- une heure de mise en pression sans table est une séance de type inconnu ; comme une table « autre », elle n'a pas de colonne ;
+- une **fiche « séance de recompression »** (saisie sans examen) compte **une séance**, dans la colonne de sa table, en heures ouvrables ou « HNO » d'après son heure de mise en pression.
+
+La colonne G (« 1ere en urgence ») suit la même règle : elle reste vide tant que la recompression de la fiche initiale n'est pas cotée. Correspondance des tables :
+A15 → A15 ; A15IOT et A18IOT → IOT ; A18 → A18 ; B18 → B 18 ; A18HeOx et B18HeOx → B18Hx ; C18 → C18 ; une table « autre » n'est rangée nulle part.
+
+**Heures ouvrables.** Du lundi au vendredi, de **7 h 45** (comprise) à **16 h 00** (exclue), hors **jours fériés** français (1er janvier, lundi de
+Pâques, 1er mai, 8 mai, Ascension, lundi de Pentecôte, 14 juillet, 15 août, 1er novembre, 11 novembre, 25 décembre, calculés pour
+chaque année). Un jour férié compte comme un week-end (W). La colonne G s'appuie sur l'heure de mise en pression de la table
+initiale, à défaut sur l'heure de prise en charge au SMHEP ; sans heure, elle reste vide un jour de semaine.
+
+**Résidence.** Un pays cité dans l'adresse (« Belgique », « Suisse »…) ; sinon **VAR** (code postal 83, ou une commune du Var
+reconnue) ; sinon « France (dép. xx) » d'après le code postal ; sinon le pays de la nationalité si elle est étrangère. La nationalité
+ne dit pas la résidence : c'est la règle la moins sûre, à vérifier avant de coller.
+
+---
+
+## Dictée vocale
+
+Un **bouton micro** accompagne chaque encart de texte (zone de texte, ligne de texte libre) : histoire de la maladie,
+signes fonctionnels, commentaires, antécédents, précisions, résultats d'examens. Les champs d'identité (nom, prénom, date
+de naissance, adresse, e-mail), les téléphones et le numéro de dossier n'en ont pas. Un clic lance la dictée ; **le micro
+s'éteint tout seul après deux secondes sans parole** (cinq secondes si l'on n'a pas encore commencé à parler) ; un second clic
+l'arrête aussitôt, sans perdre le dernier texte reconnu. Le texte est posé **à la place du curseur** (à la suite du texte déjà
+saisi si le curseur n'a pas été placé), avec la majuscule seulement en début de phrase. Le texte en cours de reconnaissance
+s'affiche sous le champ avant d'être écrit.
+
+- Commandes vocales : **« à la ligne »** (ou « nouvelle ligne »), **« virgule »**, **« point final »**,
+  **« point-virgule »**, **« deux points »**, **« point d'interrogation »**. Dans une ligne de texte (et non une zone),
+  « à la ligne » donne un espace.
+- La dictée est celle du **navigateur** : elle fonctionne sur **Chrome, Edge et Safari**, en français. Elle ne repart pas
+  seule : une pause de plus de deux secondes l'arrête, un nouveau clic la relance. Changer d'onglet, de champ ou de fiche éteint
+  le micro. Si vous corrigez le texte déjà dicté pendant la dictée, elle s'arrête plutôt que de l'écraser ; ajouter du texte
+  avant ou après ne la gêne pas.
+- **Chrome rend parfois chaque résultat avec tout le texte déjà dit** (« antécédent », « antécédent numéro », « antécédent
+  numéro 1 »). Avant la 8.1.1, ces morceaux étaient ajoutés les uns aux autres : « antécédent numéro un » s'écrivait
+  « Antécédent antécédent numéro antécédent numéro 1 ». Le texte est maintenant recomposé à chaque résultat à partir de la liste
+  complète : il ne s'écrit qu'une fois.
+- **Répétitions, correctif de la 9.0.0.** Chrome rend parfois, pour un même passage, un texte provisoire puis un texte définitif qui ne s'écrivent pas pareil
+  (« numéro un » puis « numéro 1 », « vingt minutes » puis « 20 minutes »), corrige un mot au passage (« des » puis « de ») ou répète une suite de mots d'un résultat
+  à l'autre : le texte doublait alors. ADP compare maintenant les mots **normalisés** (accents, majuscules, ponctuation, nombres en lettres ou en chiffres, unités), avec une
+  tolérance sur les pluriels et les mots corrigés ; il ne pose le texte provisoire qu'une fois, et **écrit une seule fois** une suite d'au moins quatre mots répétée
+  aussitôt (si vous répétez volontairement une phrase d'au moins quatre mots, la seconde est supprimée : à retaper). Au clic d'arrêt, le dernier texte provisoire est posé une seule fois.
+- **Firefox n'a pas cette fonction.** Le bouton le dit et place le curseur dans le champ ; dictez alors avec la dictée de
+  Windows : **touche Windows + H** (sur Mac, menu Édition, « Démarrer la dictée » ; sur téléphone, le micro du clavier).
+- **Confidentialité.** Chrome et Edge **envoient l'audio à un service distant** (Google, Microsoft) pour le transcrire :
+  il quitte l'ordinateur, contrairement au reste d'ADP. Un avis le rappelle à la première utilisation (réglage mémorisé ;
+  refuser n'active rien). **Ne dictez aucune donnée identifiante.** La dictée de Windows (Win + H) passe, elle aussi, par
+  un service en ligne selon la configuration du poste.
+
+---
+
+## Noms et prénoms : mise en forme automatique
+
+Les champs suivants se mettent **en forme tout seuls**, pendant la frappe (le curseur ne bouge pas ; une touche morte ou un accent composé attend la fin de la composition) :
+
+| Champ | Mise en forme | Exemple |
+|---|---|---|
+| **Nom** | tout en majuscules, accents conservés | `dupont` → `DUPONT`, `éloïse` → `ÉLOÏSE` |
+| **Prénom** | l'initiale de chaque élément en majuscule (après une espace ou un trait d'union), le reste en minuscules, accents conservés | `éloïse` → `Éloïse`, `JEAN-PIERRE` → `Jean-Pierre` |
+| **Examinateur**, **Médecin**, **Infirmier(e)** | tout en majuscules | `lesaca` → `LESACA` |
+
+La même mise en forme s'applique aux **valeurs reprises** d'un autre examen du dossier et aux **fiches enregistrées ou importées avant la 9.3.2** (elles s'ouvrent déjà en forme, sans être marquées « modifiées » ; la forme est enregistrée au prochain enregistrement), ainsi
+qu'au **nom du PDF**, aux **pastilles** et aux résultats de la recherche d'un patient. La liste de suggestions des examinateurs est en majuscules et sans doublon. La **dictée vocale** n'est plus proposée dans ces champs (le texte dicté n'aurait pas leur forme).
+
+---
+
+## Retrouver un patient
+
+Trois entrées mènent au même résultat.
+
+1. **Le numéro de dossier.** Tapez-le dans le premier champ : s'il est déjà connu, l'identité et
+   les données de l'accident se remplissent seules, et l'examen précédent est proposé en grisé.
+2. **Le bouton Rechercher**, à côté de ce champ. Une fenêtre accepte un numéro de dossier, un
+   **numéro d'accident de plongée**, un nom, un prénom ou une date de naissance, écrite 12/04/1988 ou
+   1988-04-12 indifféremment. Les accents et la casse sont ignorés. Cliquez le patient : tout se
+   remplit. La liste de gauche se filtre de la même façon et affiche le numéro d'accident ; les pastilles des patients en cours, au-dessus, ne sont pas filtrées (voir *Le volet de gauche : les patients en cours*).
+3. **Le nom saisi directement.** Si vous remplissez le nom ou la date de naissance avant le numéro
+   de dossier et qu'un patient correspond, un bandeau propose de reprendre son dossier.
+
+La recherche porte sur les fiches de la base locale de ce poste, qui comprend celles **lues dans le
+dossier de données à l'ouverture**. Sans dossier connecté, un patient examiné ailleurs n'apparaît
+qu'après un import (*Importer / Fusionner*).
+
+---
+
+## Reprise automatique d'un dossier connu
+
+Dès que vous saisissez un **numéro de dossier déjà enregistré** :
+
+- nom, prénom, sexe, date de naissance, date et heure de l'accident se remplissent seuls ;
+- un bandeau rappelle la date de l'examen précédent ;
+- sur chaque champ encore vide de l'**anamnèse, de l'examen général et de l'examen neurologique**, la
+  valeur de cet examen apparaît **en grisé**. Un clic la reprend. Pour les champs texte, un petit
+  bouton `↩` fait la même chose. La recompression, les actes, les examens complémentaires, les
+  traitements et la conclusion ne sont jamais proposés en grisé : un examen coché de nouveau est
+  un nouvel examen. Le **diagnostic retenu**, la **(méthyl)prednisolone** encore à prescrire, le **poids** de la fiche initiale et les **séances** depuis la
+  dernière consultation se reprennent autrement, à la création d'une fiche de suivi ou de sortie (voir *Consultation de suivi ou de sortie*) ;
+- le bouton **Reprendre tout l'examen précédent** remplit d'un coup tous les champs vides de ces
+  encarts, schémas corporels et reliefs osseux compris. Les valeurs déjà saisies ne sont jamais
+  écrasées.
+
+L'examinateur, la date et l'heure de l'examen ne sont jamais repris.
+
+---
+
+## Remplir une fiche
+
+**Tout renseigner comme NORMAL** remplit tous les items en une fois. Vous ne modifiez ensuite que
+ce qui est anormal.
+
+**Ctrl + S** enregistre. Un brouillon est sauvegardé toutes les 4 secondes.
+
+**Modifier une fiche déjà enregistrée : une confirmation.** Depuis la 10.1.1, quand vous ouvrez une fiche **déjà enregistrée** (clic dans la liste des fiches ou sur une pastille de patient en cours) et que vous tentez de la modifier, **quel que soit l'encart** (une frappe, un clic sur
+une réponse, « tout normal », une ligne de constantes, la dictée, le changement de type…), ADP pose la question « **Cette fiche est déjà enregistrée. Êtes-vous sûr de vouloir la modifier ?** » dès la **première** tentative, avant de marquer la fiche modifiée.
+
+- **Oui, modifier cette fiche** : la modification (déjà faite à l'écran) est gardée, et la fiche reste modifiable **sans nouvelle question** jusqu'à l'ouverture d'une autre fiche. Le curseur revient là où vous étiez.
+- **Non, la laisser telle qu'elle est enregistrée** (ou la touche **Échap**, ou un clic à côté de la fenêtre) : la modification est **annulée**, la fiche revient exactement telle qu'enregistrée, aucun brouillon n'est gardé ; la question se reposera à la prochaine tentative.
+- Ne posent **pas** la question : une **nouvelle fiche**, un **ré-examen**, une **séance de recompression**, un **brouillon repris** à l'ouverture d'ADP, et une fiche **enregistrée à l'instant** dans la même séance de saisie (on est en train de la remplir). Changer d'onglet, replier un encart,
+  chercher dans la liste, copier un texte ou ouvrir le mode d'emploi ne sont pas des modifications. Une fiche rouverte depuis la liste est de nouveau protégée.
+- Tant que la question est affichée, rien d'autre n'avance : l'enregistrement est refusé (« Répondez d'abord à la question »), les autres fenêtres ne s'ouvrent pas. **Aucun bouton n'a le curseur à l'ouverture** (il est sur le titre de la question) : une frappe qui continue (espace, Entrée) ne répond ni « oui » ni « non » ;
+  la touche **Tab** mène aux boutons, et Entrée ou espace sur un bouton ne compte qu'après 0,7 seconde. Un **clic à côté** de la fenêtre ou la touche **Échap** pendant les 0,6 seconde qui suivent l'affichage sont ignorés (le second clic d'un double clic sur une réponse ne ferme pas la question).
+
+**Date et heure en un geste.** Dans une case de **date** ou d'**heure** (date et heure de l'examen, de l'accident, de la mise en pression, heure d'un relevé de
+constantes…), la touche **+** ou la **barre d'espace** écrit la **date du jour** (« 07/10/2026 ») ou l'**heure du moment** (« 14:35 »). Dans une case déjà remplie,
+elle la remplace par le moment présent. Les **heures se tapent sans les deux points** : « 1145 » devient « 11:45 » (comme les dates : « 07102026 » devient « 07/10/2026 »), y compris l'heure d'un relevé de
+constantes depuis la 9.5.2.
+
+Un champ dont la question commandante change de réponse est effacé automatiquement. Exemple :
+si vous repassez « Nystagmus » de OUI à NON, le côté, la position du regard et le sens du nystagmus
+disparaissent du fichier de données. Aucune valeur fantôme ne subsiste.
+
+### Coordination et examen vestibulaire
+
+Depuis la 9.4.2, ces deux groupes sont dans **deux encarts** : **Coordination, équilibre et marche** (verticalisation, équilibre statique, marche, talon-genou, doigt-nez) reste dans l'onglet « Examen neurologique » ;
+l'**examen vestibulaire** (les quatre épreuves ci-dessous) est dans l'onglet « **Examen clinique général** », dans son propre encart **Examen vestibulaire**, **juste après « ORL et barotraumatisme »**. Chaque encart a son
+bouton « tout normal ». Le fichier de données (colonnes et ordre) et le papier ne changent pas : sur le papier, les épreuves vestibulaires gardent leur place dans l'encart « Coordination et examen vestibulaire » de la page de
+l'examen neurologique. *Avant la 9.4.2, les quatre épreuves terminaient l'encart de coordination de l'onglet « Examen neurologique ».* Les quatre **épreuves vestibulaires** :
+
+| Épreuve | Réponses | Côté demandé si anormale |
+|---|---|---|
+| **Romberg** (debout, pieds joints, yeux fermés) | négatif, positif | côté de la chute, ou chute non latéralisée |
+| **Fukuda** (piétinement sur place, yeux fermés, bras tendus) | normale, anormale | côté de la rotation ou de la déviation |
+| **Marche en étoile** (marche avant puis arrière, yeux fermés) | normale, anormale | côté de la déviation |
+| **Marche funambule** (sur une ligne, talon contre pointe) | normale, anormale | côté de la déviation |
+
+Une épreuve non réalisée reste vide. *Tout renseigner comme NORMAL* les cote normales. Un Romberg
+positif cote l'instabilité du score vestibulaire « présente debout yeux fermés ». Dans la synthèse, les
+épreuves anormales sont écrites avec les signes vestibulo-cochléaires, **dans l'examen général** (à la suite de l'ORL) et non plus dans l'examen neurologique (depuis la 10.1.1 : synthèse, compte rendu d'hospitalisation, texte court ; les pages de saisie du PDF ne changent pas).
+
+### Les schémas corporels
+
+Deux schémas restent en topographie libre, là où le métamère n'apporte rien :
+les signes subjectifs et les lésions cutanées. Ils fonctionnent de la même façon :
+
+1. choisissez la **cotation à appliquer** dans la barre du haut ;
+2. cliquez les zones concernées ;
+3. re-cliquer une zone avec la même cotation l'efface. La gomme aussi.
+
+Chaque cotation a son propre motif, visible à l'écran comme sur le PDF imprimé en noir et blanc.
+
+| Schéma | Cotations |
+|---|---|
+| Signes subjectifs | fourmillements, picotements, peau cartonnée, brûlures, décharges électriques, engourdissement |
+| Lésions cutanées | marbrures (livedo réticulé ou ramifié), érythème, œdème localisé, prurit, papules et plaques, emphysème sous-cutané |
+
+Le schéma des **signes subjectifs** suit la question « Signes subjectifs » de l'examen général : répondre **NON** retire tout de suite l'encart
+« Signes subjectifs — localisation » (de la page, de la liste des encarts et de la saisie) et **efface les zones déjà dessinées** ; sans réponse,
+l'encart est proposé (avec un rappel : répondre OUI pour que le schéma soit exporté), et avec OUI aussi. Cliquer une seconde fois sur NON retire
+la réponse, et l'encart revient. *Tout renseigner comme NORMAL* répond NON. La page imprimée ne change pas.
+
+Les sensibilités, elles, ne se cotent plus par zone anatomique mais par métamère. Voir la section
+suivante.
+
+### La pallesthésie
+
+Elle ne se cote pas sur le zonage anatomique mais sur **12 reliefs osseux** : crâne (médian),
+clavicule, épaule, coude, poignet, doigt, grill costal, EIAS, rotule, malléole interne,
+malléole externe, orteil. Tous bilatéraux sauf le crâne.
+
+Chaque relief et chaque côté offrent les quatre boutons directement : **Diminuée**, **Exagérée**,
+**Abolie**, **Normale**. Un clic suffit, il n'y a pas de mode à sélectionner au préalable comme
+sur les schémas corporels. Une case laissée sur « Normale » signifie relief testé et normal.
+
+### Sensibilités non examinées
+
+Si l'examen des sensibilités n'a pas été réalisé, répondez NON à **Examen des sensibilités
+réalisé**. Les 112 colonnes de métamères, les 23 colonnes de reliefs et les scores ASIA sortent
+alors **vides** (valeur manquante).
+
+Attention à la différence de sens entre les deux échelles :
+
+- sur les **reliefs** et les **zones**, `0` veut dire testé et normal ;
+- sur les **métamères**, `0` veut dire sensibilité **absente**, ce qui est le maximum de gravité.
+  Le normal y vaut `2`. Ce codage est celui de la norme ISNCSCI, je ne l'ai pas inventé.
+
+Une cellule vide veut toujours dire non testé, dans les deux cas.
+
+### Les métamères et le score ASIA
+
+Les sensibilités épicritique et thermoalgique se cotent sur les **28 métamères** de la norme
+ISNCSCI, de C2 à S4-5, côté droit et côté gauche. Chaque case propose quatre boutons :
+
+| Bouton | Valeur enregistrée | Sens | Points ASIA |
+|---|---|---|---|
+| **2** | 2 | normale | 2 |
+| **↓** | 1 | hypoesthésie | 1 |
+| **↑** | 3 | hyperesthésie | 1 |
+| **0** | 0 | anesthésie | 0 |
+| **NT** | 9 | non testable | exclu du total |
+
+Hypo- et hyperesthésie valent toutes deux 1 point dans la norme ISNCSCI. L'outil garde la
+distinction pour le compte rendu et n'en fait qu'un seul point pour le score. La pallesthésie
+n'entre pas dans le score ASIA.
+
+Dans l'en-tête de l'encart *Sensibilités*, à côté de *tout effacer*, le bouton **✓ 3 sensibilités
+normales** cote d'un clic le **tact léger** et la **piqûre** normaux sur les 28 métamères des deux
+côtés, la **pallesthésie** normale sur tous les reliefs, et répond OUI à *Examen des sensibilités
+réalisé*. Il remplace les cotations déjà saisies.
+
+Deux façons de remplir, au choix, sur le même écran.
+
+**Le schéma** (vue par défaut). Deux silhouettes, antérieure et postérieure, où les métamères
+sont dessinés. Choisissez la cotation dans la barre, puis cliquez :
+
+- en mode **par zone anatomique**, un clic sur la jambe, le thorax ou la main cote d'un coup
+  tous les métamères de cette zone. C'est la vitesse de la version précédente ;
+- en mode **par métamère**, un clic ne cote qu'une bande. C'est la précision quand elle sert.
+
+Vous voyez immédiatement où passe le niveau : le vert s'arrête, le rose commence.
+
+**Le tableau des 28 métamères**, accessible par l'onglet voisin, reste la vue exhaustive :
+une ligne par niveau, le repère anatomique de la norme rappelé sur chaque ligne, et le chevron
+qui reporte une ligne sur tous les niveaux situés en dessous.
+
+Trois raccourcis rendent la saisie rapide :
+
+- **Tout normal** remplit les 28 lignes d'un côté ou des deux ;
+- le chevron **▼** en bout de ligne reporte la cotation de cette ligne sur **tous les métamères
+  situés en dessous**. C'est le geste qui correspond à l'examen réel : vous descendez jusqu'au
+  premier niveau anormal, vous cotez, vous reportez ;
+- chaque ligne rappelle le **point de repère anatomique** de la norme (protubérance occipitale
+  externe pour C2, mamelon pour T4, ombilic pour T10, région périanale pour S4-5).
+
+La force motrice utilise les **10 myotomes clés** (C5 à T1, L2 à S1), cotés MRC 0 à 5, plus la
+contraction anale volontaire (VAC) et la pression anale profonde (DAP).
+
+L'outil calcule alors : totaux tact léger et piqûre sur 112 chacun, UEMS et LEMS sur 50 chacun,
+niveau sensitif droit et gauche, niveau moteur droit et gauche, niveau neurologique (NLI),
+préservation sacrée, grade AIS de A à E.
+
+**Ce calcul est indicatif.** Les totaux, le niveau sensitif et le niveau moteur des segments
+pourvus d'un myotome clé suivent la norme. Un myotome clé coté 5 reste intact même si le dermatome
+correspondant est altéré : le niveau moteur peut donc passer sous le niveau sensitif, et c'est
+conforme.
+
+Dans les segments sans myotome clé (C1 à C4, T2 à L1, S2 à S5), la norme présume le niveau moteur
+égal au niveau sensitif « si la fonction motrice sus-jacente est normale ». L'outil applique cette
+condition de façon mécanique, là où un examinateur juge. Vérifiez sur la grille officielle avant
+toute décision.
+
+### Otoscopie et fonction tubaire
+
+L'encart ORL cote, à droite et à gauche :
+
+- **otoscopie** selon la classification de **Haines et Harris modifiée par Rui et Flottes** :
+  `1` rougeur du manche du marteau, `2` rougeur diffuse du tympan qui est rétracté,
+  `3` épanchement séreux de la caisse, `4` épanchement de sang dans la caisse,
+  `5` perforation tympanique. Le `0` ne fait pas partie de la classification : il est ajouté
+  pour coter un tympan normal, qu'il faut bien pouvoir enregistrer ;
+- **épanchement rétrotympanique** : présent ou absent ;
+- **manœuvre de Valsalva** : `2 = perméable`, `1 = difficile`, `0 = impossible` ;
+- **Weber** : non latéralisé, latéralisé à droite, latéralisé à gauche ;
+- **Rinne** : positif (conduction aérienne supérieure à l'osseuse, normal) ou négatif.
+
+### Lésions cutanées de désaturation
+
+Cochez **Lésions cutanées présentes**, choisissez le type dans la barre, cliquez les zones du
+schéma. Sept types, chacun avec son motif à l'impression : marbrures en **livedo réticulé** (maille fine), marbrures en **livedo ramifié**
+(en carte géographique, le plus fréquent), érythème, œdème localisé, prurit, papules ou plaques, emphysème sous-cutané. Le bouton **?** de chaque livedo
+ouvre un schéma et la description de l'aspect ; c'est au médecin de les distinguer. **Plusieurs types** peuvent se cumuler sur une même zone : cliquer
+avec un autre type l'ajoute, cliquer avec le même type le retire. Les marbrures des fiches d'avant la 11.1.1 restent « type non précisé ».
+
+Le fichier de données reçoit le nombre de zones atteintes, un compteur par type, et un indicateur
+par grande région corporelle (tronc antérieur, tronc postérieur, membres supérieurs, membres
+inférieurs).
+
+### Reporter un réflexe sur d'autres
+
+Renseignez un réflexe et ses qualités, puis cliquez **copier vers…** sur sa ligne. Cochez les
+réflexes qui doivent recevoir la même cotation, ou utilisez les raccourcis *Tous*, *Même côté*,
+*Membres supérieurs*, *Membres inférieurs*. La valeur et les qualités (polycinétique, étendu) sont
+reportées à l'identique. Les réflexes non cochés ne bougent pas.
+
+### Nystagmus et VNS
+
+La **position du regard** accepte plusieurs modalités simultanées : regard centré, latéral droit,
+latéral gauche, vers le haut, vers le bas. Elle se renseigne trois fois, indépendamment :
+pour le nystagmus clinique, pour le nystagmus spontané sous VNS, et pour le NIV.
+
+Dans le fichier de données, chaque position devient une colonne binaire (`nys_regard_centre`,
+`nys_regard_lat_g`…), plus une colonne texte listant les positions cochées.
+
+### Trépidations
+
+Le caractère **épuisable ou inépuisable** se cote séparément à droite et à gauche. Les deux champs
+apparaissent quand la trépidation est bilatérale, un seul quand elle est unilatérale.
+
+---
+
+## Aides à l'examen
+
+Un bouton **?** apparaît à côté des items techniquement délicats : Hoffmann, Babinski,
+trépidations, réflexes polycinétiques et étendus, Weber, Rinne, Valsalva, otoscopie, cotation MRC,
+VAC et DAP, nystagmus, VNS, NIV, Barré, Mingazzini, Glasgow, test des métamères, pallesthésie,
+résidu mictionnel, consommation d'alcool et, depuis la 9.4.1, le score MJOAS (la grille du service, avec le calcul du total).
+
+Chaque fiche donne la manœuvre, le résultat normal, ce qui compte comme pathologique et les pièges
+courants. Quatre d'entre elles portent un schéma au trait.
+
+### Photographies
+
+Les fiches techniques sont des textes et des schémas. Les photographies qui documentent un examen
+précis se joignent à la **fiche du patient**, dans l'encart *Pièces jointes* en fin d'onglet « Conclusion et évolution » (jusqu'à
+douze photos, chacune avec un titre, réduites à 1600 pixels, enregistrées avec la fiche et imprimées
+sur des pages dédiées du PDF). La photo de l'ordonnance se joint depuis l'encart « Antécédents et
+traitements ». Elles n'entrent pas dans le fichier de données, qui ne reçoit que leur nombre et leurs
+titres.
+
+Une photographie de patient reste une donnée de santé identifiante, visage ou pas. Cadrez au plus
+juste, recueillez le consentement, et chiffrez le support de toute sauvegarde JSON qui en contient.
+
+---
+
+## Douchette code-barres
+
+Une douchette USB ou Bluetooth se déclare comme un clavier : elle tape le code en quelques
+dizaines de millisecondes, puis envoie Entrée. Aucun pilote, aucune configuration.
+
+L'outil reconnaît cette rafale **quel que soit le champ actif**, retire la chaîne du champ où elle
+est tombée, et la place dans le n° de dossier. La recherche du dossier part aussitôt, l'identité se
+remplit, un bip confirme.
+
+La détection repose sur la vitesse moyenne de frappe : au plus 15 ms par caractère sur toute la
+rafale. Une douchette émet entre 1 et 5 ms par caractère, un dactylographe rapide reste au-dessus
+de 60 ms. Une saisie au clavier n'est donc jamais lue comme un scan. Testé jusqu'à 40 ms par
+caractère sans faux positif.
+
+Réglages dans **Plus** › **Douchette et pseudonymisation** :
+
+- activer ou désactiver la capture globale ;
+- une **règle d'extraction** facultative, sous forme d'expression régulière, si le bracelet encode
+  plus que l'identifiant. Exemple : `(\d{8,12})` sur `IPP:8012345678/X` retient `8012345678`.
+  Un champ de test affiche le résultat en direct.
+
+---
+
+## Pseudonymisation de l'identifiant scanné
+
+Sans précaution, scanner le bracelet fait entrer le numéro patient de l'hôpital dans la colonne
+`dossier`. Le fichier devient alors ré-identifiable par quiconque a accès au système d'information
+hospitalier, et l'argument de pseudonymisation tombe.
+
+L'option **empreinte salée** règle ce point. Le numéro lu passe dans SHA-256 avec un sel secret,
+et seul le résultat tronqué est enregistré, sous la forme `P-496F54D8F5E4`. Le numéro d'origine
+n'est écrit nulle part : ni dans la fiche, ni dans le PDF, ni dans le CSV, ni dans la sauvegarde
+JSON. Vérifié par test automatisé.
+
+Le même patient rescanné redonne le même pseudonyme, donc le lien entre ses examens répétés est
+conservé, et la reprise automatique du dossier connu fonctionne à l'identique.
+
+### Le sel est la pièce critique
+
+Un numéro à dix chiffres ne compte que dix milliards de valeurs possibles. Une empreinte non salée
+se retrouve par force brute en quelques secondes : la pseudonymisation ne vaudrait rien. C'est le
+sel secret qui la rend solide.
+
+- **Conservez-le hors du dossier de données** : gestionnaire de mots de passe, coffre du service.
+  Le bouton *Télécharger le sel* produit un petit fichier texte à ranger ailleurs.
+- **Saisissez le même sel sur chaque poste.** Deux sels différents donnent deux pseudonymes
+  différents pour le même patient, et la fusion ne relie plus ses examens.
+- **Sel perdu, lien perdu.** Les fiches déjà enregistrées gardent leur pseudonyme, mais un nouveau
+  scan du même patient produira un pseudonyme différent.
+
+### Saisie directe
+
+Quand la pseudonymisation est active, une valeur **tapée directement** dans le champ n° de dossier
+n'est pas transformée. C'est voulu : vous gardez la possibilité d'utiliser vos propres numéros
+d'inclusion. Un avertissement s'affiche sous le champ, et la colonne `dossier_pseudo` indique
+fiche par fiche si l'identifiant est une empreinte (1) ou une valeur brute (0).
+
+Pour pseudonymiser un identifiant sans douchette, utilisez le bouton **Scanner / pseudonymiser**
+à côté du champ : une petite fenêtre reçoit le numéro, calcule l'empreinte, et n'en garde rien.
+
+---
+
+## Ré-examiner un patient
+
+Ouvrez une fiche du patient (sa pastille dans les patients en cours, ou la liste de gauche), puis le bouton **Ré-examen du patient** de la barre du haut (stéthoscope), ou saisissez
+simplement le numéro de dossier dans une fiche neuve. Pour une recompression sans examen, c'est le bouton **Séance de recompression** (voir *La séance de recompression sans examen*).
+
+**Ré-examen du patient** ouvre directement une **consultation de suivi** : l'identité, le dossier
+et les données de l'accident sont repris, les encarts de plongée et de plongeur restent sur la
+fiche initiale. Le diagnostic retenu de la dernière fiche, la prednisolone encore à prescrire (avec les jours restants) et les séances depuis la dernière consultation
+sont proposés (voir *Consultation de suivi ou de sortie*). Changez le type en *sortie / CRH* pour la dernière consultation, ou pour une
+consultation intermédiaire dont vous voulez un compte rendu de séjour.
+
+`num_ex` classe les examens d'un patient dans l'ordre chronologique et se recalcule automatiquement,
+y compris si vous saisissez a posteriori un examen antérieur.
+
+---
+
+## Saisie sur tablette, puis fusion
+
+1. Copiez `index.html` sur la tablette, ouvrez-le. Il fonctionne hors ligne.
+2. En fin de mission : le bouton **Tout transférer en ZIP** (une archive), ou **Plus** › **Exporter les données** → *Télécharger la sauvegarde JSON* (un seul fichier). Au choix,
+   cochez dès le début *Télécharger le JSON de la fiche à chaque enregistrement* (**Plus** › **Dossier de données**) : chaque fiche part alors dans Téléchargements.
+3. Sur le poste principal : le bouton **Importer**, déposez le fichier, l'archive ou le dossier.
+
+La fusion se fait sur `fiche_id`. Une fiche déjà présente n'est remplacée que si la version
+importée est plus récente. Un double import ne crée pas de doublon.
+
+Les fichiers du sous-dossier `fiches` se déposent de la même façon, plusieurs à la fois. Avec un
+dossier de données connecté, c'est inutile : il est relu à chaque ouverture. Une fiche importée
+rejoint aussi le dossier connecté.
+
+---
+
+## Le couplage entre appareils (Firebase)
+
+Depuis la 11.1.1 (version d'essai), deux appareils, ou davantage, peuvent **retrouver les mêmes fiches presque en temps réel** : un téléphone ou une tablette au chevet et un ordinateur, par exemple. C'est une
+fonction **facultative et désactivée par défaut** : tant qu'aucun couplage n'est créé, l'outil ne fait aucune requête réseau (hors dictée vocale).
+
+- **Principe.** Un appareil crée un couplage et obtient un **code de couplage** de 24 caractères ; l'autre le saisit. Les fiches (champ par champ) passent par la base Firebase Realtime Database de l'établissement
+  (adresse proposée par défaut : `https://lesacacaisson-default-rtdb.europe-west1.firebasedatabase.app`, modifiable).
+- **Confidentialité.** Tout est **chiffré dans le navigateur avant d'être envoyé** (AES-GCM, clé dérivée du code) ; le nom de chaque champ est lui-même haché. Le code ne quitte jamais l'appareil, et la base ne voit que du
+  texte illisible. L'**identité** (nom, prénom, date de naissance) n'est **pas envoyée par défaut** : seul le numéro de dossier l'est ; une case la fait partir. **Gardez le code secret** : qui le connaît lit les fiches du couplage.
+- **Mise en place.** Menu **Plus › Couplage entre appareils…** ; le guide pas à pas, les règles de sécurité à copier dans la console Firebase et le dépannage sont dans **`docs/COUPLAGE_FIREBASE.md`**.
+- **Données de santé.** La base Firebase n'est pas un hébergeur certifié pour les données de santé. Le chiffrement de bout en bout protège le contenu, pas le fait qu'un échange a lieu. **Testez avec des fiches fictives** et faites
+  valider l'usage réel par le référent sécurité de l'établissement.
+
+---
+
+## Analyser les données
+
+```r
+d <- read.csv2("donnees_neuro.csv", fileEncoding = "UTF-8-BOM", na.strings = "")
+```
+
+```python
+import pandas as pd
+d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
+```
+
+- Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
+- **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1054 colonnes.
+
+### Codages principaux
+
+| Famille | Codage |
+|---|---|
+| Questions oui / non | `1 = OUI`, `0 = NON` |
+| Type de fiche | `fiche_type` : `1 = consultation initiale`, `2 = suivi`, `3 = sortie / CRH`, `4 = séance de recompression sans examen` ; `num_ex_lettre` : `b`, `c`… pour une séance (EX3b : `num_ex` = 3, `num_ex_lettre` = `b`), vide pour une consultation |
+| Âge | `age` : années révolues ; `age_mois` : mois en plus (0 à 11) pour un mineur, vide pour un adulte |
+| Côté | `1 = D`, `2 = G`, `3 = bilatéral` |
+| Réflexes ostéotendineux | `0 = absent`, `1 = présent`, `2 = très vif` |
+| Qualités des réflexes | `<réflexe>_poly`, `<réflexe>_etendu` : `1 = présent`, `0 = absent`, vide = réflexe non testé |
+| Cutané plantaire | `0 = flexion`, `1 = neutre`, `2 = extension` |
+| Force motrice | MRC `0` à `5` |
+| Douleur | `eva_type` : `1 = EVA`, `2 = EN`, `3 = non évaluable` ; `eva_score` : `0` à `10` |
+| Reliefs de pallesthésie | `1 = diminuée`, `2 = exagérée`, `3 = abolie`, `0 = normale` |
+| Métamères (ISNCSCI) | `2 = normale`, `1 = hypoesthésie`, `3 = hyperesthésie`, `0 = anesthésie`, `9 = non testable`. Attention : ici `0` est le maximum de gravité. Le score ASIA compte `1` et `3` pour 1 point |
+| Lésions cutanées | `0 = aucune`, `1 = marbrures (type non précisé, fiches d'avant la 11.1.1)`, `2 = érythème`, `3 = œdème`, `4 = prurit`, `5 = papules, plaques`, `6 = emphysème sous-cutané`, `7 = livedo réticulé`, `8 = livedo ramifié` ; **plusieurs types sur une zone : les codes réunis par `+`** (`2+7`) |
+| Otoscopie | Haines et Harris modifiée `0` à `5` ; `valsalva_*` : `2 = perméable`, `1 = difficile`, `0 = impossible` |
+| Interprétation acoumétrique | `orl_interp` : `0` symétrique, `1` transmission D, `2` transmission G, `3` transmission bilatérale, `4` perception D, `5` perception G, `8` discordant |
+| Déficit moteur par membre | `def_msd`, `def_msg`, `def_mid`, `def_mig`, `def_sph` : `1 = OUI`, `0 = NON` |
+| Weber, Rinne | `weber` : `0 = non latéralisé`, `1 = droite`, `2 = gauche` ; `rinne_*` : `1 = positif`, `0 = négatif` |
+| Grade AIS | `A` à `E`, texte. `asia_nli` : métamère, texte |
+| Zones des signes subjectifs | `1` à `6` selon le ressenti, `0 = aucun` |
+| Identifiant | `dossier_pseudo` : `1 = empreinte salée SHA-256`, `0 = valeur saisie telle quelle` |
+| Orientation | `1 = domicile`, `2 = médecine`, `3 = surveillance continue`, `4 = soins intensifs`, `5 = transfert`, `6 = hospitalisation de jour` ; `hdj_lieu` (hébergement pendant l'hospitalisation de jour) : `1 = domicile`, `2 = hôtel patient`, `3 = autre établissement` (`hdj_lieu_autre` : texte) ; `orientation_txt` : texte libre complémentaire |
+| Tenue, déséquipement, progressivité | `pl_tenue` : `1 = humide`, `2 = semi-étanche`, `3 = étanche`, `9 = autre` (`pl_tenue_autre` : texte) ; `pl_deseq` (déséquipement sur le lieu de plongée) et `ff_progress` (progressivité respectée) : `1 = OUI`, `0 = NON` |
+| Position du regard | une colonne binaire par position + une colonne texte (valeurs séparées par `\|`) |
+| Trépidation | `trep_pied_qual_D`, `trep_pied_qual_G` : `1 = épuisable`, `2 = inépuisable` |
+| Adressé par | `adresse_par` : `1 = SAMU 83`, `2 = SCMM`, `3 = autre SAMU`, `5 = SAU HNIA SA`, `4 = autre` (établissement, avec son type et son nom) ; `adresse_etab_type` : `1 = SAU`, `2 = centre hyperbare`, `3 = non défini` |
+| Moyen d'évacuation | `evac_moyen` : `1` moyens propres, `2` VSAV / pompiers, `3` SMUR routier, `7` hélicoptère médicalisé, `8` hélicoptère non médicalisé, `6` autre |
+| Localisation à l'appel | `loc_appel` (lieu de l'accidenté au moment de l'appel) : `1 = en mer`, `2 = à quai`, `3 = dans un SAU`, `4 = autre` (`loc_appel_autre` : texte) |
+| Sonde vésicale | `ac_sonde` : `2 = sonde à demeure`, `3 = sondage évacuateur`, `0 = non` ; `ac_sonde_vol` : volume initial évacué (mL) |
+| Table de recompression | `tb_table` : `1 = A15`, `2 = A15IOT`, `3 = A18IOT`, `4 = A18`, `5 = B18`, `6 = A18HeOx`, `7 = B18HeOx`, `8 = C18`, `9 = autre` (texte dans `tb_table_autre`) ; `tb_duree` : durée de la table en minutes, calculée (A15 : 95) |
+| ECG | `im_ecg`, `ecg_fc` (bpm), `ecg_qtc` (ms), `ecg_txt` (compte rendu, texte) |
+| (Méthyl)prednisolone | `rx_solu`, `rx_solu_dose` (mg par jour), `rx_solu_jours` (jours), `rx_solu_h` (heure de la 1re dose) |
+| Type de profil de plongée | `pl_profil_type` : `1 = carré`, `2 = inversé`, `3 = yoyo`, `4 = remontée progressive` (proposée d'office), `5 = apnée` ; inversé : `pl_prof1`, `pl_h_inv` ; yoyo : `pl_yoyo_nb`, `pl_yoyo_amp`, `pl_yoyo_surf` (`1 = oui`, `0 = non`), `pl_yoyo_int`, et `pl_yoyo_crit` (`1` si les critères du yoyo sont remplis, `0` sinon, calculé) ; remontée progressive : `pl_dpmax` (durée à la profondeur maximale, min), `pl_prof_df` (profondeur au départ du fond) |
+| Apnée | `ap_nb` (nombre d'apnées), `ap_interval` (intervalle de surface, min), `ap_decomp` : `0 = aucune`, `1 = par réimmersion`, `2 = en surface` ; réimmersion : `ap_rim_int`, `ap_rim_duree` (min), `ap_rim_prof` (m), `ap_rim_gaz` ; en surface : `ap_surf_int`, `ap_surf_duree` (min), `ap_surf_gaz` ; gaz : `1 = air`, `2 = nitrox`, `3 = trimix`, `4 = héliox`, `5 = oxygène`, `9 = autre` ; la profondeur maximale des apnées est `pl_prof` ; type de plongée `pl_type = 5` |
+| Conditions environnementales | `ff_courant`, `ff_houle` : `1 = OUI`, `0 = NON` ; `ff_visib` : `1 = bonne`, `2 = mauvaise`, `3 = inférieure à 1 m` ; `ff_env` : précisions, texte libre |
+| Scores dans la synthèse | `sc_masquer_msh` : `1` = score MEDSUBHYP non mentionné (synthèse, CRH, impression, ligne Excel), vide sinon ; `sc_masquer_vest` : de même pour le score vestibulaire ; `msh_total` et `vest_total` restent calculés |
+| Score vestibulaire | `vest_vertige`, `vest_nystagmus`, `vest_nv`, `vest_instab` : `0` à `3` ; `vest_cochl` : `0` ou `1` (8 points) ; `vest_total` : `0` à `19` |
+| Échographie pleuro-pulmonaire | 24 colonnes de zones `ech_<a ou p>_<D ou G>_<s ou i>_<lat, mdn ou mdl>` : `1 = A`, `2 = B`, `3 = B++`, `4 = C`, `5 = PNO`, vide = zone non examinée ; `ech_nb` (zones cotées), `ech_nb_A`, `ech_nb_B`, `ech_nb_Bpp`, `ech_nb_C`, `ech_nb_PNO`, `ech_anom_D`, `ech_anom_G` (zones hors A par poumon), `ech_pno`, `ech_zones` (liste), `ech_txt` (commentaire) |
+| Procédure de décompression | `pl_proc` : `1 = ordinateur`, `2 = tables MN23`, `5 = tables MT 92`, `3 = autres tables`, `4 = sans procédure` |
+| Durées du profil | `pl_dt` (DT, calculée), `pl_dtr` (DTR) et `pl_duree_tot` (DTP), en minutes, calculées d'après les heures ou saisies ; `pl_dtr_src` : `1` d'après les heures, `2` saisie, `3` estimée, `4` déduite de DTP − DT ; `pl_dtr_att_min`, `pl_dtr_att_max` : DTR attendue (modèle de remontée) ; `pl_vit_remontee` : vitesse de remontée déduite (m/min) |
+| Procédure de ré-immersion | `pl_reimm_type` : `1 = remontée rapide (RR)`, `2 = remontée non conforme` ; `pl_reimm_faite` : `1 = réalisée`, `0 = non réalisée` ; `pl_rr_emersion` (`1`/`0`), `pl_rr_delai`, `pl_rr_prof`, `pl_rr_duree`, `pl_rr_pal6`, `pl_rr_pal3` (minutes ou mètres) ; `pl_reimm_txt` : description |
+| Alcool sevré | `tox_alcool_sevre` (case), `alcool_sevre_date`, `alcool_sevre_stade` : `1` à `4`, comme `alcool_stade` |
+| Examens complémentaires | `im_rp`, `im_tdm_thor`, `im_tdm_cer`, `im_irm_cer`, `im_irm_med`, `im_eto`, `im_dtc`, `im_echopp` (et `im_ecg`, `im_effort`, `im_mapa`, `im_biopsie`, `im_capillaro`) : `1 = OUI`, `0 = NON`, **`2 = demandé, en attente de résultat`** (12.1.1) ; résultat de chacun dans `<examen>_res` (texte) ; `im_eto_fop` : case *recherche de FOP* de l'échographie cardiaque (`1` = cochée, vide sinon) |
+| IRM médullaire (suite), épreuve d'effort, MAPA | `im_irm_med_fc` (facteur compressif) et `im_irm_med_conc` (concordance radio-clinique) : `1 = OUI`, `0 = NON` ; `im_irm_med_fc_type` : type du facteur compressif (texte) ; `im_effort`, `im_mapa` : `1 = OUI`, `0 = NON` ; `im_effort_res`, `im_mapa_res` : `0 = normale`, `1 = anormale` ; `im_effort_txt`, `im_mapa_txt` : commentaire (texte) |
+| Sortie : score MJOAS, arrêt de travail | `mjoas` : entier de `0` à `17` (`17` = score normal) ; `at_jours` : jours d'arrêt de travail (entier) ; la ligne Excel ADP y ajoute les jours d'hospitalisation |
+| Épreuves vestibulaires | `romberg` : `0 = négatif`, `1 = positif` ; `fukuda`, `etoile` (marche en étoile), `funambule` : `0 = normale`, `1 = anormale` ; côtés : `romberg_cote` (`1 = D`, `2 = G`, `3 = non latéralisée`), `fukuda_cote`, `etoile_cote`, `funambule_cote` (`1 = D`, `2 = G`) |
+| Doppler transcrânien | `dtc_repos` (sans sensibilisation), `dtc_sensib` (après sensibilisation allongée), `dtc_flack` (après sensibilisation en expiration forcée, 10 s à 40 cmH₂O ; « test de Flack » avant la 11.1.1) : `0 = absence de shunt D-G`, `1 = shunt de bas grade`, `2 = shunt de haut grade` ; `dtc_txt` : commentaire |
+| Oxygène prescrit | `rx_o2_mode` : `1 = masque à haute concentration`, `2 = VNI` ; `rx_o2_debit` (L/min) ; `rx_vni_pep`, `rx_vni_ai` (cmH₂O), `rx_vni_fr` (/min), `rx_vni_fio2` (%) |
+| Diagnostic retenu | `dg_liste` (une colonne binaire par diagnostic : `dg_liste_add`, `dg_liste_opi`, `dg_liste_baro`, `dg_liste_bioch`, `dg_liste_noyade`) ; types : `dg_add_types_*`, `dg_baro_types_*`, `dg_bioch_types_*` ; `dg_add_grave` (`1` = sévère) ; `dg_principal` : `add`, `opi`, `baro`, `bioch` ou `noyade` ; `dg_txt` : précisions |
+| Conclusion de l'examen clinique | `conclusion` : `1 = examen neurologique normal`, `2 = anormal`, `3 = à recontrôler` |
+| Cadre | `cadre` : `1 = accident de plongée`, `2 = OPI`, `3 = mixte`, `4 = intoxication au monoxyde de carbone` (12.1.1) ; vide = fiche d'avant la 11.1.1 (accident de plongée) |
+| Listes à cases | une colonne binaire par case (`atcd_med_hta`, `tox_tabac`, `atcdp_add`…) et une colonne texte (valeurs séparées par `\|`) |
+| Menus déroulants | `niv_loisir`, `niv_pro`, `niv_ens`, `organisme` : codes numériques listés dans le dictionnaire ; `99 = autre (à préciser)` |
+| Paliers | `pl_pal_nb`, `pl_pal_secu`, `pl_pal_duree`, `pl_pal_prof_max`, `pl_pal_txt`, puis le détail des six premiers (`pl_pal1_gaz`, `pl_pal1_prof`, `pl_pal1_duree`, `pl_pal1_secu`…) |
+| Biologie | `gds_ph`, `gds_po2`, `gds_pco2`, `gds_hco3`, `gds_hb`, `gds_ht`, `gds_lac`, `gds_hbco`, `gds_methb`, les `gaa_*` du gaz du sang artériel et `lab_leuco`, `lab_hb`, `lab_ht`… : nombres à point décimal (`7.35`), ou texte `<5` / `>20` quand la valeur a été saisie avec « < » ou « > » ; `gds_date`, `lab_date` : `AAAA-MM-JJ` ; `gds_h`, `lab_h` : `HH:MM` (date et heure du prélèvement) ; valeurs normales (femme et homme quand elles diffèrent) et unités dans le dictionnaire |
+
+### Structure des colonnes
+
+| Bloc | Contenu |
+|---|---|
+| Identification | `fiche_id`, `dossier`, `num_ex`, `num_ex_lettre`, dates, heures, `delai_min`, `sexe`, `age`, `age_mois`, `poste` |
+| Examen | un item = une colonne, dont nystagmus, VNS, NIV, Hoffmann, résidus mictionnels |
+| ORL | `oto_D`, `oto_G`, `epanch`, `valsalva_D`, `valsalva_G`, `weber`, `rinne_D`, `rinne_G` |
+| Sensibilités, synthèse | `sens_lt_score`, `sens_pp_score`, scores par côté, `sens_lt_nt`, `sens_pal_nb`… |
+| Sensibilités, détail | 112 colonnes de métamères (`sens_lt_*`, `sens_pp_*`) + 23 colonnes de reliefs (pallesthésie) |
+| Force ASIA | 20 colonnes de myotomes (`f_c5_D`… `f_s1_G`), `vac`, `dap` |
+| Synthèse ASIA | `asia_lt`, `asia_pp`, `asia_uems`, `asia_lems`, `asia_sens_D/G`, `asia_mot_D/G`, `asia_nli`, `asia_sacre`, `asia_ais` |
+| Signes subjectifs | `subj_nb`, un compteur par ressenti, 48 colonnes de zones |
+| Lésions cutanées | `cut_present`, `cut_nb`, un compteur par type, indicateurs de région, 48 colonnes de zones |
+| Identité complémentaire | nationalité, profession, adresse, téléphone, e-mail (les trois derniers seulement si l'export de l'identité est autorisé) |
+| Plongeur | IMC, antécédents (une colonne par case), habitudes toxiques et paquets-années `tabac_pa`, antécédents en plongée, niveaux, organisme, certificat médical |
+| Plongée accidentelle | procédure, heures DS / DF / HS, `pl_prof`, `pl_dt`, `pl_dtr`, `pl_duree_tot`, `pl_dpmax`, paliers, apnée (`ap_*`) |
+| Facteurs favorisants | les dix facteurs, puis `ff_courant`, `ff_houle`, `ff_visib`, `ff_env` |
+| Biologie | 45 colonnes, à la suite des champs de la fiche et avant les colonnes calculées (`pl_dtr_src`, échographie, paliers) : `gds_*` (gaz du sang veineux, dont `gds_hbco` et `gds_methb`), `gaa_*` (gaz du sang artériel, depuis la 12.1.1) et `lab_*` (biologie), avec leur date et leur heure de prélèvement |
+| Intoxication au CO (12.1.1) | 79 colonnes à la suite de la biologie : `bio_co` ; `co_source_*`, `co_source_txt`, `co_lieu`, `co_lieu_txt`, `co_contexte`, `co_deb_date`, `co_deb_h`, `co_fin_date`, `co_fin_h`, `co_duree` (minutes, calculée), `co_nb_expo`, `co_nb_symp`, `co_animaux`, `co_detecteur` ; `co_sympt_*`, `co_pci` (`0` non, `1` brève, `2` prolongée, `3` coma), `co_pci_duree`, `co_convuls`, `co_histoire`, `co_evol` (`0` amélioré, `1` stable, `2` aggravé) ; `co_moca`, `co_mmse`, `co_cogn_txt` ; `co_spco`, `co_spco_h`, `co_o2_avant_min` ; `co_grossesse` (`0` non, `1` oui, `2` à vérifier), `co_crit_*`, `co_ohb` (`1` indiquée, `0` non indiquée, `2` à discuter), `co_ohb_txt` ; `co_declar_*`, `co_declar_txt`, `co_conseils`, `co_expo_autres`, `co_suivi_*`, `co_suivi_txt` |
+
+Pour les analyses courantes, les colonnes de synthèse suffisent. Les colonnes de détail servent
+aux analyses topographiques fines.
+
+---
+
+## Changements de la version 12.1.1
+
+**Version d'essai** : à tester avant de valider sur la version principale. Cinq demandes, dans un **nouveau dossier** : `ADP-12.1.1`, copié de `ADP-11.1.1` (qui reste **intact**). Le fichier de données passe de 962 à **1054 colonnes**
+(92 de plus : `gds_hbco`, `gds_methb`, les 11 colonnes `gaa_*` du gaz du sang artériel et les 79 de l'intoxication au CO ; aucune ne disparaît, les autres gardent leur ordre) ; les fiches de la 11.1.1 s'ouvrent telles quelles. Le canal d'essai (`CANAL = 'test'`) est conservé.
+
+### Œdème pulmonaire d'immersion : ni score ASIA, ni table cochée d'office
+
+- Quand le diagnostic est l'œdème pulmonaire d'immersion **sans accident de désaturation** (à défaut de diagnostic : le cadre OPI), le **score ASIA n'est ni calculé, ni enregistré, ni écrit** (fiche, synthèse, compte rendu, texte court, papier, ligne Excel) ; la section « Score ASIA » disparaît de l'onglet Examen neurologique.
+- Sous le cadre OPI, **aucune table de recompression n'est cochée d'office** ; une B18 restée seule n'est pas écrite non plus dans la synthèse et le compte rendu d'un diagnostic d'OPI. Voir *Le cadre de la consultation*.
+
+### Score MEDSUBHYP : seuil de gravité à 8
+
+- Le seuil de gravité passe de **6 à 8** (affichage de la fiche, texte, papier).
+
+### Biologie : gaz du sang artériel, HbCO, méthémoglobine
+
+- Nouvel encart **Gaz du sang artériel** (FiO₂, pH, PaO₂, PaCO₂, HCO₃⁻, SaO₂, lactates, HbCO, MetHb) avec les **valeurs normales homme et femme** ; **HbCO** et **méthémoglobine** s'ajoutent aussi au gaz du sang veineux. Tableaux de la synthèse et du compte rendu : veineux, artériel, biologie. Voir *Examens complémentaires : la biologie*.
+
+### Examens complémentaires : demandé, en attente de résultat
+
+- Chaque examen se coche **OUI**, **NON** ou **Demandé, en attente** ; un encart de type **check-list**, tout en haut du premier onglet, ne s'affiche **que s'il reste un résultat à saisir** sur les consultations ultérieures. Voir *Les examens en attente de résultat*.
+
+### Intoxication au monoxyde de carbone : une interface proposée
+
+- Le cadre 4 s'ouvre : circonstances, symptômes, évaluation cognitive, HbCO et oxygène, critères de gravité proposés, indication d'oxygénothérapie hyperbare, suivi et prévention ; ni plongée, ni score ASIA. **Interface proposée, à valider.** Voir *L'intoxication au monoxyde de carbone*.
+
+### Ce qui a été essayé
+
+- Les suites des versions précédentes (adaptées : 1054 colonnes, quatre cadres actifs) et les suites de la 12.1.1 (OPI et MEDSUBHYP, gaz du sang artériel, examens en attente, intoxication au CO) : **2771 contrôles réussis, 0 en échec** dans Edge (temps virtuel, DevTools, système de fichiers du navigateur, deux instances pour le couplage), et **39** dans **Firefox** réel
+  (presse-papiers, clics, survol, deux instances pour le couplage). Les anciennes suites ont été adaptées volontairement aux changements de la 12.1.1 (nombre de colonnes, nouvel encart du gaz du sang artériel dans l'onglet 5, bandeau d'essai, trois réponses des examens, quatre cadres actifs).
+  Le couplage reste essayé avec l'émulateur local de Firebase, **jamais contre la vraie base**.
+- **Pas essayé** : Safari et les navigateurs de téléphone ; le couplage avec la vraie base.
+
+### À valider de votre côté
+
+1. **L'interface du CO** : contenu des encarts, libellés, liste des critères de gravité et **seuil de HbCO de 25 %**, sens des cases, place de chaque encart, titre des onglets. L'indication d'OHB reste une décision du médecin ; l'aide ne la déduit pas.
+2. **La table de l'OHB du CO** : aucune table du service n'est proposée pour le CO (« Autre (préciser) » à défaut) ; dites laquelle ajouter (la liste des tables sert aussi aux lignes Excel).
+3. **Les valeurs normales du gaz du sang artériel** : à comparer à la feuille du laboratoire (la PaCO₂ est la seule à différer selon le sexe).
+4. **Les lignes Excel ADP et COHB** pour un dossier de CO : elles se composent mais ne sont pas adaptées au CO.
+5. **L'encart des examens en attente** : une demande reste « en attente » tant qu'aucune fiche postérieure ne porte l'examen coché OUI ou NON.
+6. **MEDSUBHYP** : le seuil passe à 8 ; le texte et les tests ont été adaptés.
+7. **La fiche papier A3** : elle n'est pas régénérée (non fait) ; les champs du CO n'y sont pas.
+
+---
+
+## Changements de la version 11.1.1
+
+**Version d'essai** : à tester avant de valider sur la version principale. Huit demandes, dans un **nouveau dossier** : `ADP-11.1.1`, copié de `ADP-10.1.1` (qui reste **intact**). Le fichier de données passe de 955 à **962 colonnes**
+(sept de plus : `cadre`, `cut_livedo_ret_nb`, `cut_livedo_ram_nb`, `im_biopsie`, `im_biopsie_res`, `im_capillaro`, `im_capillaro_res` ; aucune ne disparaît, les autres gardent leur ordre) ; les fiches de la 10.1.1 s'ouvrent telles quelles. `index.html` passe de 847 Ko à 912 Ko.
+
+### Version d'essai : un canal séparé
+
+- Constante `CANAL = 'test'` (en tête du script de `index.html`, et dans `sw.js`) : la base de fiches du navigateur (`adp-test`), le cache hors ligne (`test-adp-…`), le nom de l'application (« ADP TEST — accident de plongée ») et l'identifiant d'installation
+  sont **séparés de la version principale**. Un bandeau orange rappelle « VERSION D'ESSAI » ; les fiches saisies ici ne sont pas dans la version principale, et inversement. Saisissez des données fictives.
+- À la validation : passer `CANAL` à `'principal'` dans `index.html` et `sw.js`, remettre les noms des manifestes, republier (voir `docs/PUBLIER.md`, « Version d'essai »).
+
+### Marbrures : livedo réticulé et livedo ramifié
+
+- Le terme « **cutis marmorata** » est retiré (il désigne en dermatologie une maladie congénitale rare avec télangiectasies). Il est remplacé par **deux cases** : **Marbrures (livedo réticulé)** (maille fine) et **Marbrures (livedo ramifié)** (en carte
+  géographique, le plus fréquent) ; **c'est au médecin d'astreinte de les distinguer**. Chacune a un bouton **?** avec un **schéma** et la description de l'aspect (aide à l'examen), dans la barre des types.
+- Les fiches enregistrées avant la 11.1.1 gardent leurs marbrures sous « Marbrures (type non précisé) », code `1`, affiché et exporté comme avant.
+
+### Plusieurs types sur la même zone
+
+- Une zone du schéma cutané peut porter **plusieurs types à la fois** (par exemple érythème et livedo réticulé) : cliquer la zone avec un autre type **ajoute** ce type, cliquer avec le même type le **retire**. La gomme efface la zone.
+- Dans le fichier de données, une zone vaut `0` (rien), le code du type (une lésion) ou les codes réunis par `+` (plusieurs : `2+7`). Codes : `1` marbrures (type non précisé, anciennes fiches), `2` érythème, `3` œdème, `4` prurit, `5` papules ou plaques,
+  `6` emphysème sous-cutané, `7` livedo réticulé, `8` livedo ramifié. Les colonnes `cut_livedo_ret_nb` et `cut_livedo_ram_nb` comptent les zones de chaque livedo. Sur le PDF, les motifs se superposent.
+
+### Doppler transcrânien
+
+- « **Test de Flack** » est remplacé par « **sensibilisation en expiration forcée (10 s, 40 cmH₂O)** » : ce terme ne parle pas à tout le monde (surtout dans un compte rendu) et le vrai test de Flack dure 40 secondes. La clé de la colonne (`dtc_flack`)
+  est inchangée : les fiches et les analyses existantes ne bougent pas ; le texte du dictionnaire, de la synthèse, du papier et de l'aide change.
+
+### Biopsie cutanée et capillaroscopie
+
+- Deux examens complémentaires s'ajoutent : **biopsie cutanée** et **capillaroscopie** (OUI ouvre le résultat, texte libre ; dans la synthèse, le compte rendu et le papier, comme les autres examens).
+- Un **emplacement** est prévu, sous les deux examens, pour les **numéros d'appel et les procédures** qui permettent de les réaliser facilement avec les dermatologues de l'hôpital : il est **vide** (constantes `DERM_ANNUAIRE` dans `index.html`),
+  son contenu est l'objet de la prochaine version.
+
+### Synthèse descriptive : l'examen qui ressort
+
+- La synthèse dit en premier, et en détail, l'examen qui compte pour le diagnostic : **neurologique** pour un accident de désaturation neurologique ou mixte, **cardio-respiratoire** pour un œdème pulmonaire d'immersion (nouveau paragraphe), **général** sinon.
+  Voir *L'examen qui ressort*. Le compte rendu d'hospitalisation, le texte court, le texte intégral et le PDF suivent.
+
+### Le cadre de la consultation
+
+- Étape préalable à toute nouvelle fiche, et premier pas vers les interfaces à venir (intoxication au CO, embolie gazeuse, hyperbarie chronique, hors AMM, expertise…). Voir *Le cadre de la consultation*.
+
+### Couplage entre appareils (Firebase)
+
+- Deux appareils retrouvent les mêmes fiches presque en temps réel, chiffrées de bout en bout. Voir *Le couplage entre appareils (Firebase)* et `docs/COUPLAGE_FIREBASE.md` ; les règles de sécurité à copier sont dans `docs/regles_firebase.json`.
+
+### Ce qui a été essayé
+
+- Les suites des versions précédentes (adaptées : 962 colonnes, bandeau d'essai, synthèse écrite domaine par domaine) et les suites de la 11.1.1 (peau, Doppler, biopsie, cadres, synthèse) : **2525 contrôles réussis, 0 en échec**. Le couplage a été essayé avec un **émulateur local de Firebase** et
+  **deux instances d'Edge** (création et adhésion par code, échange chiffré, modifications en direct, champs différents et même champ, question « fiche déjà enregistrée », suppression, accès refusé puis rétabli, coupure et reprise, modifications hors ligne
+  des deux côtés, nœud altéré, 25 fiches d'un coup, réouverture, diagnostic, règles) : **jamais** contre la vraie base.
+- **Pas essayé** : le couplage avec la **vraie base Firebase** (c'est à vous de coller les règles et d'éprouver, voir `docs/COUPLAGE_FIREBASE.md`) ; Safari et les navigateurs de téléphone.
+
+### À valider de votre côté
+
+1. **Les aides du livedo** : les descriptions et les schémas (réticulé = maille fine, ramifié = carte géographique) sont à relire par un dermatologue.
+2. **La règle de l'examen qui ressort** : accident de désaturation de type non précisé → neurologique ; noyade, barotraumatisme, accident biochimique → général ; OPI → cardio-respiratoire. À corriger si besoin dans `examFocus`.
+3. **Les neuf cadres** : noms, codes (1 à 9) et ordre.
+4. **L'annuaire des dermatologues** (biopsie, capillaroscopie) : à remplir avec la prochaine version.
+5. **Le couplage** : coller les règles dans la console Firebase, tester la connexion, faire valider l'usage (hébergement non certifié pour les données de santé), choisir de cocher ou non l'envoi de l'identité.
+6. **La fiche papier A3** : les types cutanés ont changé, elle est à régénérer (non fait).
+
+---
+
+## Changements de la version 10.1.1
+
+Cinq modifications, dans un **nouveau dossier** : `ADP-10.1.1`, copié de `ADP-9.5.1` (qui contient la 9.5.2 et reste **intact**). Aucune colonne ne s'ajoute ni ne disparaît (955 colonnes, le même dictionnaire), les fiches de la 9.5.2 s'ouvrent telles quelles ;
+les pages de saisie du PDF ne changent pas, seule la place du syndrome vestibulaire dans la synthèse écrite (donc imprimée en page 6) change. `index.html` passe de 827 Ko à 847 Ko.
+
+### Le rappel de l'import-export est retiré
+
+- Le **rappel de 11 h 45 et de 16 h 00** est **retiré complètement** : le bandeau jaune, la notification du navigateur, l'horloge qui les déclenchait, la case **Rappels** et les boutons *Activer les notifications du navigateur* et *Voir le rappel* de la fenêtre *Exporter les données…*,
+  l'icône de cloche, le paragraphe « 7. Rappel… » du mode d'emploi et la section *Rappel de l'import-export des fiches JSON* de cette notice. Il ne reste dans `index.html` ni code, ni réglage, ni style de ce rappel. Un réglage « Rappels » déjà mémorisé par votre navigateur est simplement ignoré.
+- **Gardées** : la **bulle** des boutons *Tout transférer en ZIP* et *Importer* (et de leurs entrées du menu Plus) et la phrase en tête de la fenêtre *Exporter tout en JSON*, qui disent la manipulation du service (voir *À valider*).
+
+### Bouton Actualiser
+
+- Un bouton à icône **Actualiser** (flèche circulaire), à **droite des petites icônes** de la barre du haut, avant *Plus* : il **relit le dossier de données connecté**, revérifie son autorisation (et la redemande dans le clic si besoin), lit les fiches ajoutées ou modifiées par un autre poste, écrit celles que le dossier
+  n'a pas et remet à jour le fichier de données. Sur téléphone, il reste dans la barre (avec *nouvelle fiche*, *enregistrer*, *PDF* et *Plus*). Voir *Le bouton Actualiser*.
+
+### Le syndrome vestibulaire est dit avec l'examen général
+
+- Dans la **synthèse rédigée**, le **compte rendu d'hospitalisation** (admission, sortie, évolution) et le texte court, le syndrome vestibulaire (vertiges, nystagmus, Romberg, Fukuda, marche en étoile, marche funambule) et les signes cochléaires sont écrits dans « **À l'examen général, on retrouve** »,
+  à la suite de l'ORL, et plus dans « À l'examen neurologique, on retrouve ». Voir *L'examen est dit en syndromes*.
+
+### Confirmation avant de modifier une fiche déjà enregistrée
+
+- À la **première tentative de modification** d'une fiche déjà enregistrée, quel que soit l'encart, ADP demande « Cette fiche est déjà enregistrée. Êtes-vous sûr de vouloir la modifier ? » (**Oui, modifier cette fiche** / **Non, la laisser telle qu'elle est enregistrée**). « Non », la touche Échap
+  ou un clic à côté de la fenêtre annulent la modification. Voir *Remplir une fiche*.
+
+### Texte court « Avis Spécialisé Résurgences »
+
+- Sur une **consultation initiale**, un texte de synthèse de **3 800 caractères au plus, sans tableau**, copié par un petit bouton **copier Avis Spécialisé Résurgences** (en-tête de la synthèse), avec un aperçu qui se déplie sous la synthèse. Le bouton « copier le texte » de la synthèse complète est
+  renommé **copier le texte intégral** (pour tous les types de fiche). Voir *Le texte court « Avis Spécialisé Résurgences »*.
+
+### À valider de votre côté
+
+- **Quelle « alerte import-export » vouliez-vous retirer ?** J'ai retiré le **rappel de 11 h 45 et 16 h 00** (bandeau et notification), la seule fonction qui « alerte ». La **bulle** de la manipulation du service sur les boutons d'import-export (ajoutée aussi en 9.5.1) est **conservée** :
+  si vous vouliez la retirer elle aussi, dites-le-moi, c'est une ligne.
+- **Le bouton Actualiser : ce qu'il relit.** J'ai compris « relire le dossier connecté » comme : relire la base du navigateur et le dossier de données (et celui de recherche, s'il est distinct), revérifier l'autorisation, lire les fiches nouvelles ou modifiées d'un autre poste, écrire celles
+  que le dossier n'a pas. Il peut donc faire apparaître **la demande d'autorisation du navigateur** (elle exige un clic : c'est le navigateur qui l'impose). Sur **Firefox, Safari et les navigateurs de téléphone**, sans dossier connecté, il relit seulement la liste et le dit.
+  Son **emplacement** (entre la dernière petite icône et *Plus*) est ma lecture de « à droite des petits icônes » : dites-moi s'il doit être tout à droite, après *Plus*.
+- **Signes cochléaires.** J'ai déplacé avec le syndrome vestibulaire les **signes cochléaires** (hypoacousie, acouphènes), qui s'écrivaient avec lui (« syndrome vestibulo-cochléaire »). La conclusion **« Au total »** cite toujours les syndromes anormaux de l'examen général comme de l'examen neurologique
+  (par exemple « Au total : examen neurologique anormal, avec déficit moteur, atteinte médullaire et syndrome vestibulo-cochléaire. »), comme avant : dites-moi si le vestibulaire ne doit plus y figurer.
+- **La confirmation.** Elle se pose à l'**ouverture d'une fiche enregistrée** (liste ou pastille) puis à la **première** modification ; après « Oui », la fiche reste modifiable jusqu'à l'ouverture d'une autre fiche ; une fiche rouverte est de nouveau protégée. Elle ne concerne pas une nouvelle fiche, un ré-examen,
+  une séance, un brouillon repris, ni **une fiche qu'on vient d'enregistrer** et qu'on continue de remplir (sinon chaque Ctrl+S la redemanderait) : dites-moi si vous voulez qu'elle se repose aussi après un enregistrement. C'est une **fenêtre d'ADP** (pas la boîte du navigateur) : elle ne peut pas être masquée par
+  « ne plus afficher », et elle est testée. « Non » rend la fiche **telle qu'enregistrée** (la modification faite est perdue, par conception). Aucun bouton n'a le curseur à l'ouverture (il est sur le titre) : une frappe qui continue (espace, Entrée) ne répond ni « oui » ni « non » ; Échap et un clic à côté sont ignorés pendant 0,6 seconde, pour qu'un double clic sur une réponse ne ferme pas la question.
+- **Le texte court.** Il est fait des **mêmes phrases** que la synthèse, avec des **priorités** qui décident ce qui saute (ou est abrégé) quand la fiche dépasse 3 800 caractères ; ce qui saute est annoncé à la copie. Ces priorités sont **ma proposition** : diagnostic, table et orientation, premiers symptômes, plongée
+  et anomalies sont gardés en dernier ; conditions environnementales, lieu à l'appel, certificat médical, actes, ECG et biologie normale partent en premier. Dites-moi ce que vous voulez garder ou perdre en premier. La biologie n'est qu'une phrase (les valeurs hors des normes). Le texte est **brut** (ni gras ni souligné).
+  **Un retour à la ligne compte pour deux caractères** (CR + LF sous Windows) : le texte tient donc dans 3 800 caractères même dans une zone de saisie qui les compte ainsi, au prix d'une trentaine de caractères avec un compteur qui ne compte qu'un caractère par retour à la ligne. Je n'ai pas pu essayer la zone de saisie de Résurgences :
+  si elle compte autrement (en octets, par exemple), dites-moi comment.
+- **Ce qui n'a pas pu être vérifié.** Chrome et Safari ; un vrai téléphone ou une vraie tablette (essayés à la largeur d'un téléphone et d'une tablette dans Edge et Firefox) ; un vrai dossier de données sur disque ou sur `T:` (essayé avec le système de fichiers privé d'Edge) ; la fenêtre d'autorisation d'un dossier réel ;
+  le collage du texte court dans Résurgences.
+- **Ce qui a été essayé.** Les suites des versions précédentes (mises à jour : version ; celle de la 9.5.1 vérifie maintenant que le rappel n'existe plus) et quatre suites propres à la 10.1.1 passent (2254 contrôles au total, dans un navigateur automatisé) : bouton Actualiser (place, bulle, rotation, dossier connecté,
+  à autoriser, introuvable, de recherche distinct, absent, navigateur sans dossier, fiche ouverte jamais écrasée), syndrome vestibulaire dans l'examen général (synthèse, compte rendu d'admission, de sortie et d'évolution, synthèse imprimée, texte copié), confirmation (16 chemins de modification, Oui, Non, Échap, clic à côté,
+  touche tapée trop vite, double clic, enregistrement, brouillon, nouvelle fiche, ré-examen, séance, fiche rouverte), texte court (150 fiches au hasard : jamais plus de 3 800 caractères, retours à la ligne comptés pour deux, toujours le diagnostic, toujours le même texte pour la même fiche). Puis, dans de vrais navigateurs :
+  **Edge** (56 contrôles à trois largeurs de fenêtre, 1100, 768 et 390 px : vrais clics, touche Échap, horloge simulée à 11 h 45 pendant plus de 20 secondes sans aucun rappel) et le **système de fichiers privé d'Edge** pour le dossier de données (35 contrôles : fiches ajoutées et modifiées par un autre poste, autorisation
+  redemandée, refusée ou sans geste valable, dossier disparu) ; un vrai **Firefox 137** (24 contrôles propres à la 10.1.1 : vrais clics et vraies frappes, vrai presse-papiers de Windows pour les deux boutons de copie, mise en page sur 390 px, avec captures d'écran ; 142 contrôles des versions précédentes qui repassent,
+  dont deux scénarios adaptés à la question de confirmation).
+
+---
+
+## Changements de la version 9.5.2
+
+Une modification, **dans le même dossier** : `ADP-9.5.1` contient maintenant la 9.5.2 (l'`index.html` de la 9.5.1 est gardé à côté du dossier, sous le nom `ADP-9.5.1_index_avant_9.5.2.html`). Aucune colonne ne s'ajoute ni ne
+disparaît (955 colonnes, le même dictionnaire), le papier ne change pas, les fiches de la 9.5.1 s'ouvrent telles quelles. `index.html` passe de 824 Ko à 827 Ko.
+
+### L'heure d'un relevé de constantes se tape en HHMM
+
+- Dans **Constantes et surveillance**, la case « Heure » d'un relevé se saisit comme les autres cases d'heure de la fiche : on tape **1145**, les deux points se posent tout seuls (**11:45**), l'heure enregistrée est toujours
+  au format HH:MM. Avant, il fallait taper les deux points soi-même ; sans eux, « 1145 » était enregistré tel quel, ce qui donnait un papier sans deux points et une durée de surveillance vide dans le fichier de données.
+- Une heure **impossible** (« 2400 », « 1160 ») ou **incomplète** (« 11 ») reste en **rouge** et n'est **pas enregistrée** : l'heure précédente du relevé est conservée ; à la sortie de la case, un message le dit (« Heure
+  impossible : attendu HH:MM »). Retaper une heure juste enlève le rouge. Le rouge reste sur sa ligne quand on ajoute ou retire un relevé.
+- **+** ou **barre d'espace** : l'heure du moment, comme avant (et le rouge s'efface).
+- Une saisie à **trois chiffres** est lue comme dans les autres cases d'heure : « 930 » est 9 h 30 (« 09:30 »). Dans un relevé, elle n'est enregistrée qu'**à la sortie de la case** (ou au 4e chiffre), et le rouge n'est posé en
+  cours de frappe qu'au 4e chiffre : « 0930 » ne devient jamais rouge en route.
+- Les **fiches enregistrées avant la 9.5.2** avec une heure de relevé sans deux points (« 1145 », « 930 ») s'ouvrent avec « 11:45 » et « 09:30 », sans que la fiche soit marquée modifiée ; le fichier de données lit ces heures de la même
+  façon, même pour une fiche qu'on n'a pas rouverte (première heure, dernière heure, durée de surveillance). Le mode d'emploi de l'application le dit en une phrase.
+
+### À valider de votre côté
+
+- **Les autres cases d'heure de la fiche ont encore un défaut ancien, que je n'ai pas touché** (hors de votre demande) : en tapant « 2400 » **chiffre par chiffre** dans « heure de l'accident » (ou de l'examen, de la mise en pression…),
+  le 3e chiffre (« 24:0 », lu 02:40) est enregistré, puis « 24:00 » reste en rouge **sans rétablir l'heure précédente** ; la fiche garde « 02:40 » sous une case rouge. Collée ou corrigée, l'heure est juste. Dans la case d'un
+  relevé, c'est corrigé (ci-dessus). Voulez-vous que j'aligne les autres cases (9.5.3) ?
+- **Un nouveau relevé porte déjà l'heure du moment** (c'était déjà le cas) : pour taper la vôtre, il faut d'abord la sélectionner (**Ctrl + A** dans la case), faute de quoi la case est pleine (5 signes) et la frappe n'ajoute rien. Je
+  peux sélectionner l'heure toute seule à l'arrivée dans la case, ou laisser la case vide.
+- **« 930 » est lu 9 h 30** : c'est la règle des autres cases d'heure (3 chiffres = H et MM), conservée ; « 11:4 » puis une sortie de case donne donc « 01:14 ».
+- **Ce qui n'a pas pu être vérifié.** (1) La **sortie de la case par la touche Tab dans un Firefox piloté** : la fenêtre pilotée n'a pas le focus du système et Firefox n'y envoie alors ni « blur » ni « change » ; ces deux événements ont
+  été envoyés par le script (les frappes, elles, sont réelles). (2) Chrome, et un vrai téléphone ou une tablette (c'est là que le clavier numérique, sans la touche « : », rend la saisie en HHMM utile).
+- **Ce qui a été essayé.** Les suites des versions précédentes (mises à jour : version) et une suite propre à la 9.5.2 passent (1891 contrôles au total, dans un navigateur automatisé) : frappe chiffre par chiffre (rien d'enregistré en
+  route, rouge au seul 4e chiffre), heures impossibles ou incomplètes, collage, effacement, retour arrière, `+` et espace, comparaison de 30 saisies avec la case « heure de l'accident », lignes ajoutées ou retirées avec une saisie en rouge,
+  papier, fichier de données, durée à cheval sur minuit, fiches d'avant la 9.5.2 (ouvertes ou non), aspect du rouge. Puis, avec de **vraies frappes au clavier** (touche par touche), de vrais clics et les vraies touches `+` et espace : dans **Edge** (22 contrôles, avec un vrai Tab : « blur » et « change » partent d'eux-mêmes)
+  et dans un vrai **Firefox 137** (25 contrôles propres à la 9.5.2 et 111 des versions précédentes qui repassent ; la sortie de la case y est envoyée par le script, voir ci-dessus).
+
+---
+
+## Changements de la version 9.5.1
+
+Trois modifications, dans un **nouveau dossier** : `ADP-9.5.1`, copié de `ADP-9.4.1` (qui contient la 9.4.2 et reste intact ; le numéro 9.5.0 n'existe pas). Aucune colonne ne s'ajoute ni ne disparaît (955 colonnes, le même
+dictionnaire), le papier ne change pas, les fiches de la 9.4.2 s'ouvrent telles quelles. `index.html` passe de 816 Ko à 824 Ko.
+
+### Bulle d'information sur l'import-export
+
+- La bulle des boutons d'import-export de la barre du haut (**Tout transférer en ZIP** et **Importer**), et celle des entrées du menu Plus (*Exporter tout en JSON…*, *Importer / fusionner*, *Tout transférer en archive ZIP*), dit la
+  manipulation du service : « Import-export des fiches JSON : exporter l'ensemble des fiches JSON dans le dossier « T:\Services\Smhep\Commun\Personnels SMHEP\MEDECIN CAISSON F\ADP- Export JSON ». » Elle apparaît dès que le curseur (ou le clavier) atteint le bouton, comme les autres bulles.
+  La fenêtre *Exporter tout en JSON* la redit en tête.
+
+### Rappel à 11 h 45 et à 16 h 00 (retiré en 10.1.1)
+
+- Un **bandeau** en haut de la page et, si le navigateur l'autorise, une **notification du navigateur**, à **11 h 45** et à **16 h 00** (heure du navigateur), répétaient la consigne de la bulle (fonctionnement, rattrapage d'une heure, autorisation des notifications, case « Rappels » de la fenêtre
+  *Exporter les données…*). **Ce rappel, et la section de la notice qui le décrivait, ont été retirés en 10.1.1** : voir *Changements de la version 10.1.1*.
+
+### Ligne Excel ADP : colonne « Observations » (BW)
+
+- ADP **n'écrit plus rien** dans la colonne BW « Observations » de la ligne Excel ADP : elle reste vide (comme AQ et CK). Ce qui y passait (lieu non reconnu, précision du lieu à l'appel « autre », apnée, conditions environnementales,
+  progressivité, tables « autres ») n'est plus dans la ligne Excel ; cela reste dans la fiche, la synthèse, le compte rendu et le fichier de données. Les 89 colonnes sont inchangées.
+
+### À valider de votre côté
+
+- **Quels boutons sont l'« import-export » ?** La barre du haut n'a pas de bouton qui porte ce nom : j'ai mis la bulle sur les deux boutons voisins (**Tout transférer en ZIP**, l'export, et **Importer**) et sur leurs équivalents du
+  menu Plus, plus *Exporter tout en JSON…*. Dites-moi si vous pensiez à un autre bouton.
+- **Le rappel demande qu'ADP soit ouvert** (un onglet masqué suffit) : une page web ne peut pas réveiller le navigateur quand elle est fermée. À 11 h 45 et 16 h 00 **tous les jours, week-ends compris** ; si ADP est ouvert dans l'heure
+  qui suit, le rappel s'affiche encore. Je peux limiter aux jours ouvrés, ou changer les heures.
+- **La notification du navigateur doit être autorisée une fois** (bouton *Activer les notifications*), sinon seul le bandeau s'affiche. Si le navigateur est réglé pour bloquer les notifications des sites, il faut les autoriser pour
+  l'adresse d'ADP dans ses réglages.
+- **ADP n'écrit pas lui-même dans `T:`.** L'export passe par la fenêtre du navigateur : Chrome et Edge ouvrent un sélecteur de dossier (qui s'ouvre sur Téléchargements la première fois : il faut aller chercher le dossier du service, ou le
+  coller avec *Copier le dossier* ; le navigateur retient en général le dernier dossier choisi, et le sélecteur s'y rouvre les fois suivantes) ; Firefox ne sait pas écrire dans un dossier : il propose l'archive ZIP, à enregistrer ou à décompresser dans le dossier. La bulle et le rappel disent la manipulation, ils ne l'exécutent pas.
+- **Le chemin du dossier est écrit dans `index.html`.** Si vous publiez ce fichier sur un site public (par exemple GitHub Pages), le nom du dossier du service y est lisible par tout visiteur (aucune donnée de santé, mais un nom de
+  dossier interne). Dites-moi si vous préférez que le chemin se saisisse une fois par poste, dans les réglages, plutôt que d'être écrit dans le fichier.
+- **Colonne BW vide** : ce qui y passait n'est plus dans la ligne Excel (voir ci-dessus). Dites-moi si une de ces informations doit aller ailleurs.
+- **Ce qui n'a pas pu être vérifié.** L'affichage d'une vraie notification Windows depuis votre Firefox ESR 140 (essayée avec une notification simulée, et avec Firefox 137 : 21 contrôles) ; Chrome et un vrai téléphone ; l'écriture
+  dans `T:` (hors d'ADP).
+- **Ce qui a été essayé.** Les suites des versions précédentes (mises à jour : version, colonne BW vide) et deux suites propres à la 9.5.1 passent (1803 contrôles) : bulle (survol, bouton, menu Plus, fenêtre d'export), horloge
+  simulée (11 h 44 à 17 h 30, lendemain, rechargement, rattrapage d'une heure), notification (autorisée, à demander, refusée, absente, qui échoue), bouton « Copier le dossier », réglage, mode d'emploi, colonne BW ; horloge réelle de
+  20 secondes et mise en page du bandeau dans un vrai navigateur (en haut quand on défile, dans la fenêtre).
+
+---
+
+## Changements de la version 9.4.2
+
+Trois modifications, **dans le même dossier** : `ADP-9.4.1` contient maintenant la 9.4.2 (l'ancien `index.html` est gardé à côté du dossier : `ADP-9.4.1_index_avant_9.4.2.html`). Aucune colonne ne s'ajoute ni ne disparaît
+(955 colonnes, dans le même ordre) ; le dictionnaire des variables change par **19 libellés** (le nom de la section des épreuves vestibulaires et celui de la coordination) ; le papier ne change pas ; les fiches de la 9.4.1
+s'ouvrent telles quelles. `index.html` passe de 814 Ko à 816 Ko.
+
+### Feuille COHB : colonne « EE / plateau technique »
+
+- « EE » veut dire « épreuve d'effort » : la colonne **AB** de la ligne Excel COHB reçoit le **nombre d'épreuves d'effort réalisées** dans le dossier (les fiches où l'épreuve d'effort est cochée OUI), comme le DTC en colonne Y ;
+  elle reste vide s'il n'y en a pas. Comme les autres colonnes, elle est la même quelle que soit la fiche ouverte.
+
+### Ligne Excel ADP : « nombre j AT »
+
+- Les jours d'hospitalisation comptent **les deux jours extrêmes** : du 02/10 au 05/10, **4 jours** (3 dans la 9.4.1).
+- **Sans jours d'AT saisis**, la colonne BY reçoit **les jours d'hospitalisation seuls** (elle restait vide dans la 9.4.1) : 20 jours d'AT donnent 24, aucun jour d'AT donne 4.
+- L'encart sous les jours d'AT et la colonne partagent le même calcul : l'encart dit ce que la ligne contiendra (et sur quelle consultation de sortie elle s'appuie, quand ce n'est pas celle qui est ouverte).
+
+### Examen vestibulaire
+
+- L'**examen vestibulaire** (Romberg, Fukuda, marche en étoile, marche funambule, avec leur côté) passe de l'onglet « Examen neurologique » à l'onglet « **Examen clinique général** », dans un encart **Examen vestibulaire**
+  **juste après « ORL et barotraumatisme »**, avec son bouton « tout normal ». L'encart de l'onglet « Examen neurologique » s'appelle maintenant **Coordination, équilibre et marche** (verticalisation, équilibre statique,
+  marche, talon-genou, doigt-nez). Le sous-titre de l'onglet 3 cite « vestibulaire ».
+- Rien d'autre ne bouge : colonnes et ordre du fichier de données, synthèse, compte rendu, score vestibulaire, ligne Excel et **papier** (l'encart « Coordination et examen vestibulaire » garde sa place dans la page de l'examen
+  neurologique). Voir *Coordination et examen vestibulaire*.
+
+### À valider de votre côté
+
+- **Jusqu'à quelle sortie compte-t-on les jours d'hospitalisation ?** Avec des jours d'AT, jusqu'à la consultation de sortie qui les porte (la plus récente qui en porte) ; sans jours d'AT, jusqu'à la consultation de sortie la plus
+  récente du dossier. Avec une hospitalisation de jour, la dernière sortie est celle de la fin de l'hospitalisation de jour : ses jours comptent alors dans les jours d'hospitalisation. Si vous ne voulez compter que jusqu'à la
+  première sortie, dites-le-moi. **Sans aucune consultation de sortie dans le dossier, la colonne BY reste vide.**
+- **Colonne AB = nombre d'épreuves d'effort** (comme le DTC en Y compte les doppler transcrâniens), et non « 1 ou 0 » ni « anormale » : dites-moi si vous attendiez autre chose.
+- **« Examen vestibulaire » = les quatre épreuves vestibulaires.** Le nystagmus, la VNS et le NIV sont déjà dans l'onglet « Examen clinique général » (encart « Fonctions supérieures »). Je n'ai pas déplacé la coordination, l'équilibre
+  statique ni la marche : dites-moi si vous voulez tout dans le même encart, ou le nystagmus et la VNS avec l'examen vestibulaire.
+- **Le papier ne change pas** : les épreuves vestibulaires restent sur la page de l'examen neurologique. Dites-moi si le papier doit suivre le nouvel ordre.
+- **Ce qui n'a pas pu être vérifié.** Aucun collage dans votre vrai fichier maître ni dans votre vraie feuille COHB (colonnes BY et AB) ; Firefox ESR 140, Chrome et un vrai téléphone ne sont pas essayés.
+- **Ce qui a été essayé.** Les suites des versions précédentes (mises à jour : onglets 3 et 4, jours d'hospitalisation, colonne AB) et une suite propre à la 9.4.2 passent (1731 contrôles) : colonne AB (nombre d'épreuves
+  d'effort, ligne identique depuis chaque fiche, fenêtre COHB) ; colonne BY (jours extrêmes compris, sans jours d'AT, sans consultation de sortie, plusieurs sorties, encart, même résultat depuis chaque fiche) ; examen vestibulaire
+  (sections par onglet, formulaire, côté conditionnel, « tout normal », compteurs, dictionnaire, ordre des colonnes, synthèse et papier inchangés). Dans **Firefox 137** réel, l'examen vestibulaire a été manipulé avec de vrais clics,
+  et les colonnes AB et BY lues dans le presse-papiers de Windows après un vrai clic « Copier la ligne » (16 contrôles).
+
+---
+
+## Changements de la version 9.4.1
+
+Sept demandes, dans un **nouveau dossier** : `ADP-9.4.1` (copié de `ADP-9.3.2`, qui reste la 9.3.5, intacte). Le fichier de données passe de 942 à **955 colonnes** (treize de plus : `loc_appel`, `loc_appel_autre`, `im_irm_med_fc`,
+`im_irm_med_fc_type`, `im_irm_med_conc`, `im_effort`, `im_effort_res`, `im_effort_txt`, `im_mapa`, `im_mapa_res`, `im_mapa_txt`, `mjoas`, `at_jours`) et le dictionnaire des variables est régénéré ; les fiches de la 9.3.5
+s'ouvrent telles quelles (les nouvelles colonnes y sont vides) et leur papier ne change pas ; seule une consultation de sortie créée en 9.4.1, qui porte le 17 d'office, imprime l'encart « Sortie : séquelles et arrêt de travail ». `index.html` passe de 797 Ko à 814 Ko. Le numéro 9.4.0 n'existe pas (vous aviez demandé la 9.4.1).
+
+### Les lignes Excel ADP et COHB : toutes les fiches, quelle que soit la fiche ouverte
+
+- La ligne Excel ADP et la ligne Excel COHB étaient **déjà** composées à partir de toutes les fiches du dossier ; la 9.4.1 en fait la règle écrite et la vérifie : sur un dossier de six fiches (initiale, suivi, séance, sortie, contrôle
+  après la sortie) dont les données sont réparties entre elles, la ligne copiée est **identique depuis chacune des fiches** (essai à l'écran, puis par un vrai clic « Copier la ligne » et lecture du presse-papiers de Windows, dans Firefox).
+- Les données qui ne vivent que sur une fiche (score MJOAS, jours d'AT, inaptitude, IRM médullaire, épreuve d'effort, MAPA) sont lues sur **la fiche qui les porte**, même si une fiche de contrôle plus récente n'en porte aucune.
+- La fenêtre de la ligne dit maintenant : « la ligne est composée à partir de **toutes** ces fiches, quelle que soit celle qui est ouverte », avec le nombre de fiches et leurs dates, et signale une fiche **sans numéro de dossier**
+  (seule celle-là peut alors être lue).
+
+### Lieu de l'accidenté au moment de l'appel
+
+- Dans « Mode d'entrée et prise en charge initiale », sous l'heure d'appel : **en mer, à quai, dans un SAU, autre** (à préciser), les lieux de votre fichier. Synthèse (« Au moment de l'appel, l'accidenté était en mer. »), papier,
+  fichier de données, et **colonne AT** de la ligne Excel ADP (1 à 4 ; la précision d'« autre » passe dans « Observations »). *(Depuis la 9.5.1, « Observations » reste vide : la précision n'est plus reprise.)*
+
+### Score MJOAS
+
+- Dans l'onglet « Conclusion et évolution » d'une consultation de sortie, encart **Sortie : séquelles et arrêt de travail** : **score MJOAS** coté **17 d'office**, modifiable, avec un **?** qui ouvre la grille du service et calcule le
+  total. Synthèse, compte rendu, papier, fichier de données, **colonne BX** de la ligne Excel ADP. Voir *Sortie : le score MJOAS et l'arrêt de travail*.
+
+### IRM médullaire
+
+- Si l'IRM médullaire est réalisée : **facteur compressif** (OUI / NON), **type** de facteur compressif (si OUI), **concordance radio-clinique** (OUI / NON) ; synthèse, compte rendu, papier, fichier de données, **colonnes CE, CF, CG**.
+
+### Épreuve d'effort et MAPA
+
+- Chacune : réalisée (OUI / NON) puis **normale ou anormale** et un commentaire ; synthèse, compte rendu, papier, fichier de données, **colonnes CI et CJ** (anormale 1, normale 0).
+
+### Arrêt de travail
+
+- À la sortie, **nombre de jours d'AT** ; la ligne Excel ADP reçoit, en **colonne BY**, **jours d'AT + jours d'hospitalisation** (date d'entrée → date de la consultation de sortie).
+
+### À valider de votre côté
+
+- **« Totalité des fiches ».** Je ne l'ai pas changée : elle fonctionnait déjà ainsi (les lignes ADP et COHB sont identiques depuis chaque fiche du dossier). Si vous avez vu une ligne incomplète, la cause la plus probable est un patient dont
+  les fiches portent des **numéros de dossier différents** (faute de frappe, identifiant scanné autrement) : elles ne sont alors pas réunies. Dites-moi le cas, je regarde.
+- **Score MJOAS.** La grille (six items, 17 points) est **celle de votre protocole « Accidents de plongée SMHEP 2024 » (page 7)** ; je ne l'ai pas modifiée. La fiche ne garde que le **total** : votre fichier maître n'a qu'une colonne pour
+  le MJOAS, et la grille repart de « RAS » à chaque ouverture (elle ne relit pas le total saisi à la main).
+- **Jours d'hospitalisation = date de sortie − date d'entrée** (du 02/10 au 05/10 : 3 jours ; entrée et sortie le même jour : 0). Si vous comptez les deux jours extrêmes (4 jours), dites-le-moi : c'est une constante du code. La date
+  d'entrée est celle du **premier examen du dossier** (une séance de recompression saisie avant la consultation initiale compte) ; la date de sortie est celle de la consultation de sortie qui porte les jours d'AT. **Sans jours d'AT saisis, la
+  colonne BY reste vide** (rien n'est supposé). *(Modifié dans la 9.4.2 : les deux jours extrêmes comptent, du 02/10 au 05/10 = 4 jours, et sans jours d'AT saisis la colonne BY reçoit les jours d'hospitalisation.)*
+- **IRM, colonne CE.** Votre légende prévoit 0 non, 1 oui, 2 en regard de la lésion, 3 en dessous, 4 au-dessus. Je ne code que **1 ou 0** : les positions 2, 3 et 4 ne sont pas demandées. Si vous les voulez, j'ajoute un choix « position par
+  rapport à la lésion » sous le facteur compressif.
+- **Type de facteur compressif.** Texte libre (colonne CF, sans point final), avec cinq phrases proposées : hernie discale, protrusion discale, canal rachidien étroit, ostéophytes, hématome épidural. Dites-moi si vous préférez une liste fermée.
+- **Épreuve d'effort et MAPA.** Si plusieurs fiches du dossier en portent une, **une seule anormale suffit** pour coder 1. Je n'ai pas touché à la feuille COHB : sa colonne AB (« EE / plateau technique ») reste non recueillie, car je ne sais pas si
+  « EE » veut dire « épreuve d'effort » ; si oui, dites-le-moi et je la compte. *(Fait dans la 9.4.2 : « EE » = épreuve d'effort, la colonne AB est remplie.)*
+- **Lieu à l'appel.** Quatre choix, ceux de votre légende ; la précision d'« autre » va dans « Observations » (pas de colonne pour elle). *(Depuis la 9.5.1, « Observations » reste vide : elle n'est plus reprise.)*
+- **Ce qui n'a pas pu être vérifié.** Aucun collage dans votre vrai fichier maître (colonnes AT, BX, BY, CE, CF, CG, CI, CJ) ; Firefox ESR 140, Chrome et un vrai téléphone ne sont pas essayés.
+- **Ce qui a été essayé.** Les suites des versions précédentes (mises à jour : 955 colonnes, l'encart de plus de la sortie, les colonnes de la ligne Excel désormais recueillies) et une suite propre à la 9.4.1 passent (1675 contrôles) :
+  ligne Excel ADP et COHB identique depuis chacune des six fiches d'un dossier ; score MJOAS (17 d'office et son retrait, « ? », grille, calcul, report, synthèse, CRH, papier, Excel) ; jours d'AT et d'hospitalisation (dates, cas limites) ;
+  IRM médullaire, épreuve d'effort, MAPA (formulaire, dépendances, synthèse, CRH, papier, Excel) ; lieu à l'appel. Dans **Firefox 137** réel, tous les nouveaux champs ont été manipulés avec de vrais clics et de vraies frappes, la grille du MJOAS
+  utilisée, et la ligne Excel copiée par un vrai clic puis lue dans le presse-papiers de Windows, depuis chacune des quatre fiches d'un dossier : texte identique (31 contrôles). Le PDF d'une fiche de sortie complète garde ses 7 pages.
+
+---
+
+## Changements de la version 9.3.5
+
+Trois demandes. Le fichier de données passe de 935 à **942 colonnes** (sept de plus : voir ci-dessous) et le dictionnaire des variables est régénéré ; les fiches de la 9.3.3 s'ouvrent telles quelles. Sur le papier, la consultation
+initiale gagne la tenue, le déséquipement et la progressivité dans leurs encarts. `index.html` passe de 789 Ko à 797 Ko. Le numéro 9.3.4 n'existe pas (vous aviez demandé la 9.3.5).
+
+### Scores MEDSUBHYP et vestibulaire
+
+- **Une case par score**, au lieu d'une case pour les deux : on retire MEDSUBHYP, ou le score vestibulaire, ou les deux, de la synthèse, du CRH, de l'impression et de la ligne Excel ADP. Voir *Ne pas mentionner un score*.
+- Colonnes : `sc_masquer` est remplacée par `sc_masquer_msh` et `sc_masquer_vest` (une fiche enregistrée avec l'ancienne case s'ouvre avec les deux cochées).
+
+### Tenue, déséquipement, progressivité
+
+- **Type de tenue** (humide, semi-étanche, étanche, autre à préciser) et **déséquipement sur le lieu de plongée** (OUI proposé d'office, modifiable) dans l'encart « Paramètres de la plongée accidentelle » ; **« Progressivité respectée »**
+  (OUI / NON) dans les « Facteurs favorisants », sous le respect de la procédure de décompression. Synthèse, papier, fichier de données (`pl_tenue`, `pl_tenue_autre`, `pl_deseq`, `ff_progress`).
+- **Ligne Excel ADP** : la tenue en colonne AC (« Combinaison » : 1, 2, 3 ; « autre » en texte), le déséquipement en colonne AY (1 ou 0), la progressivité dans « Observations » (BW). Les 89 colonnes du fichier maître sont inchangées. *(Depuis la 9.5.1, « Observations » reste vide : la progressivité n'est plus reprise.)*
+
+### Hospitalisation de jour
+
+- Nouvelle **orientation « Hospitalisation de jour »** (onglet « Conclusion et évolution »), avec l'**hébergement** : domicile, hôtel patient ou autre établissement (à préciser) ; elle s'écrit dans la synthèse, le compte rendu d'hospitalisation et sur le papier.
+- **Le patient reste dans les patients en cours** (pastille avec la mention **HDJ**) tant que la consultation de sortie la plus récente l'oriente vers l'hospitalisation de jour ; il disparaît le lendemain d'une nouvelle consultation de sortie dont
+  l'orientation est autre : c'est ainsi que vous cotez la sortie de l'hospitalisation de jour. Voir *Le volet de gauche : les patients en cours*.
+- Colonnes : `hdj_lieu`, `hdj_lieu_autre`, et la modalité `6` de `orientation`.
+
+### À valider de votre côté
+
+- **« Décochés individuellement ».** J'ai compris : chaque score se retire à part. Il y a donc **deux cases** (« ne pas mentionner MEDSUBHYP », « ne pas mentionner le score vestibulaire »), cochées = retiré, comme l'ancienne case unique,
+  décochées par défaut. Je n'ai pas touché aux lignes (items) d'un score. Dites-moi si vous vouliez autre chose : décocher une ligne d'un score (par exemple une valeur déduite), ou des cases inversées (cochées = mentionné).
+- **Pour le CRH et la ligne Excel, il suffit qu'une fiche du dossier porte la case** (règle d'avant, inchangée) : décocher sur la dernière fiche ne remet pas le score dans le CRH si la fiche initiale l'a cochée.
+- **Tenue « autre ».** Votre fichier maître n'a pas de code pour « autre » (0 aucune, 1 humide, 2 semi-étanche, 3 étanche) : la colonne AC reçoit le **texte précisé**. Il n'y a pas d'option « aucune » (vous aviez listé quatre choix).
+- **Déséquipement.** « OUI d'office » vaut pour une **nouvelle** consultation initiale ; une fiche déjà enregistrée reste vide (je n'invente pas de réponse). Votre colonne AY s'intitule « Déséquipement + protection thermique » : je n'y écris
+  que le déséquipement (la protection thermique n'est pas recueillie).
+- **Progressivité : pas de colonne dans votre fichier maître.** Les 89 colonnes (A à CK) de la ligne Excel doivent rester alignées sur votre fichier : je n'en ai donc pas ajouté, et la progressivité s'écrit dans « Observations » (BW). *(Depuis la 9.5.1, « Observations » reste vide.)*
+  Si une colonne existe (ou si vous en créez une), dites-moi laquelle. Je n'ai pas défini « progressivité » dans le formulaire (aucune aide sous la ligne) : le sens est le vôtre.
+- **Sortie de l'hospitalisation de jour = une nouvelle consultation de sortie** dont l'orientation n'est plus « Hospitalisation de jour » (par exemple « Retour au domicile »), qui donne aussi un CRH sur l'ensemble du dossier. Je n'ai créé ni
+  nouveau type de fiche ni case « fin d'hospitalisation de jour » : une fiche de suivi ou une séance ne fait pas sortir le patient. Si vous préférez une case sur ces fiches, dites-le-moi.
+- **Les jours d'hospitalisation de jour** se cotent avec les fiches habituelles (suivi, séance de recompression). La ligne Excel ADP, la ligne COHB et la « date de clôture » (dernière fiche du dossier) ne distinguent pas l'hospitalisation de jour.
+- **La mention « HDJ » sur la pastille** est un ajout de ma part : elle distingue d'un coup d'œil les patients en hospitalisation de jour des patients hospitalisés.
+- **Ce qui n'a pas pu être vérifié.** Excel : les colonnes AC, AY et BW n'ont pas été collées dans votre vrai fichier maître ; Firefox ESR 140, Chrome et un vrai téléphone ne sont pas essayés.
+- **Ce qui a été essayé.** Les suites des versions précédentes (mises à jour : 942 colonnes, une case par score, colonne AY recueillie) et une suite propre à la 9.3.5 passent (1595 contrôles) : chaque score retiré à part (synthèse, papier, CRH, Excel),
+  l'ancienne case unique, le formulaire, la reprise d'une fiche à l'autre, la tenue, le déséquipement et la progressivité (formulaire, synthèse, papier, fichier de données, colonnes AC, AY et BW), l'orientation et l'hébergement,
+  les patients en cours (sorties successives, même jour, horloge simulée, clic sur la pastille, parcours complet). Dans **Firefox 137** réel, les nouveaux champs, les cases des scores et la pastille « HDJ » ont été manipulés avec de vrais clics (43 contrôles).
+
+---
+
+## Changements de la version 9.3.3
+
+Une seule modification : le **nom proposé au PDF**. Aucune colonne ne s'ajoute ni ne disparaît (935 colonnes), le dictionnaire des variables est identique à celui de la 9.3.2, rien ne change sur le papier et les fiches de la 9.3.2 s'ouvrent telles quelles.
+`index.html` passe de 788 Ko à 789 Ko.
+
+### Enregistrer en PDF
+
+- **Le nom se termine par le numéro d'examen de la fiche** : `NOM_Prénom_IPP_numéro de dossier_EX1.pdf`, `…_EX2.pdf`, `…_EX3.pdf`, et `…_EX3b.pdf` pour une séance de recompression sans examen cotée après le 3ᵉ examen (`…_EX3c.pdf` pour la suivante).
+  Les fiches d'un même patient se distinguent ainsi dans le dossier où vous rangez les PDF. Voir *Enregistrer en PDF : le nom du fichier*.
+- C'est le numéro déjà affiché dans le bandeau (« Examen n° 3b ») et à la fin du nom des fichiers JSON. Il est **recalculé à l'instant** : la bulle du bouton PDF, le titre de la page au moment d'imprimer et le nom transmis par l'application native le portent,
+  même pour une fiche pas encore enregistrée.
+- Le mode d'emploi (« 3. Produire le PDF ») donne le nouveau nom et des exemples.
+
+### À valider de votre côté
+
+- **Séparateur `_EX1`.** J'ai mis le numéro à la suite avec un souligné, comme entre les autres parties du nom (`…_IPP_50894855_EX1.pdf`), et non avec le trait d'union des fichiers JSON (`187-2026_50894855-EX1.json`). Si vous préférez `-EX1`, c'est un changement d'un caractère.
+- **Sans numéro de dossier, pas de numéro d'examen.** Ce numéro se compte par dossier : une fiche sans numéro de dossier garde le nom `NOM_Prénom.pdf` (comme dans la 9.3.2), et deux telles fiches du même patient porteraient donc le même nom.
+- **Une séance qui précède tout examen** du dossier s'appelle `…_EX0b.pdf` (comme dans le nom des fichiers JSON).
+- **Le numéro est celui de l'instant.** Si vous saisissez plus tard une fiche datée avant d'autres, les numéros des suivantes se décalent ; un PDF déjà enregistré n'est pas renommé et garde l'ancien numéro (ADP n'a pas la main sur un fichier que le navigateur a écrit).
+- **Ce qui n'a pas pu être vérifié.** La **vraie fenêtre d'impression** de Firefox, d'Edge et de Chrome n'est pas pilotable : j'ai vérifié le nom que l'application annonce (bulle, titre de la page au moment d'imprimer, nom transmis à l'impression native), pas le nom écrit dans la fenêtre
+  d'enregistrement ; que le navigateur reprenne ce titre a été contrôlé dans le code d'impression de Firefox 137 (9.3.2). Ni Firefox ESR 140, ni Chrome.
+- **Ce qui a été essayé.** Les suites des versions précédentes, mises à jour pour le nouveau nom, et une suite propre à la 9.3.3 passent (1493 contrôles) : numéro de chaque fiche d'une famille (EX1, EX2, EX2b, EX2c, EX3, EX3b), noms tous différents, accord avec le numéro de la fiche et avec le nom des fichiers JSON,
+  fiche rouverte depuis la liste, ordre des dates, autres patients, fiche pas encore enregistrée, bouton « Séance », changement de date ou de numéro de dossier, impression (titre, native), 45 fiches d'un même dossier (jusqu'à `EX12` et `EX1aa`), caractères interdits. Dans **Firefox 137** réel, la bulle du bouton PDF et le titre
+  de la page au moment d'imprimer portent le numéro d'examen (19 contrôles).
+
+---
+
+## Changements de la version 9.3.2
+
+Aucune colonne ne s'ajoute ni ne disparaît (935 colonnes) et les fiches de la 9.3.1 s'ouvrent telles quelles. Le dictionnaire change de **trois lignes** : les libellés de `dossier` et de `num_ex` disent « patient » à la place de « sujet », et la description de `delai_min` précise
+qu'il n'existe que sur la consultation initiale. Sur le papier, la consultation initiale est inchangée ; les fiches de suivi et de sortie n'impriment plus la ligne « Délai accident→examen ». `index.html` passe de 780 Ko à 788 Ko.
+Le dernier point de la liste que vous m'avez envoyée était vide : j'ai traité la liste comme complète. Les demandes sont regroupées par thème.
+
+### Enregistrer en PDF
+
+- **Nom proposé : `NOM_Prénom_IPP_numéro de dossier.pdf`** (par exemple `DUPONT_Jean_IPP_50894855.pdf`), dans la fenêtre d'enregistrement du navigateur, qui demande le dossier. La bulle du bouton PDF annonce le nom. Voir *Enregistrer en PDF : le nom du fichier* (depuis la 9.3.3, le numéro d'examen termine le nom).
+
+### Noms et prénoms
+
+- **Nom en majuscules, Prénom avec l'initiale en majuscule** (accents conservés), **examinateur, médecin et infirmier(e) en majuscules**, automatiquement. Voir *Noms et prénoms : mise en forme automatique*.
+
+### Délai accident → examen
+
+- **Calculé et affiché sur la consultation initiale seulement.** Plus de délai sur les suivis, les sorties et les séances (ni à l'écran, ni sur le papier, ni dans le fichier de données).
+
+### « Patient » à la place de « sujet »
+
+- Dans tout ce qui s'affiche : libellés (« N° de dossier / identifiant patient », « N° d'examen pour ce patient »), recherche (« Rechercher un patient »), messages, fenêtres, mode d'emploi, aides à l'examen, dictionnaire des variables. Les noms de fonctions du code ne changent pas.
+
+### Pastille et recherche
+
+- **Un clic sur une pastille inscrit le numéro d'accident du patient dans la barre de recherche**, et la liste du bas ne montre que ses fiches (sans les autres patients). Voir *Le volet de gauche : les patients en cours*.
+
+### À valider de votre côté
+
+- **« IPP » est un texte fixe.** Votre modèle `NOM_Prénom_IPP_numéro de dossier` ne définissait que le nom, le prénom et le numéro de dossier : j'ai lu « IPP » comme un mot écrit tel quel, suivi du numéro de dossier (c'est aussi la colonne « IPP » de la ligne Excel, qui est le
+  numéro de dossier). La fiche n'a pas de champ « IPP » séparé. Dites-moi si vous attendiez autre chose.
+- **La fenêtre qui demande le dossier est celle du navigateur.** Un navigateur ne laisse pas une page écrire un PDF dans le dossier de votre choix : ADP donne le nom, le navigateur demande le dossier (selon le navigateur, le dernier dossier utilisé est proposé). Un enregistrement direct, sans fenêtre d'impression, demanderait
+  de fabriquer le PDF nous-mêmes (image des pages, texte non sélectionnable) : je ne l'ai pas fait.
+- **Deux fiches du même patient portent le même nom de PDF** (vous ne demandiez pas le numéro d'examen) : Windows demande s'il faut remplacer. Je peux ajouter `_EX2`, `_EX3b`… à la fin si vous le souhaitez. *(Fait dans la 9.3.3.)*
+- **Prénom** : l'initiale de **chaque élément** (après une espace ou un trait d'union) en majuscule et **le reste en minuscules** (« JEAN-PIERRE » devient « Jean-Pierre », « jean-pierre » aussi ; « McArthur » deviendrait « Mcarthur »). Vous demandiez « la première lettre » : j'ai étendu aux prénoms composés.
+- **Dictée vocale retirée** du champ Infirmier(e) (c'était le seul des cinq champs à en avoir une) : le texte dicté n'aurait pas la forme du champ.
+- **Délai accident → examen : « premier examen » = consultation initiale** (type 1). Une fiche de suivi saisie avant toute fiche initiale n'affiche donc pas de délai. Il n'est ni calculé, ni affiché, ni imprimé, ni écrit dans le fichier de données pour les autres types.
+- **Quatre phrases des aides à l'examen** parlaient de la population générale (« sujets sains », « un sujet sur cinq ») : elles disent maintenant « personnes » plutôt que « patients ».
+- **Pastille et recherche** : le texte écrit est le numéro d'accident de la fiche **initiale** (à défaut une autre fiche, à défaut le numéro de dossier) ; la liste est filtrée sur le **dossier**, pas sur le texte, pour ne jamais montrer un autre patient (un numéro d'accident se retrouve dans des numéros de dossier
+  et des dates). Dès que vous modifiez le texte, c'est une recherche ordinaire. *Nouvelle fiche* efface la barre si elle venait d'une pastille. Dans la fenêtre « Fiches enregistrées » des tablettes et téléphones, les pastilles n'écrivent rien dans la recherche.
+- **Ce qui n'a pas pu être vérifié.** La **vraie fenêtre d'impression** de Firefox (impossible à piloter : je me suis appuyé sur son code source, version 137), ni Firefox ESR 140, ni Chrome. La frappe avec une **vraie touche morte** (accent circonflexe, tréma) n'a pas été essayée : la composition est simulée.
+- **Ce qui a été essayé.** Les suites de la 9.3.2 (nom du PDF et titre de la page autour de l'impression, mise en forme des noms à la frappe, au chargement et dans les listes, délai accident → examen pour les quatre types, absence du mot « sujet » dans les formulaires, le papier, les fenêtres, les aides et le dictionnaire,
+  pastille et recherche) et toutes celles des versions précédentes passent (1447 contrôles) ; la frappe réelle dans les champs a aussi été essayée dans **Firefox 137** (16 contrôles).
+
+---
+
+## Changements de la version 9.3.1
+
+Rien ne s'ajoute ni ne disparaît dans le fichier de données (935 colonnes, dictionnaire identique à celui de la 9.2.0) et les fiches de la 9.2.0 s'ouvrent telles quelles : seul le **volet de gauche** change.
+Sur le papier, rien ne change. `index.html` passe de 771 Ko à 780 Ko.
+
+### Volet de gauche
+
+- **Deux parties** sous la barre de recherche, inchangée : en haut, une **pastille par patient en cours** (NOM Prénom et âge, aux couleurs du bandeau : rose, bleu, vert) ; en dessous, la **liste des fiches**, comme avant,
+  déroulante, dont la hauteur s'adapte au nombre de pastilles. Voir *Le volet de gauche : les patients en cours*.
+- **« En cours »** : le patient n'a pas de consultation de sortie enregistrée à la date de la veille ou avant ; une sortie du jour laisse la pastille jusqu'à minuit, elle disparaît le lendemain.
+- **Un clic** sur une pastille ouvre la fiche la plus récente du patient ; au survol, une bulle donne le dossier et la dernière fiche.
+- **Tablette et téléphone** : la fenêtre *Plus* › *Fiches enregistrées* reprend les deux parties.
+
+### À valider de votre côté
+
+- **« Validée » = enregistrée.** L'application ne connaît pas de validation de fiche : une consultation de sortie compte dès qu'elle est **enregistrée** (fiche de type « consultation de sortie »), à la **date de
+  la consultation** (la date de la fiche). Si votre « validée » veut dire autre chose (le compte rendu rédigé, par exemple), dites-le-moi.
+- **Un patient sans consultation de sortie reste en cours**, sans limite de durée : un patient dont la sortie n'a jamais été saisie, ou une fiche d'essai, garde sa pastille tant qu'on n'en saisit pas une. Si cela encombre,
+  je peux ajouter un délai d'inactivité (par exemple 30 jours sans nouvelle fiche) ou un moyen de retirer une pastille.
+- **Une fiche enregistrée après la sortie** (un contrôle à un mois, par exemple) ne remet pas le patient en cours : seule compte la consultation de sortie.
+- **Plafond à la moitié du volet** : au-delà de la moitié de sa hauteur, la partie haute défile, pour garder une liste utilisable. C'est une proposition (`max-height: 50%` de `#encours`).
+- **Ordre alphabétique** des pastilles, et non l'ordre d'arrivée : une pastille ne change pas de place quand on enregistre une fiche. Dites-moi si vous préférez l'ordre d'arrivée ou de dernière fiche.
+- **L'âge** de la pastille est celui de la **dernière fiche** du patient (celui de son bandeau), pas celui d'aujourd'hui ; l'enfant (vert) est un patient de moins de 18 ans à cette date.
+- **Un patient est un numéro de dossier** : deux dossiers du même patient donnent deux pastilles ; une fiche sans numéro de dossier n'en donne pas.
+- **Ajouts non demandés** : le patient dont une fiche est ouverte est cerclé ; une bulle d'aide s'ouvre au survol d'une pastille ; la fenêtre « Fiches enregistrées » des tablettes et téléphones montre aussi les pastilles ;
+  la recherche ne filtre pas les pastilles.
+- **Ce qui a été essayé.** Les suites de la 9.3.1 (la règle « en cours » sur un jeu de fiches daté, l'affichage, le clic, minuit simulé, la fenêtre des fiches ; la mise en page mesurée dans Edge, fenêtre de 1100 px,
+  haute et basse) et toutes celles des versions précédentes passent (1354 contrôles). Le volet a aussi été essayé dans **Firefox 137** avec une vraie souris (survol, clic, défilement), pas dans Firefox ESR 140 ni sur
+  une vraie tablette (largeur émulée seulement).
+
+---
+
+## Changements de la version 9.2.0
+
+Sept colonnes **s'ajoutent** au CSV (928 → 935) : `num_ex_lettre` (la lettre d'une séance de recompression sans examen), `age_mois` (les mois d'un mineur) et les cinq paramètres de biologie
+(`lab_gly`, `lab_tg`, `lab_chol`, `lab_hdl`, `lab_ldl`). Les colonnes de la 9.0.0 gardent leur nom et leur ordre relatif ; comme les nouvelles s'insèrent au milieu (après `num_ex`, après `age`, dans le bloc
+de biologie), le **rang** de beaucoup de colonnes change (la biologie occupe maintenant les rangs 471 à 502) : lisez le fichier par les **noms** de colonnes. Les fiches de la 9.0.0 s'ouvrent telles
+quelles ; l'âge en mois des mineurs déjà enregistrés se complète au prochain enregistrement. Le dictionnaire gagne sept lignes et en précise trois (`num_ex`, `fiche_type`, `age`). Sur le papier, la comparaison avec la 9.0.0 (trois fiches types, avec ou sans biologie) ne montre **aucun écart pour un adulte** : seuls changent l'âge d'un mineur, les nouveaux paramètres de biologie quand ils sont saisis et la page d'une séance. `index.html` passe de 744 Ko à 771 Ko.
+Les demandes sont regroupées par sujet. Le dernier point de la liste que vous m'avez envoyée était vide : j'ai traité la liste comme complète.
+
+### Barre du haut
+
+- **Boutons à icône, bulle d'aide immédiate** : nouvelle fiche, ré-examen du patient, séance de recompression, enregistrer, enregistrer en PDF, tout transférer en ZIP, importer. Une bulle de texte s'ouvre
+  dès que la souris pointe un bouton. Voir *La barre du haut et le menu Plus*.
+- **Lignes Excel ADP (icône de masque de plongée) et COHB (icône d'activité), documents de sortie (icône d'ordonnance)** : dans la barre du haut, **quel que soit le type de consultation**, même sur une fiche
+  incomplète ou sans numéro de dossier. Ils quittent l'en-tête du compte rendu d'hospitalisation.
+- **Menu « Plus »** : dossier de données, exporter les données, exporter tout en JSON, douchette, dictionnaire, aides à l'examen, installation, mode d'emploi. Sur tablette et téléphone, il reprend aussi
+  les boutons que la barre cache.
+
+### Séance de recompression sans examen
+
+- **Un bouton, quelques clics** : la fiche ne montre que l'identification et la recompression ; la table de la dernière séance est reprise, l'heure de mise en pression est proposée, on enregistre.
+- **Numérotée EX3b, EX3c…** (le numéro du dernier examen et une lettre minuscule), dans le bandeau, la liste, le nom du PDF et **le nom des fichiers JSON**. Voir *La séance de recompression sans examen*.
+
+### Âge et bandeau
+
+- **L'âge d'un mineur s'écrit en années et mois** (« 14 ans et 5 mois »), dans le champ, le bandeau, la synthèse, le compte rendu et le papier ; le fichier de données ajoute `age_mois`.
+- **Le bandeau est rose pour une femme, bleu pour un homme, vert pour un enfant** (moins de 18 ans).
+
+### Biologie
+
+- **Glycémie** (4,1 - 6,1 mmol/L) entre les protéines totales et la créatinine ; **triglycérides** (0,10 - 1,70), **cholestérol total** (3,00 - 5,20), **HDL** (1,03 - 1,55) et **LDL** (1,75 - 3,40) avant la CK.
+- **LDL calculé, modifiable** : cholestérol total − HDL − triglycérides ÷ 2,2. Voir *Glycémie et bilan lipidique*.
+
+### À valider de votre côté
+
+- **« EX3b » : ma lecture.** La première séance saisie sans examen après l'examen 3 est **EX3b**, la suivante EX3c (l'examen 3 faisant office de « a »), jusqu'au prochain examen, qui sera EX4 ;
+  une séance qui précède tout examen est EX0b. Si votre exemple désignait autre chose (par exemple EX3a pour la première), dites-le-moi : c'est une fonction (`lettreSeance`).
+- **Une séance est une fiche**, de type 4, pas une consultation : elle n'entre ni dans le numéro des examens, ni dans la colonne « CS » de la ligne COHB, ni dans l'évolution du compte rendu ; elle compte
+  comme **une séance** (au compte rendu et dans les deux lignes Excel). La « Date cloture » de la ligne COHB est celle de la dernière fiche, **séance comprise**. Dites-moi si vous voulez l'inverse.
+- **Table et heure proposées.** La table est celle de la dernière recompression cotée du dossier (B18 à défaut) ; l'heure de mise en pression est **l'heure d'enregistrement**, qui date la fiche : si vous
+  enregistrez après coup, corrigez-la, sinon la séance peut prendre un mauvais rang. Rien n'est coté sans que vous l'ayez enregistré.
+- **`num_ex` d'une séance** = le numéro du dernier examen (3), avec `num_ex_lettre` = b : deux lignes du même dossier ont donc le même `num_ex` (la consultation et sa séance). Filtrez sur `fiche_type` pour les
+  séparer. Dites-moi si vous préférez un `num_ex` vide pour les séances.
+- **Colonnes ajoutées** : `num_ex_lettre`, `age_mois`, `lab_gly`, `lab_tg`, `lab_chol`, `lab_hdl`, `lab_ldl` (935 colonnes). `age` reste en années entières ; `age_mois` n'existe que pour un mineur.
+- **Bandeau** : enfant = moins de 18 ans, quel que soit le sexe ; sexe non renseigné ou « autre » = gris-bleu (le bleu est réservé aux hommes).
+- **LDL** : la formule de Friedewald n'est pas valable au-delà d'environ 4,5 mmol/L de triglycérides ; je la calcule quand même, comme demandé, et rien n'est proposé si le résultat n'est pas positif. Le
+  nom « HDL cholestérol » et « LDL cholestérol » est celui de votre message ; « Triglycérides » est au pluriel.
+- **Barre du haut** : les trois boutons (lignes Excel, documents) sont toujours visibles mais ouvrent leur fenêtre avec ce que la fiche ouverte sait ; sans numéro de dossier, la fiche ouverte forme à elle seule le dossier.
+  J'ai retiré les trois boutons de l'en-tête du compte rendu (doublons) ; la fenêtre *Exporter les données* garde les deux lignes Excel. Les **icônes sont de ma main** (masque de plongée, courbe d'activité,
+  ordonnance « Rx », caisson) : dites-moi si l'une ne se reconnaît pas.
+- **Ce qui n'a pas pu être vérifié.** La bulle d'aide, le menu Plus et la séance en un clic ont été essayés dans **Firefox 137** avec une vraie souris pilotée (survol, clics), pas dans Firefox ESR 140 ni sur un
+  vrai téléphone (largeur émulée seulement). Rien n'a été essayé avec Excel.
+- **Changer le type d'une consultation en « séance »** ne réécrit ni son heure d'examen ni son heure de mise en pression : l'heure de la fiche ne suit la mise en pression que pour une séance créée comme telle
+  (bouton « Séance de recompression »).
+- **Ce qui a été essayé.** Les suites de la 9.2.0 (barre, bulle, menu, séance et numérotation EX3b dans le dossier de données réel simulé, âge, couleurs, biologie) et toutes celles des versions précédentes passent
+  (1261 contrôles), ainsi que le générateur de courriers réel (variante privée, jamais livrée) et la copie du compte rendu sous Firefox.
+
+---
+
+## Changements de la version 9.0.0
+
+Une colonne **disparaît** du CSV (929 → 928) : « Nombre de séances réalisées » (`tb_nb_seances`), retirée de l'encart Recompression. Aucune colonne ne s'ajoute, l'ordre des
+autres ne change pas, et les fiches de la 8.2.1 s'ouvrent telles quelles (celles qui portaient ce nombre le gardent dans leur JSON, où plus rien ne le lit). Le dictionnaire perd
+cette seule ligne (vérifié par comparaison avec la 8.2.1). Sur le papier, la comparaison avec la 8.2.1 (trois fiches types : initiale, suivi, sortie, avec ou sans biologie) ne montre
+que les écarts voulus : la table en gras, l'absence du « bilan prélevé » dans la synthèse et, à la sortie, les examens proposés ; l'encart Recompression n'imprime plus de nombre de
+séances. `index.html` passe de 721 Ko à 744 Ko. Les demandes sont regroupées par sujet.
+
+### Dictée vocale
+
+- **Le micro s'éteint après deux secondes sans parole** (une seconde jusqu'à la 8.2.1). L'attente avant la première parole reste de cinq secondes.
+- **Répétitions corrigées**, notamment dans l'encart d'anamnèse : le texte provisoire et le texte définitif d'un même passage ne s'additionnent plus, même quand Chrome
+  écrit un nombre en lettres puis en chiffres, corrige un mot au passage ou répète une suite de mots. Voir *Dictée vocale*.
+
+### Dates et heures
+
+- **« + » ou espace = maintenant.** Dans une case de date ou d'heure, la touche + ou la barre d'espace écrit la date du jour ou l'heure du moment. Voir *Remplir une fiche*.
+
+### Recompression, actes, traitements
+
+- **Plus de « Nombre de séances réalisées »** dans l'encart Recompression : une recompression cotée sur une fiche est une séance. Le compte rendu (« Recompressions : … ») et
+  les deux lignes Excel suivent la même règle ; voir *Les recompressions, par type de table*.
+- **Les actes passent en tête de l'onglet « Examens complémentaires »**, avant le gaz du sang veineux et la biologie. L'onglet « Conclusion et évolution » commence par la
+  recompression.
+- **Les traitements commencent tous à gauche** : la méthylprednisolone et le remplissage se plaçaient à droite de l'oxygène.
+
+### D'une fiche à l'autre
+
+- **Le poids de la fiche initiale** sert aux doses des fiches de suivi et de sortie (la dose de prednisolone ne se calculait pas sur une fiche de suivi, faute de poids).
+- **« Séances réalisées depuis la dernière consultation »** est proposé d'après la fiche précédente (1 si elle porte une recompression cotée, 0 sinon), modifiable.
+- **Le diagnostic retenu** de la fiche précédente est repris à la création d'une fiche de suivi ou de sortie, modifiable.
+- **La prednisolone** prescrite sur la fiche initiale ou sur une fiche précédente est reprise, avec la même dose et **la durée ajustée** (jours restants), modifiable.
+  Voir *Consultation de suivi ou de sortie*.
+
+### Consultation de sortie
+
+- **« Examens complémentaires demandés » n'apparaît plus** dans l'encart « Évolution depuis la consultation précédente » d'une consultation de sortie.
+- **Examens à réaliser secondairement : proposés** d'après le ou les diagnostics retenus et les cases que le générateur de documents coche d'office ; voir *La sortie*.
+- **Documents de sortie** : la ligne de l'ordonnance du générateur « PREDNISOLONE xx mg le matin pendant 3 jours » reçoit la **dose** et les **jours restants** d'après les fiches
+  (xx devient 80, 3 devient 2 quand il reste deux jours). Voir *Documents de sortie*.
+
+### Synthèse et compte rendu
+
+- **Allergies** sur leur propre ligne, entre le traitement habituel et les habitudes toxiques.
+- **« Table B18 »** (ou une autre) en gras, **sans le gras** pour les précisions entre parenthèses et la suite ; le nombre de séances ne s'écrit plus (« 1 séance réalisée »).
+- **La prednisolone n'est plus répétée** chaque jour dans la prise en charge (synthèse et compte rendu) tant que la dose ne change pas.
+- **Le « bilan biologique prélevé » ne s'écrit plus** : seuls les résultats marquants et leur interprétation, quand ils sont saisis, et les tableaux de biologie.
+- **Compte rendu : un paragraphe « Évolution des scores »**, avant le diagnostic retenu : MEDSUBHYP à l'arrivée et jusqu'à H24, score vestibulaire initial, score ASIA
+  d'entrée, le plus péjoratif s'il diffère (daté), score ASIA de sortie. Les scores ne sont plus dans les examens paracliniques du compte rendu.
+
+### À valider de votre côté
+
+- **Une recompression cotée = une séance.** Sans compteur, une fiche compte **au plus une séance** : deux recompressions entre deux consultations n'en font qu'une, sauf si
+  vous les saisissez sur deux fiches. Dites-moi s'il faut un autre moyen de les compter. La **B18 proposée d'office** sur une consultation initiale ne compte que si l'encart est
+  rempli : **saisissez l'heure de mise en pression** (ou de fin), ou la complication. **Changement par rapport à la 8.2.1** : cette règle vaut maintenant aussi pour le compte rendu
+  (« Recompressions : … ») et pour la ligne Excel ADP (colonnes BK, BS, BT), que la 8.2.1 laissait à leur décompte d'origine en attendant votre avis.
+- **« Séances depuis la dernière consultation » : ma lecture.** La recompression cotée sur la fiche N−1 se déroule après son examen, donc **avant** la fiche N : je propose **1**
+  quand la fiche précédente en porte une, **0** sinon. Une valeur saisie n'est jamais remplacée.
+- **Le diagnostic est repris une seule fois**, à la création de la fiche (non enregistrée) d'après la fiche **précédente qui en porte un**. Je n'ai pas fait de reprise « en direct » :
+  une fiche déjà enregistrée n'est jamais modifiée d'office, et un diagnostic que vous videz ne revient pas. Dites-moi si vous le préférez autrement.
+- **La prednisolone reprise** vient de la dernière fiche qui se prononce (OUI ou NON). Les jours restants se comptent en **jours calendaires** à partir de la date de l'examen
+  (prescrite le 02/10 pour 3 jours : 2 jours le 03/10, 1 jour le 04/10, terminée le 05/10), sans tenir compte de l'heure de la première dose, qui n'est pas reprise. Si la fiche
+  qui la prescrit n'a pas de durée, la durée reste vide. Dites-moi si vous comptez autrement.
+- **Examens proposés à la sortie.** Je reprends exactement les cases que le générateur coche d'office (copie de la première version, ou votre fichier s'il est chargé). Mes choix :
+  pour un **œdème pulmonaire d'immersion**, l'**IRM médullaire** cochée dans l'ordonnance d'imagerie n'est pas reprise (elle ne concerne que l'accident de désaturation) ;
+  **barotraumatisme, accident biochimique, noyade et diagnostic libre : rien n'est proposé**, le générateur ne coche rien pour eux ; **vider le champ** est un choix et la
+  proposition ne revient pas pour cette fiche.
+- **« Examens complémentaires demandés » à la sortie** : le champ reste visible sur une fiche de sortie qui en contient déjà un texte (sinon il serait caché), et le compte rendu
+  continue de le lire.
+- **Ordonnance du générateur** : la ligne est repérée à son début « PREDNISOLONE ». Décochée quand le traitement est terminé ; laissée telle quelle (cochée) quand aucune
+  prednisolone n'a été prescrite dans le dossier. Je n'ai pas modifié le générateur.
+- **Scores du compte rendu.** « Le plus péjoratif » : l'AIS le plus bas (A avant B, C, D, E), et à AIS égal le total (tact léger, piqûre, moteur) le plus bas. MEDSUBHYP : seulement
+  les moments cotés (arrivée, H12, H24). Score vestibulaire : le premier connu. Les scores restent dans la synthèse de chaque fiche.
+- **« Bilan prélevé »** : les cases de l'encart Actes restent dans la fiche et le CSV ; seule l'écriture du texte les ignore.
+- **Ce qui n'a pas pu être vérifié.** La correction des répétitions de la dictée a été essayée avec des **résultats de reconnaissance simulés** (nombres écrits autrement, mots corrigés,
+  suites répétées, fin de session), **pas avec un vrai micro sous Chrome** : si une répétition persiste, notez ce que vous avez dit et ce qui s'est écrit. Le raccourci « + » ou espace a
+  été essayé avec des frappes simulées sous Edge, pas avec un clavier réel sous Firefox. Les examens proposés et la prednisolone du générateur ont été essayés avec le **vrai** fichier du
+  générateur (variante locale, jamais publiée). **Rien n'a été essayé avec Excel.**
+- **Ce qui a été essayé.** Les suites de la 9.0.0 (reprises d'une fiche à l'autre, texte rédigé, scores du compte rendu, générateur, dictée, « + » et espace, mises en page) et toutes celles
+  des versions précédentes passent (1093 contrôles).
+
+---
+
+## Changements de la version 8.2.1
+
+Aucune colonne ne s'ajoute au CSV (929), aucune fiche n'est modifiée et les fiches de la 8.2.0 s'ouvrent telles quelles : le fichier de données, son
+dictionnaire et le papier sont identiques à ceux de la 8.2.0 (vérifié par comparaison avec la 8.2.0). `index.html` passe de 719 Ko à 721 Ko.
+Deux demandes, toutes deux sur les lignes Excel.
+
+### Ligne Excel ADP
+
+- **Colonne O (niveau de plongeur professionnel) : « Aucun » au lieu de 0.** Quand la fiche initiale laisse « — » dans ce menu, la case O du fichier
+  maître reçoit **« Aucun »**. Les colonnes L (organisme), M (niveau de loisir), N (enseignement) et P (militaire) gardent le **0**. Un dossier sans fiche
+  initiale laisse toujours ces cases vides.
+
+### Ligne Excel COHB
+
+- **Une séance n'est comptée que si elle est réellement cotée dans l'encart « Recompression ».** La 8.2.0 comptait une table par fiche qui en portait une :
+  cette règle disparaît, une fiche n'est plus une séance d'office. Une fiche compte maintenant **une séance** (rangée dans la colonne de sa table, en heures
+  ouvrables ou dans la colonne « HNO » qui la suit, d'après l'heure de mise en pression) quand :
+  - elle est de **suivi** ou de **sortie** et qu'une **table** y est choisie (rien n'y est proposé d'office) ;
+  - elle est **initiale** et la table choisie n'est **pas la B18 proposée d'office** (c'est alors un choix du praticien), **ou** l'encart est rempli : **heure de
+    mise en pression** (ou de fin), **nombre de séances réalisées** (1 ou plus), **complication thérapeutique** « OUI ». La **B18 proposée d'office, seule, n'est
+    pas comptée** : la fiche peut ne porter aucune recompression.
+
+  Un **« Nombre de séances réalisées » à 0** annule la séance. Les séances « déclarées » (ce nombre, et les « séances réalisées depuis la dernière
+  consultation » de l'encart Évolution) ne multiplient rien : une fiche compte une séance au plus. La colonne **G** (« 1ere en urgence ») suit la même règle :
+  elle reste vide tant que la recompression de la fiche initiale n'est pas cotée. Une aide, sous « Table utilisée », et les règles affichées dans la fenêtre de
+  la ligne le rappellent. Voir *La ligne Excel COHB (activité COHB)*. *Depuis la 9.0.0, l'encart n'a plus de « nombre de séances réalisées » : voir plus haut.*
+
+### À valider de votre côté
+
+- **« Réellement cotée » : ma lecture.** J'ai compris que la **B18 proposée d'office** sur une consultation initiale ne prouve pas qu'une recompression a eu
+  lieu, alors qu'une table choisie sur une fiche de suivi ou de sortie, ou une autre table que B18 choisie sur l'initiale, est un choix de votre part. Pour la B18
+  de l'initiale, **la preuve est l'heure de mise en pression** (ou l'heure de fin, un nombre de séances de 1 ou plus, une complication « OUI ») : **si vous
+  recompressez sans en saisir aucune, la séance n'est pas comptée**. Saisissez l'heure de mise en pression, qui sert aussi à la colonne G de la ligne COHB et aux
+  colonnes BL et BM du fichier maître.
+- **Plusieurs séances sur une même fiche** : elle n'en compte qu'une, même si « Nombre de séances réalisées » dit 2 ou 3. Si ce nombre doit compter, dites-le-moi :
+  les séances supplémentaires n'ayant pas d'heure, elles seraient comptées en heures ouvrables.
+- **Une séance sans type** (heure de mise en pression sans table) ou une table « autre » n'a pas de colonne dans la feuille : elle n'est comptée nulle part.
+- **La colonne G** (« 1ere en urgence ») ne se calcule plus d'après l'heure de prise en charge quand la recompression de l'initiale n'est pas cotée : elle reste vide.
+- **Le compte rendu d'hospitalisation et la ligne Excel ADP gardent leur décompte** : B18 proposée d'office comprise et séances déclarées comprises (phrase
+  « Recompressions : … » du compte rendu, colonnes BK, BS et BT du fichier maître). Dites-moi si vous voulez la même règle qu'à la ligne COHB. *(Règle remplacée par celle de la 9.0.0, plus haut.)*
+- **Colonne O** : seule la colonne O écrit « Aucun » ; j'ai laissé le **0** dans L, M, N et P, dont la légende de votre fichier dit « 0) aucun ».
+- **Ce qui a été essayé.** Les suites de la 8.2.1 (colonne O, règle de la séance cotée avec tous ses cas, B18 d'office présente seulement sur la consultation
+  initiale, textes de la ligne et aide du champ) et toutes celles des versions précédentes passent (903 contrôles). Rien n'a été essayé avec Excel.
+
+---
+
+## Changements de la version 8.2.0
+
+Aucune colonne ne s'ajoute au CSV (929), aucune fiche n'est modifiée et les fiches de la 8.1.3 s'ouvrent telles quelles. Le
+dictionnaire des variables ne change que par deux libellés : la table **A15** (code 1 de `tb_table`, qui s'appelait OHB15) et les
+**valeurs normales** des paramètres de biologie qui diffèrent selon le sexe. Le papier ne change que par ce nom de table et, pour un
+homme, par la colonne « VN » et le rouge du tableau de biologie de la synthèse (vérifié par comparaison avec la 8.1.3 : une fiche sans
+table A15 ni biologie s'imprime à l'identique). `index.html` passe de 710 Ko à 719 Ko.
+Six demandes. Dans les anciennes sections « Changements de la version… » plus bas, la table s'appelle encore OHB15 : c'était son nom d'alors.
+
+### Ligne Excel COHB
+
+- **Le nombre de tables est le nombre de tables enregistrées** (*règle remplacée par celle de la 8.2.1, plus haut*). Les colonnes J à U (A15, A15HNO, B18Hx, …) comptent maintenant **une table
+  par fiche qui en porte une** : un dossier de trois fiches portant chacune une table donne trois tables, comme les trois consultations de
+  la colonne F. La 8.1.3 comptait les **séances déclarées** (« séances réalisées », « séances depuis la dernière consultation »), si bien
+  que le total des tables dépassait le nombre de fiches : une fiche de suivi qui annonçait trois séances en comptait trois. Ces deux champs
+  ne sont plus lus par cette ligne. Une fiche **sans table** n'en compte aucune ; une table « autre » n'est toujours rangée nulle part ; une
+  table dont l'heure de mise en pression manque compte en heures ouvrables. Le compte rendu d'hospitalisation, lui, garde son décompte des
+  séances par type de table (voir *Les recompressions, par type de table*).
+
+### Ligne Excel ADP
+
+- **« — » = 0.** Quand la fiche initiale laisse « — » (rien de choisi) dans l'**organisme d'affiliation**, le **niveau de plongeur de
+  loisir**, le **niveau d'enseignement**, le **niveau de plongeur professionnel** ou le **niveau militaire**, les cases correspondantes du
+  fichier maître reçoivent **0** (colonnes L, M, N, O et P) au lieu de rester vides. La colonne O écrivait « Aucun » quand le dossier n'avait
+  pas de plongée professionnelle : elle écrit 0, comme les autres. La colonne P reçoit aussi 0 pour un niveau professionnel **civil** (le
+  libellé n'y est écrit que pour un plongeur d'armes). Un dossier **sans fiche initiale** laisse ces cases vides : c'est la fiche initiale qui
+  pose ces questions, une case vide veut alors dire « inconnu ». *La colonne O écrit « Aucun » depuis la 8.2.1.*
+
+### Table « A15 »
+
+- **La table « OHB15 » s'appelle « A15 »** partout : liste des tables de la recompression, synthèse (« Table A15 »), compte rendu
+  (« A15 : 3 »), papier, dictionnaire (`1 = A15`), lignes Excel. Le code (1) et la durée (95 min) ne changent pas : les fiches déjà
+  enregistrées, les fichiers JSON et le CSV (qui ne portent que le code) sont inchangés ; l'application les affiche avec le nouveau nom.
+
+### Biologie
+
+- **Valeurs normales de l'homme, selon le sexe de la fiche.** Les VN de votre feuille sont celles de la femme ; vos annotations donnent celles
+  de l'homme pour **11 paramètres** (hémoglobine et hématocrite du gaz du sang et du bilan, leucocytes, plaquettes, neutrophiles, créatinine, CK,
+  myoglobine, NT-pro-BNP). L'application choisit les valeurs d'après le **sexe renseigné** (onglet Administratif : M, F ou Autre ; à défaut, celui de la première fiche du
+  dossier qui le porte) : sous le libellé (« VN homme 13,5 - 17,5 »), pour la mise en gras et en rouge, dans le tableau de la synthèse et du
+  compte rendu, et dans le dictionnaire (les deux fourchettes). Changer le sexe réaffiche les VN et recolore les valeurs déjà saisies. Voir
+  *Les valeurs normales s'adaptent au sexe*.
+- **Plus de mention « au-dessus des VN » ou « en dessous des VN »** : seuls restent le **gras** et le **rouge**. L'en-tête de chaque encart ne
+  dit plus que le nombre de valeurs saisies (« 3 valeurs »), sans décompte de celles qui sortent des VN.
+- **Plus d'encart orange** en tête de l'encart « Gaz du sang veineux » (le rappel sur les VN, le gras et le rouge, les tableaux de la synthèse,
+  la virgule et les signes « < » et « > »). Ces règles restent décrites ici ; le champ accepte toujours la virgule, le point, « < » et « > ».
+
+### Signes subjectifs
+
+- **Signes subjectifs = NON : l'encart « Signes subjectifs — localisation » disparaît.** Répondre NON à « Signes subjectifs » (examen général)
+  retire tout de suite l'encart du schéma, et **efface les zones déjà dessinées** ; sans réponse, ou avec OUI, il reste proposé. « Tout renseigner
+  comme NORMAL » répond NON. Voir *Les schémas corporels*.
+
+### Copie du texte vers le dossier patient
+
+- **Le gras et le souligné se collent maintenant directement dans l'éditeur de texte du dossier patient** (sous Firefox). Votre éditeur ne lisait pas
+  le texte enrichi que le navigateur dépose (du HTML) et collait du texte brut ; Word lit ce HTML puis réécrit du RTF, que l'éditeur comprend très
+  probablement : d'où le détour. **Copier** (synthèse) et **Copier le CRH** déposent désormais aussi le **RTF**, avec les titres en gras et soulignés, les anomalies en
+  gras, les valeurs de biologie hors VN en gras et en rouge, et les tableaux. Le collage dans Word reste possible, directement. Sous **Chrome
+  et Edge**, rien ne change : ces navigateurs n'écrivent pas de RTF. La case « Copie du texte » de la fenêtre **Exporter** coupe cette option. Voir
+  *Copier vers un traitement de texte ou le dossier patient*.
+
+### À valider de votre côté
+
+- **NT-pro-BNP de l'homme : 10 - 63.** C'est la seule valeur de votre annotation qui me paraît suspecte : la limite haute de l'homme (63 ng/L)
+  est plus de trois fois plus basse que celle de la femme (202 ng/L). Le sens de l'écart est plausible (les femmes ont des NT-pro-BNP plus
+  élevés), son ampleur l'est moins : « 63 » est-il bien ce que vous vouliez écrire ? J'ai repris **63** tel qu'il est écrit ; la valeur est dans
+  `BIO_LAB` (ligne `lab_ntbnp`, champ `m`), en tête de `index.html`. La **myoglobine de l'homme** est écrite d'une encre pâle sur le scan : j'ai lu
+  « 28,0 - 72 ».
+- **Les paramètres sans valeur d'homme** dans votre annotation (pH, pO₂, pCO₂, HCO₃⁻, lactates, fibrinogène, D-dimères, protéines totales,
+  DFG, CRP, albumine, troponine) ont la **même fourchette pour les deux sexes** : j'ai lu une case vide comme « identique à la femme ».
+- **Le sexe non renseigné** (ou « autre ») : l'application ne choisit pas. Elle affiche **les deux fourchettes** (« VN F 12 - 16 ; H 13,5 - 17,5 »)
+  et ne met en rouge qu'une valeur **hors des deux** (une hémoglobine à 17 g/dL n'est alors pas en rouge). Dites-moi si vous préférez les valeurs
+  de l'homme ou de la femme par défaut.
+- **Les tables comptées une à une** (*lecture écartée dans la 8.2.1 : voir plus haut*) : j'ai lu votre phrase comme « une fiche = une table = une séance ». Une fiche qui annonce plusieurs séances
+  n'en compte donc qu'une ; si une même fiche couvre deux séances, il faut une fiche par séance. La table **B18 proposée d'office** sur la fiche
+  initiale compte comme une table : videz le champ quand aucune recompression n'a eu lieu (comme pour le compte rendu).
+- **« — » = 0** : j'ai appliqué cette règle aux colonnes **L, M, N, O et P**. La colonne R (qualification du médecin) reste **vide** quand rien
+  n'est choisi : la légende de votre fichier n'y prévoit pas de 0 ; dites-moi si vous la voulez aussi. Je n'ai pas touché aux autres colonnes
+  (« Plongeur pro » K, par exemple, écrit déjà 0 ou 1 dès que la plongée est renseignée).
+- **Signes subjectifs = NON efface le schéma** (les zones dessinées sont supprimées de la fiche, pas seulement masquées) : si l'on répond NON par
+  erreur puis OUI, le schéma est à refaire. La page imprimée n'est pas modifiée.
+- **La copie en RTF n'a été essayée que dans les conditions suivantes** : **Firefox 137**, un vrai clic, et un contrôle de texte enrichi de
+  Windows (RichEdit) qui ne lit que le RTF, comme l'éditeur que vous décrivez : titres, gras, souligné, rouge, tableaux et accents s'y collent.
+  **Rien n'a été essayé avec l'éditeur réel de votre dossier patient, ni avec Word (qui lit le HTML ou le RTF), ni avec votre version exacte de
+  Firefox.** Collez une première fois un texte de test dans une fiche de formation avant de vous en servir ; en cas de signes étranges,
+  décochez la case « Copie du texte » dans **Exporter**. Sous Chrome et Edge, le gras ne passe pas dans un éditeur qui ne lit que le RTF.
+- **Ce qui a été essayé.** Les suites de la 8.2.0 (valeurs normales de l'homme et de la femme aux bornes, tables comptées, zéros de la ligne
+  Excel ADP, encart des signes subjectifs, RTF et écriture dans le presse-papiers) et toutes celles des versions précédentes passent
+  (846 contrôles). Rien n'a été essayé avec Excel.
+
+---
+
+## Changements de la version 8.1.3
+
+Aucune colonne ne s'ajoute au CSV (929) et aucune fiche n'est modifiée : le fichier de données, son dictionnaire et le papier sont
+identiques à ceux de la 8.1.2 (vérifié par comparaison avec la 8.1.2), et les fiches de la 8.1.2 s'ouvrent telles quelles.
+`index.html` reste à 710 Ko. Deux retouches, toutes deux sur les lignes Excel.
+
+### Ligne Excel
+
+- **La ligne du fichier maître s'appelle maintenant « ligne Excel ADP »** : bouton **Exporter** › **Ligne Excel ADP du dossier
+  ouvert**, bouton « ligne Excel ADP » dans l'en-tête du compte rendu d'hospitalisation, titre et onglet de la fenêtre (« Ligne Excel
+  ADP (89 colonnes) »), aide de l'application et notice. Le classeur téléchargé se nomme `ligne_excel_ADP_AAAA-MM-JJ.xlsx` (il se
+  nommait `ligne_excel_AAAA-MM-JJ.xlsx`). Le contenu de la ligne ne change pas.
+- **L'autre ligne s'appelle « ligne Excel COHB »** (elle se nommait « ligne COHB »), par symétrie ; son classeur se nomme
+  `ligne_excel_COHB_AAAA-MM-JJ.xlsx` (il se nommait `ligne_excel_cohb_AAAA-MM-JJ.xlsx`).
+- **Heures ouvrables de la ligne Excel COHB : du lundi au vendredi, de 7 h 45 à 16 h 00, hors jours fériés** (la 8.1.2 retenait 8 h à
+  18 h). La borne de 7 h 45 est comprise, celle de 16 h 00 est exclue : une mise en pression à 7 h 44 ou à 16 h 00 pile compte **hors
+  heures ouvrables** (période N, colonnes « HNO »), une mise en pression à 7 h 45 ou à 15 h 59 compte **en heures ouvrables** (période
+  O). Le samedi, le dimanche et les jours fériés restent W. Cela change la période de la première séance (colonne G) et le rangement
+  des séances dans les colonnes « HNO » (voir *La ligne Excel COHB (activité COHB)*).
+
+### À valider de votre côté
+
+- **Les bornes** : j'ai compté **16 h 00 pile** hors heures ouvrables et **7 h 45 pile** en heures ouvrables. Dites-moi si vous voulez
+  l'inverse : c'est une constante (`COHB_HO`, dans la partie COHB de `index.html`).
+- **Les séances déclarées sans heure** (une fiche de suivi qui annonce plusieurs séances, dont une seule porte son heure de mise en
+  pression) restent comptées en **heures ouvrables**, faute d'heure.
+- **Le nom de l'autre ligne** : « ligne Excel COHB » est un choix de ma part, par symétrie avec « ligne Excel ADP » ; dites-moi si
+  vous préférez « ligne COHB ».
+- **Ce qui a été essayé.** Les suites de la 8.1.3 (heures ouvrables aux bornes, séances, noms des deux lignes, menu, aide, noms des
+  classeurs) et toutes celles des versions précédentes passent (747 contrôles). Rien n'a été essayé avec Excel ni avec votre
+  navigateur (Firefox).
+
+---
+
+## Changements de la version 8.1.2
+
+**27 colonnes s'ajoutent au CSV (902 → 929)**, toutes de biologie, à la suite des champs de la fiche (rangs 470 à 496). Les 902
+autres colonnes, leur ordre, le dictionnaire de leurs libellés et le papier d'une fiche sans biologie sont identiques à ceux de la
+8.1.1 (vérifié par comparaison avec la 8.1.1), et les fiches de la 8.1.1 s'ouvrent telles quelles. `index.html` passe de 670 Ko à
+710 Ko. Trois demandes.
+
+### Ligne Excel
+
+- **Colonne « ordinateur » (CA) du fichier maître** : la case porte maintenant la **marque et le modèle** de l'ordinateur,
+  **suivis de ses réglages** (« Suunto D5 - GF 35/75 »). Elle ne portait que le réglage.
+- **Ligne pour l'activité COHB** : une seconde ligne Excel, de **31 colonnes (A à AE)**, pour la feuille « Activité COHB » (voir
+  *La ligne Excel COHB (activité COHB)*). Même fenêtre que la ligne du fichier maître, qui propose les deux feuilles ; même copie (texte à
+  tabulations) et même classeur .xlsx. Boutons : **Exporter** › **Ligne COHB du dossier ouvert**, et **ligne COHB** dans l'en-tête du
+  compte rendu d'hospitalisation.
+
+### Saisie et synthèse
+
+- **Nouvel onglet « Examens complémentaires »** (le cinquième ; la conclusion devient le sixième). Il réunit le **gaz du sang
+  veineux**, la **biologie**, puis l'ECG, l'imagerie, l'échographie cardiaque, le doppler transcrânien, l'échographie
+  pleuro-pulmonaire, les autres examens et les examens demandés, qui se trouvaient dans l'onglet « Conclusion et évolution ». Celui-ci
+  **persiste avec les éléments de décision et de suivi** : recompression, actes, traitements prescrits, évolution, diagnostic retenu,
+  sortie, orientation et commentaires, compte rendu d'hospitalisation, pièces jointes. Le bouton **Suivant** du bandeau nomme le nouvel
+  onglet « Examens compl. ».
+- **Biologie horodatée** : 7 paramètres de gaz du sang veineux et 16 de biologie, **dans l'ordre de votre note, avec leurs valeurs
+  normales (VN) et leurs unités** (voir *Examens complémentaires : la biologie*). Date et heure du prélèvement proposées d'après la
+  fiche, modifiables. Une valeur **hors des VN** s'écrit en **gras et en rouge**, dans la fiche et dans la synthèse. L'hémoglobine et
+  l'hématocrite du bilan sont reprises du gaz du sang du même jour tant qu'on ne les saisit pas.
+- **Tableaux dans la synthèse** : un tableau pour le gaz du sang, un pour la biologie, **une colonne par prélèvement du dossier, le
+  plus récent à gauche** ; ils s'enrichissent de jour en jour. Le compte rendu d'hospitalisation reprend ceux de tout le dossier. Sur
+  le papier, ils s'impriment dans l'encart « Synthèse ».
+- Seul l'affichage des examens change de place : les champs de l'ancien onglet 5 gardent leur nom, leur codage et leur place dans le
+  CSV et sur le papier.
+
+### À valider de votre côté
+
+- **Les valeurs normales de votre note** sont celles d'un dosage **féminin** pour l'hémoglobine (12 - 16), l'hématocrite (37 - 46), la
+  créatinine (45 - 84) et probablement les CK et la myoglobine : elles s'appliquent ici à **tous** les patients (un homme à 17 g/dL
+  d'hémoglobine sortira en rouge). Dites-moi si vous voulez des VN selon le sexe : elles sont dans `BIO_GDS` et `BIO_LAB`, en tête de
+  `index.html`, une ligne par paramètre.
+- **L'unité des bicarbonates** : votre note écrit « mmHg » pour le HCO₃⁻ veineux ; j'ai mis **mmol/L**, l'unité du dosage. Le DFG est
+  écrit « mL/min/1,73 m² ».
+- **« Horodatés »** : j'ai donné une date et une heure de prélèvement aux deux encarts de biologie. Les autres examens (ECG,
+  imagerie…) gardent l'horodatage de la fiche qui les porte ; si vous voulez une heure par examen, dites-le-moi.
+- **Les Hb et Ht du bilan reprises du gaz du sang** ne font pas, à elles seules, un tableau « Biologie » dans la synthèse (elles
+  figurent déjà dans celui du gaz du sang) ; dès qu'une autre valeur du bilan est saisie, elles y figurent.
+- **Heures ouvrables** (colonnes COHB) : j'ai retenu du **lundi au vendredi, de 8 h à 18 h, hors jours fériés**. Une séance dont
+  l'heure n'est pas connue est comptée en heures ouvrables. Une table « autre » n'est rangée dans aucune colonne ; A15IOT et A18IOT
+  sont comptées ensemble (IOT), A18HeOx et B18HeOx ensemble (B18Hx) : c'est ma lecture de vos en-têtes, à confirmer.
+- **Les colonnes COHB que l'application ne recueille pas** restent vides : séances « en repose pied » et « Alité », pansements, PRF,
+  PTcO2, audio / tympan, EE / plateau technique, écho-doppler, CACI plongée. La **résidence** est déduite de l'adresse (ou, à défaut,
+  de la nationalité) : c'est la colonne la moins sûre. La **date de clôture** est celle de la dernière fiche du dossier.
+- **Ce qui a été essayé.** Les suites de la 8.1.2 (colonne ordinateur et ligne COHB, onglet biologie, synthèse, compte rendu et papier)
+  et toutes celles des versions précédentes passent (713 contrôles) ; le classeur COHB a été relu avec un lecteur .xlsx indépendant et
+  ses 31 en-têtes sont identiques à ceux de votre feuille. Rien n'a été essayé avec Excel, ni avec votre navigateur (Firefox), ni sur un
+  téléphone réel : collez une première ligne dans une copie de votre feuille avant de l'utiliser.
+
+---
+
+## Changements de la version 8.1.1
+
+Aucune colonne ne s'ajoute au CSV (902) et aucune fiche n'est modifiée : le fichier de données, son dictionnaire et le papier
+sont identiques à ceux de la 8.1.0, et les fiches de la 8.1.0 s'ouvrent telles quelles. `index.html` passe de 660 Ko à 670 Ko.
+Quatre retouches, toutes à l'écran.
+
+### Saisie
+
+- **Onglet Administratif** : l'encart « Identité complémentaire » s'affiche maintenant **après** « Mode d'entrée et prise en
+  charge initiale » (il le précédait). L'ordre est : identification, mode d'entrée et prise en charge initiale, identité
+  complémentaire, contacts. Seul l'affichage change : l'ordre des colonnes du fichier de données et celui du papier ne bougent pas.
+- **Bandeau patient** : un bouton **Suivant**, à droite, nomme l'onglet suivant (Anamnèse, Examen, Neuro, Conclusion) et y mène
+  d'un clic. Il disparaît sur le dernier onglet. Le bandeau se range désormais en deux zones : les champs à gauche, le type de
+  consultation et le bouton à droite (sur téléphone, la disposition d'avant est conservée, le bouton clôt la dernière ligne).
+
+### Dictée vocale
+
+- **Chrome** : « antécédent numéro un » s'écrivait « Antécédent antécédent numéro antécédent numéro 1 ». Chrome rend parfois
+  chaque résultat avec tout le texte déjà dit (« antécédent », « antécédent numéro », « antécédent numéro 1 ») ; ADP les ajoutait
+  bout à bout. Le texte est maintenant recomposé à chaque résultat, à partir de la liste complète : « Antécédent numéro 1 », une
+  seule fois, même si le même résultat arrive deux fois.
+- **Le micro s'éteint tout seul** : une seconde après la dernière parole (deux secondes depuis la 9.0.0 ; cinq secondes si personne n'a encore parlé). Le
+  dernier texte reconnu est posé avant l'arrêt. Le micro ne repart plus seul : un nouveau clic relance la dictée. Un second clic
+  pendant la dictée l'arrête aussitôt ; le dernier texte reconnu est posé (il était perdu auparavant). Changer d'onglet, de
+  champ ou de fiche éteint le micro.
+
+### À valider de votre côté
+
+- **Le délai d'une seconde** (*deux secondes depuis la 9.0.0*). Une pause de plus d'une seconde en pleine phrase arrête la dictée : il faut recliquer. Si c'est
+  trop court, dites-le-moi : c'est un réglage (`DICT_T` dans `index.html`), qui se change en une ligne. Avant la première parole, j'ai
+  laissé cinq secondes : à une seconde, le micro se serait éteint avant que l'on ait eu le temps de commencer à parler.
+- **Ce qui a été essayé pour la dictée.** Un faux navigateur qui rend les résultats comme Chrome (provisoire, définitif,
+  cumulatif, arrêt qui rend un dernier texte) : le défaut signalé est reproduit sur la 8.1.0 et corrigé sur la 8.1.1. Rien n'a été
+  essayé avec un vrai micro ni avec votre Chrome. Si la duplication persistait, dites-moi sur quel appareil (ordinateur, Android,
+  iPhone) et avec quelle version de Chrome.
+- **Le bouton Suivant du bandeau** porte le nom court de l'onglet, sans bouton « Précédent » : dites-moi si vous le voulez aussi.
+  Sur une consultation de suivi ou de sortie, l'onglet Anamnèse n'existant pas, il propose Examen.
+- **Le papier** garde son ordre (l'identité complémentaire s'imprime avec « Le plongeur ») : seul l'ordre à l'écran a été inversé.
+
+---
+
+## Changements de la version 8.1.0
+
+Aucune colonne ne s'ajoute au CSV (902) et aucune fiche n'est modifiée : les fiches de la 8.0.0 s'ouvrent telles quelles.
+Le seul changement est **le nom des fichiers JSON des fiches**. `index.html` passe de 650 Ko à 660 Ko.
+
+### Le nom des fichiers JSON
+
+- Les fichiers JSON des fiches s'appellent désormais **`xxx-aaaa_bbbbbbbb-EXc.json`** : numéro d'accident (trois chiffres au
+  moins, `001` pour le premier de l'année), année de la prise en charge, numéro de dossier, numéro d'examen. Exemple :
+  `187-2026_50987654-EX1.json`. Auparavant : `fiche_<identifiant>.json`. Le nouveau nom s'applique au **dossier de données**
+  (sous-dossier `fiches`), à **Exporter tout en JSON** (dossier choisi ou archive ZIP) et au **téléchargement du JSON à chaque
+  enregistrement**. Règles complètes : *Le nom des fichiers JSON*.
+- **Renommage dans le dossier de données** : quand le rang d'un examen, le numéro d'accident ou le numéro de dossier change, les
+  fichiers concernés sont renommés à l'enregistrement, sans rien perdre. Deux fiches ne partagent jamais un fichier : si le
+  nom est déjà pris, la fiche prend le même nom suivi de son identifiant.
+- **Anciens fichiers** `fiche_<identifiant>.json` : toujours lus, renommés quand leur fiche est enregistrée, ou tous d'un
+  coup par **Réécrire tout le dossier** ; la fenêtre *Dossier de données* indique combien en restent.
+- **Corbeille** : `fiches/supprimees` reçoit le nom habituel suivi de `~` et de l'identifiant de la fiche.
+- **Fenêtre « Exporter tout en JSON »** : elle explique le nom et signale les fiches dont le numéro d'accident manque (leur nom
+  commence par `000`).
+- **Lecture du dossier de données** : tous les `.json` du sous-dossier `fiches`, comme avant ; à la racine, les fichiers au
+  nouveau nom (une exportation déposée là, par exemple) sont lus comme les `fiche_*.json`.
+- **`.gitignore`** : il bloque aussi ces noms de fichiers (et `fiche_*.json`, les sauvegardes et les archives ZIP), pour qu'une
+  fiche exportée ne parte pas par erreur sur GitHub.
+- La mention « 887 colonnes » de cette notice, restée de la 7.4.0, est corrigée : le CSV compte **902** colonnes.
+
+### À valider de votre côté
+
+- **L'année.** Je l'ai prise sur le **premier examen du dossier** (la date d'« Entrée » du bandeau), pas sur l'accident ni sur
+  chaque examen : un dossier ouvert le 31 décembre et suivi en janvier garde la même année sur tous ses fichiers. Dites-moi
+  si « année de prise en charge » désigne autre chose (année de l'accident, de l'arrivée).
+- **Le numéro d'accident.** Je le lis dans « Accident de plongée n° » de la **fiche initiale**, et tous les examens du dossier le
+  reprennent. Seuls les chiffres sont retenus, sur trois au moins ; sans numéro, le nom commence par `000`.
+- **Le numéro d'examen.** C'est « Examen n° » du bandeau, le rang dans le **dossier**. Si un même numéro de dossier servait à
+  plusieurs accidents d'un même patient, ses examens se suivraient (`EX1`, `EX2`, `EX3`…) sous le numéro d'accident et l'année du
+  premier : dites-le-moi, le rang devrait alors se compter par accident.
+- **La confidentialité.** Avant, le nom d'un fichier ne portait aucune donnée du patient ; maintenant il porte le **numéro de
+  dossier** et le numéro d'accident. Toujours ni nom, ni prénom, ni date de naissance. À peser si des fichiers circulent hors
+  du service ; avec la pseudonymisation, c'est le pseudonyme `P-…` qui figure dans le nom.
+- **Les anciens fichiers** ne sont pas renommés d'office à l'ouverture, pour ne pas réécrire d'un coup tout un dossier
+  (surtout s'il est synchronisé en ligne) : dites-moi si vous préférez une migration automatique.
+- **Ce qui n'a pas été essayé** : l'écriture dans un vrai dossier sous Chrome ou Edge (les essais ont utilisé le système de
+  fichiers privé d'Edge, avec les mêmes appels) ; sous Firefox, qui n'écrit pas dans un dossier, ne sont concernés que le ZIP et
+  le téléchargement à chaque enregistrement.
+
+---
+
+## Changements de la version 8.0.0
+
+Quinze colonnes s'ajoutent au CSV (**887 → 902**) : `pl_dpmax`, `ap_nb`, `ap_interval`, `ap_decomp`, `ap_rim_int`,
+`ap_rim_duree`, `ap_rim_prof`, `ap_rim_gaz`, `ap_surf_int`, `ap_surf_duree`, `ap_surf_gaz`, `ff_courant`, `ff_houle`,
+`ff_visib`, `sc_masquer`. Aucune n'est retirée ni recodée : les fiches de la 7.4.0 s'ouvrent telles quelles. Deux codes
+s'ajoutent à des listes existantes : `adresse_par = 5` (SAU HNIA SA) et `pl_profil_type = 5` (apnée). Dans le
+dictionnaire, l'intitulé de section entre parenthèses change pour les six champs déplacés (« Identité complémentaire »
+au lieu de « Le plongeur ») et `ff_env` s'appelle désormais « Conditions environnementales — précisions ».
+
+`index.html` passe de 570 Ko à 650 Ko. Le générateur de courriers du service n'y est **pas** intégré (il porte les
+signatures et les numéros RPPS des médecins, et ADP peut être publié) : ADP le fait choisir une fois et le garde dans la
+base locale du navigateur.
+
+### Saisie
+
+- **Identité complémentaire** (nationalité, profession, adresse, téléphone, e-mail) : dans l'onglet **Administratif**.
+  Le poids, la taille et l'IMC restent avec le plongeur.
+- **Adressé par** : nouvelle réponse **SAU HNIA SA**, dans « Alerte et évacuation ».
+- **Profil de plongée** : la **remontée progressive** est le type proposé d'office (et dessiné quand aucun type n'est
+  choisi), avec la nouvelle donnée **durée à la profondeur maximale** ; nouveau type **Apnée**, avec ses paramètres
+  (profondeur maximale des apnées, nombre d'apnées, intervalle de surface, décompression par réimmersion ou en
+  surface : intervalle, durée, profondeur, gaz).
+- **Conditions environnementales** cotées : courant, houle de surface (OUI / NON), visibilité (bonne, mauvaise,
+  inférieure à 1 m), avec un texte libre en complément.
+- **Table OHB15** : 95 minutes (90 auparavant).
+- **Dictée vocale** dans les encarts de texte.
+- **Case « ne pas mentionner les scores »** MEDSUBHYP et vestibulaire, pour les accidents autres que de décompression.
+
+### Bandeau, synthèse et compte rendu
+
+- Le **bandeau patient** porte aussi le **numéro de l'examen**, la **date d'entrée** (premier examen) et le **dernier
+  diagnostic retenu**.
+- Le compte rendu d'hospitalisation **compte les recompressions par type de table**.
+- La synthèse écrit les conditions environnementales cotées et la plongée en apnée.
+
+### Export et documents
+
+- **Ligne pour le fichier Excel maître** : une ligne de 89 colonnes composée à partir de toutes les fiches du dossier,
+  à copier-coller ou en classeur .xlsx.
+- **Documents de sortie** : le générateur de courriers du service s'ouvre depuis la consultation de sortie, rempli
+  avec ce que la fiche sait. Son fichier se choisit une fois et reste dans la base locale du navigateur.
+
+### À valider de votre côté
+
+- **« Identité et terrain ».** J'ai déplacé vers l'onglet Administratif ce que contenait l'intertitre « Identité et
+  terrain » : nationalité, profession, adresse, téléphone, e-mail. Les antécédents, les habitudes toxiques, le traitement,
+  les allergies, les antécédents en plongée et les niveaux de plongée restent dans « Le plongeur » (onglet Anamnèse et
+  plongée), qui garde le poids, la taille et l'IMC. Dites-moi si « terrain » désignait aussi les antécédents : c'est un
+  déplacement d'une seule ligne.
+- **L'apnée** : deux boutons désignent la même chose (type de profil « Apnée » et type de plongée « Apnée »). La
+  profondeur maximale des apnées est la Pmax habituelle ; « intervalle de surface » est celui qui sépare deux apnées ;
+  l'intervalle de la décompression se compte depuis la dernière apnée. Une réponse « Aucune » existe pour la décompression.
+- **Le profil par défaut.** Les fiches de la 7.4.0 dont le type de profil n'avait pas été choisi sont désormais dessinées
+  en remontée progressive, et leur DTR attendue (colonnes `pl_dtr_att_min`, `pl_dtr_att_max`, `pl_vit_remontee`) se calcule
+  sur ce profil : ces trois colonnes peuvent changer à la prochaine réécriture du CSV.
+- **OHB15 à 95 minutes** : l'heure de fin déjà enregistrée sur une fiche n'est pas recalculée.
+- **Le décompte des recompressions** : une fiche qui porte une table compte pour le plus grand de ses deux nombres de
+  séances (au moins une) ; les séances d'évolution sans table sont « de type non précisé ». La table B18 proposée d'office
+  compte, tant qu'on ne l'a pas retirée.
+- **La ligne Excel** : toutes les règles de correspondance du tableau « D'où vient chaque colonne », en particulier les
+  codes des colonnes G, L, M, N, R, AS, AU, BK, BN, BO, BQ, BS, BT, BU, le classement des tables entre les colonnes BS et
+  BT, « circuit ouvert » par défaut (Z), le lieu reconnu dans le texte (Y), les mois convertis en jours (BZ). Essayez de
+  coller la ligne dans une copie de votre fichier maître.
+- **Les documents de sortie** : le motif tiré du diagnostic, les textes « présente cliniquement » et « examens
+  complémentaires réalisés » proposés pour le certificat de premières constatations, le signataire reconnu. **Le choix du
+  fichier du générateur à la première utilisation** (au lieu d'un générateur embarqué : voir plus haut pourquoi).
+  L'impression depuis la fenêtre intégrée n'a pas été essayée sous Firefox.
+- **La dictée** : elle a été essayée avec une reconnaissance simulée, pas avec un vrai micro ; sous Firefox, le bouton ne
+  fait que renvoyer à la dictée de Windows.
+- **La case « scores »** retire les scores de la synthèse, du compte rendu, de l'impression et de la ligne Excel : dites-moi
+  si elle ne doit concerner que la synthèse.
+
+---
+
+## Changements de la version 7.4.0
+
+Quatre colonnes s'ajoutent au CSV (**883 → 887**) : `nb_plongees_total`, `sortie_exam_second`, `inapt_type`,
+`inapt_mois`. Aucune n'est retirée ni recodée : les fiches de la 7.3.3 s'ouvrent telles quelles. Les intitulés de
+section qui figurent dans le dictionnaire (entre parenthèses) restent ceux de la 7.3.3 ; seul l'onglet qui les
+contient change.
+
+### Saisie
+
+- **Cinq onglets** au lieu de quatre : *Administratif*, *Anamnèse et plongée*, *Examen clinique général*, *Examen
+  neurologique*, *Conclusion et évolution*. L'ancienne page 1 se scinde en deux ; les trois autres gardent leur
+  contenu. En suivi et en sortie, l'onglet « Anamnèse et plongée » disparaît.
+- **Bandeau patient** permanent : nom, prénom, naissance, accident, dossier.
+- **Nombre total de plongées réalisées** dans « Le plongeur ».
+- **Sortie** : examens à réaliser secondairement, inaptitude à la plongée (mois ou définitive).
+
+### Synthèse rédigée
+
+- **Paragraphes distincts**, titres en gras et soulignés ; l'ancien paragraphe « Histoire de l'accident » devient
+  quatre paragraphes (le plongeur, la plongée, les symptômes, la prise en charge initiale).
+- **Anomalies en gras.**
+- **L'examen dit en syndromes** : « absence de déficit moteur », « absence de syndrome pyramidal »… quand tout est
+  normal ; « un syndrome pyramidal bilatéral », « un déficit moteur de type paraparésie »… quand il ne l'est pas.
+- Copie en **texte enrichi** (titres soulignés, gras) ; sur un navigateur qui ne sait pas écrire du texte enrichi
+  dans le presse-papiers (Firefox ancien), la copie passe par une sélection temporaire.
+
+### Compte rendu d'hospitalisation
+
+- Encart **CRH** sur la consultation de sortie : texte enrichi sans en-tête, écrit à partir de toutes les fiches du
+  dossier ; examens paracliniques réunis ; évolution horodatée.
+
+### À valider de votre côté
+
+- **Le découpage des onglets.** L'alerte, l'évacuation et les soins sur place restent dans « Mode d'entrée et prise
+  en charge initiale », donc dans l'onglet *Administratif* ; la nationalité, la profession, l'adresse et le
+  téléphone restent dans « Le plongeur », onglet *Anamnèse et plongée*. Dites-moi si vous voulez les déplacer.
+- **Le vocabulaire des syndromes** (tableau de la section *La synthèse rédigée*) : syndrome pyramidal dès un signe
+  pyramidal, syndrome cérébelleux limité aux signes cinétiques, déficit sensitif « dissocié », atteinte médullaire
+  d'après l'AIS. C'est une proposition de rédaction, pas une classification validée.
+- **Le CRH** : sa structure, la place des scores, le fait que les examens demandés en attente n'y figurent pas, la
+  forme « amélioration / aggravation / autres modifications ».
+- **Données de santé** : le CRH copié contient des données de santé sans l'identité ; une fois collé, il est
+  soumis aux mêmes règles que le dossier du patient.
+
+---
+
+## Changements de la version 7.3.3
+
+Aucune colonne du CSV n'est ajoutée, retirée ni recodée : les fiches de la 7.3.2 s'ouvrent telles quelles.
+
+### Exporter tout en JSON
+
+- **Nouveau bouton** dans **Exporter** (et dans le menu du téléphone) : toutes les fiches, une par fichier, dans
+  un **dossier choisi** (le sélecteur s'ouvre sur **Téléchargements**) ou dans une **archive ZIP** enregistrée
+  dans Téléchargements par défaut. Voir *Exporter tout en JSON*.
+- **Importer / Fusionner** lit désormais aussi une **archive ZIP** et un **dossier entier**.
+
+### Choix du dossier : correction
+
+- Un navigateur sans écriture directe affichait un écran sans issue (« Écriture directe non disponible »).
+  **Dossier de données** explique désormais la cause (page ouverte en HTTP ou dans un cadre, Firefox, Safari,
+  mobile, réglage ou stratégie du navigateur), donne un **diagnostic copiable** et propose ce qui fonctionne :
+  archive ZIP, **téléchargement automatique du JSON à chaque enregistrement** (case à cocher), import d'un
+  dossier. La barre d'état renvoie vers cette explication.
+- Quand le sélecteur de dossier **échoue** (dossier refusé, accès bloqué), l'erreur est expliquée avec un
+  bouton **Réessayer**, au lieu d'un simple message qui disparaît.
+- Le sélecteur s'ouvre sur **Documents** pour le dossier de données, et sur **Téléchargements** pour l'export.
+- L'écriture d'un fichier est **retentée deux fois** en cas de verrouillage passager (antivirus, indexation de
+  Windows), et un fichier abandonné est libéré proprement.
+- Les messages affichés à l'écran restent plus longtemps quand ils sont longs.
+
+### À valider de votre côté
+
+- **Le navigateur qui ouvre `index.html`** : le diagnostic le nomme. Sur ordinateur, Edge ou Chrome permet de
+  choisir le dossier une seule fois ; si Windows ouvre le fichier dans un autre navigateur, faites un clic
+  droit, **Ouvrir avec**.
+- **Téléchargement automatique du JSON** (navigateurs sans dossier) : un fichier par enregistrement dans
+  Téléchargements, les copies d'une même fiche étant numérotées par le navigateur.
+- **Dossier d'export** : un sous-dossier de Téléchargements, car les navigateurs refusent Téléchargements
+  lui-même.
+
+---
+
+## Changements de la version 7.3.2
+
+Cette version change la façon dont les fiches vivent sur le disque. Aucune colonne du CSV n'est
+ajoutée, retirée ni recodée : les fiches de la 7.3.1 s'ouvrent telles quelles.
+
+### Dossier de données
+
+- **L'enregistrement écrit un fichier JSON par fiche** dans un dossier choisi **une seule fois**
+  (`fiches/fiche_<identifiant>.json`), puis le CSV et le dictionnaire. Au premier enregistrement, si
+  aucun dossier n'est choisi, le sélecteur s'ouvre ; ensuite, plus rien à renseigner.
+- **L'ouverture relit le dossier** : les fiches qu'il contient rejoignent la base locale, ce qui rend la
+  recherche par nom, prénom, naissance ou numéro valable pour toutes. Le dossier de recherche est
+  **le même que le dossier d'enregistrement par défaut** ; un autre peut être désigné (lecture seule).
+- **Autorisation par session** : un bandeau et le premier clic suffisent ; le dossier n'est jamais
+  rechoisi.
+- **Suppression** : le fichier d'une fiche supprimée passe dans `fiches/supprimees`, il n'est pas
+  effacé. La suppression est mémorisée.
+- `sauvegarde_neuro.json` (une sauvegarde agrégée réécrite à chaque enregistrement) **disparaît** de
+  l'écriture automatique : le dossier `fiches` en tient lieu, sans le risque qu'un poste écrase les
+  fiches d'un autre. L'export manuel *Télécharger la sauvegarde JSON* et la lecture des anciennes
+  sauvegardes restent.
+- Le bouton **Fichier de données** devient **Dossier de données**.
+
+### Synthèse rédigée
+
+- L'**examen anal** (contraction anale volontaire, pression anale profonde) n'est écrit que s'il est
+  anormal.
+
+### Correctif
+
+- Enregistrer les réglages d'export n'efface plus les réglages de douchette et de pseudonymisation :
+  tous les réglages sont écrits dans un seul enregistrement.
+
+### À valider de votre côté
+
+- **Choix du dossier au premier enregistrement** : si vous annulez le sélecteur, il n'est pas reproposé
+  à chaque enregistrement ; le bouton **Dossier de données** le rouvre.
+- **Un fichier par fiche** plutôt qu'un fichier unique : c'est ce qui permet à plusieurs postes de
+  partager un dossier sans s'écraser. Le prix : un dossier de plusieurs centaines de petits fichiers.
+- **Fiches du dossier lues à l'ouverture** : elles rejoignent la base locale du poste, donc ses
+  exports CSV. Données de santé identifiantes : voir *Données personnelles*.
+
+---
+
+## Changements de la version 7.3.1
+
+Cette version applique les modifications du 3 octobre 2026. Aucune colonne n'est retirée ni recodée :
+**neuf colonnes s'ajoutent** (874 → 883) et les fiches de la 7.3.0 s'ouvrent telles quelles.
+
+### Saisie
+
+- **Coordination et examen vestibulaire** : l'encart « Coordination » prend ce nom et reçoit quatre
+  épreuves, Romberg, Fukuda, marche en étoile et marche funambule (voir *Remplir une fiche*). Un
+  Romberg positif alimente l'item « instabilité » du score vestibulaire.
+- **Sensibilités** : le bouton **✓ 3 sensibilités normales**, à côté de *tout effacer* dans l'en-tête de
+  l'encart, cote tact léger, piqûre et pallesthésie normaux en un clic.
+- **Échographie cardiaque** : l'examen perd la mention « recherche de FOP », la recherche de shunt
+  droite-gauche se faisant au doppler transcrânien. Une case **Recherche de FOP** apparaît quand
+  l'examen est coché OUI, pour les échographies faites dans cette indication.
+- **Échographie pleuro-pulmonaire** : le bouton **Appliquer … aux 24 champs** applique la cotation
+  choisie à tous les champs en une fois.
+- **Profil de plongée** : DS, DF et HS se complètent seules quand les autres heures et durées
+  suffisent (voir *Les heures qui manquent se complètent seules*). La saisie à la main n'est jamais
+  remplacée.
+- **Heure des 1ers symptômes** : déplacée dans l'encart d'accueil (page 1), juste avant l'heure des
+  1ers soins sur place. Le délai entre la sortie de l'eau et les 1ers symptômes reste avec le profil.
+
+### Synthèse rédigée
+
+- Plus aucun exposant, indice, barre verticale, étoile ni flèche (voir *La synthèse rédigée*).
+- Texte allégé : scores MEDSUBHYP et vestibulaire réduits à leur valeur, préservation sacrée de l'ASIA
+  écrite seulement si elle est absente, voie veineuse, numéro de dossier, rang de l'examen, club,
+  ordonnance et pièces jointes omis.
+- Les heures s'écrivent « 10 h 30 », les durées « 25 min », la température en degrés.
+
+### Fichier de données
+
+- **874 → 883 colonnes** : 9 ajoutées, aucune retirée ni recodée.
+- **Ajoutées** : `romberg`, `romberg_cote`, `fukuda`, `fukuda_cote`, `etoile`, `etoile_cote`,
+  `funambule`, `funambule_cote`, `im_eto_fop`.
+- Le **dictionnaire** précise les libellés ambigus : « Radiographie thoracique — résultat » au lieu de
+  « Résultat », « Marche en étoile — côté de la déviation » au lieu de « Côté de la déviation ».
+- `pl_h_symp` change de place dans le CSV, avec son encart (accueil, page 1) ; son nom et son codage ne
+  changent pas.
+
+### À valider de votre côté
+
+Ces points viennent d'une interprétation de vos notes.
+
+- **Les quatre épreuves** : formulation des réponses (Romberg négatif ou positif, les trois autres
+  normales ou anormales), côté demandé, descriptions de la technique. Elles se cotent sans condition de
+  verticalisation ni de marche : une épreuve non réalisée reste vide.
+- **Romberg et instabilité** : un Romberg positif cote l'instabilité « présente debout yeux fermés »
+  du score vestibulaire ; vous pouvez trancher à la main.
+- **Éléments retirés de la synthèse** : chacun est une ligne de `narrativeBlocks`, à rétablir si vous les
+  voulez.
+- **Heures déduites** : relations du tableau ci-dessus ; la DTR estimée n'en fait pas partie.
+
+---
+
+## Changements de la version 7.3.0
+
+Cette version nettoie le code et applique les modifications du 2 octobre 2026. Aucun patient réel
+n'ayant été saisi dans les versions d'essai, **les versions précédentes ne sont plus lues ni
+converties**.
+
+### Nettoyage
+
+- Les conversions de fiches des anciennes versions (texte libre devenu choix codé, anciennes colonnes,
+  anciens codes) et les options « historiques » sont supprimées.
+- **Nouvelle base locale** : 7.3.0 ne reprend pas les fiches enregistrées par les versions
+  précédentes dans le navigateur. Elles restent dans leur ancienne base, sans effet. Les **réglages du
+  poste** sont à ressaisir : nom du poste, séparateur, douchette, sel de pseudonymisation, et la
+  reconnexion du dossier de données (un clic sur *Fichier de données*).
+- Le fichier de données ne se fusionne qu'avec des fichiers produits par la même version.
+- L'éditeur de grille du score vestibulaire des premiers essais est retiré (la grille est intégrée).
+
+### Saisie
+
+- **Recherche d'un dossier** : le numéro d'**accident de plongée** s'ajoute au numéro de dossier, au
+  nom, au prénom et à la date de naissance. La liste de gauche le filtre aussi et l'affiche.
+- **Habitudes toxiques** : *alcool sevré*, avec la date de sevrage et l'évaluation antérieure en quatre
+  stades.
+- **Antécédents et traitements** : photo de l'ordonnance, jointe à la fiche.
+- **Niveau de plongée professionnel** : « plongeur démineur », « nageur de combat » et
+  « scaphandrier d'intervention » disparaissent ; s'ajoutent *plongeur d'armes (Marine nationale)* et
+  *plongeur d'armes (armée de terre)* ; « plongeur de bord » perd la mention Marine nationale.
+- **Procédure de décompression** : *tables MN23* remplace *tables MN 90*.
+- **Profil** : la remontée progressive se dessine **pendant DT** ; la DTR et la DTP se saisissent
+  directement ; modèle de remontée (9 à 12 m/min, 10 s par mètre entre paliers) ; vitesse déduite et
+  alerte de remontée rapide ; encart de **procédure de ré-immersion** (RR et remontée non conforme).
+  Voir *Le profil de plongée et les durées*.
+- **Facteurs favorisants** : les conditions environnementales ne sont plus classées parmi les facteurs
+  favorisants dans la synthèse (« mer calme » n'est pas un facteur aggravant) : elles forment une
+  phrase à part, *Conditions environnementales*.
+- **Score ASIA** : bouton *Actualiser le calcul* dans l'en-tête de l'encart, qui le déplie ; l'encart
+  se rafraîchit aussi seul quand on cote la page.
+- **Page 3** : la *conclusion de l'examen clinique* ferme l'onglet « Examen neurologique ».
+- **Page 4** réorganisée : *Recompression*, puis *Actes* (voie veineuse, bilan biologique, sondage
+  vésical avec son volume initial évacué), puis *Examens complémentaires* (avec résultat par examen,
+  scanner thoracique ou cérébral, IRM cérébrale ou médullaire, ECG et doppler transcrânien déplacés
+  ici, résultat du doppler par condition d'épreuve), l'*échographie pleuro-pulmonaire* (qui ne
+  s'ouvre que si l'examen est coché), les *traitements prescrits* (oxygène au masque ou en VNI avec
+  PEP, AI, FR et FiO₂), l'évolution, le **diagnostic retenu** (remplace la conclusion de l'examen), puis
+  l'orientation.
+- **Diagnostic retenu** : accident de désaturation (types, case *Sévère*), œdème pulmonaire
+  d'immersion, barotraumatisme (types), accident biochimique (types), noyade ; plusieurs diagnostics
+  possibles, avec un diagnostic principal si déterminé.
+- **Synthèse** : un bloc *Diagnostic retenu* s'insère entre les examens paracliniques et la conduite
+  à tenir.
+- **Consultation de suivi ou de sortie** : seuls l'anamnèse, l'examen général et l'examen neurologique
+  sont proposés en grisé ; les examens complémentaires, les traitements, le diagnostic et la conclusion
+  ne sont jamais repris. *Reprendre tout l'examen précédent* suit la même règle.
+
+### Fichier de données
+
+- **810 → 874 colonnes** : 69 ajoutées, 5 retirées.
+- **Retirées** : `ac_ecg` (devient `im_ecg`), `ac_doppler` (devient `im_dtc`), `im_tdm` (scindé en
+  `im_tdm_thor` et `im_tdm_cer`), `im_irm` (scindé en `im_irm_cer` et `im_irm_med`), `im_res` (remplacé
+  par un résultat par examen).
+- **Ajoutées** : alcool sevré (`tox_alcool_sevre`, `alcool_sevre_date`, `alcool_sevre_stade`),
+  profondeur au départ du fond (`pl_prof_df`), procédure de ré-immersion (`pl_reimm_*`, `pl_rr_*`),
+  origine de la DTR et remontée attendue (`pl_dtr_src`, `pl_dtr_att_min`, `pl_dtr_att_max`,
+  `pl_vit_remontee`), volume du sondage (`ac_sonde_vol`), résultats des examens (`im_*_res`), doppler
+  (`im_dtc`, `dtc_*`), `im_echopp`, oxygène prescrit (`rx_o2_mode`, `rx_o2_debit`, `rx_vni_*`) et
+  diagnostic retenu (`dg_*`).
+- **Recodés** : `ac_sonde` (2 à demeure, 3 évacuateur, 0 non) ; `tb_table` (code de la table) ;
+  `niv_pro` (nouvelle liste) ; `pl_proc` 2 devient « tables MN23 ». La colonne `conclusion` garde ses
+  codes ; elle désigne désormais la conclusion de l'examen clinique, le diagnostic étant porté par
+  `dg_*`.
+
+### À valider de votre côté
+
+Ces points viennent d'une interprétation de vos notes ; chacun se corrige dans une constante, en tête
+du script de `index.html`.
+
+- **Modèle de remontée** (`V_REM_MIN`, `V_REM_MAX`, `S_PAR_M`, `dtrSecondes`) : l'arrondi se fait **une
+  seule fois, à la fin de la DTR** ; le trajet du dernier palier à la surface est compté à 10 s par
+  mètre comme un changement de palier ; la DTR estimée est le milieu de la fourchette.
+- **Remontée progressive** : la profondeur au départ du fond est une donnée que vous ne m'aviez pas
+  précisée. Elle se saisit ; à défaut, 40 % de Pmax est dessiné.
+- **Procédure de ré-immersion** : le délai, la profondeur (moitié de Pmax), la durée (5 min) et les
+  paliers (1 min à 6 m, 5 min à 3 m) sont des propositions modifiables (`RR_DELAI_MAX`, `RR_DUREE`,
+  `PAL_RR`). La procédure n'est pas dessinée sur le schéma.
+- **Doppler transcrânien** : les trois conditions (sans sensibilisation, après sensibilisation allongée,
+  après sensibilisation en expiration forcée) se cotent indépendamment ; la formulation « sensibilisation allongée » est
+  reprise telle quelle.
+- **Types de diagnostic** (`DG_ADD`, `DG_BARO`, `DG_BIOCH`) : listes proposées, à corriger.
+- **Valeurs d'office** d'une consultation initiale (`DEF_INITIALE`) : aspirine NON, table B18, bilans
+  OUI.
+- **Pagination du PDF** : la page de prise en charge (page 6) peut déborder sur une septième page quand
+  la fiche est très remplie, la synthèse reprenant en phrases ce que les encadrés détaillent.
+
+---
+
+## Historique
+
+- **10.1.1** : le rappel de 11 h 45 et de 16 h 00 de l'import-export est retiré (la bulle des boutons d'import-export reste) ; bouton **Actualiser** à droite des petites icônes de la barre du haut (relit le dossier de données connecté, revérifie son autorisation) ;
+  le syndrome vestibulaire (et les signes cochléaires) est dit avec l'examen général, dans la synthèse et le CRH ; confirmation « Cette fiche est déjà enregistrée. Êtes-vous sûr de vouloir la modifier ? » à la première modification d'une fiche enregistrée ;
+  texte court « Avis Spécialisé Résurgences » (consultation initiale, 3 800 caractères au plus, sans tableau, bouton **copier Avis Spécialisé Résurgences**) ; le bouton « copier le texte » de la synthèse devient **copier le texte intégral**. Nouveau dossier `ADP-10.1.1`.
+- **9.5.2** : l'heure d'un relevé de « Constantes et surveillance » se tape en HHMM (1145 → 11:45) comme les autres cases d'heure ; une heure impossible ou incomplète reste en rouge et n'est pas enregistrée ; les heures
+  de relevés enregistrées sans deux points avant la 9.5.2 sont lues HH:MM. Dans le même dossier `ADP-9.5.1`.
+- **9.5.1** : la bulle des boutons d'import-export (Tout transférer en ZIP, Importer, menu Plus) dit la manipulation du service (exporter l'ensemble des fiches JSON dans `T:\Services\Smhep\Commun\Personnels SMHEP\MEDECIN CAISSON F\ADP- Export JSON`) ;
+  rappel à 11 h 45 et à 16 h 00 (heure du navigateur) : bandeau et notification du navigateur ; la colonne BW « Observations » de la ligne Excel ADP n'est plus remplie. Nouveau dossier `ADP-9.5.1`.
+- **9.4.2** : feuille COHB : la colonne « EE / plateau technique » (AB) compte les épreuves d'effort réalisées ; ligne Excel ADP : « nombre j AT » compte les jours d'hospitalisation jours extrêmes compris (du 02/10 au 05/10 : 4 jours)
+  et reçoit les jours d'hospitalisation seuls quand aucun jour d'AT n'est saisi ; l'examen vestibulaire (Romberg, Fukuda, marche en étoile, marche funambule) passe dans l'onglet « Examen clinique général », après « ORL et barotraumatisme ».
+- **9.4.1** : lignes Excel ADP et COHB composées à partir de toutes les fiches du dossier quelle que soit la fiche ouverte (écrit et vérifié) ; lieu de l'accidenté au moment de l'appel (colonne AT) ; score MJOAS à la sortie,
+  coté 17 d'office, avec la grille du service en aide (colonne BX) ; IRM médullaire : facteur compressif, type, concordance radio-clinique (colonnes CE, CF, CG) ; épreuve d'effort et MAPA, normales ou anormales (colonnes CI, CJ) ;
+  jours d'arrêt de travail + jours d'hospitalisation (colonne BY). Nouveau dossier `ADP-9.4.1`.
+- **9.3.5** : les scores MEDSUBHYP et vestibulaire se retirent chacun à part (une case par score) ; plongée : type de tenue, déséquipement sur le lieu de plongée (OUI d'office), facteur favorisant « progressivité respectée »,
+  repris dans la ligne Excel ADP (colonnes AC et AY ; « Observations » n'est plus rempli depuis la 9.5.1) ; orientation « hospitalisation de jour » (hébergement : domicile, hôtel patient, autre établissement) : le patient reste dans les patients en cours (mention HDJ)
+  jusqu'à une consultation de sortie dont l'orientation n'est plus l'hospitalisation de jour.
+- **9.3.3** : le nom proposé au PDF se termine par le numéro d'examen de la fiche (`NOM_Prénom_IPP_numéro de dossier_EX1.pdf`, `…_EX3b.pdf` pour une séance de recompression sans examen), pour distinguer les fiches d'un même patient.
+- **9.3.2** : le PDF est proposé sous le nom NOM_Prénom_IPP_numéro de dossier ; nom, prénom, examinateur, médecin et infirmier(e) mis en forme automatiquement (NOM en majuscules, Prénom avec l'initiale en majuscule, le reste en minuscules) ;
+  délai accident → examen limité à la consultation initiale ; « patient » à la place de « sujet » dans tout ce qui s'affiche ; un clic sur une pastille inscrit le numéro d'accident dans la barre de recherche et limite la liste du bas à ce patient.
+- **9.3.1** : le volet de gauche en deux parties : en haut, une pastille par patient en cours (NOM Prénom et âge, aux couleurs du bandeau : rose, bleu, vert), qui disparaît le lendemain de sa consultation de sortie ;
+  en dessous, la liste des fiches, déroulante, dans la place restante ; mêmes deux parties dans la fenêtre « Fiches enregistrées » des petits écrans.
+- **9.2.0** : barre du haut à icônes (nouvelle fiche, ré-examen, séance de recompression, enregistrer, PDF, ZIP, importer, ligne Excel ADP, ligne Excel COHB, documents de sortie) avec bulle d'aide
+  immédiate, tout le reste dans le menu « Plus » ; lignes Excel et documents de sortie ouverts quel que soit le type de consultation, même incomplète ; séance de recompression cotée sans
+  examen clinique, numérotée EX3b (aussi dans le nom des fichiers JSON) ; âge d'un mineur en années et mois ; bandeau rose (femme), bleu (homme), vert (enfant) ; biologie : glycémie,
+  triglycérides, cholestérol total, HDL, LDL calculé.
+- **9.0.0** : dictée : micro éteint après deux secondes sans parole, répétitions corrigées ; « + » ou espace dans une case de date ou d'heure ; plus de « nombre de
+  séances réalisées » (une recompression cotée est une séance, aussi au compte rendu et à la ligne Excel ADP) ; actes en tête de l'onglet « Examens complémentaires » ;
+  traitements alignés à gauche ; le poids de la fiche initiale, le diagnostic retenu, la prednisolone encore à prescrire et les séances depuis la dernière consultation
+  repris d'une fiche à l'autre ; à la sortie, examens à prévoir proposés d'après le diagnostic et le générateur, examens demandés retirés de l'encart d'évolution ;
+  générateur de courriers : dose et durée de la prednisolone ; synthèse et compte rendu : allergies sur leur ligne, table en gras, prednisolone non répétée, plus de
+  « bilan prélevé », paragraphe « Évolution des scores ».
+- **8.2.1** : ligne Excel ADP : « Aucun » (et non 0) en colonne O quand rien n'est choisi ; ligne Excel COHB : une séance n'est comptée que si elle
+  est réellement cotée dans l'encart « Recompression » (la B18 proposée d'office sur une consultation initiale ne compte que si l'encart est rempli ; les
+  nombres de séances déclarés ne multiplient rien).
+- **8.2.0** : valeurs normales de l'homme (11 paramètres de biologie) selon le sexe, sans mention « au-dessus / en dessous des VN » ni
+  encart orange ; table « OHB15 » renommée « A15 » ; ligne Excel COHB : une table enregistrée = une table comptée ; ligne Excel ADP : « — » = 0
+  (colonnes L à P) ; encart « Signes subjectifs — localisation » masqué quand la réponse est NON ; copie de la synthèse et du CRH aussi en RTF
+  (Firefox), pour que le gras et le souligné se collent dans l'éditeur du dossier patient.
+- **8.1.3** : la ligne du fichier maître s'appelle « ligne Excel ADP » (l'autre, « ligne Excel COHB »), classeurs `ligne_excel_ADP_…` et
+  `ligne_excel_COHB_…` ; heures ouvrables de la ligne COHB : lundi au vendredi, de 7 h 45 à 16 h 00, hors jours fériés.
+- **8.1.2** : colonne « ordinateur » de la ligne Excel (marque, modèle, réglages), ligne pour l'activité COHB, onglet « Examens
+  complémentaires » (le cinquième ; la conclusion devient le sixième) avec la biologie horodatée, ses valeurs normales, les valeurs
+  hors normes en gras et en rouge, et des tableaux de jour en jour dans la synthèse et le compte rendu.
+- **8.1.1** : identité complémentaire affichée après le mode d'entrée, bouton « onglet suivant » dans le bandeau patient,
+  dictée vocale corrigée sous Chrome (texte écrit une seule fois), micro éteint seul après une seconde sans parole.
+- **8.1.0** : fichiers JSON des fiches nommés `xxx-aaaa_bbbbbbbb-EXc.json` (numéro d'accident, année de prise en charge,
+  numéro de dossier, numéro d'examen), renommés dans le dossier de données quand le rang d'un examen change ; corbeille et
+  anciens fichiers `fiche_<identifiant>.json` pris en charge.
+- **8.0.0** : identité complémentaire dans l'onglet Administratif, SAU HNIA SA, remontée progressive proposée d'office
+  avec sa durée à Pmax, apnée, conditions environnementales cotées, OHB15 à 95 min, dictée vocale, case « ne pas
+  mentionner les scores », bandeau enrichi (examen, entrée, dernier diagnostic), recompressions comptées par type dans
+  le compte rendu, ligne pour le fichier Excel maître, générateur de courriers de sortie ouvert depuis ADP.
+- **7.4.0** : cinq onglets, bandeau patient permanent, nombre total de plongées, synthèse en paragraphes (titres
+  soulignés, anomalies en gras, examen dit en syndromes), compte rendu d'hospitalisation à partir de toutes les
+  fiches du dossier (examens paracliniques réunis, évolution horodatée, examens à prévoir, inaptitude à la plongée).
+- **7.3.3** : « Exporter tout en JSON » (une fiche par fichier, dans un dossier choisi ou une archive ZIP),
+  import d'archives ZIP et de dossiers entiers, choix du dossier : explication, diagnostic et solutions de
+  repli quand le navigateur n'offre pas l'écriture directe.
+- **7.3.2** : un fichier JSON par fiche écrit à l'enregistrement dans un dossier choisi une fois, relu à
+  l'ouverture pour la recherche ; examen anal écrit seulement s'il est anormal.
+- **7.3.1** : coordination et examen vestibulaire, sensibilités normales en un clic, échographie
+  cardiaque et FOP, échographie pleuro-pulmonaire en un clic, profil complété automatiquement,
+  synthèse allégée et sans signe spécial.
+- **7.3.0** : nettoyage, nouvelle base locale, profil et durées, procédure de ré-immersion, page 4
+  réorganisée, diagnostic retenu.
+- **7.2** : alerte et évacuation, le plongeur, la plongée accidentelle (profil, paliers), synthèse
+  rédigée, échographie pleuro-pulmonaire, score vestibulaire, ECG, tables de recompression.
+- **7.1** : ADP, trois types de consultation, quatre pages de saisie, constantes, scores de sévérité,
+  fiche A3 du service.
+- **6 et antérieures** : fiche d'examen neurologique standardisée, sensibilités par métamère, score ASIA,
+  signes subjectifs et lésions cutanées, pièces jointes photographiques.
+
+---
+
+## Données personnelles
+
+Par défaut, le CSV ne contient **ni nom, ni prénom, ni date de naissance**. Il contient le numéro
+de dossier que vous saisissez, le sexe et l'âge calculé. L'identité complète ne figure que sur le PDF
+et dans les fichiers JSON des fiches.
+
+La case *inclure nom, prénom et date de naissance* dans **Plus** › **Exporter les données** lève cette séparation. Si vous
+la cochez, le fichier devient un traitement de données de santé identifiantes au sens du RGPD
+(art. 9) : registre des traitements, base légale, information des personnes et chiffrement du
+support relèvent alors de votre responsabilité.
+
+**Les fichiers JSON du dossier de données, de l'export en JSON, des archives ZIP et des téléchargements
+automatiques contiennent la fiche entière, identité, santé et photographies comprises** : c'est ce qui permet
+de retrouver un patient par son nom. Ils sont à traiter
+comme des données de santé identifiantes, quels que soient les réglages de l'export CSV. Choisissez
+un dossier protégé (disque chiffré, accès restreint). Si ce dossier est synchronisé avec un service
+en ligne, les fiches quittent le poste : vérifiez que ce service est compatible avec l'hébergement de
+données de santé qui vous est imposé. Le nom de chaque fichier ne porte ni nom, ni prénom, ni date de naissance, mais
+le **numéro de dossier** et le numéro d'accident (`187-2026_50987654-EX1.json`) : il suffit à rattacher un fichier à un
+dossier. Avec la pseudonymisation de l'identifiant scanné, c'est le pseudonyme `P-…` qui y figure.
+
+**La ligne Excel ADP** reprend, par défaut, le **nom et le prénom** (colonne A de votre fichier) : c'est
+un traitement de données de santé identifiantes, comme le fichier maître lui-même ; la **ligne Excel COHB** les reprend aussi (colonne B). Elle est copiée dans le presse-papiers ou
+téléchargée : supprimez le classeur téléchargé une fois la ligne collée. **La dictée vocale** de Chrome et d'Edge envoie
+l'audio à un service distant (voir *Dictée vocale*) : n'y dictez rien d'identifiant. **Les documents de sortie** reçoivent
+l'identité du patient pour composer les courriers ; le générateur n'enregistre rien et n'utilise aucun réseau. Son fichier,
+qui porte les signatures des médecins, reste dans la base locale du navigateur : ne le versez jamais dans le dépôt publié.
+
+---
+
+## Sauvegarde
+
+Les fiches vivent dans la base locale du navigateur **et** dans le dossier de données (un fichier
+JSON par fiche). Vider les données de navigation efface la base locale, mais le dossier la
+reconstitue à l'ouverture suivante, une fois choisi de nouveau. Le dossier de données et les
+sauvegardes JSON sont votre filet de sécurité : copiez-les ailleurs régulièrement. **Exporter tout en
+JSON** en produit une copie complète à tout moment, dans le dossier de votre choix ou dans une archive ZIP.
+
+---
+
+## Trois points à vérifier de votre côté
+
+**1. Le vocabulaire du nystagmus.** J'ai encodé vos termes tels quels, sans les réinterpréter :
+
+- côté de la secousse rapide : D / G
+- position du regard : regard centré / latéral droit / latéral gauche / multidirectionnel
+- sens : même sens que la secousse rapide / sens inverse / girato-rotatoire
+
+Si « dans le même sens que la secousse rapide ou inversement » désigne autre chose que le sens du
+nystagmus, dites-le, je change les libellés et le codage.
+
+**2. Le libellé de l'équilibre.** « Équilibre statique Yeux Ouverts : OUI / NON » est ambigu sur la
+fiche papier. Le libellé retenu est **« Équilibre statique conservé »**, OUI = normal.
+
+**3. Le niveau moteur ASIA dans les segments sans myotome clé.** La norme ISNCSCI y demande de
+reprendre le niveau sensitif « si la fonction motrice sus-jacente est intacte ». J'ai traduit cette
+phrase par une règle mécanique : sous le dernier myotome clé intact, le niveau moteur descend
+jusqu'au niveau sensitif, sans dépasser le myotome clé suivant. Un examinateur peut décider
+autrement devant un tableau dissocié. C'est la raison du bandeau « calcul indicatif » affiché dans
+l'outil et imprimé sur la page 2.
