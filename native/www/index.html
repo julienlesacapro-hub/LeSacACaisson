@@ -993,6 +993,7 @@ const PLUS_ITEMS = [
   {ic:'cohb',    t:'Ligne Excel COHB', fn:'openXls(\'cohb\')', cl:'pm-ph'},
   {ic:'docs',    t:'Documents de sortie', fn:'openGen()', cl:'pm-ph'},
   {ic:'cohb',    t:'Afflux massif CO', s:'plusieurs patients, lieux, planification des séances', fn:'openAfflux()'},
+  {ic:'cohb',    t:'Astreinte et coordination', s:'coordinateur de l’afflux, planning d’astreinte, rôles', fn:'astOpen()'},
   {sep:1, cl:'pm-sm'},
   {ic:'folder',  t:'Dossier de données…', s:'où chaque fiche est écrite en JSON, relue pour la recherche', fn:'openFolders()'},
   {ic:'link',    t:'Couplage entre appareils…', s:'Firebase : les mêmes fiches sur deux appareils', fn:'openFb()'},
@@ -9943,7 +9944,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.2.2';
+const APP_VERSION = '12.3.1';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -10546,6 +10547,7 @@ function afterConnect(opt){
         if(n || (st && (st.add || st.upd)) || opt.csv) await writeDataLocked(true);
       }
       await persistSync();
+      try{ await astSyncLocked(); }catch(e){ console.error('astreinte :', e); }          // le planning d'astreinte (plannings/astreinte.json)
     }catch(e){ folderFailed('save', e); }
     finally{ SYNCINFO = ''; }
     refreshAfterSync(st);
@@ -12822,6 +12824,11 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.3.1 (version d’essai) : coordinateur de l’afflux.</b><br>'+
+  'Seul le <b>coordinateur</b> (l’infirmier d’astreinte) planifie les séances de l’afflux (proposer, valider, supprimer, ajouter ou retirer un patient) ; démarrer et terminer une séance restent ouverts à l’équipe. '+
+  'Le coordinateur vient du <b>planning d’astreinte</b> (créneaux, répétables chaque semaine) ; un rôle autorisé (médecins et infirmiers référents par défaut) peut en <b>désigner un autre</b> dans la journée, avec un motif ; la désignation l’emporte jusqu’à sa fin. '+
+  'Rôles et personnes se paramètrent dans l’<b>administration</b> (code). Le planning est rangé dans le dossier de données, <code>plannings/astreinte.json</code>, relu à l’ouverture, au bouton Actualiser et toutes les minutes, fusionné élément par élément entre les postes, sans passer par Firebase. '+
+  'Bouton <b>Astreinte</b> dans l’écran d’afflux, et <b>Plus › Astreinte et coordination</b>.</p>'+
   '<p><b>Nouveautés de la 12.2.2 (version d’essai) : afflux partagé entre appareils.</b><br>'+
   'Quand le <b>couplage entre appareils</b> est en place, l’événement d’afflux est <b>partagé</b> par tous les appareils du même code, presque en temps réel et chiffré de bout en bout : '+
   'chaque opérateur saisit, déplace, cote et planifie, et tous voient le même tableau. Fusion champ par champ (la modification la plus récente l’emporte) ; les déplacements simultanés d’un même patient sont tous gardés ; '+
@@ -13554,6 +13561,7 @@ const afOcc = (cfg, pts) => {
 
 /* ---------- planification ---------- */
 function afPlanifier(silence){
+  if(!astGarde()) return;
   const garde = AF.seances.filter(s=>s.statut!=='proposee');
   AF.seances = garde;
   const t0 = Math.ceil(Date.now()/300000)*300000, rot = (AF.rotation||0)*60000;
@@ -13588,6 +13596,7 @@ function afPlanifier(silence){
 /* une séance : valider, démarrer, terminer, supprimer ; retirer un patient ; ajouter un patient */
 function afSeance(id, act){
   const s = AF.seances.find(x=>x.id===id); if(!s) return;
+  if((act==='valider' || act==='supprimer') && !astGarde()) return;          // le planning est l'affaire du coordinateur ; démarrer et terminer, de l'équipe du caisson
   const c = afCh(s.ch), now = new Date().toISOString();
   if(act==='valider') s.statut = 'validee';
   else if(act==='demarrer'){ s.statut = 'en_cours'; s.reel = now; s.pts.forEach(pid=>afDeplacer(pid, c.lieu, true)); }
@@ -13597,6 +13606,7 @@ function afSeance(id, act){
 }
 function afRetirer(sid, pid){
   const s = AF.seances.find(x=>x.id===sid); if(!s || s.statut==='en_cours' || s.statut==='terminee') return;
+  if(!astGarde()) return;
   s.pts = s.pts.filter(x=>x!==pid);
   if(!s.pts.length) AF.seances = AF.seances.filter(x=>x!==s);
   else { const T = afTableDe(s.pts.map(afPat).filter(Boolean), s.table.replace('IOT','')); s.table = T.l; s.duree = T.m; }
@@ -13609,6 +13619,7 @@ function afSeancesPossibles(p){
 }
 function afAjouter(pid, sid){
   const p = afPat(pid), s = AF.seances.find(x=>x.id===sid); if(!p || !s) return;
+  if(!astGarde()){ afRender(); return; }
   const o = afOuverte(pid); if(o && o!==s){ o.pts = o.pts.filter(x=>x!==pid); if(!o.pts.length) AF.seances = AF.seances.filter(x=>x!==o); }
   s.pts.push(pid); const T = afTableDe(s.pts.map(afPat).filter(Boolean), s.table.replace('IOT','')); s.table = T.l; s.duree = T.m;
   afSave(); afRender();
@@ -13771,11 +13782,11 @@ function afRender(){
 }
 function afOpts(L, cur){ return L.map(o=>'<option value="'+o.v+'"'+(String(o.v)===String(cur==null ? '' : cur) ? ' selected' : '')+'>'+esc(o.l)+'</option>').join(''); }
 function afHTML(){
-  const P = AF.patients, cnt = {}; P.forEach(p=>{ const s = afStatut(p); cnt[s] = (cnt[s]||0)+1; });
+  const P = AF.patients, cnt = {}, PL = afPeutPlanifier().ok; P.forEach(p=>{ const s = afStatut(p); cnt[s] = (cnt[s]||0)+1; });
   const lieuOpts = cur => AF.lieux.map(l=>'<option value="'+l.id+'"'+(l.id===cur ? ' selected' : '')+'>'+esc(l.l)+'</option>').join('');
   let h = '<div class="af">';
-  h += '<div class="af-top"><div><h2>Afflux massif — intoxication au CO</h2><input class="af-nom" value="'+esc(AF.nom)+'" onchange="afParam(\'nom\', this.value)" aria-label="Nom de l’événement"> <span class="af-sub">ouvert à '+afHM(AF.debut)+' le '+frDate(iso(new Date(AF.debut)))+' · '+P.length+' patient'+(P.length>1 ? 's' : '')+'</span><div id="af_share" style="margin-top:4px">'+afPartageHTML()+'</div></div>'+
-    '<div class="af-btns"><button class="tb" onclick="afParamOpen()">Paramètres</button><button class="tb" onclick="afCSV()">Exporter CSV</button><button class="tb" onclick="afJSON()">Sauvegarde JSON</button>'+
+  h += '<div class="af-top"><div><h2>Afflux massif — intoxication au CO</h2><input class="af-nom" value="'+esc(AF.nom)+'" onchange="afParam(\'nom\', this.value)" aria-label="Nom de l’événement"> <span class="af-sub">ouvert à '+afHM(AF.debut)+' le '+frDate(iso(new Date(AF.debut)))+' · '+P.length+' patient'+(P.length>1 ? 's' : '')+'</span><div id="af_share" style="margin-top:4px">'+afPartageHTML()+'</div><div id="af_coord" style="margin-top:4px">'+astCoordHTML()+'</div></div>'+
+    '<div class="af-btns"><button class="tb" onclick="astOpen()">Astreinte</button><button class="tb" onclick="afParamOpen()">Paramètres</button><button class="tb" onclick="afCSV()">Exporter CSV</button><button class="tb" onclick="afJSON()">Sauvegarde JSON</button>'+
     '<label class="tb" style="cursor:pointer">Importer JSON<input type="file" accept=".json,application/json" hidden onchange="afImport(this)"></label><button class="tb" onclick="afNouvelEvt()">Nouvel événement</button><button class="tb" onclick="afQuitter()">Quitter</button></div></div>';
   /* saisie rapide */
   h += '<div class="sec"><h3>Saisie rapide</h3><div class="body af-saisie">'+
@@ -13791,8 +13802,8 @@ function afHTML(){
   const nCode = {}; P.forEach(p=>{ nCode[p.code] = (nCode[p.code]||0)+1; });
   P.slice().sort(afPrio).forEach(p=>{
     const st = afStatut(p), o = afOuverte(p.id), on = k => "afSet('"+p.id+"','"+k+"',this.value)";
-    const poss = (st==='attente' || st==='propose' || st==='planifie') ? afSeancesPossibles(p) : [];
-    const sea = o ? '<span title="'+esc(afOcc(afCfg(afCh(o.ch), o.cfg) || {assis:0,allonges:0,scopes:0}, o.pts.map(afPat).filter(Boolean)))+'">'+esc((afCh(o.ch)||{}).l || o.ch)+' · '+afHM(o.debut)+' · '+esc(o.table)+'</span>'+(o.statut!=='en_cours' ? ' <button class="mini" onclick="afRetirer(\''+o.id+'\',\''+p.id+'\')">retirer</button>' : '')
+    const poss = PL && (st==='attente' || st==='propose' || st==='planifie') ? afSeancesPossibles(p) : [];
+    const sea = o ? '<span title="'+esc(afOcc(afCfg(afCh(o.ch), o.cfg) || {assis:0,allonges:0,scopes:0}, o.pts.map(afPat).filter(Boolean)))+'">'+esc((afCh(o.ch)||{}).l || o.ch)+' · '+afHM(o.debut)+' · '+esc(o.table)+'</span>'+(o.statut!=='en_cours' && PL ? ' <button class="mini" onclick="afRetirer(\''+o.id+'\',\''+p.id+'\')">retirer</button>' : '')
               : (AF.hors && AF.hors.indexOf(p.id)>=0 && st==='attente' ? '<span style="color:#c00000">aucune configuration possible</span>' : '');
     h += '<tr id="afr_'+p.id+'"><td><input type="checkbox"'+(AF_SEL[p.id] ? ' checked' : '')+' onchange="AF_SEL[\''+p.id+'\']=this.checked" aria-label="Sélectionner '+esc(p.code)+'"></td>'+
       '<td><b>'+esc(p.code)+'</b>'+(nCode[p.code] > 1 ? ' <span class="af-st" style="--c:#c00000" title="Le même identifiant a été saisi deux fois (sur deux appareils ?) : retirez le doublon">doublon</span>' : '')+'<br><small class="af-sub">arrivé '+afHM(p.cree)+'</small></td>'+
@@ -13815,7 +13826,7 @@ function afHTML(){
     '<div class="note" style="margin-top:6px">Ordre : réanimatoire, signes neurologiques, grossesse, HbCO décroissante, arrivée. Table : A18 en présence de signes neurologiques, A15 sinon ; version IOT pour un patient réanimatoire. Un patient n’est planifié que si l’OHB est <b>indiquée</b> et la contre-indication <b>absente</b>.</div></div></div>';
   /* planning */
   h += '<div class="sec"><h3>Planification des séances</h3><div class="body">'+
-    '<div class="af-btns" style="margin-bottom:8px"><button class="tb gd" onclick="afPlanifier()">Proposer le planning</button><span class="af-sub">Les séances validées, en cours ou terminées ne bougent pas ; les propositions se recalculent. Intervalle : '+AF.rotation+' min.</span></div>'+afPlanning()+'</div></div>';
+    '<div class="af-btns" style="margin-bottom:8px">'+(PL ? '<button class="tb gd" onclick="afPlanifier()">Proposer le planning</button>' : '<button class="tb" disabled title="'+esc(afPeutPlanifier().why)+'">Proposer le planning</button><span class="af-sub" style="color:#b45309">'+esc(afPeutPlanifier().why)+'</span>')+'<span class="af-sub">Les séances validées, en cours ou terminées ne bougent pas ; les propositions se recalculent. Intervalle : '+AF.rotation+' min.</span></div>'+afPlanning()+'</div></div>';
   return h+'</div>';
 }
 function afPlanning(){
@@ -13839,10 +13850,10 @@ function afPlanning(){
     h += '<div class="af-s af-'+s.statut+'"><div><b>'+esc(c ? c.l : s.ch)+'</b> · '+afHM(s.debut)+'–'+afHM(afFin(s))+' · <b>'+esc(s.table)+'</b> · '+esc(cfg.l)+' <span class="af-st" style="--c:#1f6fb2">'+esc(AF_SS[s.statut])+'</span></div>'+
       '<div class="af-sub">'+esc(afOcc(cfg, pts))+(ok ? '' : ' — <b style="color:#c00000">dépasse la configuration</b>')+'</div>'+
       '<div>'+pts.map(p=>'<span class="af-chip" style="--c:'+AF_ST[afStatut(p)][1]+'">'+esc(p.code)+(p.inst!=='assis' ? ' ⟂' : '')+(p.scope===1 || p.inst==='rea' ? ' ♥' : '')+'</span>').join('')+'</div>'+
-      '<div class="af-btns">'+(s.statut==='proposee' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'valider\')">valider</button>' : '')+
+      '<div class="af-btns">'+(s.statut==='proposee' && afPeutPlanifier().ok ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'valider\')">valider</button>' : '')+
         ((s.statut==='proposee' || s.statut==='validee') ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'demarrer\')">démarrer</button>' : '')+
         (s.statut==='en_cours' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'terminer\')">terminer</button>' : '')+
-        (s.statut!=='terminee' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'supprimer\')">supprimer</button>' : '')+'</div></div>';
+        (s.statut!=='terminee' && afPeutPlanifier().ok ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'supprimer\')">supprimer</button>' : '')+'</div></div>';
   });
   return h+'</div><div class="af-sub" style="margin-top:4px">⟂ allongé · ♥ scopé. Démarrer place les patients dans le lieu de la chambre ; terminer compte la séance et les place dans le lieu « après une séance ».</div>';
 }
@@ -14009,6 +14020,221 @@ function afPartageHTML(){
   const n = FB.peers.length, ok = FB.status === 'on';
   return '<span class="af-share'+(ok ? ' on' : '')+'">'+(ok ? 'Partagé · '+(n + 1)+' appareil'+(n ? 's' : '')+(n ? ' ('+esc(FB.peers.map(p=>p.name).join(', '))+')' : '') : 'Partage : '+esc(FB.status === 'retry' ? 'hors ligne, les modifications partiront à la reconnexion' : FB.status === 'denied' ? 'accès refusé' : 'connexion…'))+
          (AFS.pend ? ' · envoi en attente' : '')+'</span>';
+}
+
+/* =====================================================================
+   ASTREINTE ET COORDINATION (12.3.1)
+   Le coordinateur de l'afflux (l'infirmier d'astreinte) est le seul à planifier les séances. Il est donné par le planning d'astreinte (créneaux), et peut être changé dans la journée par une
+   désignation, faite par un rôle autorisé à désigner (médecins et infirmiers référents par défaut). Une désignation en cours l'emporte sur le créneau ; la plus récente l'emporte sur les autres.
+   Les rôles et les personnes se paramètrent dans l'administration, protégée par un code (empreinte SHA-256 salée).
+   Le planning ne passe pas par Firebase : il est rangé dans le dossier de données, sous-dossier « plannings », fichier « astreinte.json », lu et réécrit comme les fiches : à l'ouverture, au bouton
+   Actualiser, et toutes les 60 secondes. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification et une suppression est une marque ;
+   la fusion garde, élément par élément, le plus récent. Une copie est gardée dans la base locale du navigateur (poste sans dossier : export et import du fichier).
+   « Je suis » (la personne qui utilise ce poste) est déclaratif : il n'y a pas d'authentification. C'est une garde d'organisation, pas un contrôle d'accès.
+   ===================================================================== */
+const AST_KEY = 'astreinte', AST_DIR = 'plannings', AST_FILE = 'astreinte.json';
+let AST = null, AST_MOI = null, AST_ADMIN = false, AST_LU = null, AST_T = null;
+const astNow = () => new Date().toISOString();
+function astDefaut(){
+  const t = astNow();
+  return {format:'adp-astreinte-v1', maj:t, admin:null,
+    roles:[{id:'med_ref', l:'Médecin référent', designe:1, coord:0, t:t}, {id:'ide_ref', l:'Infirmier référent', designe:1, coord:1, t:t},
+           {id:'ide', l:'Infirmier', designe:0, coord:1, t:t}, {id:'med', l:'Médecin', designe:0, coord:0, t:t}],
+    personnes:[], creneaux:[], designations:[]};
+}
+const astVis = L => (L || []).filter(x => !x.del);
+const astRole = id => astVis(AST && AST.roles).find(r => r.id === id) || null;
+const astPers = id => astVis(AST && AST.personnes).find(p => p.id === id) || null;
+const astNom = id => { const p = astPers(id) || (AST && (AST.personnes || []).find(x => x.id === id)); return p ? p.nom : '—'; };
+const astPeutDesigner = id => { const p = astPers(id), r = p && astRole(p.role); return !!(p && p.actif !== 0 && r && r.designe); };
+const astCoordonnable = () => astVis(AST && AST.personnes).filter(p => { const r = astRole(p.role); return p.actif !== 0 && r && r.coord; });
+const astConfigure = () => !!(AST && (astVis(AST.personnes).length || astVis(AST.creneaux).length));
+const astHM = s => { const d = new Date(s); return isNaN(d) ? '' : frDate(iso(d))+' '+hhmm(d); };
+const astHMc = s => { const d = new Date(s); if(isNaN(d)) return ''; return (iso(d) === iso(new Date()) ? '' : frDate(iso(d))+' ') + hhmm(d); };
+const astLocal = isoStr => { const d = new Date(isoStr); if(isNaN(d)) return ''; return iso(d)+'T'+hhmm(d); };
+/* le coordinateur à l'instant t : désignation en cours (la plus récente), sinon créneau du planning ; {p, src, fin, d} ou null */
+function astCoord(t){
+  if(!AST) return null;
+  t = t || Date.now();
+  const enCours = x => Date.parse(x.debut) <= t && (!x.fin || t < Date.parse(x.fin));
+  const D = astVis(AST.designations).filter(enCours).sort((a, b) => (b.debut + b.t).localeCompare(a.debut + a.t));
+  if(D.length) return {p:D[0].p, src:'designation', fin:D[0].fin, d:D[0]};
+  const C = astVis(AST.creneaux).filter(enCours).sort((a, b) => String(b.t).localeCompare(String(a.t)));
+  if(C.length) return {p:C[0].p, src:'planning', fin:C[0].fin, d:C[0]};
+  return null;
+}
+/* peut-on planifier les séances de l'afflux depuis ce poste ? */
+function afPeutPlanifier(){
+  if(!astConfigure()) return {ok:true, why:''};
+  const c = astCoord();
+  if(c && AST_MOI === c.p) return {ok:true, why:''};
+  if(!c && astPeutDesigner(AST_MOI)) return {ok:true, why:'aucun coordinateur en ce moment : un référent peut planifier'};
+  if(!c) return {ok:false, why:'Aucun coordinateur en ce moment : un médecin ou un infirmier référent doit en désigner un (bouton « Astreinte »).'};
+  return {ok:false, why:'Planification réservée au coordinateur : '+astNom(c.p)+'. '+(AST_MOI ? '' : 'Indiquez qui vous êtes (bouton « Astreinte »). ')};
+}
+function astGarde(){ const g = afPeutPlanifier(); if(!g.ok){ toast(g.why); return false; } return true; }
+
+/* ---------- conservation : base locale, puis dossier de données ---------- */
+async function astLoad(){
+  try{ AST = await metaGet(AST_KEY); }catch(e){ AST = null; }
+  if(!AST) AST = astDefaut();
+  try{ AST_MOI = await metaGet('ast_moi'); }catch(e){}
+  setInterval(() => { if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(astSyncLocked).catch(() => {}); }, 60000);
+}
+function astSave(){
+  AST.maj = astNow();
+  metaSet(AST_KEY, AST).catch(() => {});
+  clearTimeout(AST_T); AST_T = setTimeout(() => { if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(astSyncLocked).catch(() => {}); }, 300);
+  astRefresh();
+}
+/* la fusion : élément par élément, le plus récent ; l'administration, la plus récente */
+function astMerge(a, b){
+  if(!a) return b; if(!b) return a;
+  const o = {format:'adp-astreinte-v1', maj:(a.maj || '') > (b.maj || '') ? a.maj : b.maj};
+  o.admin = ((a.admin && a.admin.t) || '') >= ((b.admin && b.admin.t) || '') ? a.admin : b.admin;
+  ['roles', 'personnes', 'creneaux', 'designations'].forEach(k => {
+    const m = new Map();
+    (a[k] || []).concat(b[k] || []).forEach(x => { if(!x || !x.id) return; const y = m.get(x.id); if(!y || String(x.t || '') > String(y.t || '')) m.set(x.id, x); });
+    o[k] = Array.from(m.values());
+  });
+  return o;
+}
+const astSig = x => JSON.stringify(['roles', 'personnes', 'creneaux', 'designations'].map(k => (x[k] || []).map(y => y.id + '@' + y.t).sort())) + JSON.stringify(x.admin || null);
+/* dans le verrou des dossiers : lire plannings/astreinte.json, fusionner, réécrire si le dossier n'a pas tout */
+async function astSyncLocked(){
+  if(!FSA || FD.save.state !== 'ok' || !FD.save.h || !AST) return;
+  const dir = await FD.save.h.getDirectoryHandle(AST_DIR, {create:true});
+  let f = null;
+  try{ const fh = await dir.getFileHandle(AST_FILE); f = JSON.parse(await (await fh.getFile()).text()); }catch(e){ f = null; }
+  if(f && f.format !== 'adp-astreinte-v1') f = null;
+  const m = astMerge(AST, f), avant = astSig(AST);
+  if(!f || astSig(f) !== astSig(m)) await writeIn(dir, AST_FILE, JSON.stringify(m, null, 1));
+  AST_LU = astNow();
+  if(astSig(m) !== avant){ AST = m; await metaSet(AST_KEY, AST); astRefresh(); }
+}
+function astRefresh(){
+  try{ const e = $('#af_coord'); if(e) e.innerHTML = astCoordHTML(); if(AF_ON) afRender(); if(modalOpen() && $('#ast_modal')) astOpen(); }catch(e){}
+}
+function astExport(){ dl('astreinte_'+iso(new Date())+'.json', JSON.stringify(AST, null, 1), 'application/json'); }
+function astImport(inp){
+  const fl = inp.files && inp.files[0]; if(!fl) return;
+  const r = new FileReader();
+  r.onload = () => { try{ const o = JSON.parse(r.result); if(!o || o.format !== 'adp-astreinte-v1') throw 0; AST = astMerge(AST, o); astSave(); toast('Planning d’astreinte importé et fusionné'); }catch(e){ toast('Fichier de planning illisible'); } };
+  r.readAsText(fl);
+}
+
+/* ---------- actions ---------- */
+async function astMoi(id){ AST_MOI = id || null; try{ await metaSet('ast_moi', AST_MOI); }catch(e){} astRefresh(); }
+function astDesigner(){
+  if(!astPeutDesigner(AST_MOI)){ toast('Seul un rôle autorisé à désigner (médecin ou infirmier référent) peut désigner le coordinateur : indiquez qui vous êtes'); return; }
+  const p = ($('#ast_dp') || {}).value, fin = ($('#ast_df') || {}).value, motif = String(($('#ast_dm') || {}).value || '').trim();
+  if(!p){ toast('Choisissez le coordinateur'); return; }
+  const finIso = fin ? new Date(fin).toISOString() : null;
+  if(finIso && Date.parse(finIso) <= Date.now()){ toast('La fin doit être après maintenant'); return; }
+  AST.designations.push({id:afUid('d'), debut:astNow(), fin:finIso, p:p, par:AST_MOI, motif:motif, t:astNow()});
+  astSave(); toast('Coordinateur désigné : '+astNom(p));
+}
+function astFinDesignation(id){
+  if(!astPeutDesigner(AST_MOI)){ toast('Réservé aux rôles autorisés à désigner'); return; }
+  const d = AST.designations.find(x => x.id === id); if(!d) return;
+  d.fin = astNow(); d.t = astNow(); d.finPar = AST_MOI; astSave();
+}
+const astPeutPlanning = () => AST_ADMIN || astPeutDesigner(AST_MOI);
+function astCreneau(){
+  if(!astPeutPlanning()){ toast('Le planning se modifie par un référent ou par l’administrateur'); return; }
+  const p = ($('#ast_cp') || {}).value, a = ($('#ast_ca') || {}).value, b = ($('#ast_cb') || {}).value, rep = Math.max(1, Math.min(52, Number(($('#ast_cr') || {}).value) || 1));
+  if(!p || !a || !b){ toast('Personne, début et fin'); return; }
+  const da = new Date(a), db = new Date(b);
+  if(!(db > da)){ toast('La fin doit être après le début'); return; }
+  for(let i = 0; i < rep; i++){
+    const s = new Date(da.getTime()), e = new Date(db.getTime()); s.setDate(s.getDate() + 7*i); e.setDate(e.getDate() + 7*i);          // répétition hebdomadaire à l'heure locale
+    AST.creneaux.push({id:afUid('c'), debut:s.toISOString(), fin:e.toISOString(), p:p, par:AST_MOI || (AST_ADMIN ? 'admin' : ''), t:astNow()});
+  }
+  astSave(); toast(rep > 1 ? rep+' créneaux ajoutés' : 'Créneau ajouté');
+}
+function astSuppr(liste, id){
+  if(liste === 'creneaux' && !astPeutPlanning()){ toast('Réservé aux référents et à l’administrateur'); return; }
+  if(liste !== 'creneaux' && !AST_ADMIN){ toast('Réservé à l’administrateur'); return; }
+  const x = AST[liste].find(y => y.id === id); if(!x) return;
+  x.del = 1; x.t = astNow(); astSave();
+}
+async function astHash(pin, sel){ const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('adp-ast|' + sel + '|' + pin)); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+async function astAdmin(){
+  const pin = String(($('#ast_pin') || {}).value || '');
+  if(pin.length < 4){ toast('Code d’administration : 4 caractères au moins'); return; }
+  if(!AST.admin){
+    const sel = afUid('s'); AST.admin = {sel:sel, h:await astHash(pin, sel), t:astNow()}; AST_ADMIN = true; astSave(); toast('Code d’administration créé'); return;
+  }
+  if(await astHash(pin, AST.admin.sel) === AST.admin.h){ AST_ADMIN = true; astOpen(); toast('Administration déverrouillée'); }
+  else toast('Code erroné');
+}
+async function astAdminCode(){
+  if(!AST_ADMIN) return;
+  const pin = String(($('#ast_npin') || {}).value || ''); if(pin.length < 4){ toast('4 caractères au moins'); return; }
+  const sel = afUid('s'); AST.admin = {sel:sel, h:await astHash(pin, sel), t:astNow()}; astSave(); toast('Code d’administration changé');
+}
+function astSet(liste, id, k, v){
+  if(!AST_ADMIN) return;
+  let x = AST[liste].find(y => y.id === id); if(!x) return;
+  x[k] = (k === 'designe' || k === 'coord' || k === 'actif') ? (v ? 1 : 0) : v; x.t = astNow(); astSave();
+}
+function astAjout(liste){
+  if(!AST_ADMIN) return;
+  if(liste === 'roles') AST.roles.push({id:afUid('r'), l:'Nouveau rôle', designe:0, coord:0, t:astNow()});
+  else { const n = String(($('#ast_nn') || {}).value || '').trim(), r = ($('#ast_nr') || {}).value; if(!n){ toast('Nom'); return; } AST.personnes.push({id:afUid('u'), nom:n, role:r, actif:1, t:astNow()}); }
+  astSave();
+}
+function astActualiser(){ if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(astSyncLocked).then(() => { toast('Planning d’astreinte relu'); astOpen(); }).catch(e => toast('Lecture impossible : '+errTxt(e))); else toast('Aucun dossier de données connecté : le planning reste sur ce poste (export et import possibles)'); }
+
+/* ---------- affichage ---------- */
+function astCoordHTML(){
+  if(!astConfigure()) return '<span class="af-share off">Coordination : aucun planning d’astreinte, la planification est ouverte à tous. <a href="#" onclick="astOpen();return false">Paramétrer l’astreinte</a></span>';
+  const c = astCoord(), g = afPeutPlanifier();
+  return '<span class="af-share'+(g.ok ? ' on' : '')+'">Coordinateur : <b>'+(c ? esc(astNom(c.p)) : 'aucun')+'</b>'+(c ? ' ('+(c.src === 'designation' ? 'désigné' : 'astreinte')+(c.fin ? ' jusqu’à '+astHMc(c.fin) : '')+')' : '')+
+    ' · vous : '+(AST_MOI ? esc(astNom(AST_MOI)) : '<i>non indiqué</i>')+(g.ok ? ' · vous pouvez planifier' : '')+' <a href="#" onclick="astOpen();return false">Astreinte</a></span>';
+}
+function astOpen(){
+  if(!AST) AST = astDefaut();
+  const P = astVis(AST.personnes), R = astVis(AST.roles), c = astCoord(), now = Date.now();
+  const optP = (L, cur, vide) => (vide ? '<option value="">'+esc(vide)+'</option>' : '')+L.map(p => '<option value="'+p.id+'"'+(p.id === cur ? ' selected' : '')+'>'+esc(p.nom)+' ('+esc((astRole(p.role) || {}).l || '?')+')</option>').join('');
+  const finDef = c && c.fin ? astLocal(c.fin) : astLocal(new Date(now + 12*3600000).toISOString());
+  let h = '<div id="ast_modal"><h3>Astreinte et coordination de l’afflux</h3>';
+  h += '<div class="note" style="margin:0 0 8px">Le <b>coordinateur</b> (infirmier d’astreinte) est le seul à planifier les séances de l’afflux. Il est donné par le <b>planning d’astreinte</b> ; un rôle autorisé (médecin ou infirmier référent) peut en <b>désigner un autre</b> dans la journée. '+
+       'Le planning est rangé dans le dossier de données (<code>'+AST_DIR+'/'+AST_FILE+'</code>), relu à l’ouverture, au bouton Actualiser et toutes les minutes ; il ne passe pas par Firebase.</div>';
+  h += '<h4>Ce poste</h4><div class="af-pl">Je suis : <select onchange="astMoi(this.value)">'+optP(P.filter(p => p.actif !== 0), AST_MOI, 'choisir…')+'</select>'+(AST_MOI && astPeutDesigner(AST_MOI) ? ' <span class="af-st" style="--c:#2e7d32">peut désigner</span>' : '')+'</div>';
+  h += '<div class="af-sub">Déclaratif : il n’y a pas d’authentification. C’est une règle d’organisation, pas un contrôle d’accès.</div>';
+  h += '<h4>Coordinateur maintenant</h4><div class="af-pl"><b>'+(c ? esc(astNom(c.p)) : 'aucun')+'</b>'+(c ? ' — '+(c.src === 'designation' ? 'désigné par '+esc(astNom(c.d.par))+(c.d.motif ? ' ('+esc(c.d.motif)+')' : '') : 'planning d’astreinte')+(c.fin ? ', jusqu’à '+astHM(c.fin) : '') : '')+
+       (c && c.src === 'designation' && astPeutDesigner(AST_MOI) ? ' <button class="mini" onclick="astFinDesignation(\''+c.d.id+'\')">mettre fin (retour au planning)</button>' : '')+'</div>';
+  if(astPeutDesigner(AST_MOI)) h += '<div class="af-pl">Désigner : <select id="ast_dp">'+optP(astCoordonnable(), '', 'coordinateur…')+'</select> jusqu’à <input id="ast_df" type="datetime-local" value="'+finDef+'"> motif <input id="ast_dm" placeholder="facultatif" style="width:140px"> <button class="tb gd" onclick="astDesigner()">Désigner</button></div>';
+  else h += '<div class="af-sub">Pour désigner un autre coordinateur : indiquez qui vous êtes (un rôle autorisé à désigner).</div>';
+  /* planning */
+  const C = astVis(AST.creneaux).filter(x => Date.parse(x.fin) > now - 86400000).sort((a, b) => a.debut.localeCompare(b.debut)).slice(0, 40);
+  h += '<h4>Planning d’astreinte</h4><div style="overflow-x:auto"><table class="af-t"><tr><th>Début</th><th>Fin</th><th>Coordinateur</th><th></th></tr>'+
+    (C.length ? C.map(x => '<tr'+(Date.parse(x.debut) <= now && now < Date.parse(x.fin) ? ' style="background:#e6f4ea"' : '')+'><td>'+astHM(x.debut)+'</td><td>'+astHM(x.fin)+'</td><td>'+esc(astNom(x.p))+'</td><td>'+(astPeutPlanning() ? '<button class="mini" onclick="astSuppr(\'creneaux\',\''+x.id+'\')">retirer</button>' : '')+'</td></tr>').join('') : '<tr><td colspan="4" class="af-sub">Aucun créneau.</td></tr>')+'</table></div>';
+  if(astPeutPlanning()){
+    const d0 = new Date(); d0.setHours(8, 0, 0, 0); const d1 = new Date(d0.getTime() + 86400000);
+    h += '<div class="af-pl">Ajouter : <select id="ast_cp">'+optP(astCoordonnable(), '', 'coordinateur…')+'</select> du <input id="ast_ca" type="datetime-local" value="'+iso(d0)+'T08:00"> au <input id="ast_cb" type="datetime-local" value="'+iso(d1)+'T08:00"> répété <input id="ast_cr" type="number" min="1" max="52" value="1" style="width:50px"> semaine(s) <button class="tb" onclick="astCreneau()">Ajouter</button></div>';
+  }
+  /* historique */
+  const H = astVis(AST.designations).slice().sort((a, b) => b.debut.localeCompare(a.debut)).slice(0, 15);
+  if(H.length) h += '<h4>Désignations récentes</h4><ul class="af-sub">'+H.map(d => '<li>'+astHM(d.debut)+' : <b>'+esc(astNom(d.p))+'</b> désigné par '+esc(astNom(d.par))+(d.fin ? ', jusqu’à '+astHM(d.fin) : '')+(d.motif ? ' — '+esc(d.motif) : '')+'</li>').join('')+'</ul>';
+  /* fichier */
+  h += '<h4>Fichier</h4><div class="af-pl">'+(FSA && FD.save.state === 'ok' ? 'Dossier de données connecté'+(AST_LU ? ', relu à '+hhmm(new Date(AST_LU)) : '') : 'Pas de dossier de données connecté : le planning reste sur ce poste')+
+       ' <button class="mini" onclick="astActualiser()">relire maintenant</button> <button class="mini" onclick="astExport()">exporter</button> <label class="mini" style="cursor:pointer">importer<input type="file" accept=".json" hidden onchange="astImport(this)"></label></div>';
+  /* administration */
+  h += '<h4>Administration</h4>';
+  if(!AST_ADMIN){
+    h += '<div class="af-pl">'+(AST.admin ? 'Code d’administration :' : 'Aucun code d’administration : créez-le (4 caractères au moins).')+' <input id="ast_pin" type="password" autocomplete="off" style="width:120px"> <button class="tb" onclick="astAdmin()">'+(AST.admin ? 'Déverrouiller' : 'Créer le code')+'</button></div>';
+  } else {
+    h += '<div class="af-sub">Rôles : « désigne » = peut désigner le coordinateur et modifier le planning ; « coordinateur » = peut être coordinateur.</div><div style="overflow-x:auto"><table class="af-t"><tr><th>Rôle</th><th>Désigne</th><th>Coordinateur</th><th></th></tr>'+
+      R.map(r => '<tr><td><input value="'+esc(r.l)+'" onchange="astSet(\'roles\',\''+r.id+'\',\'l\',this.value)"></td><td><input type="checkbox"'+(r.designe ? ' checked' : '')+' onchange="astSet(\'roles\',\''+r.id+'\',\'designe\',this.checked)"></td><td><input type="checkbox"'+(r.coord ? ' checked' : '')+' onchange="astSet(\'roles\',\''+r.id+'\',\'coord\',this.checked)"></td><td><button class="mini" onclick="astSuppr(\'roles\',\''+r.id+'\')">retirer</button></td></tr>').join('')+
+      '</table></div><button class="mini" onclick="astAjout(\'roles\')">+ rôle</button>';
+    h += '<div style="overflow-x:auto;margin-top:8px"><table class="af-t"><tr><th>Personne</th><th>Rôle</th><th>Active</th><th></th></tr>'+
+      astVis(AST.personnes).map(p => '<tr><td><input value="'+esc(p.nom)+'" onchange="astSet(\'personnes\',\''+p.id+'\',\'nom\',this.value)"></td><td><select onchange="astSet(\'personnes\',\''+p.id+'\',\'role\',this.value)">'+R.map(r => '<option value="'+r.id+'"'+(r.id === p.role ? ' selected' : '')+'>'+esc(r.l)+'</option>').join('')+'</select></td><td><input type="checkbox"'+(p.actif !== 0 ? ' checked' : '')+' onchange="astSet(\'personnes\',\''+p.id+'\',\'actif\',this.checked)"></td><td><button class="mini" onclick="astSuppr(\'personnes\',\''+p.id+'\')">retirer</button></td></tr>').join('')+
+      '</table></div><div class="af-pl">Ajouter : <input id="ast_nn" placeholder="Nom" style="width:160px"> <select id="ast_nr">'+R.map(r => '<option value="'+r.id+'">'+esc(r.l)+'</option>').join('')+'</select> <button class="mini" onclick="astAjout(\'personnes\')">+ personne</button></div>';
+    h += '<div class="af-pl">Nouveau code d’administration : <input id="ast_npin" type="password" style="width:120px"> <button class="mini" onclick="astAdminCode()">changer</button> <button class="mini" onclick="AST_ADMIN=false;astOpen()">verrouiller</button></div>';
+  }
+  modalHTML(h+'</div>');
 }
 
 /* =====================================================================
@@ -14775,6 +15001,7 @@ async function saveDraft(){ if(DIRTY && REC && !EDIT_ASK) await metaSet('draft',
   try{ await openDB(); }catch(e){ alert("Impossible d'ouvrir la base locale du navigateur : "+e); }
   DB = await idbAll();
   await afLoad();
+  await astLoad();
   const s = await metaGet('settings');
   if(s){ SET.poste=s.poste||''; SET.sep=s.sep||';'; SET.pii=!!s.pii;
          SET.wedge = s.wedge!==false; SET.scanRe=s.scanRe||''; SET.hash=!!s.hash; SET.hashLen=s.hashLen||12;

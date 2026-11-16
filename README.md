@@ -2,7 +2,7 @@
 
 Outil de saisie pour la prise en charge d'un accident de plongée en médecine
 hyperbare : consultation initiale en urgence, consultations de suivi, compte
-rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.2.2 (**version d'essai**, à valider avant la version principale).
+rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.3.1 (**version d'essai**, à valider avant la version principale).
 
 Deux sorties, depuis la même saisie :
 
@@ -101,7 +101,7 @@ propose de l'appliquer.
 
 GitHub Pages rend ce dépôt **public**. Ne versionnez jamais de fiche remplie,
 de `donnees_neuro.csv`, de fiche ou de sauvegarde JSON (`187-2026_50987654-EX1.json`), de ligne
-Excel exportée, ni le sel de pseudonymisation, ni **le fichier du générateur de courriers** (signatures scannées
+Excel exportée, ni le planning d'astreinte (`plannings/astreinte.json`, qui porte les noms du personnel), ni le sel de pseudonymisation, ni **le fichier du générateur de courriers** (signatures scannées
 et numéros RPPS des médecins : il se choisit dans l'application, jamais dans le dépôt).
 Le `.gitignore` fourni bloque déjà ces noms de fichiers. Vérifiez quand même
 avec `git status` avant chaque `commit`.

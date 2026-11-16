@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.2.2 (version d'essai)
+# ADP — accident de plongée, version 12.3.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -532,10 +532,22 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
   - **Déplacements** : l'historique des lieux est l'**union** des historiques ; deux déplacements simultanés du même patient sont tous deux gardés, et le lieu actuel est le dernier de l'historique.
   - **Identifiants** : un patient ou une séance créés sur deux appareils ne s'écrasent jamais. Le **même identifiant patient** saisi sur deux appareils donne deux lignes, signalées **« doublon »** : retirez-en une.
   - **Suppression** d'un patient ou d'une séance : propagée, définitive. **Nouvel événement** sur un appareil : tous les appareils basculent sur le nouvel événement (exportez l'ancien d'abord).
-  - **Planification** : un seul poste doit lancer « Proposer le planning » à la fois (le coordinateur) ; deux propositions lancées au même instant sur deux appareils produiraient deux jeux de séances proposées, à supprimer ou à recalculer.
+  - **Planification** : réservée au coordinateur depuis la 12.3.1 (voir ci-dessous).
   - **Tous les appareils couplés doivent être en 12.2.2 ou plus** : un appareil plus ancien ignore l'afflux (il le compte dans « erreurs » de la fenêtre du couplage) sans rien abîmer.
 
 **À valider** : les capacités par défaut (en particulier le nombre de scopés en configuration « 6 assis » de la chambre d'urgence, et l'absence de place assise en configuration allongée), la règle de la mise en place de 10 min, l'intervalle entre séances, l'ordre de priorité.
+
+## Astreinte et coordinateur de l'afflux (depuis la 12.3.1)
+
+**Le coordinateur est le seul à planifier** les séances de l'afflux : *Proposer le planning*, *valider*, *supprimer* une séance, *ajouter* ou *retirer* un patient d'une séance. *Démarrer* et *terminer* une séance restent ouverts à toute l'équipe (c'est l'exécution au caisson). Sur un autre poste, le bouton est grisé et la raison s'affiche (« Planification réservée au coordinateur : … »).
+
+- **Qui est coordinateur ?** Par défaut, l'**infirmier d'astreinte** du **planning d'astreinte** (créneaux début → fin, avec une personne ; un créneau se répète chaque semaine à l'ajout). Dans la journée, un **rôle autorisé à désigner** (par défaut : médecin référent, infirmier référent) peut **désigner un autre coordinateur**, jusqu'à une heure de fin (par défaut la fin du créneau en cours) et avec un motif ; la désignation l'emporte sur le planning tant qu'elle court, la plus récente l'emporte sur les autres, et *mettre fin* rend la main au planning. L'historique des désignations (qui, par qui, quand, pourquoi) est gardé.
+- **Sans coordinateur en ce moment** (planning vide à cette heure) : un référent peut planifier, en attendant d'en désigner un. **Sans planning d'astreinte du tout** (rien de paramétré) : la planification reste ouverte à tous, comme avant.
+- **« Je suis »** : chaque poste indique la personne qui l'utilise (*Astreinte › Ce poste*). **C'est déclaratif, sans authentification** : une règle d'organisation, pas un contrôle d'accès.
+- **Administration** (code de 4 caractères au moins, créé au premier usage ; seule son empreinte SHA-256 salée est gardée) : les **rôles** (libellé ; « désigne » = peut désigner le coordinateur et modifier le planning ; « coordinateur » = peut l'être) et les **personnes** (nom, rôle, active). Le planning se modifie par un référent ou par l'administrateur.
+- **Le fichier** : `plannings/astreinte.json` dans le **dossier de données**, comme les fiches. Il est relu et fusionné à l'ouverture, au bouton **Actualiser**, toutes les **60 secondes**, et réécrit après chaque modification. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification, une suppression est une marque, et la fusion garde le plus récent de chaque élément, si bien qu'aucune modification faite sur un autre poste n'est écrasée. **Il ne passe pas par Firebase.** Un poste sans dossier de données (iPhone, Firefox) garde sa copie et peut *exporter* ou *importer* (fusionner) le fichier.
+- **Délai** : un changement fait sur un poste arrive sur les autres au plus tard à leur prochaine lecture (une minute), ou tout de suite avec *Actualiser*.
+- Le fichier porte les **noms du personnel** : ne le versionnez pas dans un dépôt public.
 
 ## Les six onglets de saisie
 
