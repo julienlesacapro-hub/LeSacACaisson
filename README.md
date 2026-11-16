@@ -2,7 +2,7 @@
 
 Outil de saisie pour la prise en charge d'un accident de plongée en médecine
 hyperbare : consultation initiale en urgence, consultations de suivi, compte
-rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.1.2 (**version d'essai**, à valider avant la version principale).
+rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.4.2 (**version d'essai**, à valider avant la version principale).
 
 Deux sorties, depuis la même saisie :
 
@@ -10,7 +10,7 @@ Deux sorties, depuis la même saisie :
    de consultation (compte rendu de prise en charge, fiche de suivi, compte rendu
    de séjour) ;
 2. un fichier `donnees_neuro.csv` unique qui s'incrémente, une ligne par fiche,
-   1081 colonnes, prêt pour R, Python, SPSS, Jamovi ou Excel.
+   1176 colonnes, prêt pour R, Python, SPSS, Jamovi ou Excel.
 
 Depuis la consultation de sortie, le générateur de courriers du service (courriers,
 ordonnances, certificats) s'ouvre rempli avec ce que la fiche sait, et deux lignes à
@@ -24,7 +24,7 @@ Aucune donnée ne quitte l'appareil. Pas de serveur, pas de compte, pas de requ�
 réseau. **Deux exceptions, facultatives :** la **dictée vocale** de Chrome et d'Edge, qui
 confie l'audio à un service de transcription du navigateur (voir `docs/NOTICE.md`,
 « Dictée vocale »), et, depuis la 11.1.1, le **couplage entre appareils** par Firebase
-Realtime Database (désactivé par défaut ; fiches chiffrées de bout en bout ; voir
+Realtime Database (désactivé par défaut ; fiches et afflux massif chiffrés de bout en bout ; voir
 `docs/COUPLAGE_FIREBASE.md`). Le code entier tient dans `index.html`.
 
 ---
@@ -101,7 +101,7 @@ propose de l'appliquer.
 
 GitHub Pages rend ce dépôt **public**. Ne versionnez jamais de fiche remplie,
 de `donnees_neuro.csv`, de fiche ou de sauvegarde JSON (`187-2026_50987654-EX1.json`), de ligne
-Excel exportée, ni le sel de pseudonymisation, ni **le fichier du générateur de courriers** (signatures scannées
+Excel exportée, ni les plannings (`plannings/astreinte.json`, `plannings/tables.json` : noms du personnel, noms et adresses e-mail des patients), ni le sel de pseudonymisation, ni **le fichier du générateur de courriers** (signatures scannées
 et numéros RPPS des médecins : il se choisit dans l'application, jamais dans le dépôt).
 Le `.gitignore` fourni bloque déjà ces noms de fichiers. Vérifiez quand même
 avec `git status` avant chaque `commit`.
@@ -122,7 +122,7 @@ icons/                     icônes 32 à 1024 px, dont deux masquables Android
 brand_logo_source.png      le blason, fichier maître, pour régénérer les icônes
 docs/
   PUBLIER.md                   publier et mettre à jour, pas à pas
-  dictionnaire_variables.csv   1081 variables, libellé et codage de chacune
+  dictionnaire_variables.csv   1176 variables, libellé et codage de chacune
   COUPLAGE_FIREBASE.md         coupler deux appareils : mise en place, sécurité, dépannage
   regles_firebase.json         règles de sécurité à copier dans la console Firebase
   NOTICE.md                    mode d'emploi clinique et technique

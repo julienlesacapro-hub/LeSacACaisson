@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.1.2 (version d'essai)
+# ADP — accident de plongée, version 12.4.2 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1081 colonnes (1054 avant la 12.1.2).
+Une ligne = une fiche. 1176 colonnes (1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -506,6 +506,92 @@ la HbCO, l'indication d'OHB et la perte de connaissance sont parmi les dernière
 **À valider** : le contenu de chaque encart, la liste des critères et le seuil de HbCO (25 %), les libellés, la place de chaque encart, la règle de proposition de la table (A18 / A15, depuis la 12.1.2 : ce qui compte comme « signe neurologique »), le modèle de cinétique de l'HbCO, et l'usage des lignes Excel.
 
 ---
+
+## Afflux massif — intoxication au monoxyde de carbone (depuis la 12.2.1)
+
+Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le menu **Plus**). Elle ouvre un écran à part, pensé pour plusieurs intoxiqués à la fois. Une carte « Événement en cours : n patients — reprendre » rappelle un événement ouvert.
+
+- **Saisie rapide** : un identifiant puis Entrée crée le patient, horodaté, dans le lieu d'arrivée ; la **douchette** fonctionne aussi (même règle d'extraction et même pseudonymisation que pour une fiche) ; la **numérotation automatique** crée d'un coup *n* patients `CO-01`, `CO-02`… (préfixe réglable). Un identifiant déjà saisi est refusé et sa ligne surlignée.
+- **Lieux** : un tableau par lieu, avec les patients qui s'y trouvent. Chaque changement de lieu (menu de la ligne, ou déplacement groupé des patients cochés) est **horodaté** ; « historique » donne le parcours d'un patient. Les lieux se paramètrent (ajout, renommage, retrait d'un lieu inutilisé), ainsi que trois rôles : lieu d'arrivée, lieu après une séance, sortie (le patient quitte l'afflux).
+- **Par patient** : HbCO ou SpCO, signes neurologiques, indication d'OHB (indiquée, non indiquée, à discuter), **contre-indication** (à vérifier, absente, présente avec sa nature), installation (assis, allongé, réanimatoire avec IOT), scope, grossesse, table (automatique : A18 si signes neurologiques, A15 sinon ; version IOT pour un réanimatoire), heure de disponibilité (patient encore en transit), statut. « fiche CO » crée une fiche *Intoxication au monoxyde de carbone* préremplie (identifiant, SpCO, indication, contre-indication, IOT, grossesse, table et heure de mise en pression de la 1re séance validée).
+- **Chambres** (paramétrables : nom, lieu, configurations) — valeurs par défaut :
+
+| Chambre | Configuration | Assis | Allongés | Réanimatoire | Scopés max | Mise en place |
+|---|---|---|---|---|---|---|
+| Chambre 1 | 6 assis | 6 | 0 | — | 1 | 0 min |
+| Chambre 1 | 2 allongés non réanimatoires | 0 | 2 | non | 1 | **10 min** |
+| Chambre d'urgence | 3 assis (nominale) | 3 | 0 | — | 1 | 0 min |
+| Chambre d'urgence | 1 allongé, réanimatoire possible | 0 | 1 | oui | 1 | 0 min |
+| Chambre d'urgence | 6 assis | 6 | 0 | — | 1 | 0 min |
+
+  Règles : un patient assis peut occuper une place allongée libre ; un réanimatoire exige une place allongée « réanimatoire » et compte comme scopé ; une séance réunit des patients **de même table** (A15 ou A18) ; la « mise en place » s'ajoute à l'intervalle entre séances (15 min par défaut) quand la chambre change de configuration (la première séance part de la première configuration de la liste).
+- **Planification** : « Proposer le planning » ne retient que les patients dont l'OHB est **indiquée** et la contre-indication **absente**, non sortis, sans séance ouverte. Algorithme glouton : le patient le plus prioritaire (réanimatoire, signes neurologiques, grossesse, HbCO la plus haute, arrivée la plus ancienne) prend la séance qui commence le plus tôt parmi les chambres et configurations qui l'acceptent ; la séance se complète avec les patients de même table qui y tiennent et sont disponibles. Ce n'est **pas** un optimum garanti : relisez, puis **validez**. Une séance validée, en cours ou terminée ne bouge plus ; les propositions se recalculent. **Démarrer** place les patients dans le lieu de la chambre, **terminer** compte la séance et les place dans le lieu « après une séance » ; « nouvelle séance » remet un patient traité en attente. Un patient peut être retiré d'une séance ou ajouté à une séance compatible.
+- **Exports** : CSV (une ligne par patient, avec le parcours des lieux) et sauvegarde JSON de l'événement (réimportable). « Nouvel événement » garde les paramètres et remplace l'événement : exportez d'abord.
+- **Travail à plusieurs (depuis la 12.2.2)** : sans couplage, l'événement reste sur l'appareil (l'en-tête le dit, avec un lien vers le couplage). Avec le **couplage entre appareils** (*Plus › Couplage entre appareils…*), il est **partagé** par tous les appareils du même code, presque en temps réel, chiffré de bout en bout comme les fiches : un poste au tri saisit les arrivées, une tablette au caisson démarre et termine les séances, et chacun voit le même tableau. L'en-tête indique « Partagé · n appareils » (avec leurs noms), « hors ligne » (les modifications partent à la reconnexion) ou « envoi en attente ».
+  - **Fusion champ par champ** : deux opérateurs qui modifient deux champs d'un même patient gardent les deux modifications ; sur un même champ, la plus récente l'emporte.
+  - **Déplacements** : l'historique des lieux est l'**union** des historiques ; deux déplacements simultanés du même patient sont tous deux gardés, et le lieu actuel est le dernier de l'historique.
+  - **Identifiants** : un patient ou une séance créés sur deux appareils ne s'écrasent jamais. Le **même identifiant patient** saisi sur deux appareils donne deux lignes, signalées **« doublon »** : retirez-en une.
+  - **Suppression** d'un patient ou d'une séance : propagée, définitive. **Nouvel événement** sur un appareil : tous les appareils basculent sur le nouvel événement (exportez l'ancien d'abord).
+  - **Planification** : réservée au coordinateur depuis la 12.3.1 (voir ci-dessous).
+  - **Tous les appareils couplés doivent être en 12.2.2 ou plus** : un appareil plus ancien ignore l'afflux (il le compte dans « erreurs » de la fenêtre du couplage) sans rien abîmer.
+
+**À valider** : les capacités par défaut (en particulier le nombre de scopés en configuration « 6 assis » de la chambre d'urgence, et l'absence de place assise en configuration allongée), la règle de la mise en place de 10 min, l'intervalle entre séances, l'ordre de priorité.
+
+## Astreinte et coordinateur de l'afflux (depuis la 12.3.1)
+
+**Le coordinateur est le seul à planifier** les séances de l'afflux : *Proposer le planning*, *valider*, *supprimer* une séance, *ajouter* ou *retirer* un patient d'une séance. *Démarrer* et *terminer* une séance restent ouverts à toute l'équipe (c'est l'exécution au caisson). Sur un autre poste, le bouton est grisé et la raison s'affiche (« Planification réservée au coordinateur : … »).
+
+- **Qui est coordinateur ?** Par défaut, l'**infirmier d'astreinte** du **planning d'astreinte** (créneaux début → fin, avec une personne ; un créneau se répète chaque semaine à l'ajout). Dans la journée, un **rôle autorisé à désigner** (par défaut : médecin référent, infirmier référent) peut **désigner un autre coordinateur**, jusqu'à une heure de fin (par défaut la fin du créneau en cours) et avec un motif ; la désignation l'emporte sur le planning tant qu'elle court, la plus récente l'emporte sur les autres, et *mettre fin* rend la main au planning. L'historique des désignations (qui, par qui, quand, pourquoi) est gardé.
+- **Sans coordinateur en ce moment** (planning vide à cette heure) : un référent peut planifier, en attendant d'en désigner un. **Sans planning d'astreinte du tout** (rien de paramétré) : la planification reste ouverte à tous, comme avant.
+- **« Je suis »** : chaque poste indique la personne qui l'utilise (*Astreinte › Ce poste*). **C'est déclaratif, sans authentification** : une règle d'organisation, pas un contrôle d'accès.
+- **Administration** (code de 4 caractères au moins, créé au premier usage ; seule son empreinte SHA-256 salée est gardée) : les **rôles** (libellé ; « désigne » = peut désigner le coordinateur et modifier le planning ; « coordinateur » = peut l'être) et les **personnes** (nom, rôle, active). Le planning se modifie par un référent ou par l'administrateur.
+- **Le fichier** : `plannings/astreinte.json` dans le **dossier de données**, comme les fiches. Il est relu et fusionné à l'ouverture, au bouton **Actualiser**, toutes les **60 secondes**, et réécrit après chaque modification. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification, une suppression est une marque, et la fusion garde le plus récent de chaque élément, si bien qu'aucune modification faite sur un autre poste n'est écrasée. **Il ne passe pas par Firebase.** Un poste sans dossier de données (iPhone, Firefox) garde sa copie et peut *exporter* ou *importer* (fusionner) le fichier.
+- **Délai** : un changement fait sur un poste arrive sur les autres au plus tard à leur prochaine lecture (une minute), ou tout de suite avec *Actualiser*.
+- Le fichier porte les **noms du personnel** : ne le versionnez pas dans un dépôt public.
+
+## ECG et examen général détaillés, tous cadres (depuis la 12.4.2)
+
+- **ECG** : dès que « ECG » est coché **OUI** (onglet Examens complémentaires), quel que soit le cadre (accident de plongée, OPI, mixte, CO, hyperbarie chronique), l'encart **Signes d'ischémie et d'atteinte myocardique** s'affiche **juste sous la fréquence cardiaque et le QTc** : rythme (sinusal, tachycardie sinusale, fibrillation ou flutter atrial, autre), trouble de la repolarisation ou signe ischémique (sus-décalage du ST, sous-décalage du ST, ondes T négatives, ondes Q, territoire), trouble de la conduction (BAV, BBD, BBG), extrasystoles ventriculaires ; le QTc est jugé allongé à partir de 450 ms chez l'homme et 460 ms chez la femme (seuils usuels). Un ECG anormal s'affiche en rouge. Le **compte rendu** de l'ECG se rédige d'après ces items (modifiable) ; dans la synthèse, **seuls les signes anormaux sont en gras** (tout le compte rendu s'il a été réécrit à la main). *Corrige la 12.1.2 : dans l'intoxication au CO, cocher l'ECG n'affichait pas ces signes (l'encart, rangé à part, n'était pas rafraîchi).*
+- **Examen clinique général** : une anomalie **cardio-vasculaire**, **respiratoire**, **abdominale** ou **locomotrice** cochée **OUI** ouvre, juste en dessous, la **liste de ses signes à cocher** (tachycardie, souffle, signes d'insuffisance cardiaque, marbrures… ; polypnée, crépitants, sibilants, murmure vésiculaire diminué… ; douleur, défense, contracture… ; articulation atteinte, œdème, impotence…), puis le champ « Préciser ». La synthèse écrit les signes cochés **en gras**, appareil par appareil ; le papier les porte sur la ligne de l'anomalie. Dans l'intoxication au CO, le cardio-vasculaire reste l'encart détaillé propre au CO.
+- Fichier de données : les colonnes `ex_cv_l`, `ex_pneumo_l`, `ex_abdo_l`, `ex_loco_l` (une par case, plus la liste) s'ajoutent en fin de formulaire.
+
+## Consultation d'hyperbarie chronique (cadre 7, depuis la 12.4.1)
+
+Le cadre **Consultation d'hyperbarie chronique (hors urgence)** s'ouvre, avec une **interface proposée, à valider**. Ce qui est propre à la plongée et à l'urgence est masqué (mode d'entrée, plongée, examen neurologique, ASIA, recompression, diagnostic de plongée ; les valeurs restent dans la fiche).
+
+| Onglet | Encarts |
+|---|---|
+| 1 · Administratif | identification ; **coordonnées** (adresse, téléphone, **e-mail** : il sert aux courriels de rendez-vous) ; contacts, médecin traitant |
+| 2 · Anamnèse | **Terrain du patient** (antécédents, habitudes de vie dont le tabac en paquets-années calculés, traitements, allergies) ; **Indication et adressage** : indication proposée (liste, ou autre), médecin adresseur, **spécialité**, établissement, contact, date du courrier, **courrier joint** (photo prise à l'appareil ou image scannée, rangée dans les pièces jointes sous le titre « Courrier d'adressage » ; un PDF n'est pas accepté), histoire de la maladie |
+| 3 · Examen clinique général | constantes, **examen général**, **ORL** (otoscopie, Valsalva, Weber, Rinne), **Contre-indications à l'OHB** |
+| 5 · Examens complémentaires | biologie, imagerie, dont le **scanner thoracique** |
+| 6 · Conclusion | **Conclusion et prescription d'OHB**, traitements, orientation, pièces jointes |
+
+- **Contre-indications** : liste à cocher (pneumothorax non drainé, BPCO, emphysème ou bulles, asthme non contrôlé, épilepsie non contrôlée, claustrophobie, infection ORL ou dysperméabilité tubaire, fièvre, insuffisance cardiaque décompensée, chimiothérapie, disulfirame, dispositif implanté non validé, chirurgie récente thoracique ou de l'oreille, grossesse, autre). **Liste proposée, à valider par le service.**
+- **Scanner thoracique sans injection suggéré** (règle du service) en cas d'**antécédent pulmonaire** (pneumothorax, asthme, ou contre-indication pulmonaire cochée), de **tabagisme actif ou sevré** (avec les PA), ou d'**âge supérieur à 50 ans** ; un bouton le passe en « Demandé, en attente » (il rejoint alors les examens en attente de résultat).
+- **Conclusion** : indication retenue (oui, non, à discuter) et son libellé ; contre-indication (absente ; relative, levée ou acceptée ; présente : OHB récusée) ; **prescription** : table (**A15** proposée), pauses à l'air, **prémédication** (DCI, dose et voie, moment de la prise), **protocole du service** (paramétrable : voir le planning des tables), fréquence, nombre de séances et réévaluation proposés d'après le protocole (modifiables), date de la **première séance**, créneau souhaité, **rendez-vous** de consultation. Les boutons *Planifier la cure* et *Rendez-vous du patient* relient la fiche au planning des tables.
+- La synthèse, le papier (deux pages propres, puis les pièces jointes, dont le courrier) et le fichier de données suivent. De nouvelles colonnes s'ajoutent au CSV (`chr_*`).
+
+## Planning des tables — fonctionnement normal (depuis la 12.4.1)
+
+*Organisation du service › Planning des tables* (et *Plus › Planning des tables*) : la semaine des séances de recompression **hors afflux massif**, tenue par les infirmiers.
+
+- **Grille de la semaine** : horaires de table **7 h 45, 10 h, 12 h 45 et 15 h** par défaut, jours d'ouverture (du lundi au vendredi par défaut), une case par chambre avec ses places (Chambre 1 : 6 ; chambre d'urgence : 3). Navigation de semaine en semaine.
+- **Planifier une cure** (depuis la consultation, ou depuis la liste des cures pour une prescription retenue) : les jours du protocole ouverts dans le service, le créneau souhaité (pour deux séances par jour, le créneau souhaité puis celui de l'après-midi), une chambre qui a de la place, jamais deux séances du même patient au même créneau. Les séances sont numérotées (3/14…).
+- **Protocoles du service** (paramétrés par l'administrateur) : par défaut, *Standard* (1 séance par jour, 5 jours sur 7, 20 séances, réévaluation à 10) et *Surdité brusque* (2 par jour pendant 2 jours, puis 1 par jour pendant 10 jours : 14 séances). **Le nombre de séances et la réévaluation par défaut sont des exemples, à remplacer par ceux du service ; la surdité brusque suit aussi les jours d'ouverture (une fin de semaine interrompt la cure : ouvrez le samedi et le dimanche si le service le fait).**
+- **Sur une séance** : *valider la table réalisée* (rôle qui valide : la séance passe « réalisée » et une **fiche « séance de recompression »** du dossier se crée, datée, avec la table et l'heure, au nom de la personne qui valide) ; *absent* ; *déplacer* ; *retirer* ; *courriel des rendez-vous* ; *imprimer les rendez-vous*.
+- **Annuler une table** (un créneau d'une chambre) ou **toute une journée** : motif (raison technique, urgence en cours, afflux massif, personnel indisponible, autre) et précision ; les séances passent « annulées » et le **courriel d'annulation** s'ouvre, les patients en copie cachée. Une cure amputée d'une séance annulée propose **compléter**, après sa dernière séance.
+- **Courriels** : ils s'ouvrent dans la **messagerie du poste** (lien `mailto`), prêts à partir ; **ADP n'envoie rien lui-même** (il n'a pas de serveur). Modèles paramétrables (objet, texte, nom du service, téléphone, signature) ; réglages : ouvrir le courriel de confirmation dès qu'une cure est planifiée, proposer le courriel d'annulation à chaque table annulée.
+- **Rendez-vous d'un patient** : une page à imprimer (séances, état, rendez-vous de consultation).
+- **Rangement** : `plannings/tables.json` dans le dossier de données, comme le planning d'astreinte (relu à l'ouverture, au bouton Actualiser et toutes les minutes, fusionné élément par élément, sans Firebase). Le fichier porte des **noms et des adresses e-mail de patients**.
+
+## Rôles et droits (depuis la 12.4.1)
+
+Les rôles de *Astreinte › Administration* portent cinq droits : **examine** (examiner un patient), **valide** (valider une table réalisée), **gère** (tenir le planning des tables), **désigne** (désigner le coordinateur de l'afflux, modifier le planning d'astreinte), **coordinateur** (pouvoir l'être). Par défaut : médecin référent (examine, valide, gère, désigne) ; médecin (examine, valide) ; infirmier référent (valide, gère, désigne, coordinateur) ; infirmier (valide, gère, coordinateur).
+
+- **Un rôle qui n'examine pas** (infirmier) voit les consultations **en lecture seule** : seule l'identification reste modifiable, pour passer la fiche en « séance de recompression », qu'il peut coter, comme il peut valider une table depuis le planning.
+- **Sans rôles ni personnes paramétrés**, rien n'est restreint (comme avant). Un poste qui n'a pas dit « Je suis » peut examiner, mais ne gère ni ne valide les tables.
+- **« Je suis » reste déclaratif, sans authentification** : c'est une règle d'organisation, pas un contrôle d'accès.
 
 ## Les six onglets de saisie
 
@@ -2052,7 +2138,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1081 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1176 colonnes.
 
 ### Codages principaux
 

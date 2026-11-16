@@ -786,6 +786,56 @@ svg.echo rect.z:hover{stroke-width:2.6;filter:brightness(.96)}
   .pjp.solo img{max-height:150mm}
 }
 @media screen{ .pg{display:none} }
+/* ---------- afflux massif CO (12.2.1) ---------- */
+body.af-on #navbar{display:none!important}
+.emb{border-left:3px solid var(--acc);padding:2px 0 2px 10px;margin:2px 0 6px}.emb .row{grid-column:auto}.emb-t{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);font-weight:700;margin:2px 0 4px}
+.tbl-g td{vertical-align:top;min-width:150px}.tbl-g th{vertical-align:top}
+.tbl-c{border:1px solid var(--bd);border-radius:6px;padding:3px 5px;margin:2px 0;background:#fff}.tbl-c.an{background:#f3f4f6}
+.tbl-ch{font-size:11.5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:2px}
+.tbl-auj{background:#fff8e1}
+.af-share{font-size:12px;border-radius:6px;padding:2px 8px;background:#eef2f7;color:var(--ink2)}
+.af-share.on{background:#e6f4ea;color:#1e6b34;font-weight:600}
+.af-share.off{background:#fff6d6;color:#7a5200}
+.af{max-width:1400px;margin:8px auto 30px}
+.af h2{margin:4px 0;font-size:20px}
+.af-top{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-end;margin-bottom:10px}
+.af-nom{font-weight:600;border:1px solid var(--bd);border-radius:6px;padding:4px 8px;min-width:220px;max-width:100%}
+.af-sub{color:var(--ink2);font-size:12px}
+.af-btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.af-saisie{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#af_code{font-size:16px;padding:8px 10px;border:2px solid var(--acc);border-radius:8px;min-width:240px;flex:1 1 240px;max-width:420px}
+.af-or{color:var(--ink2)}
+.af-cnt{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px}
+.af-st{display:inline-block;border:1px solid var(--c);color:var(--c);border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.af-lieux{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.af-lieu{border:1px solid var(--bd);border-radius:8px;padding:6px 8px;background:#fff;min-height:44px}
+.af-lieu.vide{opacity:.55}
+.af-lieu b{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.af-lieu b span{background:#eef2f7;border-radius:999px;padding:0 7px}
+.af-chip{display:inline-block;margin:2px 3px 2px 0;border:1px solid var(--c);border-left-width:4px;background:#fff;border-radius:6px;padding:1px 6px;font-size:12px;cursor:pointer}
+.af-bulk{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.af-scroll{overflow-x:auto}
+.af-t{border-collapse:collapse;width:100%;font-size:12.5px}
+.af-t th,.af-t td{border-bottom:1px solid var(--bd);padding:4px 5px;text-align:left;vertical-align:middle}
+.af-t th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink2);white-space:nowrap}
+.af-t select,.af-t input[type=text],.af-t input[type=time],.af-t input:not([type]){padding:2px 3px;border:1px solid var(--bd);border-radius:4px;max-width:150px}
+.af-nw{white-space:nowrap}
+.af-ci{border-color:#c00000!important;color:#c00000}
+tr.af-hl td{background:#fff6d6;transition:background 1.5s}
+.af-tl{border:1px solid var(--bd);border-radius:8px;padding:6px 8px;background:#fff}
+.af-tlr{display:grid;grid-template-columns:130px 1fr;gap:8px;align-items:center;margin:4px 0}
+.af-tlb{position:relative;height:42px;background:#f3f5f8;border-radius:6px;overflow:hidden}
+.af-tlb i{position:absolute;top:0;bottom:0;border-left:1px dashed #c8cfd8;font-style:normal;font-size:9px;color:var(--ink2);padding-left:2px}
+.af-tlb em{position:absolute;top:0;bottom:0;border-left:2px solid #c00000}
+.af-blk{position:absolute;top:14px;height:24px;border-radius:5px;color:#fff;font-size:11px;line-height:24px;padding:0 4px;overflow:hidden;white-space:nowrap;box-sizing:border-box;border:1px solid rgba(0,0,0,.15)}
+.af-blk.af-proposee{background:#8fb4d9}.af-blk.af-validee{background:#1f6fb2}.af-blk.af-en_cours{background:#7c3aed}.af-blk.af-terminee{background:#6b7280}
+.af-ss{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-top:8px}
+.af-s{border:1px solid var(--bd);border-left:5px solid #1f6fb2;border-radius:8px;padding:6px 8px;background:#fff;display:flex;flex-direction:column;gap:4px}
+.af-s.af-proposee{border-left-color:#8fb4d9}.af-s.af-en_cours{border-left-color:#7c3aed}.af-s.af-terminee{border-left-color:#6b7280;opacity:.8}
+.af-par h4{margin:14px 0 6px}
+.af-pl{margin:4px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.af-pl input{padding:3px 6px;border:1px solid var(--bd);border-radius:4px}
+@media screen and (max-width:560px){ .af-tlr{grid-template-columns:1fr} #af_code{min-width:0} }
 </style>
 </head>
 <body>
@@ -947,6 +997,9 @@ const PLUS_ITEMS = [
   {ic:'adp',     t:'Ligne Excel ADP', fn:'openXls()', cl:'pm-ph'},
   {ic:'cohb',    t:'Ligne Excel COHB', fn:'openXls(\'cohb\')', cl:'pm-ph'},
   {ic:'docs',    t:'Documents de sortie', fn:'openGen()', cl:'pm-ph'},
+  {ic:'cohb',    t:'Afflux massif CO', s:'plusieurs patients, lieux, planification des séances', fn:'openAfflux()'},
+  {ic:'cohb',    t:'Astreinte et coordination', s:'coordinateur de l’afflux, planning d’astreinte, rôles', fn:'astOpen()'},
+  {ic:'cohb',    t:'Planning des tables', s:'séances de la semaine, cures, annulations, courriels', fn:'openTables()'},
   {sep:1, cl:'pm-sm'},
   {ic:'folder',  t:'Dossier de données…', s:'où chaque fiche est écrite en JSON, relue pour la recherche', fn:'openFolders()'},
   {ic:'link',    t:'Couplage entre appareils…', s:'Firebase : les mêmes fiches sur deux appareils', fn:'openFb()'},
@@ -1454,7 +1507,8 @@ const CADRES = [
   d:'Interface proposée : circonstances, symptômes, HbCO, critères de gravité et d’indication de l’oxygénothérapie hyperbare, suivi et prévention (à valider).'},
  {v:5, id:'embolie',   l:'Embolie gazeuse',                                    c:'Embolie',   actif:0, g:'urgence',   d:'Prochaine version.'},
  {v:6, id:'urgence',   l:'Autre urgence hyperbare',                            c:'Urgence',   actif:0, g:'urgence',   d:'Prochaine version.'},
- {v:7, id:'chronique', l:'Consultation d’hyperbarie chronique (hors urgence)', c:'Chronique', actif:0, g:'programmee', d:'Prochaine version.'},
+ {v:7, id:'chronique', l:'Consultation d’hyperbarie chronique (hors urgence)', c:'Chronique', actif:1, g:'programmee',
+  d:'Interface proposée : indication et adressage (courrier joint), terrain, examen général et ORL, contre-indications à l’OHB, prescription de la cure et rendez-vous (à valider).'},
  {v:8, id:'offlabel',  l:'Consultation spécialisée hors AMM (off-label)',      c:'Off-label', actif:0, g:'programmee', d:'Prochaine version.'},
  {v:9, id:'expertise', l:'Consultation d’expertise (professionnelle ou de loisir)', c:'Expertise', actif:0, g:'programmee', d:'Prochaine version.'}
 ];
@@ -1830,6 +1884,58 @@ const CO_ECG_K = ['co_ecg_rythme','co_ecg_repol','co_ecg_cond','co_ecg_esv'];
    oxygène hyperbare environ 20 min (valeur de revue : Culnan et al., Ann Plast Surg 2018, doi:10.1097/SAP.0000000000001351). */
 const CO_TH = {air:320, nbo:74, nbo_sd:25, ohb:20};
 const CO_SUIVI = [{v:'neuropsy', l:'Bilan neuropsychologique à distance'}, {v:'consult', l:'Consultation de contrôle à 1 mois'}, {v:'irm', l:'IRM cérébrale si symptômes persistants'}, {v:'cardio', l:'Bilan cardiologique'}];
+/* =====================================================================
+   CONSULTATION D'HYPERBARIE CHRONIQUE (cadre 7) — 12.4.1, interface PROPOSÉE (à valider)
+   Indication et adressage (courrier joint en photo), terrain, examen général et ORL, contre-indications à l'OHB (scanner thoracique sans injection suggéré en cas d'antécédent pulmonaire,
+   de tabagisme même sevré ou d'âge supérieur à 50 ans : règle du service), conclusion et prescription de la cure (table, pauses à l'air, prémédication, protocole, séances, réévaluation,
+   première séance, rendez-vous). La cure se planifie ensuite dans le planning des tables.
+   ===================================================================== */
+const CHR_INDIC = [
+ {v:1, l:'Lésion radio-induite : cystite radique'}, {v:2, l:'Lésion radio-induite : rectite ou entérite radique'}, {v:3, l:'Ostéoradionécrose mandibulaire'},
+ {v:4, l:'Prévention de l’ostéoradionécrose (extraction dentaire en territoire irradié)'}, {v:5, l:'Autre lésion radio-induite des tissus mous'},
+ {v:6, l:'Surdité brusque idiopathique'}, {v:7, l:'Pied diabétique (ulcère)'}, {v:8, l:'Ulcère ou plaie ischémique chronique'},
+ {v:9, l:'Ostéomyélite chronique réfractaire'}, {v:10, l:'Ostéonécrose aseptique de la tête fémorale'}, {v:11, l:'Greffe ou lambeau compromis'},
+ {v:12, l:'Lésion traumatique des tissus (écrasement, syndrome des loges), en relais'}, {v:13, l:'Infection nécrosante des tissus mous, en relais'},
+ {v:99, l:'Autre (préciser)'}
+];
+const CHR_SPE = [
+ {v:1, l:'ORL'}, {v:2, l:'Chirurgie maxillo-faciale, stomatologie'}, {v:3, l:'Radiothérapie, oncologie'}, {v:4, l:'Urologie'}, {v:5, l:'Gastro-entérologie, proctologie'},
+ {v:6, l:'Diabétologie, endocrinologie'}, {v:7, l:'Chirurgie vasculaire, angiologie'}, {v:8, l:'Chirurgie orthopédique'}, {v:9, l:'Dermatologie, plaies et cicatrisation'},
+ {v:10, l:'Chirurgie plastique'}, {v:11, l:'Infectiologie'}, {v:12, l:'Médecine générale'}, {v:99, l:'Autre (préciser)'}
+];
+const CHR_CI = [
+ {v:'aucune', l:'Aucune contre-indication retrouvée'},
+ {v:'pnx', l:'Pneumothorax non drainé (contre-indication absolue)'}, {v:'bpco', l:'BPCO, emphysème, bulles pulmonaires'}, {v:'asthme', l:'Asthme non contrôlé'},
+ {v:'epil', l:'Épilepsie non contrôlée'}, {v:'claustro', l:'Claustrophobie'}, {v:'orl', l:'Infection ORL aiguë, dysperméabilité tubaire'}, {v:'fievre', l:'Fièvre, hyperthermie'},
+ {v:'icard', l:'Insuffisance cardiaque décompensée'}, {v:'chimio', l:'Chimiothérapie en cours (bléomycine, doxorubicine, cisplatine…)'}, {v:'disulf', l:'Disulfirame'},
+ {v:'dispo', l:'Dispositif implanté non validé en caisson (stimulateur, neurostimulateur, pompe…)'}, {v:'chir', l:'Chirurgie récente thoracique ou de l’oreille'},
+ {v:'gross', l:'Grossesse'}, {v:'autre', l:'Autre (préciser)'}
+];
+/* options remplies à partir des paramètres du planning des tables (protocoles, horaires) : mêmes tableaux, contenu mis à jour */
+const CHR_PROTO_OPTS = [];
+const CHR_H_OPTS = [];
+
+/* 12.4.2 : les signes de l'examen général, cochés sous chaque anomalie */
+const EX_CV_L = [
+ {v:'tachy', l:'Tachycardie'}, {v:'brady', l:'Bradycardie'}, {v:'irreg', l:'Pouls irrégulier'}, {v:'hypoTA', l:'Hypotension artérielle'}, {v:'hyperTA', l:'Hypertension artérielle'},
+ {v:'souffle', l:'Souffle cardiaque'}, {v:'dlr_thor', l:'Douleur thoracique'}, {v:'icd', l:'Signes d’insuffisance cardiaque droite (turgescence jugulaire, reflux hépato-jugulaire, œdèmes)'},
+ {v:'icg', l:'Signes d’insuffisance cardiaque gauche (crépitants, orthopnée)'}, {v:'marbr', l:'Marbrures, temps de recoloration allongé'}, {v:'extr', l:'Extrémités froides'},
+ {v:'pouls', l:'Pouls périphérique aboli ou asymétrique'}, {v:'cyan', l:'Cyanose'}
+];
+const EX_PNEUMO_L = [
+ {v:'polyp', l:'Polypnée'}, {v:'desat', l:'Désaturation'}, {v:'lutte', l:'Signes de lutte respiratoire'}, {v:'toux', l:'Toux'}, {v:'hemopt', l:'Hémoptysie'},
+ {v:'mousse', l:'Expectoration mousseuse'}, {v:'crep', l:'Crépitants'}, {v:'sibil', l:'Sibilants'}, {v:'mv', l:'Diminution du murmure vésiculaire'}, {v:'matite', l:'Matité'},
+ {v:'tympan', l:'Tympanisme'}, {v:'esc', l:'Emphysème sous-cutané'}, {v:'dlr_pl', l:'Douleur thoracique respiratoire (pleurale)'}
+];
+const EX_ABDO_L = [
+ {v:'dlr', l:'Douleur abdominale'}, {v:'defense', l:'Défense'}, {v:'contract', l:'Contracture'}, {v:'distens', l:'Distension, météorisme'}, {v:'nv', l:'Nausées ou vomissements'},
+ {v:'diarr', l:'Diarrhée'}, {v:'transit', l:'Arrêt du transit'}, {v:'hepato', l:'Hépatomégalie'}, {v:'masse', l:'Masse palpable'}, {v:'globe', l:'Globe vésical'}, {v:'hernie', l:'Orifice herniaire anormal'}
+];
+const EX_LOCO_L = [
+ {v:'dlr_art', l:'Douleur articulaire'}, {v:'epaule', l:'Épaule'}, {v:'coude', l:'Coude'}, {v:'poignet', l:'Poignet, main'}, {v:'hanche', l:'Hanche'}, {v:'genou', l:'Genou'},
+ {v:'cheville', l:'Cheville, pied'}, {v:'rachis', l:'Rachis'}, {v:'mobilite', l:'Limitation de la mobilité'}, {v:'oedeme', l:'Œdème, tuméfaction'},
+ {v:'musc', l:'Douleurs musculaires, zones de compression'}, {v:'trauma', l:'Lésion traumatique'}, {v:'impot', l:'Impotence fonctionnelle'}
+];
 const SPEC = [
 {id:'ident', t:'Identification', cols:2, page:1, tail:()=>identBox(), f:[
   {k:'cadre', l:'Cadre de la consultation', t:'choice', o:CADRE_OPTS, full:1, nofill:1,
@@ -1842,11 +1948,11 @@ const SPEC = [
   {k:'sexe',      l:'Sexe',    t:'choice', o:[{v:1,l:'M'},{v:2,l:'F'},{v:3,l:'Autre'}], not:[4]},
   {k:'ddn',       l:'Date de naissance', t:'date', pii:1, not:[4]},
   {k:'age',       l:'Âge', t:'calc', hint:'Calculé à la date de l’examen ; en années et mois pour un mineur', not:[4]},
-  {k:'date_acc',  l:"Date de l'accident", t:'date', not:[4]},
-  {k:'heure_acc', l:"Heure de l'accident", t:'time', not:[4]},
+  {k:'date_acc',  l:"Date de l'accident", t:'date', not:[4], nocadres:[7]},
+  {k:'heure_acc', l:"Heure de l'accident", t:'time', not:[4], nocadres:[7]},
   {k:'date_ex',   l:"Date de l'examen", lab4:'Date de la séance', t:'date', req:1},
   {k:'heure_ex',  l:"Heure de l'examen", t:'time', req:1, not:[4]},
-  {k:'delai_min', l:'Délai accident → examen (min)', t:'calc', not:[2,3,4]},
+  {k:'delai_min', l:'Délai accident → examen (min)', t:'calc', not:[2,3,4], nocadres:[7]},
   {k:'examinateur',l:'Examinateur', t:'txt', list:'exlist'},
   {k:'num_ex',    l:"N° d'examen pour ce patient", t:'calc', hint:'Une séance de recompression sans examen porte le numéro du dernier examen et une lettre : EX3b, EX3c…'}
 ]},
@@ -1863,7 +1969,7 @@ const SPEC = [
   {k:'email', l:'Adresse e-mail', t:'txt', pii:1, mail:1}
 ]},
 
-{id:'entree', t:"Mode d'entrée et prise en charge initiale", cols:2, page:1, only:[1], f:[
+{nocadres:[7], id:'entree', t:"Mode d'entrée et prise en charge initiale", cols:2, page:1, only:[1], f:[
   {k:'ad_num', cadres:[1,2,3], l:'Accident de plongée n°', t:'txt', hint:'Numéro de la série du service'},
   {k:'h_arrivee', t:'head', l:'Arrivée au service', full:1},
   {k:'date_arr', l:"Date d'arrivée", t:'date',
@@ -1900,7 +2006,7 @@ const SPEC = [
   {k:'delai_symp_pec', l:'Délai 1ers symptômes → prise en charge (min)', t:'calc', full:1}
 ]},
 
-{id:'plongeur', t:'Le plongeur', tc:{4:'Terrain du patient'}, cols:2, page:2, only:[1], f:[
+{id:'plongeur', t:'Le plongeur', tc:{4:'Terrain du patient', 7:'Terrain du patient'}, cols:2, page:2, only:[1], f:[
   {k:'h_pident', t:'head', l:'Poids, taille et IMC', full:1},
   {k:'poids', l:'Poids (kg)', t:'num', min:20, max:250, unit:'kg'},
   {k:'taille', l:'Taille (cm)', t:'num', min:100, max:230, unit:'cm'},
@@ -2125,21 +2231,25 @@ const SPEC = [
 
 {id:'general', t:'Examen clinique général', cols:1, page:3,
  norm:{ex_cv:0,ex_pneumo:0,ex_abdo:0,ex_loco:0}, f:[
-  {k:'ex_cv', cadres:[1,2,3], l:'Anomalie cardio-vasculaire', t:'choice', o:ON},
-  {k:'ex_cv_txt', cadres:[1,2,3], l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_cv',[1]], sub:1,
+  {k:'ex_cv', nocadres:[4], l:'Anomalie cardio-vasculaire', t:'choice', o:ON},
+  {k:'ex_cv_box', t:'html', fn:()=>embedHTML(['ex_cv_l']), full:1, nofill:1, nocadres:[4], dep:['ex_cv',[1]]},
+  {k:'ex_cv_txt', nocadres:[4], l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_cv',[1]], sub:1,
    phr:['Tachycardie.','Bradycardie.','Hypotension.','Marbrures.','Souffle cardiaque.']},
   {k:'ex_pneumo', l:'Anomalie respiratoire', t:'choice', o:ON},
+  {k:'ex_pneumo_box', t:'html', fn:()=>embedHTML(['ex_pneumo_l']), full:1, nofill:1, dep:['ex_pneumo',[1]]},
   {k:'ex_pneumo_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_pneumo',[1]], sub:1,
    phr:['Polypnée.','Crépitants.','Toux.','Hémoptysie.','Douleur thoracique.','Emphysème sous-cutané.',
         'Suspicion d’œdème pulmonaire d’immersion.','Suspicion de surpression pulmonaire.']},
   {k:'ex_abdo', l:'Anomalie abdominale', t:'choice', o:ON},
+  {k:'ex_abdo_box', t:'html', fn:()=>embedHTML(['ex_abdo_l']), full:1, nofill:1, dep:['ex_abdo',[1]]},
   {k:'ex_abdo_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_abdo',[1]], sub:1},
   {k:'ex_loco', l:'Anomalie locomotrice', t:'choice', o:ON},
+  {k:'ex_loco_box', t:'html', fn:()=>embedHTML(['ex_loco_l']), full:1, nofill:1, dep:['ex_loco',[1]]},
   {k:'ex_loco_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_loco',[1]], sub:1,
    phr:['Douleur articulaire (bend).','Épaule.','Coude.','Genou.','Hanche.','Impotence fonctionnelle.','Douleurs musculaires, zones de compression (rhabdomyolyse).','Phlyctènes de compression.']}
 ]},
 
-{id:'consc', page:3, t:'Conscience', cols:1, norm:{avpu:1,gcs_y:4,gcs_v:5,gcs_m:6}, f:[
+{nocadres:[7], id:'consc', page:3, t:'Conscience', cols:1, norm:{avpu:1,gcs_y:4,gcs_v:5,gcs_m:6}, f:[
   {k:'avpu', l:'AVPU', t:'choice', o:[{v:1,l:'Alert',c:'v-ok'},{v:2,l:'Verbal',c:'v-wn'},{v:3,l:'Pain',c:'v-ab'},{v:4,l:'Unresponsive',c:'v-ab'}]},
   {k:'gcs_y', help:'gcs', l:'Glasgow — Ouverture des yeux (Y)', t:'choice', o:gcs(4)},
   {k:'gcs_v', help:'gcs', l:'Glasgow — Réponse verbale (V)',    t:'choice', o:gcs(5)},
@@ -2148,7 +2258,7 @@ const SPEC = [
    hint:'Non calculé si une modalité est cotée NC'}
 ]},
 
-{id:'fsup', page:3, t:'Fonctions supérieures', cols:1,
+{nocadres:[7], id:'fsup', page:3, t:'Fonctions supérieures', cols:1,
  norm:{fs_comport:0,fs_dts:0,fs_parole:0,fs_visuel:0,fs_audition:0,fs_acouph:0,fs_vertiges:0,nys:0,vns:0,
        pup_sym:1,pup_aniso:0,pup_myd:0,pup_myo:0,pup_rpm:1}, f:[
   {k:'h_pup', t:'head', l:'Examen pupillaire', full:1,
@@ -2189,7 +2299,7 @@ const SPEC = [
   {k:'vns_niv_regard', cadres:[1,2,3], l:'Position(s) du regard', t:'multi', o:REGARD, dep:['vns_niv',[1]], sub:1}
 ]},
 
-{id:'orl', cadres:[1,2,3], page:3, t:'ORL et barotraumatisme', cols:2, note:HAINES_TXT, tail:()=>orlBox(),
+{id:'orl', cadres:[1,2,3,7], page:3, t:'ORL et barotraumatisme', cols:2, note:HAINES_TXT, tail:()=>orlBox(),
  norm:{oto_D:0,oto_G:0,valsalva_D:2,valsalva_G:2,weber:0,rinne_D:1,rinne_G:1}, f:[
   {k:'oto_D', l:'Otoscopie — oreille DROITE',  t:'choice', o:HAINES, help:'oto'},
   {k:'oto_G', l:'Otoscopie — oreille GAUCHE',  t:'choice', o:HAINES, help:'oto'},
@@ -2204,7 +2314,7 @@ const SPEC = [
    phr:['Otalgie droite','Otalgie gauche','Otorragie droite','Otorragie gauche','Plénitude auriculaire','Autophonie','Vertige positionnel déclenché au Valsalva','Barotraumatisme sinusien','Épistaxis']}
 ]},
 
-{id:'sfonc', page:3, t:'Signes fonctionnels', cols:1, norm:{sf_ceph:0,sf_rachis:0,sf_subj:0,eva_type:2,eva_score:0}, f:[
+{nocadres:[7], id:'sfonc', page:3, t:'Signes fonctionnels', cols:1, norm:{sf_ceph:0,sf_rachis:0,sf_subj:0,eva_type:2,eva_score:0}, f:[
   {k:'sf_ceph',   l:'Céphalées', t:'choice', o:ON},
   {k:'sf_rachis', cadres:[1,2,3], l:'Douleur rachidienne', t:'choice', o:ON},
   {k:'sf_rachis_loc', cadres:[1,2,3], l:'Localisation', t:'multi', o:[{v:'cervicale',l:'Cervicale'},{v:'dorsale',l:'Dorsale'},{v:'lombaire',l:'Lombaire'}], dep:['sf_rachis',[1]], sub:1},
@@ -2219,7 +2329,7 @@ const SPEC = [
 
 {id:'subj', cadres:[1,2,3], page:3, t:'Signes subjectifs — localisation', custom:'subj', cols:1, when:()=>REC.d.sf_subj!==0, f:[]},
 
-{id:'refsup', page:4, t:'Réflexes — membres supérieurs', cols:2,
+{nocadres:[7], id:'refsup', page:4, t:'Réflexes — membres supérieurs', cols:2,
  norm:{ref_bicip_D:1,ref_bicip_G:1,ref_tricip_D:1,ref_tricip_G:1,hoffman_D:0,hoffman_G:0}, f:[
   {k:'ref_bicip_D', help:'rot', l:'Bicipital DROIT',  t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'ref_bicip_G', l:'Bicipital GAUCHE', t:'choice', o:REF, flags:RFLAGS, copyref:1},
@@ -2229,7 +2339,7 @@ const SPEC = [
   {k:'hoffman_G', cadres:[1,2,3], help:'hoffmann', l:'Signe de Hoffmann GAUCHE', t:'choice', o:ON, hint:'OUI = pathologique'}
 ]},
 
-{id:'refinf', page:4, t:'Réflexes — membres inférieurs', cols:2,
+{nocadres:[7], id:'refinf', page:4, t:'Réflexes — membres inférieurs', cols:2,
  norm:{ref_rot_D:1,ref_rot_G:1,ref_ach_D:1,ref_ach_G:1,bbk_D:0,bbk_G:0,trep_pied:0,trep_rot:0,contract:0}, f:[
   {k:'ref_rot_D', help:'rot', l:'Rotulien DROIT',  t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'ref_rot_G', l:'Rotulien GAUCHE', t:'choice', o:REF, flags:RFLAGS, copyref:1},
@@ -2251,7 +2361,7 @@ const SPEC = [
    phr:['Deltoïde','Biceps brachial','Avant-bras','Éminence thénar','Muscles intercostaux','Paravertébraux lombaires','Quadriceps','Jumeaux / mollet','Loge antéro-externe de jambe','Muscles de la face']}
 ]},
 
-{id:'force', page:4, t:'Motricité et force motrice', cols:2, note:MRC_TXT+
+{nocadres:[7], id:'force', page:4, t:'Motricité et force motrice', cols:2, note:MRC_TXT+
  ' · Les dix myotomes clés sont ceux de la cotation ASIA (ISNCSCI).',
  tail:()=>forceBox(),
  norm:{par_fac:0,barre:0,ming:0,
@@ -2327,7 +2437,7 @@ const SPEC = [
   {k:'mict_residu_post', help:'sphincter', l:'Résidu post-mictionnel (mL)', t:'num', min:0, max:3000, unit:'mL'}
 ]},
 
-{id:'coord', page:4, t:'Coordination, équilibre et marche', cols:1,
+{nocadres:[7], id:'coord', page:4, t:'Coordination, équilibre et marche', cols:1,
  norm:{vertic:1,equil_yo:1,equil_yf:1,marche:1,marche_yo:0,marche_yf:0,talon_genou:1,doigt_nez:1}, f:[
   {k:'vertic', l:'Verticalisation possible', t:'choice', o:NO},
   {k:'equil_yo', l:'Équilibre statique conservé — yeux OUVERTS', t:'choice', o:NO, dep:['vertic',[1]], sub:1},
@@ -2378,7 +2488,7 @@ const SPEC = [
 ]},
 
 /* La conclusion de l'examen clinique ferme l'onglet « Examen neurologique » */
-{id:'concl_ex', page:4, t:"Conclusion de l'examen clinique", cols:1, noghost:1, f:[
+{nocadres:[7], id:'concl_ex', page:4, t:"Conclusion de l'examen clinique", cols:1, noghost:1, f:[
   {k:'conclusion', l:"Conclusion de l'examen", t:'choice',
    o:[{v:1,l:'Examen neurologique normal',c:'v-ok'},{v:2,l:'Examen neurologique anormal',c:'v-ab'},{v:3,l:'À recontrôler',c:'v-wn'}]}
 ]},
@@ -2398,7 +2508,7 @@ const SPEC = [
    Sur une consultation de suivi ou de sortie, seuls l'anamnèse, l'examen général et
    l'examen neurologique sont repris (en gris) ; les examens complémentaires et la
    conclusion sont nécessairement différents, et un examen coché de nouveau est un nouvel examen. */
-{id:'recomp', t:'Recompression', cols:2, page:6, noghost:1, f:[
+{nocadres:[7], id:'recomp', t:'Recompression', cols:2, page:6, noghost:1, f:[
   {k:'tb_table', l:'Table utilisée', t:'choice', o:TABLES, full:1, hint:'B18 proposée d’office sur une consultation initiale, modifiable. Une recompression cotée est une séance ; la B18 d’office n’est comptée (compte rendu, fichiers Excel) que si l’encart est rempli : heure de mise en pression ou de fin, ou complication thérapeutique'},
   {k:'tb_table_autre', l:'Table — à préciser', t:'txt', wide:1, full:1, sub:1, dep:['tb_table',[9]]},
   {k:'tb_duree', l:'Durée de la table (min)', t:'calc', unit:'min', dep:['tb_table',[1,2,3,4,5,6,7,8]],
@@ -2436,6 +2546,7 @@ const SPEC = [
   {k:'im_ecg', l:'ECG', t:'choice', o:EXA},
   {k:'ecg_fc', l:'ECG — fréquence cardiaque', t:'num', min:20, max:250, unit:'bpm', sub:1, dep:['im_ecg',[1]]},
   {k:'ecg_qtc', l:'ECG — QTc', t:'num', min:200, max:700, unit:'ms', sub:1, dep:['im_ecg',[1]]},
+  {k:'ecg_isch_box', t:'html', fn:()=>embedHTML('co_ecg', 'Signes d’ischémie et d’atteinte myocardique'), full:1, nofill:1, dep:['im_ecg',[1]]},
   {k:'ecg_txt', l:'ECG — compte rendu', t:'area', wide:1, sub:1, nofill:1, dep:['im_ecg',[1]],
    ph:'Renseignez la fréquence ou le QTc : le compte rendu se rédige tout seul. Vous pouvez aussi l’écrire directement.',
    hint:'Rédigé à partir de la fréquence et du QTc, modifiable à la main ; repris tel quel dans la synthèse'},
@@ -2534,7 +2645,7 @@ const SPEC = [
 
 /* Diagnostic retenu : un ou plusieurs diagnostics associés, avec leurs types, et un diagnostic
    principal quand plusieurs sont retenus et que le principal est déterminé. */
-{id:'diagnostic', page:6, t:'Diagnostic retenu', cols:1, noghost:1, f:[
+{nocadres:[7], id:'diagnostic', page:6, t:'Diagnostic retenu', cols:1, noghost:1, f:[
   {k:'dg_liste', l:'Diagnostic(s) retenu(s)', t:'multi', o:DG, full:1,
    hint:'Plusieurs diagnostics peuvent être associés'},
   {k:'dg_add_types', l:'Accident de désaturation — type', t:'multi', o:DG_ADD, full:1, sub:1, dep:['dg_liste',['add']]},
@@ -2681,7 +2792,8 @@ const SPEC = [
   {k:'co_fumees', l:'Signes d’inhalation de fumées', t:'choice', o:ON, dep:['co_source',['incendie']], hint:'Suies narinaires ou buccales, brûlures faciales, voix rauque, stridor, crachats noirâtres'},
   {k:'co_cyanure', l:'Intoxication cyanhydrique associée suspectée', t:'choice', o:ON, dep:['co_source',['incendie']], hint:'Incendie en milieu clos, troubles de la conscience, lactates élevés (Culnan 2018)'}
 ]},
-{id:'co_ecg', t:'ECG : signes d’atteinte myocardique', cols:2, page:5, before:'examens', cadres:[4], noghost:1,
+/* 12.4.2 : les signes ECG s'affichent dans « Examens complémentaires », sous la fréquence et le QTc, pour tous les cadres (embedded : la rubrique n'a pas d'encart à elle ; ses colonnes restent à leur place) */
+{id:'co_ecg', t:'ECG : signes d’atteinte myocardique', cols:2, page:5, noghost:1, embedded:1, when:()=>false,
  norm:{co_ecg_rythme:1,co_ecg_repol:0,co_ecg_cond:0,co_ecg_esv:0}, f:[
   {k:'co_ecg_note', t:'html', fn:()=>coEcgNote(), full:1, nofill:1},
   {k:'co_ecg_rythme', l:'Rythme', t:'choice', o:CO_ECG_RYTHME, full:1, dep:['im_ecg',[1]]},
@@ -2703,6 +2815,53 @@ const SPEC = [
   {k:'co_table_box', t:'html', fn:()=>coTableBox(), full:1, nofill:1},
   {k:'co_iot', l:'Patient intubé et ventilé', t:'choice', o:ON, full:1, hint:'Oriente vers la version IOT de la table'},
   {k:'co_delai_ohb', l:'Délai fin de l’exposition → mise en pression', t:'calc', unit:'min', full:1, hint:'Calculé : fin de l’exposition (onglet Circonstances) → heure de mise en pression'}
+]},
+/* 12.4.1 : consultation d'hyperbarie chronique (cadre 7) — indication et adressage, contre-indications à l'OHB, conclusion et prescription de la cure. Écrites en fin de SPEC : les colonnes existantes ne bougent pas. */
+{id:'chr_adr', t:'Indication et adressage', cols:2, page:2, only:[1], cadres:[7], f:[
+  {k:'chr_indic', l:'Indication proposée', t:'select', o:CHR_INDIC, full:1},
+  {k:'chr_indic_txt', l:'Indication — précisions', t:'txt', wide:1, full:1, nofill:1, phr:['Territoire irradié :','Dose et date de la radiothérapie :','Date de début des symptômes :']},
+  {k:'h_chr_adr', t:'head', l:'Médecin adresseur', full:1},
+  {k:'chr_adr_nom', l:'Médecin adresseur', t:'txt', pii:1},
+  {k:'chr_adr_spe', l:'Spécialité', t:'select', o:CHR_SPE},
+  {k:'chr_adr_spe_autre', l:'Spécialité — à préciser', t:'txt', sub:1, dep:['chr_adr_spe',[99]]},
+  {k:'chr_adr_etab', l:'Établissement ou cabinet', t:'txt'},
+  {k:'chr_adr_contact', l:'Téléphone ou e-mail de l’adresseur', t:'txt', pii:1},
+  {k:'chr_adr_date', l:'Date du courrier d’adressage', t:'date'},
+  {k:'chr_courrier_box', t:'html', fn:()=>chrCourrierBox(), full:1, nofill:1},
+  {k:'chr_histoire', l:'Histoire de la maladie', t:'area', wide:1, full:1, nofill:1}
+]},
+{id:'chr_ci', t:'Contre-indications à l’OHB', cols:1, page:3, after:'orl', cadres:[7], noghost:1, f:[
+  {k:'chr_scan_box', t:'html', fn:()=>chrScanBox(), full:1, nofill:1},
+  {k:'chr_ci_l', l:'Contre-indications retrouvées', t:'multi', o:CHR_CI, excl:{aucune:CHR_CI.filter(x=>x.v!=='aucune').map(x=>x.v)}, full:1},
+  {k:'chr_ci_txt', l:'Précisions', t:'txt', wide:1, full:1, nofill:1}
+]},
+{id:'chr_presc', t:'Conclusion et prescription d’OHB', cols:2, page:6, cadres:[7], noghost:1, f:[
+  {k:'chr_ind_ret', l:'Indication retenue', t:'choice', o:[{v:1,l:'Oui',c:'v-ok'},{v:0,l:'Non',c:'v-ab'},{v:2,l:'À discuter',c:'v-wn'}], full:1},
+  {k:'chr_ind_ret_txt', l:'Indication retenue — libellé', t:'txt', wide:1, full:1, nofill:1, hint:'Proposé d’après l’indication de l’onglet Anamnèse, modifiable'},
+  {k:'chr_ci_concl', l:'Contre-indication à l’OHB', t:'choice', o:[{v:0,l:'Absente',c:'v-ok'},{v:1,l:'Relative, levée ou acceptée',c:'v-wn'},{v:2,l:'Présente : OHB récusée',c:'v-ab'}], full:1},
+  {k:'h_chr_presc', t:'head', l:'Prescription', full:1, depFn:()=>REC.d.chr_ind_ret===1},
+  {k:'chr_table', l:'Table retenue', t:'choice', o:TABLES, full:1, dep:['chr_ind_ret',[1]], hint:'A15 proposée d’office, modifiable'},
+  {k:'chr_pauses', l:'Pauses à l’air', t:'choice', o:ONA, dep:['chr_ind_ret',[1]]},
+  {k:'chr_premed', l:'Prémédication', t:'choice', o:ONA, dep:['chr_ind_ret',[1]]},
+  {k:'chr_premed_dci', l:'Prémédication — DCI', t:'txt', sub:1, dep:['chr_premed',[1]]},
+  {k:'chr_premed_dose', l:'Dose et voie', t:'txt', sub:1, dep:['chr_premed',[1]]},
+  {k:'chr_premed_moment', l:'Moment de la prise', t:'txt', sub:1, dep:['chr_premed',[1]], phr:['30 minutes avant la séance.','1 heure avant la séance.']},
+  {k:'chr_proto', l:'Protocole', t:'choice', o:CHR_PROTO_OPTS, full:1, dep:['chr_ind_ret',[1]], hint:'Protocoles du service : paramétrés par l’administrateur (Planning des tables › Paramètres)'},
+  {k:'chr_freq', l:'Fréquence', t:'txt', wide:1, full:1, dep:['chr_ind_ret',[1]], hint:'Proposée d’après le protocole, modifiable'},
+  {k:'chr_nb', l:'Nombre de séances prescrites', t:'num', min:1, max:200, unit:'séances', dep:['chr_ind_ret',[1]]},
+  {k:'chr_reeval', l:'Réévaluation attendue à', t:'num', min:1, max:200, unit:'séances', dep:['chr_ind_ret',[1]]},
+  {k:'chr_date1', l:'Date de la première séance', t:'date', dep:['chr_ind_ret',[1]]},
+  {k:'chr_h1', l:'Créneau souhaité', t:'choice', o:CHR_H_OPTS, dep:['chr_ind_ret',[1]]},
+  {k:'chr_rdv_date', l:'Rendez-vous de consultation (réévaluation) — date', t:'date', dep:['chr_ind_ret',[1]]},
+  {k:'chr_rdv_h', l:'Rendez-vous de consultation — heure', t:'time', dep:['chr_ind_ret',[1]]},
+  {k:'chr_plan_box', t:'html', fn:()=>chrPlanBox(), full:1, nofill:1}
+]},
+/* 12.4.2 : examen général détaillé, affiché sous chaque « Anomalie … » de l'examen clinique général (embedded) ; en fin de SPEC, les colonnes existantes ne bougent pas */
+{id:'gen_det', t:'Examen général détaillé', cols:1, page:3, noghost:1, embedded:1, when:()=>false, f:[
+  {k:'ex_cv_l', l:'Anomalies cardio-vasculaires', t:'multi', o:EX_CV_L, full:1, nocadres:[4], dep:['ex_cv',[1]]},
+  {k:'ex_pneumo_l', l:'Anomalies respiratoires', t:'multi', o:EX_PNEUMO_L, full:1, dep:['ex_pneumo',[1]]},
+  {k:'ex_abdo_l', l:'Anomalies abdominales', t:'multi', o:EX_ABDO_L, full:1, dep:['ex_abdo',[1]]},
+  {k:'ex_loco_l', l:'Anomalies locomotrices', t:'multi', o:EX_LOCO_L, full:1, dep:['ex_loco',[1]]}
 ]}
 ];
 
@@ -2721,7 +2880,7 @@ const PJ_ORDO = 'Ordonnance médicamenteuse';   // titre des photos prises depui
    que l'on peut modifier ou compléter après l'avoir choisi. */
 const PJ_TITRES = ['Examen pupillaire','Lésion cutanée','Otoscopie droite','Otoscopie gauche',
                    'Paramètres de plongée','Ordinateur de plongée','Appareil respiratoire de plongée',
-                   'Fiche de prise en charge pré-hospitalière',PJ_ORDO,
+                   'Fiche de prise en charge pré-hospitalière',PJ_ORDO,'Courrier d’adressage',
                    'Document du patient','Autre'];
 const PJ_MAX_PX = 1600;      // côté le plus long après réduction
 const PJ_QUAL   = 0.82;      // qualité JPEG
@@ -3091,7 +3250,8 @@ const DEFAUTS = {1:DEF_INITIALE, 3:DEF_SORTIE};
 function defautsDe(t, cad){
   const m = DEFAUTS[t]; if(!m) return null;
   const c = cad != null ? cad : ((REC && REC.d) ? cadreOf(REC.d) : 1);
-  if(c===4) return {};                                                                    // intoxication au CO : aucune valeur d'office propre à la plongée (table, aspirine, bilans, profil, déséquipement, score MJOAS de sortie)
+  if(c===4) return {};
+  if(c===7) return Number(t)===1 ? {chr_table:1} : {};                                    // hyperbarie chronique : A15 proposée pour la cure, rien de la plongée                                                                    // intoxication au CO : aucune valeur d'office propre à la plongée (table, aspirine, bilans, profil, déséquipement, score MJOAS de sortie)
   if(Number(t)===1 && c===2){ const o = Object.assign({}, m); delete o.tb_table; return o; }            // OPI : pas de table de recompression d'office
   return m;
 }
@@ -3129,7 +3289,7 @@ function opiSeul(d){
   return cadreOf(d) === 2;
 }
 /* pas de score ASIA pour l'OPI seul (12.1.1) ni pour l'intoxication au CO (cadre 4) */
-function sansAsia(d){ return opiSeul(d) || cadreOf(d)===4; }
+function sansAsia(d){ return opiSeul(d) || cadreOf(d)===4 || cadreOf(d)===7; }
 /* pas de score ASIA : rien n'est calculé ni enregistré */
 function asiaOff(){
   const d = REC.d;
@@ -3422,7 +3582,7 @@ function computeAll(){
   } else delete d.delai_min;
 
   reprisesInit();
-  adpCalc(); coCalc();
+  adpCalc(); coCalc(); chrCalc();
 
   const au = orlAudio();
   if(au.code===9){ delete d.orl_interp; delete d.orl_interp_txt; }
@@ -3654,7 +3814,8 @@ function depMatch(k, vals){
 }
 let PRUNING = false;          // vrai pendant pruneDeps : le cadre ne fait pas perdre la valeur d'un champ qui n'est pas affiché pour ce cadre
 function depOK(f){
-  if(f.cadres && !PRUNING && REC && f.cadres.indexOf(cadreOf(REC.d))<0) return false;          // champ propre à certains cadres (sa valeur, elle, est conservée)
+  if(f.cadres && !PRUNING && REC && f.cadres.indexOf(cadreOf(REC.d))<0) return false;
+  if(f.nocadres && !PRUNING && REC && f.nocadres.indexOf(cadreOf(REC.d))>=0) return false;          // champ sans objet pour ce cadre (sa valeur est conservée)          // champ propre à certains cadres (sa valeur, elle, est conservée)
   if(f.not && REC && f.not.indexOf(ftype())>=0) return false;           // champ masqué pour ce type de fiche (sa valeur, elle, est conservée)
   if(f.t==='head') return !f.depFn || !!f.depFn();
   if(f.vis && !limbOpen(f.vis)) return false;
@@ -4307,10 +4468,14 @@ function renderForm(){
   let ss=null, se=null;
   if(fid){ try{ ss=ae.selectionStart; se=ae.selectionEnd; }catch(e){} }
   renderFormInner();
+  try{ astLectureSeule(); }catch(e){}
   if(fid){ const el=document.getElementById(fid);
     if(el){ el.focus(); if(ss!=null){ try{ el.setSelectionRange(ss,se); }catch(e){} } } }
 }
 function renderFormInner(){
+  document.body.classList.toggle('af-on', !!(AF_ON || TBL_ON));
+  if(AF_ON){ afRender(); updatePatBar(); return; }          // afflux massif CO : un écran à part
+  if(TBL_ON){ tblRender(); updatePatBar(); return; }        // planning des tables : un écran à part
   if(REC && REC._attenteCadre){ $('#form').innerHTML = cadreLauncher(); updatePatBar(); return; }          // étape préalable : le choix du cadre de la consultation
   computeAll();
   PREV = prevFiche();
@@ -4404,7 +4569,7 @@ const SEANCE_SECS = ['ident','recomp'];
 /* une section s'affiche si elle concerne ce type de consultation */
 function secForType(s){
   if(ftype()===4) return SEANCE_SECS.indexOf(s.id) >= 0;
-  return (!s.only || s.only.indexOf(ftype()) >= 0) && (!s.cadres || s.cadres.indexOf(cadreOf(REC.d)) >= 0) && (!s.when || s.when());
+  return (!s.only || s.only.indexOf(ftype()) >= 0) && (!s.cadres || s.cadres.indexOf(cadreOf(REC.d)) >= 0) && (!s.nocadres || s.nocadres.indexOf(cadreOf(REC.d)) < 0) && (!s.when || s.when());
 }
 function secOnPage(s, n){ return (ftype()===4 ? 1 : (s.page||1)) === n && secForType(s); }
 function pageSections(n){
@@ -4837,8 +5002,10 @@ function refreshField(k){
   const f=FIELDS[k];
   if(!f){ softRefresh(); return; }
   const sec=SPEC.find(s=>s.id===f._sec);
-  if(sec && sec.custom){ renderForm(); return; }
+  if(sec && (sec.custom || sec.embedded)){ renderForm(); return; }          // rubrique affichée dans une autre (signes ECG, examen général détaillé)
   sec.f.forEach(g=>{ const r=$('#r_'+g.k); if(r) r.outerHTML=fieldHTML(g); });
+  /* un champ d'une autre rubrique qui dépend de celui-ci suit aussi */
+  SPEC.forEach(s2=>{ if(s2===sec) return; s2.f.forEach(g=>{ if(g.dep && g.dep.indexOf(k)>=0){ const r=$('#r_'+g.k); if(r) r.outerHTML=fieldHTML(g); } }); });
   refreshBadges(); updateGlobalFill(); renderSynth();
   if($('#asiabody')) refreshASIA(false);
 }
@@ -4925,6 +5092,10 @@ document.addEventListener('keydown', wedgeKey, true);
 
 /* retire la chaîne du champ où elle est tombée par erreur, puis l'applique au dossier */
 async function handleScan(raw, el){
+  if(AF_ON){          // afflux massif : le code scanné crée un patient ; il est retiré du champ où il est tombé
+    if(el && el.id!=='af_code' && el.tagName && /^(INPUT|TEXTAREA)$/.test(el.tagName)){ const v = String(el.value||''); if(v.slice(-raw.length)===raw) el.value = v.slice(0, v.length-raw.length); }
+    await afScan(raw); return;
+  }
   const dossEl = document.getElementById('i_dossier');
   if(el && el !== dossEl && el.tagName && /^(INPUT|TEXTAREA)$/.test(el.tagName)){
     const v = String(el.value || '');
@@ -5716,7 +5887,7 @@ async function pjAdd(input, src){
     try{
       const im = await pjShrink(f);
       out.push({id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-                titre: src==='ordo' ? PJ_ORDO : '', src: src||'', nom:f.name, w:im.w, h:im.h,
+                titre: src==='ordo' ? PJ_ORDO : src==='courrier' ? 'Courrier d’adressage' : '', src: src||'', nom:f.name, w:im.w, h:im.h,
                 ko:Math.round(im.data.length*0.75/1024), data:im.data});
     }catch(e){ toast('« '+f.name+' » : '+e.message); }
   }
@@ -5884,7 +6055,7 @@ function adpCalc(){
   /* consultation de sortie : examens à réaliser, proposés d'après le ou les diagnostics retenus et le générateur de documents */
   if(ftype()===3 && !d.exam_prop_off) autoSync('sortie_exam_second', genExamsTexte(d));
   /* ECG : compte rendu rédigé à partir de la fréquence et du QTc, modifiable */
-  autoSync('ecg_txt', (d.im_ecg===1 && (d.ecg_fc!=null || d.ecg_qtc!=null || (cadreOf(d)===4 && CO_ECG_K.some(k=>d[k]!=null)))) ? ecgTexte(d) : null);
+  autoSync('ecg_txt', (d.im_ecg===1 && (d.ecg_fc!=null || d.ecg_qtc!=null || CO_ECG_K.some(k=>d[k]!=null))) ? ecgTexte(d) : null);
   /* biologie : horodatage proposé, Hb et Ht du bilan repris du gaz du sang du même jour */
   bioCalc(d);
 }
@@ -6296,7 +6467,7 @@ function addMin(hm, n){
 }
 /* ECG normal, à compléter : fréquence et QTc manquants restent « xx » pour être vus */
 function ecgTexte(d){
-  if(cadreOf(d)===4) return coEcgTexte(d);
+  if(CO_ECG_K.some(k=>d[k]!=null)) return coEcgTexte(d);          // les signes ECG cotés rédigent le compte rendu, quel que soit le cadre
   const fc = d.ecg_fc!=null ? d.ecg_fc : 'xx', q = d.ecg_qtc!=null ? d.ecg_qtc : 'xx';
   return 'RSR à '+fc+' bpm, d’axe non dévié, sans trouble de la conduction ni de la repolarisation. QTc à '+q+' ms.';
 }
@@ -7383,9 +7554,16 @@ function examFindings(){
   /* ---------- examen général par appareil ---------- */
   const GEN = [['ex_cv','cardio-vasculaire'],['ex_pneumo','respiratoire'],['ex_abdo','abdominal'],['ex_loco','locomoteur']];
   const cv4 = cadreOf(d)===4 ? coCvGen(d) : null;          // intoxication au CO : l'anomalie cardio-vasculaire est déduite de l'encart « Examen cardio-vasculaire »
-  const gv = k => (cv4 && k==='ex_cv') ? cv4.v : d[k], gt = k => (cv4 && k==='ex_cv') ? cv4.t : d[k+'_txt'];
+  const GL = {ex_cv:EX_CV_L, ex_pneumo:EX_PNEUMO_L, ex_abdo:EX_ABDO_L, ex_loco:EX_LOCO_L};
+  const gv = k => (cv4 && k==='ex_cv') ? cv4.v : d[k];
+  const gt = k => {
+    if(cv4 && k==='ex_cv') return cv4.t;
+    const L = (Array.isArray(d[k+'_l']) ? d[k+'_l'] : []).map(v=>(GL[k].find(o=>o.v===v) || {}).l).filter(Boolean).map(x=>TXT.lc1(x));
+    const t = d[k+'_txt'] ? TXT.lc1(flat(d[k+'_txt']).replace(/\.$/,'')) : '';
+    return L.concat(t ? [t] : []).join(', ');
+  };
   const gen = dom('gen', GEN.some(g=>gv(g[0])!=null));
-  GEN.forEach(g=>{ if(gv(g[0])===1) add(gen,g[0],'anomalie '+g[1],gt(g[0])?'('+TXT.lc1(flat(gt(g[0])).replace(/\.$/,''))+')':'',1); });
+  GEN.forEach(g=>{ if(gv(g[0])===1) add(gen,g[0],'anomalie '+g[1],gt(g[0])?'('+gt(g[0])+')':'',1); });
   gen.normaux = GEN.filter(g=>gv(g[0])===0).map(g=>g[1]);
   gen.normIds = GEN.filter(g=>gv(g[0])===0).map(g=>g[0]);
 
@@ -7692,7 +7870,7 @@ function narrativeBlocks(){
   /* libellé d'une option, ou texte « à préciser » quand le menu porte le code 99 ; au milieu d'une phrase, sans majuscule */
   const niv = k => d[k]==null ? '' : (d[k]===99 ? flat(d[k+'_autre']||'autre') : lc1(lab(k)));
   const multi = k => Array.isArray(d[k]) ? d[k] : [];
-  const CO4 = cadreOf(d)===4;          // intoxication au monoxyde de carbone (12.1.1) : le patient, les circonstances, les symptômes remplacent le plongeur et la plongée
+  const CO4 = cadreOf(d)===4, CH7 = cadreOf(d)===7;          // CH7 : hyperbarie chronique (12.4.1) ; intoxication au monoxyde de carbone (12.1.1) : le patient, les circonstances, les symptômes remplacent le plongeur et la plongée
 
   /* ---------- en-tête, comme sur la feuille d'observation ---------- */
   const titre = TY===2 ? 'Observation de suivi' : TY===3 ? 'Compte rendu de séjour' : 'Observation d’entrée';
@@ -7733,9 +7911,9 @@ function narrativeBlocks(){
     if(d.plongee_depuis!=null) ex.push('plongeur depuis '+d.plongee_depuis);
     if(d.nb_plongees_total!=null) ex.push(d.nb_plongees_total+' plongée'+(d.nb_plongees_total>1?'s':'')+' au total');
     if(d.nb_plongees_an!=null) ex.push(d.nb_plongees_an+' plongée'+(d.nb_plongees_an>1?'s':'')+' par an en moyenne sur les 2 dernières années');
-    if(!CO4 && (nv.length || ex.length)) pa.push(', '+(nv.length ? lst(nv) : 'pratique')+(ex.length ? ' ('+ex.join(' ; ')+')' : ''));
+    if(!CO4 && !CH7 && (nv.length || ex.length)) pa.push(', '+(nv.length ? lst(nv) : 'pratique')+(ex.length ? ' ('+ex.join(' ; ')+')' : ''));
     if(!CO4 && d.auto_encadre===1) pa.push(', plongée auto-encadrée');
-    sect(CO4 ? 'Le patient' : 'Le plongeur', [pa.length ? fin((CO4 ? (F ? 'Patiente' : 'Patient') : (F ? 'Plongeuse' : 'Plongeur'))+pa.join('')) : ''], true);
+    sect(CO4 || CH7 ? 'Le patient' : 'Le plongeur', [pa.length ? fin((CO4 || CH7 ? (F ? 'Patiente' : 'Patient') : (F ? 'Plongeuse' : 'Plongeur'))+pa.join('')) : ''], true);
 
     /* la plongée */
     const l1 = [];
@@ -7804,7 +7982,7 @@ function narrativeBlocks(){
     if(d.ff_visib) env.push({1:'bonne visibilité', 2:'mauvaise visibilité', 3:'visibilité inférieure à 1 m'}[d.ff_visib]);
     if(d.ff_env) env.push(lc1(flat(d.ff_env).replace(/[.;,:\s]+$/,'')));
     if(env.length) l1.push(fin('Conditions environnementales : '+env.join(', ')));
-    if(CO4) sect('Circonstances de l’intoxication', coCircTexte(d), true); else sect('La plongée', [l1.filter(Boolean).join(' ')], true);
+    if(CO4) sect('Circonstances de l’intoxication', coCircTexte(d), true); else if(CH7) sect('Indication et adressage', chrAdrTexte(d), true); else sect('La plongée', [l1.filter(Boolean).join(' ')], true);
 
     /* ce qui s'est passé, puis les premiers signes */
     const ls = [];
@@ -7815,7 +7993,7 @@ function narrativeBlocks(){
       ls.push(fin(q));
     }
     if(d.sf_arrivee) ls.push(fin('Signes fonctionnels à l’arrivée : '+lc1(flat(d.sf_arrivee))));
-    sect('Histoire des symptômes', CO4 ? [coSympTexte(d)] : [ls.filter(Boolean).join(' ')], true);
+    if(!CH7) sect('Histoire des symptômes', CO4 ? [coSympTexte(d)] : [ls.filter(Boolean).join(' ')], true);
 
     /* soins sur place */
     const sp = [];
@@ -7941,7 +8119,12 @@ function narrativeBlocks(){
       PC(cat, fin(lib+' : '+(ab ? bold(r) : r)), ab);
     } else PC(cat, lib+' réalisé'+(e?'e':'')+'.');
   };
-  if(d.im_ecg===1){ const eab = CO4 && coEcgAb(d), et = d.ecg_txt ? fin('ECG : '+d.ecg_txt) : 'ECG réalisé.'; PC('ecg', eab ? bold(et) : et, eab); }
+  if(d.im_ecg===1){
+    const eab = coEcgAb(d), auto = d.ecg_txt && d.ecg_txt === d.ecg_txt_auto && CO_ECG_K.some(k=>d[k]!=null);
+    /* compte rendu rédigé par l'application : seuls les signes anormaux en gras ; compte rendu modifié à la main : tout en gras s'il y a une anomalie cotée */
+    const et = auto ? 'ECG : '+coEcgTexte(d, true) : (d.ecg_txt ? fin('ECG : '+d.ecg_txt) : 'ECG réalisé.');
+    PC('ecg', (eab && !auto) ? bold(et) : et, eab);
+  }
   exam('rp', 'im_rp', 'Radiographie thoracique', 'im_rp_res', 1);
   exam('tdm_thor', 'im_tdm_thor', 'Scanner thoracique', 'im_tdm_thor_res', 0);
   exam('tdm_cer', 'im_tdm_cer', 'Scanner cérébral', 'im_tdm_cer_res', 0);
@@ -8009,6 +8192,7 @@ function narrativeBlocks(){
   /* ---------- diagnostic retenu : entre les examens paracliniques et la conduite à tenir ---------- */
   const dgt = diagnosticTexte(d);
   if(dgt) sect('Diagnostic retenu', [dgt], true);
+  if(CH7){ sect('Contre-indications à l’oxygénothérapie hyperbare', chrCiTexte(d), false); sect('Conclusion et prescription', chrPrescTexte(d), true); }
   if(CO4){ const ck = coCinetTexte(d); if(ck.length) sect('Cinétique de la carboxyhémoglobine (estimation)', ck, false); }
   if(CO4) sect('Gravité et indication d’oxygénothérapie hyperbare', coGraviteTexte(d), false);
 
@@ -8878,6 +9062,7 @@ const PMERGE = {
   organisme:['organisme_autre'], certif_medecin:['certif_medecin_autre'],
   pl_proc:['pl_ordi_modele','pl_ordi_reglage','pl_proc_autre'], pl_tenue:['pl_tenue_autre'],
   im_ecg:['ecg_txt'], tb_table:['tb_table_autre'],
+  ex_cv:['ex_cv_l'], ex_pneumo:['ex_pneumo_l'], ex_abdo:['ex_abdo_l'], ex_loco:['ex_loco_l'],
   rx_solu:['rx_solu_dose','rx_solu_jours'],
   im_rp:['im_rp_res'], im_tdm_thor:['im_tdm_thor_res'], im_tdm_cer:['im_tdm_cer_res'],
   im_irm_cer:['im_irm_cer_res'], im_irm_med:['im_irm_med_res'], im_eto:['im_eto_fop','im_eto_res'],
@@ -9085,8 +9270,9 @@ function psco(){
    une prise en charge en urgence, un suivi sous traitement et un compte rendu
    de séjour ne racontent pas la même chose. */
 function docTitre(){
-  const t = REC.d.fiche_type || 1, sj = cadreOf(REC.d)===4 ? 'INTOXICATION AU MONOXYDE DE CARBONE' : 'ACCIDENT DE PLONGÉE';
+  const t = REC.d.fiche_type || 1, sj = cadreOf(REC.d)===4 ? 'INTOXICATION AU MONOXYDE DE CARBONE' : cadreOf(REC.d)===7 ? 'OXYGÉNOTHÉRAPIE HYPERBARE PROGRAMMÉE' : 'ACCIDENT DE PLONGÉE';
   if(t===4) return "SÉANCE DE RECOMPRESSION THÉRAPEUTIQUE";
+  if(t===1 && cadreOf(REC.d)===7) return "CONSULTATION INITIALE — "+sj;
   if(t===2) return "FICHE DE SUIVI — "+sj;
   if(t===3) return "COMPTE RENDU D'HOSPITALISATION — "+sj;
   return "PRISE EN CHARGE EN URGENCE — "+sj;
@@ -9108,6 +9294,8 @@ function buildPrint(){
   const d=REC.d, A=ASIA||{}, TY=d.fiche_type||1, CO4=cadreOf(d)===4, NC = x => CO4 ? '' : x;          // CO4 : intoxication au monoxyde de carbone (12.1.1), NC : ce qui n'a pas de sens pour elle
   if(TY===4) return buildPrintSeance();
   let h='';
+  if(cadreOf(d)===7) h = chrPrint();          // hyperbarie chronique : deux pages propres, puis les pièces jointes
+  else {
 
   /* ---------- page d'accueil : seulement sur la consultation initiale et le CRH ---------- */
   if(TY===1 || TY===3){
@@ -9371,6 +9559,7 @@ function buildPrint(){
      ' — éditée le '+frDate(iso(new Date()))+' à '+hhmm(new Date())+'</div>';
   h+='</div>';
 
+  }
   /* ---------- pages de pièces jointes ---------- */
   const PJ = Array.isArray(d.pj) ? d.pj : [];
   if(PJ.length){
@@ -9891,7 +10080,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.1.2';
+const APP_VERSION = '12.4.2';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -10494,6 +10683,8 @@ function afterConnect(opt){
         if(n || (st && (st.add || st.upd)) || opt.csv) await writeDataLocked(true);
       }
       await persistSync();
+      try{ await astSyncLocked(); }catch(e){ console.error('astreinte :', e); }          // le planning d'astreinte (plannings/astreinte.json)
+      try{ await tblSyncLocked(); }catch(e){ console.error('tables :', e); }            // le planning des tables (plannings/tables.json)
     }catch(e){ folderFailed('save', e); }
     finally{ SYNCINFO = ''; }
     refreshAfterSync(st);
@@ -10753,7 +10944,7 @@ function newFiche(){
   if(DIRTY && !confirm('La fiche en cours contient des modifications non enregistrees. Continuer ?')) return;
   if(DICT) dictAbort();
   if(FILTRE_PAT){ FILTRE_PAT = null; const el = $('#search'); if(el) el.value = ''; }      // la liste du patient précédent ne doit pas cacher la fiche du nouveau
-  REC=blank(); REC._attenteCadre=true; DIRTY=false; PAGE=1; TYPE_CHOISI=false; renderForm(); renderList(); updateBar();
+  AF_ON=false; TBL_ON=false; REC=blank(); REC._attenteCadre=true; DIRTY=false; PAGE=1; TYPE_CHOISI=false; renderForm(); renderList(); updateBar();
   window.scrollTo(0,0);
 }
 /* L'étape préalable d'une nouvelle fiche : le choix du cadre de la consultation. Tant qu'il n'est pas fait (REC._attenteCadre), l'écran du formulaire est celui du choix. */
@@ -10761,15 +10952,22 @@ function cadreLauncher(){
   const carte = c => c.actif
     ? '<button type="button" class="cadre actif" id="cadre_'+c.id+'" onclick="choisirCadre('+c.v+')"><b>'+esc(c.l)+'</b><span>'+esc(c.d)+'</span></button>'
     : '<button type="button" class="cadre bientot" id="cadre_'+c.id+'" disabled aria-disabled="true"><b>'+esc(c.l)+'</b><span>'+esc(c.d)+'</span><i>bientôt</i></button>';
+  const nAf = AF && AF.patients ? AF.patients.length : 0;
   return '<div class="cadres" id="cadres"><h2>Cadre de la consultation</h2>'+
     '<p class="cadres-sub">Choisissez le cadre : il détermine l’interface de la fiche et ce que la synthèse met en avant. Il se change ensuite dans l’identification.</p>'+
+    '<h3>Afflux massif</h3><div class="cadregrid"><button type="button" class="cadre actif" id="cadre_afflux" onclick="openAfflux()" style="border-color:#b45309">'+
+    '<b>Afflux massif — intoxication au monoxyde de carbone</b><span>Plusieurs patients : saisie rapide par identifiant, suivi de lieu en lieu, contre-indications à l’OHB, planification des séances sur les chambres de recompression.</span>'+
+    (nAf ? '<span style="color:#b45309;font-weight:600">Événement en cours : '+nAf+' patient'+(nAf>1 ? 's' : '')+' — reprendre</span>' : '')+'</button></div>'+
     '<h3>Urgences hyperbares</h3><div class="cadregrid">'+CADRES.filter(c=>c.g==='urgence').map(carte).join('')+'</div>'+
-    '<h3>Consultations programmées</h3><div class="cadregrid">'+CADRES.filter(c=>c.g==='programmee').map(carte).join('')+'</div></div>';
+    '<h3>Consultations programmées</h3><div class="cadregrid">'+CADRES.filter(c=>c.g==='programmee').map(carte).join('')+'</div>'+
+    '<h3>Organisation du service</h3><div class="cadregrid">'+
+    '<button type="button" class="cadre actif" id="cadre_tables" onclick="openTables()"><b>Planning des tables</b><span>La semaine des séances (7 h 45, 10 h, 12 h 45, 15 h par défaut), les cures, la validation des tables réalisées, les annulations et les courriels aux patients.</span></button>'+
+    '<button type="button" class="cadre actif" id="cadre_astreinte" onclick="astOpen()"><b>Astreinte, rôles et personnes</b><span>Le coordinateur de l’afflux, le planning d’astreinte, les rôles (examiner, valider une table, gérer le planning, désigner) et les personnes.</span></button></div></div>';
 }
 function choisirCadre(v){
   const c = cadreInfo(v);
   if(!c || !c.actif){ toast('Ce cadre arrive dans une prochaine version'); return; }
-  REC.d.cadre = c.v; delete REC._attenteCadre; PAGE = 1; cadreDefauts(1);
+  AF_ON = false; TBL_ON = false; REC.d.cadre = c.v; delete REC._attenteCadre; PAGE = 1; cadreDefauts(1);
   renderForm(); updateBar(); window.scrollTo(0,0);
   setTimeout(()=>{ const i=$('#i_dossier'); if(i) i.focus(); }, 60);
 }
@@ -10801,7 +10999,7 @@ function seanceDe(dossier){
   const r = blank(), l = s.last.d;
   r.d = {dossier:s.dossier, dossier_pseudo:l.dossier_pseudo || 0};
   ID_KEYS.concat(['examinateur','cadre']).forEach(k=>{ if(l[k]!=null && l[k]!=='') r.d[k] = l[k]; });
-  REC = r; DIRTY = false; newSeance();
+  AF_ON = false; TBL_ON = false; REC = r; DIRTY = false; newSeance();
 }
 /* Séance de recompression cotée en quelques clics, sans examen clinique : une fiche de type 4 pour le dossier de la fiche ouverte, avec l'identité, la date et
    l'heure du moment, la table de la dernière séance (B18 à défaut). Il reste à vérifier la table et l'heure, puis à enregistrer. */
@@ -10822,7 +11020,7 @@ function loadFiche(id, patient){
   const f=DB.find(x=>x.id===id); if(!f) return;
   if(DICT) dictAbort();
   if(patient) filtrerPatient(f.d.dossier);                       // clic sur une pastille : la barre de recherche et la liste du bas suivent ce patient
-  REC=JSON.parse(JSON.stringify(f)); DIRTY=false; EDIT_LOCK=REC.id; PAGE=1; TYPE_CHOISI=true; renderForm(); renderList(); updateBar(); window.scrollTo(0,0);
+  AF_ON=false; TBL_ON=false; REC=JSON.parse(JSON.stringify(f)); DIRTY=false; EDIT_LOCK=REC.id; PAGE=1; TYPE_CHOISI=true; renderForm(); renderList(); updateBar(); window.scrollTo(0,0);
 }
 async function delFiche(id,ev){
   ev.stopPropagation();
@@ -11036,6 +11234,7 @@ function patBarClass(){
 }
 function updatePatBar(){
   const el = $('#patbar'); if(!el || !REC) return;
+  el.style.display = (AF_ON || TBL_ON) ? 'none' : '';          // afflux massif : pas de patient unique, pas de bandeau
   const h = patBarHTML(), cl = patBarClass();
   if(h === PATBAR_HTML && el.className === cl) return;
   PATBAR_HTML = h; el.className = cl; el.innerHTML = h;
@@ -12765,6 +12964,29 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.4.2 (version d’essai).</b><br>'+
+  '<b>ECG</b> : dès que l’ECG est coché OUI, quel que soit le cadre, les <b>signes d’ischémie et d’atteinte myocardique</b> (rythme, sus- ou sous-décalage du ST, ondes T négatives, ondes Q, territoire, conduction, extrasystoles) s’affichent juste sous la fréquence et le QTc, et rédigent le compte rendu ; la synthèse met les seuls signes anormaux en gras (l’intoxication au CO ne les affichait pas : corrigé). '+
+  '<b>Examen général</b> : une anomalie cardio-vasculaire, respiratoire, abdominale ou locomotrice cochée OUI ouvre la liste de ses signes à cocher ; la synthèse les écrit en gras.</p>'+
+  '<p><b>Nouveautés de la 12.4.1 (version d’essai) : hyperbarie chronique, planning des tables, rôles.</b><br>'+
+  'Le cadre <b>Consultation d’hyperbarie chronique</b> s’ouvre : indication et médecin adresseur (spécialité, courrier joint en photo), terrain (antécédents, tabac en PA, traitements, allergies), coordonnées, examen général et ORL, '+
+  '<b>contre-indications à l’OHB</b> (scanner thoracique sans injection suggéré en cas d’antécédent pulmonaire, de tabagisme même sevré ou d’âge supérieur à 50 ans), et une conclusion qui statue sur l’indication, la contre-indication et la <b>prescription</b> '+
+  '(table, pauses à l’air, prémédication avec DCI et dose, protocole du service, séances, réévaluation, première séance, rendez-vous). '+
+  'Le <b>planning des tables</b> (Organisation du service) tient la semaine (7 h 45, 10 h, 12 h 45, 15 h par défaut), planifie les cures d’après leur protocole, fait valider les tables réalisées (une fiche de séance se crée), annule une table ou une journée et ouvre le courriel aux patients ; les rendez-vous d’un patient s’impriment ou partent par courriel. '+
+  'Nouveaux droits par rôle : <b>examiner</b> (un infirmier ne peut pas examiner : les consultations s’affichent en lecture seule), <b>valider une table</b>, <b>gérer le planning</b>.</p>'+
+  '<p><b>Nouveautés de la 12.3.1 (version d’essai) : coordinateur de l’afflux.</b><br>'+
+  'Seul le <b>coordinateur</b> (l’infirmier d’astreinte) planifie les séances de l’afflux (proposer, valider, supprimer, ajouter ou retirer un patient) ; démarrer et terminer une séance restent ouverts à l’équipe. '+
+  'Le coordinateur vient du <b>planning d’astreinte</b> (créneaux, répétables chaque semaine) ; un rôle autorisé (médecins et infirmiers référents par défaut) peut en <b>désigner un autre</b> dans la journée, avec un motif ; la désignation l’emporte jusqu’à sa fin. '+
+  'Rôles et personnes se paramètrent dans l’<b>administration</b> (code). Le planning est rangé dans le dossier de données, <code>plannings/astreinte.json</code>, relu à l’ouverture, au bouton Actualiser et toutes les minutes, fusionné élément par élément entre les postes, sans passer par Firebase. '+
+  'Bouton <b>Astreinte</b> dans l’écran d’afflux, et <b>Plus › Astreinte et coordination</b>.</p>'+
+  '<p><b>Nouveautés de la 12.2.2 (version d’essai) : afflux partagé entre appareils.</b><br>'+
+  'Quand le <b>couplage entre appareils</b> est en place, l’événement d’afflux est <b>partagé</b> par tous les appareils du même code, presque en temps réel et chiffré de bout en bout : '+
+  'chaque opérateur saisit, déplace, cote et planifie, et tous voient le même tableau. Fusion champ par champ (la modification la plus récente l’emporte) ; les déplacements simultanés d’un même patient sont tous gardés ; '+
+  'un identifiant saisi deux fois est signalé « doublon ». L’en-tête de l’écran dit l’état du partage. Aucune modification des règles Firebase n’est nécessaire.</p>'+
+  '<p><b>Nouveautés de la 12.2.1 (version d’essai) : afflux massif — intoxication au CO.</b><br>'+
+  'Une carte <b>Afflux massif</b> en tête du choix du cadre (et dans <b>Plus</b>) ouvre un écran à part : <b>saisie rapide</b> des patients par identifiant (clavier, douchette ou numérotation automatique), '+
+  '<b>lieux paramétrables</b> (chaque déplacement est horodaté, déplacement groupé des patients cochés), indication et <b>contre-indication à l’OHB</b>, installation (assis, allongé, réanimatoire), scope, '+
+  'et <b>planification des séances</b> sur les deux chambres (capacités et configurations paramétrables, mise en place, intervalle entre séances) : proposer, valider, démarrer, terminer. '+
+  'Exports CSV et JSON ; une fiche CO se crée depuis la ligne d’un patient.</p>'+
   '<p><b>Nouveautés de la 12.1.2 (version d’essai) : intoxication au monoxyde de carbone.</b><br>'+
   '<b>Examen neurologique simplifié</b> (sans vidéonystagmoscopie, Hoffmann, trépidations, contractions, sphincter anal). '+
   '<b>Examen cardio-vasculaire</b> détaillé (douleur thoracique, rythme, souffle, insuffisance cardiaque, hypoperfusion, pouls ; inhalation de fumées et cyanure en cas d’incendie). '+
@@ -13142,25 +13364,27 @@ const coQtLong = d => d.ecg_qtc!=null && d.ecg_qtc >= (d.sexe===2 ? 460 : 450);
 function coEcgAb(d){
   return d.im_ecg===1 && (d.co_ecg_rythme>=3 || d.co_ecg_repol===1 || d.co_ecg_cond===1 || d.co_ecg_esv===1 || coQtLong(d));
 }
-function coEcgTexte(d){
-  const lab = (L, v) => (L.find(o=>o.v===v) || {}).l || '', lc = TXT.lc1;
+function coEcgTexte(d, gras){
+  const lab = (L, v) => (L.find(o=>o.v===v) || {}).l || '', lc = TXT.lc1, B = x => gras ? bold(x) : x;          // gras : la synthèse met en gras les seuls signes anormaux
   const fc = d.ecg_fc!=null ? d.ecg_fc : 'xx', q = d.ecg_qtc!=null ? d.ecg_qtc : 'xx';
-  const ry = {1:'Rythme sinusal', 2:'Tachycardie sinusale', 3:'Fibrillation ou flutter atrial', 4:'Trouble du rythme'}[d.co_ecg_rythme] || 'Rythme';
+  const ry0 = {1:'Rythme sinusal', 2:'Tachycardie sinusale', 3:'Fibrillation ou flutter atrial', 4:'Trouble du rythme'}[d.co_ecg_rythme];
+  const ry = ry0 ? (d.co_ecg_rythme >= 3 ? B(ry0+' à '+fc+' bpm') : ry0+' à '+fc+' bpm') : 'Fréquence cardiaque à '+fc+' bpm';
   const P = [];
   if(d.co_ecg_repol===1){
     const L = (Array.isArray(d.co_ecg_isch) ? d.co_ecg_isch : []).map(v=>lc(lab(CO_ECG_ISCH, v)));
-    P.push((L.length ? TXT.lst(L) : 'trouble de la repolarisation')+(d.co_ecg_isch_loc ? ' (territoire '+lc(TXT.flat(d.co_ecg_isch_loc)).replace(/[.\s]+$/, '')+')' : ''));
+    P.push(B((L.length ? TXT.lst(L) : 'trouble de la repolarisation')+(d.co_ecg_isch_loc ? ' (territoire '+lc(TXT.flat(d.co_ecg_isch_loc)).replace(/[.\s]+$/, '')+')' : '')));
   } else if(d.co_ecg_repol===0) P.push('sans trouble de la repolarisation');
   if(d.co_ecg_cond===1){
     const L = (Array.isArray(d.co_ecg_cond_t) ? d.co_ecg_cond_t : []).map(v=>lc(lab(CO_ECG_COND, v)));
-    P.push(L.length ? TXT.lst(L) : 'trouble de la conduction');
+    P.push(B(L.length ? TXT.lst(L) : 'trouble de la conduction'));
   } else if(d.co_ecg_cond===0) P.push('sans trouble de la conduction');
-  if(d.co_ecg_esv===1) P.push('extrasystoles ventriculaires');
-  return ry+' à '+fc+' bpm'+(P.length ? ', '+P.join(', ') : '')+'. QTc à '+q+' ms'+(coQtLong(d) ? ' (allongé)' : '')+'.';
+  if(d.co_ecg_esv===1) P.push(B('extrasystoles ventriculaires'));
+  const qt = 'QTc à '+q+' ms'+(coQtLong(d) ? ' (allongé)' : '');
+  return ry+(P.length ? ', '+P.join(', ') : '')+'. '+(coQtLong(d) ? B(qt) : qt)+'.';
 }
 function coEcgNote(){
   const d = REC.d;
-  if(d.im_ecg!==1) return '<div class="note" style="margin:0">Cotez « ECG : OUI » dans « Examens complémentaires » (juste en dessous) : les signes à rechercher s’affichent ici et rédigent le compte rendu de l’ECG.</div>';
+  if(d.im_ecg!==1) return '';
   const ab = coEcgAb(d);
   return '<div class="note" style="margin:0'+(ab ? ';border-color:#c00000' : '')+'">'+(ab ? '<b style="color:#c00000">ECG anormal : signe d’atteinte myocardique possible.</b> Troponine à répéter, avis cardiologique. ' : 'Rythme, repolarisation (ST, ondes T, ondes Q), conduction, extrasystoles, QTc. ')+
     (coQtLong(d) ? '<b style="color:#c00000">QTc à '+d.ecg_qtc+' ms : allongé.</b> ' : '')+'Le compte rendu de l’ECG se rédige d’après ces items (modifiable).</div>';
@@ -13387,6 +13611,1249 @@ function coBoxes(){
 
 
 /* =====================================================================
+   AFFLUX MASSIF — INTOXICATION AU MONOXYDE DE CARBONE (12.2.1)
+   Un écran à part, ouvert depuis le choix du cadre : plusieurs patients saisis vite par leur identifiant (clavier ou douchette), suivis de lieu en lieu (lieux paramétrables, chaque déplacement
+   horodaté), indication et contre-indication à l'oxygénothérapie hyperbare, et planification des séances sur les chambres de recompression (capacités paramétrables).
+   L'événement est gardé dans la base locale (magasin « meta », clé « afflux ») : il n'est pas partagé par le couplage entre appareils. Une fiche CO complète se crée depuis la ligne d'un patient.
+   Planification : algorithme glouton. Le patient le plus prioritaire (réanimatoire, puis signes neurologiques, grossesse, HbCO la plus haute, arrivée la plus ancienne) prend la séance qui commence le plus tôt
+   parmi les chambres et les configurations qui peuvent l'accueillir ; la séance se complète avec les patients de même table (A15 ou A18) qui y tiennent et sont disponibles. Les séances validées,
+   en cours ou terminées ne sont jamais déplacées : seules les propositions se recalculent.
+   ===================================================================== */
+const AF_KEY = 'afflux';
+let AF = null, AF_ON = false, AF_SAVE_T = null, AF_SEL = {}, AF_HL = null;
+const AF_INST = [{v:'assis',l:'Assis'},{v:'allonge',l:'Allongé'},{v:'rea',l:'Réa (IOT)'}];
+const AF_IND = [{v:'',l:'—'},{v:1,l:'Indiquée'},{v:0,l:'Non indiquée'},{v:2,l:'À discuter'}];
+const AF_CI = [{v:'',l:'À vérifier'},{v:0,l:'Absente'},{v:1,l:'Présente'}];
+const AF_ST = {evaluer:['À évaluer','#6b7280'], non:['OHB non indiquée','#2e7d32'], discuter:['OHB à discuter','#b45309'], civ:['CI à vérifier','#b45309'], ci:['Contre-indication','#c00000'],
+               attente:['En attente de séance','#b45309'], propose:['Séance proposée','#1f6fb2'], planifie:['Séance validée','#1f6fb2'], seance:['En séance','#7c3aed'], traite:['Traité','#2e7d32'], sorti:['Sorti','#6b7280']};
+const AF_SS = {proposee:'Proposée', validee:'Validée', en_cours:'En cours', terminee:'Terminée'};
+
+function afDefaut(){
+  const now = new Date();
+  const L = ['Accueil – tri','Urgences (SAU)','Salle d’attente OHB','Chambre 1','Chambre d’urgence','Surveillance après OHB','Réanimation','Hospitalisation','Sortie'];
+  return {v:1, id:'af'+now.getTime(), nom:'Afflux CO du '+frDate(iso(now)), debut:now.toISOString(), seq:0, prefixe:'CO-', num:0,
+    lieux:L.map((l,i)=>({id:'l'+(i+1), l:l})), lieuAccueil:'l1', lieuApres:'l6', lieuSortie:'l9', rotation:15,
+    chambres:[
+      {id:'c1', l:'Chambre 1', lieu:'l4', configs:[
+        {id:'c1_6a', l:'6 assis', assis:6, allonges:0, rea:0, scopes:1, setup:0},
+        {id:'c1_2l', l:'2 allongés non réanimatoires', assis:0, allonges:2, rea:0, scopes:1, setup:10}]},
+      {id:'cu', l:'Chambre d’urgence', lieu:'l5', configs:[
+        {id:'cu_3a', l:'3 assis (nominale)', assis:3, allonges:0, rea:0, scopes:1, setup:0},
+        {id:'cu_1l', l:'1 allongé, réanimatoire possible', assis:0, allonges:1, rea:1, scopes:1, setup:0},
+        {id:'cu_6a', l:'6 assis', assis:6, allonges:0, rea:0, scopes:1, setup:0}]}],
+    patients:[], seances:[]};
+}
+async function afLoad(){ try{ AF = await metaGet(AF_KEY); }catch(e){ AF = null; } await afSyncLoad(); AFS.prev = afFlat(AF); }
+function afSave(){ clearTimeout(AF_SAVE_T); AF_SAVE_T = setTimeout(()=>{ if(AF) metaSet(AF_KEY, AF); }, 250); try{ afFbMark(); }catch(e){ console.error('afflux :', e); } }
+async function openAfflux(){
+  if(DIRTY && !confirm('La fiche en cours contient des modifications non enregistrées. Continuer ?')) return;
+  if(!AF) await afLoad();
+  if(!AF){ AF = afDefaut(); afSave(); }
+  TBL_ON = false; AF_ON = true; DIRTY = false; afRender(); updatePatBar(); window.scrollTo(0,0);
+  setTimeout(()=>{ const i = $('#af_code'); if(i) i.focus(); }, 60);
+}
+function afQuitter(){ AF_ON = false; REC = blank(); REC._attenteCadre = true; renderForm(); updateBar(); }
+
+/* ---------- outils ---------- */
+const afLieu = id => (AF.lieux.find(l=>l.id===id) || {}).l || '—';
+const afPat = id => AF.patients.find(p=>p.id===id);
+const afCh = id => AF.chambres.find(c=>c.id===id);
+const afCfg = (c, id) => c ? c.configs.find(x=>x.id===id) : null;
+const afHM = t => t ? hhmm(new Date(t)) : '';
+const afFin = s => new Date(s.debut).getTime() + s.duree*60000;
+const afBase = p => p.table || (p.neuro===1 ? 'A18' : 'A15');
+const afNum = v => { if(v==='' || v==null) return null; const n = Number(String(v).replace(',', '.')); return isFinite(n) ? n : null; };
+/* l'heure à partir de laquelle le patient est disponible : saisie (HH:MM, le jour de l'événement ou le lendemain), sinon son arrivée */
+function afDispo(p){
+  const a = new Date(p.cree).getTime();
+  if(!p.dispo) return a;
+  const d = new Date(iso(new Date(p.cree))+'T'+p.dispo).getTime();
+  return isNaN(d) ? a : (d < a - 12*3600000 ? d + 86400000 : d);
+}
+const afSeancesDe = id => AF.seances.filter(s=>s.pts.indexOf(id)>=0);
+const afOuverte = id => afSeancesDe(id).find(s=>s.statut!=='terminee');
+function afStatut(p){
+  if(p.lieu===AF.lieuSortie) return 'sorti';
+  const s = afOuverte(p.id);
+  if(s) return s.statut==='en_cours' ? 'seance' : s.statut==='validee' ? 'planifie' : 'propose';
+  if(p.nb > 0 && !p.encore) return 'traite';
+  if(p.ind==null) return 'evaluer';
+  if(p.ind===0) return 'non';
+  if(p.ind===2) return 'discuter';
+  if(p.ci==null) return 'civ';
+  if(p.ci===1) return 'ci';
+  return 'attente';
+}
+const afEligible = p => afStatut(p)==='attente';
+/* priorité : réanimatoire, signes neurologiques, grossesse, HbCO, arrivée */
+function afPrio(a, b){
+  const k = p => [p.inst==='rea' ? 0 : 1, p.neuro===1 ? 0 : 1, p.gross===1 ? 0 : 1, -(p.hbco||0), afDispo(p)];
+  const x = k(a), y = k(b);
+  for(let i = 0; i < x.length; i++) if(x[i]!==y[i]) return x[i] < y[i] ? -1 : 1;
+  return 0;
+}
+/* un groupe de patients tient-il dans une configuration ? Un patient assis peut occuper une place allongée libre ; un réanimatoire exige une place allongée réanimatoire ; un réanimatoire est scopé. */
+function afTient(cfg, pts){
+  const as = pts.filter(p=>p.inst==='assis').length, al = pts.filter(p=>p.inst==='allonge').length, re = pts.filter(p=>p.inst==='rea').length;
+  const sc = pts.filter(p=>p.scope===1 || p.inst==='rea').length;
+  if(re > (cfg.rea ? cfg.allonges : 0)) return false;
+  if(al + re > cfg.allonges) return false;
+  if(as > cfg.assis + (cfg.allonges - al - re)) return false;
+  return sc <= cfg.scopes;
+}
+function afTableDe(pts, base){
+  const t = base+(pts.some(p=>p.inst==='rea') ? 'IOT' : ''), T = TABLES.find(x=>x.l===t);
+  return T ? {l:T.l, m:T.m} : {l:base, m:(TABLES.find(x=>x.l===base) || {m:95}).m};
+}
+const afOcc = (cfg, pts) => {
+  const as = pts.filter(p=>p.inst==='assis').length, al = pts.filter(p=>p.inst!=='assis').length, sc = pts.filter(p=>p.scope===1 || p.inst==='rea').length;
+  return 'assis '+as+'/'+cfg.assis+' · allongés '+al+'/'+cfg.allonges+' · scopés '+sc+'/'+cfg.scopes;
+};
+
+/* ---------- planification ---------- */
+function afPlanifier(silence){
+  if(!astGarde()) return;
+  const garde = AF.seances.filter(s=>s.statut!=='proposee');
+  AF.seances = garde;
+  const t0 = Math.ceil(Date.now()/300000)*300000, rot = (AF.rotation||0)*60000;
+  const libre = {}, cfgAv = {};
+  AF.chambres.forEach(c=>{
+    const S = garde.filter(s=>s.ch===c.id).sort((a,b)=>a.debut.localeCompare(b.debut)), der = S[S.length-1];
+    libre[c.id] = der ? Math.max(t0, afFin(der) + rot) : t0;
+    cfgAv[c.id] = der ? der.cfg : (c.configs[0] || {}).id;
+  });
+  let cand = AF.patients.filter(afEligible).sort(afPrio);
+  const hors = [];
+  while(cand.length){
+    const P = cand[0], base = afBase(P); let best = null;
+    AF.chambres.forEach(c=>c.configs.forEach(cfg=>{
+      if(!afTient(cfg, [P])) return;
+      const setup = cfg.id!==cfgAv[c.id] ? (cfg.setup||0)*60000 : 0;
+      const st = Math.max(libre[c.id] + setup, Math.ceil(afDispo(P)/300000)*300000);
+      const pts = [P];
+      cand.slice(1).forEach(Q=>{ if(afBase(Q)===base && afDispo(Q) <= st && afTient(cfg, pts.concat([Q]))) pts.push(Q); });
+      if(!best || st < best.st || (st===best.st && pts.length > best.pts.length)) best = {c:c, cfg:cfg, st:st, pts:pts};
+    }));
+    if(!best){ hors.push(P.id); cand.shift(); continue; }
+    const T = afTableDe(best.pts, base);
+    AF.seances.push({id:afUid('s'), ch:best.c.id, cfg:best.cfg.id, table:T.l, duree:T.m, debut:new Date(best.st).toISOString(), pts:best.pts.map(x=>x.id), statut:'proposee'});
+    libre[best.c.id] = best.st + T.m*60000 + rot; cfgAv[best.c.id] = best.cfg.id;
+    cand = cand.filter(x=>best.pts.indexOf(x)<0);
+  }
+  AF.hors = hors;
+  afSave(); afRender();
+  if(!silence) toast(AF.seances.filter(s=>s.statut==='proposee').length+' séance(s) proposée(s)'+(hors.length ? ' ; '+hors.length+' patient(s) sans configuration possible' : ''));
+}
+/* une séance : valider, démarrer, terminer, supprimer ; retirer un patient ; ajouter un patient */
+function afSeance(id, act){
+  const s = AF.seances.find(x=>x.id===id); if(!s) return;
+  if((act==='valider' || act==='supprimer') && !astGarde()) return;          // le planning est l'affaire du coordinateur ; démarrer et terminer, de l'équipe du caisson
+  const c = afCh(s.ch), now = new Date().toISOString();
+  if(act==='valider') s.statut = 'validee';
+  else if(act==='demarrer'){ s.statut = 'en_cours'; s.reel = now; s.pts.forEach(pid=>afDeplacer(pid, c.lieu, true)); }
+  else if(act==='terminer'){ s.statut = 'terminee'; s.finReel = now; s.pts.forEach(pid=>{ const p = afPat(pid); if(p){ p.nb = (p.nb||0)+1; p.encore = 0; afDeplacer(pid, AF.lieuApres, true); } }); }
+  else if(act==='supprimer'){ if(s.statut==='en_cours' && !confirm('Séance en cours : la supprimer ?')) return; AF.seances = AF.seances.filter(x=>x!==s); }
+  afSave(); afRender();
+}
+function afRetirer(sid, pid){
+  const s = AF.seances.find(x=>x.id===sid); if(!s || s.statut==='en_cours' || s.statut==='terminee') return;
+  if(!astGarde()) return;
+  s.pts = s.pts.filter(x=>x!==pid);
+  if(!s.pts.length) AF.seances = AF.seances.filter(x=>x!==s);
+  else { const T = afTableDe(s.pts.map(afPat).filter(Boolean), s.table.replace('IOT','')); s.table = T.l; s.duree = T.m; }
+  afSave(); afRender();
+}
+/* les séances ouvertes (proposées ou validées) où le patient peut entrer : même table, place dans la configuration */
+function afSeancesPossibles(p){
+  return AF.seances.filter(s=>(s.statut==='proposee' || s.statut==='validee') && s.pts.indexOf(p.id)<0 && s.table.replace('IOT','')===afBase(p))
+    .filter(s=>{ const cfg = afCfg(afCh(s.ch), s.cfg); return cfg && afTient(cfg, s.pts.map(afPat).filter(Boolean).concat([p])); });
+}
+function afAjouter(pid, sid){
+  const p = afPat(pid), s = AF.seances.find(x=>x.id===sid); if(!p || !s) return;
+  if(!astGarde()){ afRender(); return; }
+  const o = afOuverte(pid); if(o && o!==s){ o.pts = o.pts.filter(x=>x!==pid); if(!o.pts.length) AF.seances = AF.seances.filter(x=>x!==o); }
+  s.pts.push(pid); const T = afTableDe(s.pts.map(afPat).filter(Boolean), s.table.replace('IOT','')); s.table = T.l; s.duree = T.m;
+  afSave(); afRender();
+}
+
+/* ---------- patients ---------- */
+function afNouveau(code){
+  code = String(code||'').trim();
+  if(!code){ toast('Identifiant vide'); return null; }
+  if(AF.patients.some(p=>p.code===code)){ toast('Identifiant déjà saisi : '+code); AF_HL = (AF.patients.find(p=>p.code===code) || {}).id; afRender(); return null; }
+  const now = new Date().toISOString();
+  const p = {id:afUid('p'), code:code, cree:now, lieu:AF.lieuAccueil, hist:[{lieu:AF.lieuAccueil, l:afLieu(AF.lieuAccueil), t:now}],
+             hbco:null, spco:0, neuro:null, gross:null, inst:'assis', scope:0, ind:null, ci:null, ci_txt:'', table:'', dispo:'', note:'', nb:0, encore:0};
+  AF.patients.push(p); AF_HL = p.id; afSave(); return p;
+}
+function afSaisie(ev){
+  if(ev && ev.key!=='Enter') return;
+  const i = $('#af_code'); if(!i) return;
+  const p = afNouveau(i.value); if(p){ i.value = ''; beep(); afRender(); toast('Patient '+p.code+' ajouté ('+afLieu(p.lieu)+')'); }
+  setTimeout(()=>{ const j = $('#af_code'); if(j) j.focus(); }, 30);
+}
+function afAuto(){
+  const n = Math.max(1, Math.min(50, Number(($('#af_n')||{}).value) || 1)); let k = 0;
+  for(let i = 0; i < n; i++){ let c; do { AF.num = (AF.num||0)+1; c = (AF.prefixe||'')+String(AF.num).padStart(2,'0'); } while(AF.patients.some(p=>p.code===c)); if(afNouveau(c)) k++; }
+  afRender(); toast(k+' patient(s) ajouté(s)');
+}
+/* identifiant scanné à la douchette pendant l'afflux : même extraction et même pseudonymisation que pour une fiche */
+async function afScan(raw){
+  let code = String(raw||'').trim().replace(/[\u0000-\u001F\u007F]/g,'');
+  if(SET.scanRe){ try{ const m = new RegExp(SET.scanRe).exec(code); if(m) code = (m[1]!=null ? m[1] : m[0]); }catch(e){} }
+  if(SET.hash){ const h = await pseudonymize(code); if(!h){ toast('Pseudonymisation impossible'); return; } code = h; }
+  const i = $('#af_code'); if(i) i.value = '';
+  const p = afNouveau(code); if(p){ beep(); afRender(); toast('Patient '+p.code+' ajouté'); }
+}
+function afSet(pid, k, v){
+  const p = afPat(pid); if(!p) return;
+  if(k==='hbco') v = afNum(v);
+  else if(['neuro','gross','ind','ci','scope','spco'].indexOf(k)>=0) v = (v==='' || v==null) ? null : Number(v);
+  p[k] = v;
+  if(k==='ci' && v!==1) p.ci_txt = p.ci_txt || '';
+  /* ce qui change l'éligibilité ou la place d'un patient dans une séance seulement proposée l'en retire : la proposition se recalcule */
+  if(['ind','ci','inst','scope','neuro','table','dispo'].indexOf(k)>=0){
+    const o = afOuverte(pid);
+    if(o && o.statut==='proposee'){ o.pts = o.pts.filter(x=>x!==pid); if(!o.pts.length) AF.seances = AF.seances.filter(x=>x!==o); }
+  }
+  afSave(); afRender();
+}
+function afDeplacer(pid, lieu, sansRendu){
+  const p = afPat(pid); if(!p || !lieu || p.lieu===lieu) return;
+  p.lieu = lieu; p.hist.push({lieu:lieu, l:afLieu(lieu), t:new Date().toISOString()});
+  if(!sansRendu){ afSave(); afRender(); }
+}
+function afDeplacerSel(lieu){
+  const ids = Object.keys(AF_SEL).filter(k=>AF_SEL[k]);
+  if(!lieu || !ids.length){ toast('Cochez des patients, puis choisissez le lieu'); return; }
+  ids.forEach(id=>afDeplacer(id, lieu, true)); AF_SEL = {}; afSave(); afRender(); toast(ids.length+' patient(s) déplacé(s) : '+afLieu(lieu));
+}
+function afEncore(pid){ const p = afPat(pid); if(!p) return; p.encore = 1; afSave(); afRender(); toast('Patient '+p.code+' : nouvelle séance à planifier'); }
+function afSuppr(pid){
+  const p = afPat(pid); if(!p || !confirm('Retirer le patient '+p.code+' de l’afflux ?')) return;
+  AF.seances.forEach(s=>{ if(s.statut==='proposee' || s.statut==='validee') s.pts = s.pts.filter(x=>x!==pid); });
+  AF.seances = AF.seances.filter(s=>s.pts.length);
+  AF.patients = AF.patients.filter(x=>x!==p); afSave(); afRender();
+}
+function afHist(pid){
+  const p = afPat(pid); if(!p) return;
+  const S = afSeancesDe(pid).map(s=>'<li>'+esc(afCh(s.ch) ? afCh(s.ch).l : s.ch)+' — '+esc(s.table)+' — '+afHM(s.debut)+' ('+esc(AF_SS[s.statut])+')</li>').join('');
+  modalHTML('<h3>Patient '+esc(p.code)+'</h3><p><b>Lieux</b></p><ol>'+p.hist.map(h=>'<li>'+afHM(h.t)+' — '+esc(h.l)+'</li>').join('')+'</ol>'+
+    (S ? '<p><b>Séances</b></p><ul>'+S+'</ul>' : '<p>Aucune séance.</p>'));
+}
+/* une fiche « Intoxication au monoxyde de carbone » pour ce patient, préremplie de ce que l'afflux sait */
+function afFiche(pid){
+  const p = afPat(pid); if(!p) return;
+  AF_ON = false; REC = blank(); REC._attenteCadre = true; DIRTY = false; TYPE_CHOISI = false;
+  choisirCadre(4);
+  const d = REC.d; d.dossier = p.code;
+  if(p.spco===1 && p.hbco!=null) d.co_spco = p.hbco;
+  if(p.ind!=null) d.co_ohb = p.ind;
+  if(p.ci===1) d.co_ohb_txt = 'Contre-indication à l’OHB'+(p.ci_txt ? ' : '+p.ci_txt : '');
+  if(p.inst==='rea') d.co_iot = 1;
+  if(p.gross===1) d.co_grossesse = 1;
+  const s = afSeancesDe(pid).filter(x=>x.statut!=='proposee').sort((a,b)=>a.debut.localeCompare(b.debut))[0];
+  if(s){ const T = TABLES.find(t=>t.l===s.table); if(T) d.tb_table = T.v; d.tb_h_mep = afHM(s.reel || s.debut); }
+  touch(); renderForm(); updateBar(); window.scrollTo(0,0);
+  toast('Fiche CO créée pour '+p.code+(p.hbco!=null && p.spco!==1 ? ' (l’HbCO se saisit dans les gaz du sang)' : ''));
+}
+
+/* ---------- exports ---------- */
+function afCSV(){
+  const sep = ';', q = v => { const s = v==null ? '' : String(v); return /[;"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  const H = ['identifiant','arrivee','lieu_actuel','hbco_pct','mesure','signes_neuro','grossesse','installation','scope','indication_ohb','contre_indication','ci_precision','table','disponible_a','seances_realisees','seance_ouverte','statut','historique_lieux'];
+  const R = AF.patients.map(p=>{ const o = afOuverte(p.id), c = o ? afCh(o.ch) : null;
+    return [p.code, afHM(p.cree), afLieu(p.lieu), p.hbco, p.hbco!=null ? (p.spco===1 ? 'SpCO' : 'HbCO') : '', p.neuro, p.gross, p.inst, p.scope, p.ind, p.ci, p.ci_txt, afBase(p)+(p.inst==='rea' ? 'IOT' : ''), p.dispo, p.nb||0,
+            o ? (c ? c.l : o.ch)+' '+afHM(o.debut)+' '+o.table+' ('+AF_SS[o.statut]+')' : '', AF_ST[afStatut(p)][0], p.hist.map(h=>afHM(h.t)+' '+h.l).join(' > ')]; });
+  dl('afflux_co_'+iso(new Date())+'.csv', '﻿'+[H].concat(R).map(r=>r.map(q).join(sep)).join('\r\n'), 'text/csv;charset=utf-8');
+}
+function afJSON(){ dl('afflux_co_'+iso(new Date())+'.json', JSON.stringify(AF, null, 1), 'application/json'); }
+function afImport(inp){
+  const f = inp.files && inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { try{ const o = JSON.parse(r.result); if(!o || !Array.isArray(o.patients) || !Array.isArray(o.chambres)) throw 0;
+      if(AF && AF.patients.length && !confirm('Remplacer l’événement en cours ('+AF.patients.length+' patients) ?')) return;
+      AF = o; afSave(); afRender(); toast('Événement importé : '+o.patients.length+' patients'); }catch(e){ toast('Fichier d’afflux illisible'); } };
+  r.readAsText(f);
+}
+function afNouvelEvt(){
+  if(AF && AF.patients.length && !confirm('Clore cet événement et en ouvrir un nouveau ? Exportez-le d’abord (CSV ou JSON) : il sera remplacé.')) return;
+  const old = AF; AF = afDefaut();
+  if(old){ ['lieux','lieuAccueil','lieuApres','lieuSortie','rotation','chambres','prefixe'].forEach(k=>{ if(old[k]!=null) AF[k] = old[k]; }); }          // les réglages se gardent
+  afSave(); afRender();
+}
+
+/* ---------- paramètres : lieux, chambres, configurations ---------- */
+function afParam(k, v, a, b){
+  if(k==='lieu'){ const l = AF.lieux.find(x=>x.id===a); if(l && v.trim()) l.l = v.trim(); }
+  else if(k==='lieuAdd'){ AF.lieux.push({id:afUid('l'), l:'Nouveau lieu'}); }
+  else if(k==='lieuDel'){ if(AF.patients.some(p=>p.lieu===a) || [AF.lieuAccueil, AF.lieuApres, AF.lieuSortie].indexOf(a)>=0 || AF.chambres.some(c=>c.lieu===a)){ toast('Lieu utilisé : il ne peut pas être retiré'); return; } AF.lieux = AF.lieux.filter(x=>x.id!==a); }
+  else if(k==='role') AF[a] = v;
+  else if(k==='rotation') AF.rotation = Math.max(0, Number(v)||0);
+  else if(k==='prefixe') AF.prefixe = v;
+  else if(k==='nom') AF.nom = v;
+  else if(k==='ch'){ const c = afCh(a); if(c) c[b] = v; }
+  else if(k==='cfg'){ const c = afCh(a), x = c && c.configs.find(y=>y.id===b.id); if(x) x[b.k] = b.k==='l' ? v : (b.k==='rea' ? (v ? 1 : 0) : Math.max(0, Number(v)||0)); }
+  else if(k==='cfgAdd'){ const c = afCh(a); if(c) c.configs.push({id:afUid(c.id+'_'), l:'Nouvelle configuration', assis:0, allonges:0, rea:0, scopes:1, setup:0}); }
+  else if(k==='cfgDel'){ const c = afCh(a); if(c && c.configs.length > 1) c.configs = c.configs.filter(y=>y.id!==b); }
+  afSave(); afRender(); if(k!=='nom') afParamOpen();
+}
+function afParamOpen(){
+  const ls = AF.lieux.map(l=>'<option value="'+l.id+'">'+esc(l.l)+'</option>').join('');
+  const sel = (cur, on) => '<select onchange="'+on+'">'+AF.lieux.map(l=>'<option value="'+l.id+'"'+(l.id===cur ? ' selected' : '')+'>'+esc(l.l)+'</option>').join('')+'</select>';
+  const num = (v, on, w) => '<input type="number" min="0" value="'+v+'" style="width:'+(w||52)+'px" onchange="'+on+'">';
+  let h = '<h3>Paramètres de l’afflux</h3><div class="af-par">';
+  h += '<h4>Lieux</h4><div class="note" style="margin:0 0 6px">Chaque déplacement d’un patient est horodaté. Un lieu occupé ou utilisé par un rôle ne se retire pas.</div>';
+  h += AF.lieux.map(l=>'<div class="af-pl"><input value="'+esc(l.l)+'" onchange="afParam(\'lieu\', this.value, \''+l.id+'\')"> <button class="mini" onclick="afParam(\'lieuDel\', \'\', \''+l.id+'\')">retirer</button></div>').join('');
+  h += '<button class="mini" onclick="afParam(\'lieuAdd\')">+ ajouter un lieu</button>';
+  h += '<div class="af-pl">Arrivée des patients : '+sel(AF.lieuAccueil, "afParam('role', this.value, 'lieuAccueil')")+'</div>';
+  h += '<div class="af-pl">Après une séance : '+sel(AF.lieuApres, "afParam('role', this.value, 'lieuApres')")+'</div>';
+  h += '<div class="af-pl">Sortie (le patient quitte l’afflux) : '+sel(AF.lieuSortie, "afParam('role', this.value, 'lieuSortie')")+'</div>';
+  h += '<h4>Séances</h4><div class="af-pl">Intervalle entre deux séances d’une même chambre : '+num(AF.rotation, "afParam('rotation', this.value)")+' min</div>';
+  h += '<div class="af-pl">Préfixe de la numérotation automatique : <input value="'+esc(AF.prefixe||'')+'" style="width:80px" onchange="afParam(\'prefixe\', this.value)"></div>';
+  AF.chambres.forEach(c=>{
+    h += '<h4>'+esc(c.l)+'</h4><div class="af-pl">Nom : <input value="'+esc(c.l)+'" onchange="afParam(\'ch\', this.value, \''+c.id+'\', \'l\')"> Lieu : '+sel(c.lieu, "afParam('ch', this.value, '"+c.id+"', 'lieu')")+'</div>';
+    h += '<div style="overflow-x:auto"><table class="af-t"><tr><th>Configuration</th><th>Assis</th><th>Allongés</th><th>Réa.</th><th>Scopés max</th><th>Mise en place (min)</th><th></th></tr>'+
+      c.configs.map(x=>{ const on = k => "afParam('cfg', this."+(k==='rea' ? 'checked' : 'value')+", '"+c.id+"', {id:'"+x.id+"', k:'"+k+"'})";
+        return '<tr><td><input value="'+esc(x.l)+'" onchange="'+on('l')+'"></td><td>'+num(x.assis, on('assis'))+'</td><td>'+num(x.allonges, on('allonges'))+'</td><td><input type="checkbox"'+(x.rea ? ' checked' : '')+' onchange="'+on('rea')+'" title="Les places allongées acceptent un patient réanimatoire"></td><td>'+num(x.scopes, on('scopes'))+'</td><td>'+num(x.setup, on('setup'))+'</td><td>'+(c.configs.length > 1 ? '<button class="mini" onclick="afParam(\'cfgDel\', \'\', \''+c.id+'\', \''+x.id+'\')">retirer</button>' : '')+'</td></tr>'; }).join('')+
+      '</table></div><button class="mini" onclick="afParam(\'cfgAdd\', \'\', \''+c.id+'\')">+ configuration</button>';
+  });
+  h += '<div class="note" style="margin-top:10px">La « mise en place » s’ajoute à l’intervalle quand la chambre passe à cette configuration depuis une autre (la première séance d’une chambre part de sa première configuration). Un patient assis peut occuper une place allongée libre ; un réanimatoire exige une place allongée cochée « Réa. » et compte comme scopé.</div></div>';
+  modalHTML(h);
+}
+
+/* ---------- rendu ---------- */
+function afRender(){
+  if(!AF_ON) return;
+  const ae = document.activeElement, fid = ae && ae.id && ae.id.indexOf('af_')===0 ? ae.id : null;
+  document.body.classList.add('af-on');
+  $('#form').innerHTML = afHTML();
+  if(fid){ const e = document.getElementById(fid); if(e) e.focus(); }
+  if(AF_HL){ const r = document.getElementById('afr_'+AF_HL); if(r){ r.classList.add('af-hl'); } AF_HL = null; }
+}
+function afOpts(L, cur){ return L.map(o=>'<option value="'+o.v+'"'+(String(o.v)===String(cur==null ? '' : cur) ? ' selected' : '')+'>'+esc(o.l)+'</option>').join(''); }
+function afHTML(){
+  const P = AF.patients, cnt = {}, PL = afPeutPlanifier().ok; P.forEach(p=>{ const s = afStatut(p); cnt[s] = (cnt[s]||0)+1; });
+  const lieuOpts = cur => AF.lieux.map(l=>'<option value="'+l.id+'"'+(l.id===cur ? ' selected' : '')+'>'+esc(l.l)+'</option>').join('');
+  let h = '<div class="af">';
+  h += '<div class="af-top"><div><h2>Afflux massif — intoxication au CO</h2><input class="af-nom" value="'+esc(AF.nom)+'" onchange="afParam(\'nom\', this.value)" aria-label="Nom de l’événement"> <span class="af-sub">ouvert à '+afHM(AF.debut)+' le '+frDate(iso(new Date(AF.debut)))+' · '+P.length+' patient'+(P.length>1 ? 's' : '')+'</span><div id="af_share" style="margin-top:4px">'+afPartageHTML()+'</div><div id="af_coord" style="margin-top:4px">'+astCoordHTML()+'</div></div>'+
+    '<div class="af-btns"><button class="tb" onclick="astOpen()">Astreinte</button><button class="tb" onclick="afParamOpen()">Paramètres</button><button class="tb" onclick="afCSV()">Exporter CSV</button><button class="tb" onclick="afJSON()">Sauvegarde JSON</button>'+
+    '<label class="tb" style="cursor:pointer">Importer JSON<input type="file" accept=".json,application/json" hidden onchange="afImport(this)"></label><button class="tb" onclick="afNouvelEvt()">Nouvel événement</button><button class="tb" onclick="afQuitter()">Quitter</button></div></div>';
+  /* saisie rapide */
+  h += '<div class="sec"><h3>Saisie rapide</h3><div class="body af-saisie">'+
+    '<input id="af_code" placeholder="Identifiant puis Entrée (ou douchette)" autocomplete="off" onkeydown="afSaisie(event)"> <button class="tb gd" onclick="afSaisie()">Ajouter</button>'+
+    '<span class="af-or">ou</span> <input id="af_n" type="number" min="1" max="50" value="1" style="width:56px"> <button class="tb" onclick="afAuto()">numéroter automatiquement ('+esc(AF.prefixe||'')+'01…)</button>'+
+    '<div class="af-cnt">'+Object.keys(AF_ST).filter(k=>cnt[k]).map(k=>'<span class="af-st" style="--c:'+AF_ST[k][1]+'">'+esc(AF_ST[k][0])+' : '+cnt[k]+'</span>').join('')+'</div></div></div>';
+  /* tableau des lieux */
+  h += '<div class="sec"><h3>Lieux</h3><div class="body"><div class="af-lieux">'+AF.lieux.map(l=>{ const Q = P.filter(p=>p.lieu===l.id);
+      return '<div class="af-lieu'+(Q.length ? '' : ' vide')+'"><b>'+esc(l.l)+' <span>'+Q.length+'</span></b>'+Q.map(p=>'<button class="af-chip" style="--c:'+AF_ST[afStatut(p)][1]+'" onclick="AF_HL=\''+p.id+'\';afRender();document.getElementById(\'afr_'+p.id+'\').scrollIntoView({block:\'center\'})">'+esc(p.code)+'</button>').join('')+'</div>'; }).join('')+'</div>'+
+    '<div class="af-bulk">Patients cochés → <select id="af_bulk"><option value="">choisir un lieu</option>'+lieuOpts('')+'</select> <button class="tb" onclick="afDeplacerSel($(\'#af_bulk\').value)">Déplacer</button></div></div></div>';
+  /* patients */
+  h += '<div class="sec"><h3>Patients</h3><div class="body"><div class="af-scroll"><table class="af-t af-pts"><thead><tr><th></th><th>Identifiant</th><th>Statut</th><th>Lieu</th><th>HbCO %</th><th>Neuro</th><th>OHB</th><th>Contre-indication</th><th>Installation</th><th>Scopé</th><th>Grossesse</th><th>Table</th><th>Séance</th><th>Disponible à</th><th></th></tr></thead><tbody>';
+  const nCode = {}; P.forEach(p=>{ nCode[p.code] = (nCode[p.code]||0)+1; });
+  P.slice().sort(afPrio).forEach(p=>{
+    const st = afStatut(p), o = afOuverte(p.id), on = k => "afSet('"+p.id+"','"+k+"',this.value)";
+    const poss = PL && (st==='attente' || st==='propose' || st==='planifie') ? afSeancesPossibles(p) : [];
+    const sea = o ? '<span title="'+esc(afOcc(afCfg(afCh(o.ch), o.cfg) || {assis:0,allonges:0,scopes:0}, o.pts.map(afPat).filter(Boolean)))+'">'+esc((afCh(o.ch)||{}).l || o.ch)+' · '+afHM(o.debut)+' · '+esc(o.table)+'</span>'+(o.statut!=='en_cours' && PL ? ' <button class="mini" onclick="afRetirer(\''+o.id+'\',\''+p.id+'\')">retirer</button>' : '')
+              : (AF.hors && AF.hors.indexOf(p.id)>=0 && st==='attente' ? '<span style="color:#c00000">aucune configuration possible</span>' : '');
+    h += '<tr id="afr_'+p.id+'"><td><input type="checkbox"'+(AF_SEL[p.id] ? ' checked' : '')+' onchange="AF_SEL[\''+p.id+'\']=this.checked" aria-label="Sélectionner '+esc(p.code)+'"></td>'+
+      '<td><b>'+esc(p.code)+'</b>'+(nCode[p.code] > 1 ? ' <span class="af-st" style="--c:#c00000" title="Le même identifiant a été saisi deux fois (sur deux appareils ?) : retirez le doublon">doublon</span>' : '')+'<br><small class="af-sub">arrivé '+afHM(p.cree)+'</small></td>'+
+      '<td><span class="af-st" style="--c:'+AF_ST[st][1]+'">'+esc(AF_ST[st][0])+'</span>'+(p.nb ? '<br><small>'+p.nb+' séance'+(p.nb>1 ? 's' : '')+' faite'+(p.nb>1 ? 's' : '')+'</small>' : '')+'</td>'+
+      '<td><select onchange="afDeplacer(\''+p.id+'\', this.value)">'+lieuOpts(p.lieu)+'</select></td>'+
+      '<td class="af-nw"><input id="af_h_'+p.id+'" type="text" inputmode="decimal" value="'+(p.hbco!=null ? String(p.hbco).replace('.', ',') : '')+'" style="width:48px" onchange="'+on('hbco')+'"><select onchange="'+on('spco')+'" title="Mesure"><option value="0"'+(p.spco!==1 ? ' selected' : '')+'>HbCO</option><option value="1"'+(p.spco===1 ? ' selected' : '')+'>SpCO</option></select></td>'+
+      '<td><select onchange="'+on('neuro')+'">'+afOpts([{v:'',l:'—'},{v:1,l:'OUI'},{v:0,l:'NON'}], p.neuro)+'</select></td>'+
+      '<td><select onchange="'+on('ind')+'">'+afOpts(AF_IND, p.ind)+'</select></td>'+
+      '<td class="af-nw"><select onchange="'+on('ci')+'"'+(p.ci===1 ? ' class="af-ci"' : '')+'>'+afOpts(AF_CI, p.ci)+'</select>'+(p.ci===1 ? ' <input id="af_ci_'+p.id+'" value="'+esc(p.ci_txt||'')+'" placeholder="laquelle" style="width:110px" onchange="afSet(\''+p.id+'\',\'ci_txt\',this.value)">' : '')+'</td>'+
+      '<td><select onchange="'+on('inst')+'">'+afOpts(AF_INST, p.inst)+'</select></td>'+
+      '<td><input type="checkbox"'+(p.scope===1 || p.inst==='rea' ? ' checked' : '')+(p.inst==='rea' ? ' disabled' : '')+' onchange="afSet(\''+p.id+'\',\'scope\',this.checked?1:0)" aria-label="Scopé"></td>'+
+      '<td><select onchange="'+on('gross')+'">'+afOpts([{v:'',l:'—'},{v:1,l:'OUI'},{v:0,l:'NON'}], p.gross)+'</select></td>'+
+      '<td><select onchange="'+on('table')+'">'+afOpts([{v:'',l:'Auto ('+(p.neuro===1 ? 'A18' : 'A15')+')'},{v:'A15',l:'A15'},{v:'A18',l:'A18'}], p.table)+'</select></td>'+
+      '<td class="af-nw">'+sea+(poss.length ? ' <select onchange="if(this.value)afAjouter(\''+p.id+'\',this.value)"><option value="">'+(o ? 'changer' : 'ajouter à')+'…</option>'+poss.filter(s=>s!==o).map(s=>'<option value="'+s.id+'">'+esc((afCh(s.ch)||{}).l)+' '+afHM(s.debut)+' '+esc(s.table)+'</option>').join('')+'</select>' : '')+
+        (st==='traite' ? ' <button class="mini" onclick="afEncore(\''+p.id+'\')">nouvelle séance</button>' : '')+'</td>'+
+      '<td><input id="af_d_'+p.id+'" type="time" value="'+esc(p.dispo||'')+'" onchange="'+on('dispo')+'"></td>'+
+      '<td class="af-nw"><button class="mini" onclick="afHist(\''+p.id+'\')">historique</button> <button class="mini" onclick="afFiche(\''+p.id+'\')">fiche CO</button> <button class="mini" onclick="afSuppr(\''+p.id+'\')" aria-label="Retirer">×</button></td></tr>';
+  });
+  h += '</tbody></table></div>'+(P.length ? '' : '<p class="af-sub">Aucun patient : saisissez un identifiant ci-dessus.</p>')+
+    '<div class="note" style="margin-top:6px">Ordre : réanimatoire, signes neurologiques, grossesse, HbCO décroissante, arrivée. Table : A18 en présence de signes neurologiques, A15 sinon ; version IOT pour un patient réanimatoire. Un patient n’est planifié que si l’OHB est <b>indiquée</b> et la contre-indication <b>absente</b>.</div></div></div>';
+  /* planning */
+  h += '<div class="sec"><h3>Planification des séances</h3><div class="body">'+
+    '<div class="af-btns" style="margin-bottom:8px">'+(PL ? '<button class="tb gd" onclick="afPlanifier()">Proposer le planning</button>' : '<button class="tb" disabled title="'+esc(afPeutPlanifier().why)+'">Proposer le planning</button><span class="af-sub" style="color:#b45309">'+esc(afPeutPlanifier().why)+'</span>')+'<span class="af-sub">Les séances validées, en cours ou terminées ne bougent pas ; les propositions se recalculent. Intervalle : '+AF.rotation+' min.</span></div>'+afPlanning()+'</div></div>';
+  return h+'</div>';
+}
+function afPlanning(){
+  const S = AF.seances.slice().sort((a,b)=>a.debut.localeCompare(b.debut));
+  if(!S.length) return '<p class="af-sub">Aucune séance. « Proposer le planning » répartit les patients en attente sur les chambres.</p>';
+  const t0 = Math.min(Date.now(), ...S.map(s=>new Date(s.debut).getTime())) - 15*60000, t1 = Math.max(...S.map(afFin)) + 15*60000, W = t1 - t0;
+  const X = t => ((t - t0)/W*100).toFixed(2)+'%';
+  let h = '<div class="af-tl">';
+  AF.chambres.forEach(c=>{
+    h += '<div class="af-tlr"><b>'+esc(c.l)+'</b><div class="af-tlb">';
+    for(let t = Math.ceil(t0/3600000)*3600000; t < t1; t += 3600000) h += '<i style="left:'+X(t)+'">'+hhmm(new Date(t)).slice(0,2)+' h</i>';
+    h += '<em style="left:'+X(Date.now())+'"></em>';
+    S.filter(s=>s.ch===c.id).forEach(s=>{ const a = new Date(s.debut).getTime();
+      h += '<span class="af-blk af-'+s.statut+'" style="left:'+X(a)+';width:'+((s.duree*60000)/W*100).toFixed(2)+'%" title="'+esc(s.table+' '+afHM(s.debut)+'–'+afHM(afFin(s))+' : '+s.pts.map(id=>(afPat(id)||{}).code).join(', '))+'">'+esc(s.table)+' · '+s.pts.length+'</span>'; });
+    h += '</div></div>';
+  });
+  h += '</div><div class="af-ss">';
+  S.forEach(s=>{
+    const c = afCh(s.ch), cfg = afCfg(c, s.cfg) || {l:s.cfg, assis:0, allonges:0, scopes:0}, pts = s.pts.map(afPat).filter(Boolean);
+    const ok = afTient(cfg, pts);
+    h += '<div class="af-s af-'+s.statut+'"><div><b>'+esc(c ? c.l : s.ch)+'</b> · '+afHM(s.debut)+'–'+afHM(afFin(s))+' · <b>'+esc(s.table)+'</b> · '+esc(cfg.l)+' <span class="af-st" style="--c:#1f6fb2">'+esc(AF_SS[s.statut])+'</span></div>'+
+      '<div class="af-sub">'+esc(afOcc(cfg, pts))+(ok ? '' : ' — <b style="color:#c00000">dépasse la configuration</b>')+'</div>'+
+      '<div>'+pts.map(p=>'<span class="af-chip" style="--c:'+AF_ST[afStatut(p)][1]+'">'+esc(p.code)+(p.inst!=='assis' ? ' ⟂' : '')+(p.scope===1 || p.inst==='rea' ? ' ♥' : '')+'</span>').join('')+'</div>'+
+      '<div class="af-btns">'+(s.statut==='proposee' && afPeutPlanifier().ok ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'valider\')">valider</button>' : '')+
+        ((s.statut==='proposee' || s.statut==='validee') ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'demarrer\')">démarrer</button>' : '')+
+        (s.statut==='en_cours' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'terminer\')">terminer</button>' : '')+
+        (s.statut!=='terminee' && afPeutPlanifier().ok ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'supprimer\')">supprimer</button>' : '')+'</div></div>';
+  });
+  return h+'</div><div class="af-sub" style="margin-top:4px">⟂ allongé · ♥ scopé. Démarrer place les patients dans le lieu de la chambre ; terminer compte la séance et les place dans le lieu « après une séance ».</div>';
+}
+
+/* =====================================================================
+   AFFLUX MASSIF PARTAGÉ ENTRE APPAREILS (12.2.2)
+   Quand le couplage entre appareils est en place, l'événement d'afflux est partagé par tous les appareils du même code, presque en temps réel, avec le même chiffrement de bout en bout que les fiches.
+   - Emplacement : /adp/<salon>/d/afflux-co/<haché>, une « fiche » réservée dont les nœuds ont la forme de ceux des fiches ({t, c}) : les règles de sécurité déjà publiées l'acceptent, sans rien changer
+     dans la console. Le contenu chiffré est {a : clé, v : valeur} (ou x : 1 pour une valeur effacée), où la clé est « E|champ » (l'événement : nom, lieux, chambres…), « P.<id>|champ » (un patient)
+     ou « S.<id>|champ » (une séance) ; « <objet>|_del » marque un patient ou une séance supprimés (définitivement : les identifiants sont uniques, rien ne ressuscite).
+   - Fusion champ par champ, comme les fiches : la valeur la plus récente l'emporte, à égalité le nuage. Exception : l'historique des lieux d'un patient (« hist ») est l'union des deux historiques,
+     triée par heure : deux opérateurs qui déplacent le même patient ne perdent aucun déplacement.
+   - Un patient ou une séance créés sur deux appareils ont des identifiants différents (horodatage et tirage aléatoire) : rien ne s'écrase. Le même identifiant patient saisi deux fois est signalé (doublon).
+   - Hors ligne, tout continue ; les modifications partent à la reconnexion, après la lecture de l'état de la base.
+   ===================================================================== */
+const AF_FID = 'afflux-co';
+const AF_ELOC = ['seq', 'hors'];                                   // champs de l'événement propres à l'appareil : jamais envoyés
+const AFS = {ft:{}, ct:{}, del:{}, prev:null, pend:false, t:null, renderT:null, loaded:false};
+const afUid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+async function afSyncLoad(){ try{ const s = await metaGet('afsync'); if(s){ AFS.ft = s.ft || {}; AFS.ct = s.ct || {}; AFS.del = s.del || {}; } }catch(e){} AFS.loaded = true; }
+function afSyncSave(){ try{ metaSet('afsync', {ft:AFS.ft, ct:AFS.ct, del:AFS.del}); }catch(e){} }
+/* l'événement à plat : clé → valeur en JSON */
+function afFlat(A){
+  const o = {}; if(!A) return o;
+  const put = (k, v) => { if(v !== undefined && v !== null && v !== '') o[k] = JSON.stringify(v); };
+  Object.keys(A).forEach(k => { if(k === 'patients' || k === 'seances' || AF_ELOC.indexOf(k) >= 0) return; put('E|' + k, A[k]); });
+  (A.patients || []).forEach(p => Object.keys(p).forEach(k => { if(k !== 'id' && k !== 'lieu') put('P.' + p.id + '|' + k, p[k]); }));          // le lieu actuel se déduit de l'historique
+  (A.seances || []).forEach(s => Object.keys(s).forEach(k => { if(k !== 'id') put('S.' + s.id + '|' + k, s[k]); }));
+  return o;
+}
+const afObj = k => k.slice(0, k.indexOf('|'));
+/* de la forme à plat vers l'événement (les champs propres à l'appareil sont repris de l'événement local) */
+function afUnflat(m, loc){
+  const A = {patients:[], seances:[]}, P = {}, S = {};
+  Object.keys(m).forEach(k => {
+    const i = k.indexOf('|'), ob = k.slice(0, i), f = k.slice(i + 1), v = JSON.parse(m[k]);
+    if(ob === 'E') A[f] = v;
+    else if(ob.charAt(0) === 'P'){ const id = ob.slice(2); (P[id] = P[id] || {id:id})[f] = v; }
+    else if(ob.charAt(0) === 'S'){ const id = ob.slice(2); (S[id] = S[id] || {id:id})[f] = v; }
+  });
+  const dP = afDefautPatient();
+  A.patients = Object.keys(P).map(id => Object.assign({}, dP, P[id])).filter(p => p.code).sort((a, b) => String(a.cree).localeCompare(String(b.cree)));
+  A.patients.forEach(p => { const h = p.hist[p.hist.length - 1]; p.lieu = h ? h.lieu : A.lieuAccueil; });
+  A.seances = Object.keys(S).map(id => Object.assign({pts:[]}, S[id])).filter(s => s.ch && s.debut);
+  AF_ELOC.forEach(k => { if(loc && loc[k] != null) A[k] = loc[k]; });
+  if(A.seq == null) A.seq = 0;
+  return A;
+}
+function afDefautPatient(){ return {hist:[], hbco:null, spco:0, neuro:null, gross:null, inst:'assis', scope:0, ind:null, ci:null, ci_txt:'', table:'', dispo:'', note:'', nb:0, encore:0}; }
+/* une modification locale : les clés qui ont changé depuis l'état précédent sont datées ; un patient ou une séance disparus sont marqués supprimés */
+function afFbMark(){
+  if(!fbOn()) { AFS.prev = afFlat(AF); return; }
+  const cur = afFlat(AF), prev = AFS.prev || {}, now = fbNow();
+  Object.keys(cur).forEach(k => { if(prev[k] !== cur[k]) AFS.ft[k] = now; });
+  const vivants = new Set(Object.keys(cur).map(afObj));
+  Object.keys(prev).forEach(k => {
+    if(k in cur) return;
+    const ob = afObj(k);
+    if(ob !== 'E' && !vivants.has(ob)) AFS.del[ob] = AFS.del[ob] || now; else AFS.ft[k] = now;
+  });
+  AFS.prev = cur; AFS.pend = true; afSyncSave();
+  afFbPushSoon();
+}
+function afFbPushSoon(ms){ clearTimeout(AFS.t); AFS.t = setTimeout(afFbPush, ms == null ? 600 : ms); }
+/* l'envoi : ce qui a été modifié ici après le nuage, et les suppressions */
+async function afFbPush(){
+  if(!fbOn() || !FB.kEnc || !FB.ready || !AF){ return; }
+  const cur = afFlat(AF), upd = {}, sent = [], now = fbNow();
+  const keys = new Set(Object.keys(cur).concat(Object.keys(AFS.ft)));
+  for(const k of keys){
+    const ob = afObj(k); if(AFS.del[ob]) continue;
+    const ft = AFS.ft[k] || 0; if(!(ft > (AFS.ct[k] || 0))) continue;
+    const c = await fbSeal(k in cur ? {a:k, v:JSON.parse(cur[k])} : {a:k, x:1});
+    if(c.length > FB_MAXC){ FB.stats.big++; continue; }
+    upd['d/' + AF_FID + '/' + (await fbName('af|' + k))] = {t:ft, c:c}; sent.push([k, ft]);
+  }
+  /* une suppression : la marque part, les champs de l'objet connus du nuage sont effacés */
+  const T = (FB.tree && FB.tree.d && FB.tree.d[AF_FID]) || {};
+  for(const ob of Object.keys(AFS.del)){
+    const k = ob + '|_del', h = await fbName('af|' + k);
+    if(T[h]) continue;                                                                     // déjà dans le nuage
+    upd['d/' + AF_FID + '/' + h] = {t:AFS.del[ob], c:await fbSeal({a:k, v:1})}; sent.push([k, AFS.del[ob]]);
+    for(const hh of Object.keys(T)){ const hit = FB.dc.get(AF_FID + '/' + hh); if(hit && hit.o && typeof hit.o.a === 'string' && afObj(hit.o.a) === ob) upd['d/' + AF_FID + '/' + hh] = null; }
+  }
+  const L = Object.keys(upd);
+  if(!L.length){ AFS.pend = false; return; }
+  try{
+    for(let i = 0; i < L.length; i += 250){ const part = {}; L.slice(i, i + 250).forEach(k => { part[k] = upd[k]; }); await fbHttp('PATCH', '', part, true); }
+    sent.forEach(x => { AFS.ct[x[0]] = x[1]; });
+    AFS.pend = false; FB.stats.sent += sent.length; FB.stats.at = Date.now(); afSyncSave(); fbChip();
+  }catch(e){ AFS.pend = true; fbFail(e); }
+}
+/* la réception : le nuage contre l'appareil */
+async function afFbReconcile(){
+  if(!FB.kEnc) return;
+  if(!AFS.loaded) await afSyncLoad();
+  const T = (FB.tree && FB.tree.d && FB.tree.d[AF_FID]) || {}, R = {}, delR = {};
+  for(const h of Object.keys(T)){
+    const nd = T[h]; if(!nd || typeof nd.c !== 'string') continue;
+    const key = AF_FID + '/' + h, hit = FB.dc.get(key);
+    let o; if(hit && hit.c === nd.c) o = hit.o; else { o = await fbOpen(nd.c); FB.dc.set(key, {c:nd.c, o:o}); }
+    if(!o || typeof o.a !== 'string' || o.a.indexOf('|') < 1 || (await fbName('af|' + o.a)) !== h){ FB.stats.err++; continue; }
+    if(o.a.slice(-5) === '|_del'){ delR[afObj(o.a)] = +nd.t || 1; continue; }
+    R[o.a] = {t:+nd.t || 0, x:!!o.x, v:o.x ? undefined : JSON.stringify(o.v)};
+  }
+  const loc = AF, cur = afFlat(loc), m = Object.assign({}, cur);
+  let recu = 0, push = false;
+  /* l'événement a changé ailleurs (« nouvel événement ») : ce qui appartient à l'ancien disparaît ici */
+  const rid = R['E|id'], lid = cur['E|id'];
+  const bascule = rid && !rid.x && lid && rid.v !== lid && rid.t >= (AFS.ft['E|id'] || 0);
+  if(bascule){ Object.keys(m).forEach(k => { if(afObj(k) !== 'E' && !R[k]) delete m[k]; }); }
+  for(const k of Object.keys(R)){
+    const r = R[k], c = m[k], ft = AFS.ft[k] || 0;
+    AFS.ct[k] = Math.max(AFS.ct[k] || 0, r.t);
+    const same = r.x ? c === undefined : c === r.v;
+    if(same){ if(ft < r.t) AFS.ft[k] = r.t; continue; }
+    if(k.slice(-5) === '|hist' && !r.x && c !== undefined){                                   // historique des lieux : l'union des deux
+      const u = afHistUnion(JSON.parse(c), JSON.parse(r.v)), uj = JSON.stringify(u);
+      m[k] = uj; if(uj !== r.v){ AFS.ft[k] = fbNow(); push = true; } else AFS.ft[k] = r.t;
+      if(uj !== c) recu++;
+      continue;
+    }
+    if(r.t >= ft){ if(r.x) delete m[k]; else m[k] = r.v; AFS.ft[k] = r.t; recu++; }
+    else push = true;
+  }
+  /* ce que le nuage n'a pas : daté de maintenant s'il n'a jamais été daté (premier couplage d'un appareil qui avait déjà un événement) */
+  Object.keys(m).forEach(k => { if(!R[k]){ if(!(k in AFS.ft)) AFS.ft[k] = fbNow(); if((AFS.ft[k] || 0) > (AFS.ct[k] || 0)) push = true; } });
+  /* les suppressions venues d'ailleurs */
+  Object.keys(delR).forEach(ob => { AFS.del[ob] = AFS.del[ob] || delR[ob]; });
+  Object.keys(m).forEach(k => { if(AFS.del[afObj(k)]) delete m[k]; });
+  Object.keys(AFS.del).forEach(ob => { if(!delR[ob]) push = true; });
+  const vide = !Object.keys(m).some(k => k.indexOf('E|') === 0);
+  if(!vide){
+    const avant = JSON.stringify(cur), apres = JSON.stringify(m);
+    if(avant !== apres || !loc){
+      AF = afUnflat(m, loc);
+      AFS.prev = afFlat(AF);
+      try{ await metaSet(AF_KEY, AF); }catch(e){}
+      FB.stats.recv += recu;
+      afRenderSoon();
+      if(recu && AF_ON && Date.now() - FB.toastAt > 15000){ FB.toastAt = Date.now(); toast('Afflux mis à jour depuis un autre appareil'); }
+    } else AFS.prev = cur;
+  }
+  afSyncSave();
+  if(push){ AFS.pend = true; afFbPushSoon(0); }
+}
+function afHistUnion(a, b){
+  const all = (Array.isArray(a) ? a : []).concat(Array.isArray(b) ? b : []), seen = new Set(), out = [];
+  all.forEach(h => { const k = h && (h.t + '|' + h.lieu); if(!h || seen.has(k)) return; seen.add(k); out.push(h); });
+  return out.sort((x, y) => String(x.t).localeCompare(String(y.t)) || String(x.lieu).localeCompare(String(y.lieu)));          // ordre identique sur tous les appareils
+}
+function afRenderSoon(){
+  if(!AF_ON) { try{ if(REC && REC._attenteCadre) renderForm(); }catch(e){} return; }
+  clearTimeout(AFS.renderT);
+  AFS.renderT = setTimeout(function again(){
+    const a = document.activeElement;
+    if(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.id !== 'af_code' && !modalOpen()){ AFS.renderT = setTimeout(again, 1200); return; }      // pas pendant une saisie
+    const y = window.scrollY; afRender(); window.scrollTo(0, y);
+  }, 200);
+}
+/* l'état du partage, en tête de l'écran d'afflux */
+function afPartageHTML(){
+  if(!fbOn()) return '<span class="af-share off" title="Plus › Couplage entre appareils">Non partagé : cet événement reste sur cet appareil. <a href="#" onclick="openFb();return false">Coupler les appareils</a> pour travailler à plusieurs.</span>';
+  const n = FB.peers.length, ok = FB.status === 'on';
+  return '<span class="af-share'+(ok ? ' on' : '')+'">'+(ok ? 'Partagé · '+(n + 1)+' appareil'+(n ? 's' : '')+(n ? ' ('+esc(FB.peers.map(p=>p.name).join(', '))+')' : '') : 'Partage : '+esc(FB.status === 'retry' ? 'hors ligne, les modifications partiront à la reconnexion' : FB.status === 'denied' ? 'accès refusé' : 'connexion…'))+
+         (AFS.pend ? ' · envoi en attente' : '')+'</span>';
+}
+
+/* =====================================================================
+   ASTREINTE ET COORDINATION (12.3.1)
+   Le coordinateur de l'afflux (l'infirmier d'astreinte) est le seul à planifier les séances. Il est donné par le planning d'astreinte (créneaux), et peut être changé dans la journée par une
+   désignation, faite par un rôle autorisé à désigner (médecins et infirmiers référents par défaut). Une désignation en cours l'emporte sur le créneau ; la plus récente l'emporte sur les autres.
+   Les rôles et les personnes se paramètrent dans l'administration, protégée par un code (empreinte SHA-256 salée).
+   Le planning ne passe pas par Firebase : il est rangé dans le dossier de données, sous-dossier « plannings », fichier « astreinte.json », lu et réécrit comme les fiches : à l'ouverture, au bouton
+   Actualiser, et toutes les 60 secondes. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification et une suppression est une marque ;
+   la fusion garde, élément par élément, le plus récent. Une copie est gardée dans la base locale du navigateur (poste sans dossier : export et import du fichier).
+   « Je suis » (la personne qui utilise ce poste) est déclaratif : il n'y a pas d'authentification. C'est une garde d'organisation, pas un contrôle d'accès.
+   ===================================================================== */
+const AST_KEY = 'astreinte', AST_DIR = 'plannings', AST_FILE = 'astreinte.json';
+let AST = null, AST_MOI = null, AST_ADMIN = false, AST_LU = null, AST_T = null;
+const astNow = () => new Date().toISOString();
+function astDefaut(){
+  const t = astNow();
+  return {format:'adp-astreinte-v1', maj:t, admin:null,
+    roles:[{id:'med_ref', l:'Médecin référent', designe:1, coord:0, examine:1, valide:1, gere:1, t:t}, {id:'ide_ref', l:'Infirmier référent', designe:1, coord:1, examine:0, valide:1, gere:1, t:t},
+           {id:'ide', l:'Infirmier', designe:0, coord:1, examine:0, valide:1, gere:1, t:t}, {id:'med', l:'Médecin', designe:0, coord:0, examine:1, valide:1, gere:0, t:t}],
+    personnes:[], creneaux:[], designations:[]};
+}
+const astVis = L => (L || []).filter(x => !x.del);
+const astRole = id => astVis(AST && AST.roles).find(r => r.id === id) || null;
+const astPers = id => astVis(AST && AST.personnes).find(p => p.id === id) || null;
+const astNom = id => { const p = astPers(id) || (AST && (AST.personnes || []).find(x => x.id === id)); return p ? p.nom : '—'; };
+const astRoleA = (r, k) => r[k] != null ? !!r[k] : !!((AST_PERM_DEF[r.id] || {})[k]);
+const astPeutDesigner = id => { const p = astPers(id), r = p && astRole(p.role); return !!(p && p.actif !== 0 && r && r.designe); };
+const astCoordonnable = () => astVis(AST && AST.personnes).filter(p => { const r = astRole(p.role); return p.actif !== 0 && r && r.coord; });
+const astConfigure = () => !!(AST && (astVis(AST.personnes).length || astVis(AST.creneaux).length));
+const astHM = s => { const d = new Date(s); return isNaN(d) ? '' : frDate(iso(d))+' '+hhmm(d); };
+const astHMc = s => { const d = new Date(s); if(isNaN(d)) return ''; return (iso(d) === iso(new Date()) ? '' : frDate(iso(d))+' ') + hhmm(d); };
+const astLocal = isoStr => { const d = new Date(isoStr); if(isNaN(d)) return ''; return iso(d)+'T'+hhmm(d); };
+/* le coordinateur à l'instant t : désignation en cours (la plus récente), sinon créneau du planning ; {p, src, fin, d} ou null */
+function astCoord(t){
+  if(!AST) return null;
+  t = t || Date.now();
+  const enCours = x => Date.parse(x.debut) <= t && (!x.fin || t < Date.parse(x.fin));
+  const D = astVis(AST.designations).filter(enCours).sort((a, b) => (b.debut + b.t).localeCompare(a.debut + a.t));
+  if(D.length) return {p:D[0].p, src:'designation', fin:D[0].fin, d:D[0]};
+  const C = astVis(AST.creneaux).filter(enCours).sort((a, b) => String(b.t).localeCompare(String(a.t)));
+  if(C.length) return {p:C[0].p, src:'planning', fin:C[0].fin, d:C[0]};
+  return null;
+}
+/* peut-on planifier les séances de l'afflux depuis ce poste ? */
+function afPeutPlanifier(){
+  if(!astConfigure()) return {ok:true, why:''};
+  const c = astCoord();
+  if(c && AST_MOI === c.p) return {ok:true, why:''};
+  if(!c && astPeutDesigner(AST_MOI)) return {ok:true, why:'aucun coordinateur en ce moment : un référent peut planifier'};
+  if(!c) return {ok:false, why:'Aucun coordinateur en ce moment : un médecin ou un infirmier référent doit en désigner un (bouton « Astreinte »).'};
+  return {ok:false, why:'Planification réservée au coordinateur : '+astNom(c.p)+'. '+(AST_MOI ? '' : 'Indiquez qui vous êtes (bouton « Astreinte »). ')};
+}
+function astGarde(){ const g = afPeutPlanifier(); if(!g.ok){ toast(g.why); return false; } return true; }
+
+/* ---------- conservation : base locale, puis dossier de données ---------- */
+async function astLoad(){
+  try{ AST = await metaGet(AST_KEY); }catch(e){ AST = null; }
+  if(!AST) AST = astDefaut();
+  try{ AST_MOI = await metaGet('ast_moi'); }catch(e){}
+  setInterval(() => { if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(astSyncLocked).catch(() => {}); }, 60000);
+}
+function astSave(){
+  AST.maj = astNow();
+  metaSet(AST_KEY, AST).catch(() => {});
+  clearTimeout(AST_T); AST_T = setTimeout(() => { if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(astSyncLocked).catch(() => {}); }, 300);
+  astRefresh();
+}
+/* la fusion : élément par élément, le plus récent ; l'administration, la plus récente */
+function astMerge(a, b){
+  if(!a) return b; if(!b) return a;
+  const o = {format:'adp-astreinte-v1', maj:(a.maj || '') > (b.maj || '') ? a.maj : b.maj};
+  o.admin = ((a.admin && a.admin.t) || '') >= ((b.admin && b.admin.t) || '') ? a.admin : b.admin;
+  ['roles', 'personnes', 'creneaux', 'designations'].forEach(k => {
+    const m = new Map();
+    (a[k] || []).concat(b[k] || []).forEach(x => { if(!x || !x.id) return; const y = m.get(x.id); if(!y || String(x.t || '') > String(y.t || '')) m.set(x.id, x); });
+    o[k] = Array.from(m.values());
+  });
+  return o;
+}
+const astSig = x => JSON.stringify(['roles', 'personnes', 'creneaux', 'designations'].map(k => (x[k] || []).map(y => y.id + '@' + y.t).sort())) + JSON.stringify(x.admin || null);
+/* dans le verrou des dossiers : lire plannings/astreinte.json, fusionner, réécrire si le dossier n'a pas tout */
+async function astSyncLocked(){
+  if(!FSA || FD.save.state !== 'ok' || !FD.save.h || !AST) return;
+  const dir = await FD.save.h.getDirectoryHandle(AST_DIR, {create:true});
+  let f = null;
+  try{ const fh = await dir.getFileHandle(AST_FILE); f = JSON.parse(await (await fh.getFile()).text()); }catch(e){ f = null; }
+  if(f && f.format !== 'adp-astreinte-v1') f = null;
+  const m = astMerge(AST, f), avant = astSig(AST);
+  if(!f || astSig(f) !== astSig(m)) await writeIn(dir, AST_FILE, JSON.stringify(m, null, 1));
+  AST_LU = astNow();
+  if(astSig(m) !== avant){ AST = m; await metaSet(AST_KEY, AST); astRefresh(); }
+}
+function astRefresh(){
+  try{ const e = $('#af_coord'); if(e) e.innerHTML = astCoordHTML(); if(AF_ON) afRender(); if(modalOpen() && $('#ast_modal')) astOpen(); }catch(e){}
+}
+function astExport(){ dl('astreinte_'+iso(new Date())+'.json', JSON.stringify(AST, null, 1), 'application/json'); }
+function astImport(inp){
+  const fl = inp.files && inp.files[0]; if(!fl) return;
+  const r = new FileReader();
+  r.onload = () => { try{ const o = JSON.parse(r.result); if(!o || o.format !== 'adp-astreinte-v1') throw 0; AST = astMerge(AST, o); astSave(); toast('Planning d’astreinte importé et fusionné'); }catch(e){ toast('Fichier de planning illisible'); } };
+  r.readAsText(fl);
+}
+
+/* ---------- actions ---------- */
+async function astMoi(id){ AST_MOI = id || null; try{ await metaSet('ast_moi', AST_MOI); }catch(e){} astRefresh(); }
+function astDesigner(){
+  if(!astPeutDesigner(AST_MOI)){ toast('Seul un rôle autorisé à désigner (médecin ou infirmier référent) peut désigner le coordinateur : indiquez qui vous êtes'); return; }
+  const p = ($('#ast_dp') || {}).value, fin = ($('#ast_df') || {}).value, motif = String(($('#ast_dm') || {}).value || '').trim();
+  if(!p){ toast('Choisissez le coordinateur'); return; }
+  const finIso = fin ? new Date(fin).toISOString() : null;
+  if(finIso && Date.parse(finIso) <= Date.now()){ toast('La fin doit être après maintenant'); return; }
+  AST.designations.push({id:afUid('d'), debut:astNow(), fin:finIso, p:p, par:AST_MOI, motif:motif, t:astNow()});
+  astSave(); toast('Coordinateur désigné : '+astNom(p));
+}
+function astFinDesignation(id){
+  if(!astPeutDesigner(AST_MOI)){ toast('Réservé aux rôles autorisés à désigner'); return; }
+  const d = AST.designations.find(x => x.id === id); if(!d) return;
+  d.fin = astNow(); d.t = astNow(); d.finPar = AST_MOI; astSave();
+}
+const astPeutPlanning = () => AST_ADMIN || astPeutDesigner(AST_MOI);
+function astCreneau(){
+  if(!astPeutPlanning()){ toast('Le planning se modifie par un référent ou par l’administrateur'); return; }
+  const p = ($('#ast_cp') || {}).value, a = ($('#ast_ca') || {}).value, b = ($('#ast_cb') || {}).value, rep = Math.max(1, Math.min(52, Number(($('#ast_cr') || {}).value) || 1));
+  if(!p || !a || !b){ toast('Personne, début et fin'); return; }
+  const da = new Date(a), db = new Date(b);
+  if(!(db > da)){ toast('La fin doit être après le début'); return; }
+  for(let i = 0; i < rep; i++){
+    const s = new Date(da.getTime()), e = new Date(db.getTime()); s.setDate(s.getDate() + 7*i); e.setDate(e.getDate() + 7*i);          // répétition hebdomadaire à l'heure locale
+    AST.creneaux.push({id:afUid('c'), debut:s.toISOString(), fin:e.toISOString(), p:p, par:AST_MOI || (AST_ADMIN ? 'admin' : ''), t:astNow()});
+  }
+  astSave(); toast(rep > 1 ? rep+' créneaux ajoutés' : 'Créneau ajouté');
+}
+function astSuppr(liste, id){
+  if(liste === 'creneaux' && !astPeutPlanning()){ toast('Réservé aux référents et à l’administrateur'); return; }
+  if(liste !== 'creneaux' && !AST_ADMIN){ toast('Réservé à l’administrateur'); return; }
+  const x = AST[liste].find(y => y.id === id); if(!x) return;
+  x.del = 1; x.t = astNow(); astSave();
+}
+async function astHash(pin, sel){ const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('adp-ast|' + sel + '|' + pin)); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+async function astAdmin(){
+  const pin = String(($('#ast_pin') || {}).value || '');
+  if(pin.length < 4){ toast('Code d’administration : 4 caractères au moins'); return; }
+  if(!AST.admin){
+    const sel = afUid('s'); AST.admin = {sel:sel, h:await astHash(pin, sel), t:astNow()}; AST_ADMIN = true; astSave(); toast('Code d’administration créé'); return;
+  }
+  if(await astHash(pin, AST.admin.sel) === AST.admin.h){ AST_ADMIN = true; astOpen(); toast('Administration déverrouillée'); }
+  else toast('Code erroné');
+}
+async function astAdminCode(){
+  if(!AST_ADMIN) return;
+  const pin = String(($('#ast_npin') || {}).value || ''); if(pin.length < 4){ toast('4 caractères au moins'); return; }
+  const sel = afUid('s'); AST.admin = {sel:sel, h:await astHash(pin, sel), t:astNow()}; astSave(); toast('Code d’administration changé');
+}
+function astSet(liste, id, k, v){
+  if(!AST_ADMIN) return;
+  let x = AST[liste].find(y => y.id === id); if(!x) return;
+  x[k] = (['designe','coord','actif','examine','valide','gere'].indexOf(k) >= 0) ? (v ? 1 : 0) : v; x.t = astNow(); astSave();
+}
+function astAjout(liste){
+  if(!AST_ADMIN) return;
+  if(liste === 'roles') AST.roles.push({id:afUid('r'), l:'Nouveau rôle', designe:0, coord:0, t:astNow()});
+  else { const n = String(($('#ast_nn') || {}).value || '').trim(), r = ($('#ast_nr') || {}).value; if(!n){ toast('Nom'); return; } AST.personnes.push({id:afUid('u'), nom:n, role:r, actif:1, t:astNow()}); }
+  astSave();
+}
+function astActualiser(){ if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(astSyncLocked).then(() => { toast('Planning d’astreinte relu'); astOpen(); }).catch(e => toast('Lecture impossible : '+errTxt(e))); else toast('Aucun dossier de données connecté : le planning reste sur ce poste (export et import possibles)'); }
+
+/* ---------- affichage ---------- */
+function astCoordHTML(){
+  if(!astConfigure()) return '<span class="af-share off">Coordination : aucun planning d’astreinte, la planification est ouverte à tous. <a href="#" onclick="astOpen();return false">Paramétrer l’astreinte</a></span>';
+  const c = astCoord(), g = afPeutPlanifier();
+  return '<span class="af-share'+(g.ok ? ' on' : '')+'">Coordinateur : <b>'+(c ? esc(astNom(c.p)) : 'aucun')+'</b>'+(c ? ' ('+(c.src === 'designation' ? 'désigné' : 'astreinte')+(c.fin ? ' jusqu’à '+astHMc(c.fin) : '')+')' : '')+
+    ' · vous : '+(AST_MOI ? esc(astNom(AST_MOI)) : '<i>non indiqué</i>')+(g.ok ? ' · vous pouvez planifier' : '')+' <a href="#" onclick="astOpen();return false">Astreinte</a></span>';
+}
+function astOpen(){
+  if(!AST) AST = astDefaut();
+  const P = astVis(AST.personnes), R = astVis(AST.roles), c = astCoord(), now = Date.now();
+  const optP = (L, cur, vide) => (vide ? '<option value="">'+esc(vide)+'</option>' : '')+L.map(p => '<option value="'+p.id+'"'+(p.id === cur ? ' selected' : '')+'>'+esc(p.nom)+' ('+esc((astRole(p.role) || {}).l || '?')+')</option>').join('');
+  const finDef = c && c.fin ? astLocal(c.fin) : astLocal(new Date(now + 12*3600000).toISOString());
+  let h = '<div id="ast_modal"><h3>Astreinte et coordination de l’afflux</h3>';
+  h += '<div class="note" style="margin:0 0 8px">Le <b>coordinateur</b> (infirmier d’astreinte) est le seul à planifier les séances de l’afflux. Il est donné par le <b>planning d’astreinte</b> ; un rôle autorisé (médecin ou infirmier référent) peut en <b>désigner un autre</b> dans la journée. '+
+       'Le planning est rangé dans le dossier de données (<code>'+AST_DIR+'/'+AST_FILE+'</code>), relu à l’ouverture, au bouton Actualiser et toutes les minutes ; il ne passe pas par Firebase.</div>';
+  h += '<h4>Ce poste</h4><div class="af-pl">Je suis : <select onchange="astMoi(this.value)">'+optP(P.filter(p => p.actif !== 0), AST_MOI, 'choisir…')+'</select>'+(AST_MOI && astPeutDesigner(AST_MOI) ? ' <span class="af-st" style="--c:#2e7d32">peut désigner</span>' : '')+'</div>';
+  h += '<div class="af-sub">Déclaratif : il n’y a pas d’authentification. C’est une règle d’organisation, pas un contrôle d’accès.</div>';
+  h += '<h4>Coordinateur maintenant</h4><div class="af-pl"><b>'+(c ? esc(astNom(c.p)) : 'aucun')+'</b>'+(c ? ' — '+(c.src === 'designation' ? 'désigné par '+esc(astNom(c.d.par))+(c.d.motif ? ' ('+esc(c.d.motif)+')' : '') : 'planning d’astreinte')+(c.fin ? ', jusqu’à '+astHM(c.fin) : '') : '')+
+       (c && c.src === 'designation' && astPeutDesigner(AST_MOI) ? ' <button class="mini" onclick="astFinDesignation(\''+c.d.id+'\')">mettre fin (retour au planning)</button>' : '')+'</div>';
+  if(astPeutDesigner(AST_MOI)) h += '<div class="af-pl">Désigner : <select id="ast_dp">'+optP(astCoordonnable(), '', 'coordinateur…')+'</select> jusqu’à <input id="ast_df" type="datetime-local" value="'+finDef+'"> motif <input id="ast_dm" placeholder="facultatif" style="width:140px"> <button class="tb gd" onclick="astDesigner()">Désigner</button></div>';
+  else h += '<div class="af-sub">Pour désigner un autre coordinateur : indiquez qui vous êtes (un rôle autorisé à désigner).</div>';
+  /* planning */
+  const C = astVis(AST.creneaux).filter(x => Date.parse(x.fin) > now - 86400000).sort((a, b) => a.debut.localeCompare(b.debut)).slice(0, 40);
+  h += '<h4>Planning d’astreinte</h4><div style="overflow-x:auto"><table class="af-t"><tr><th>Début</th><th>Fin</th><th>Coordinateur</th><th></th></tr>'+
+    (C.length ? C.map(x => '<tr'+(Date.parse(x.debut) <= now && now < Date.parse(x.fin) ? ' style="background:#e6f4ea"' : '')+'><td>'+astHM(x.debut)+'</td><td>'+astHM(x.fin)+'</td><td>'+esc(astNom(x.p))+'</td><td>'+(astPeutPlanning() ? '<button class="mini" onclick="astSuppr(\'creneaux\',\''+x.id+'\')">retirer</button>' : '')+'</td></tr>').join('') : '<tr><td colspan="4" class="af-sub">Aucun créneau.</td></tr>')+'</table></div>';
+  if(astPeutPlanning()){
+    const d0 = new Date(); d0.setHours(8, 0, 0, 0); const d1 = new Date(d0.getTime() + 86400000);
+    h += '<div class="af-pl">Ajouter : <select id="ast_cp">'+optP(astCoordonnable(), '', 'coordinateur…')+'</select> du <input id="ast_ca" type="datetime-local" value="'+iso(d0)+'T08:00"> au <input id="ast_cb" type="datetime-local" value="'+iso(d1)+'T08:00"> répété <input id="ast_cr" type="number" min="1" max="52" value="1" style="width:50px"> semaine(s) <button class="tb" onclick="astCreneau()">Ajouter</button></div>';
+  }
+  /* historique */
+  const H = astVis(AST.designations).slice().sort((a, b) => b.debut.localeCompare(a.debut)).slice(0, 15);
+  if(H.length) h += '<h4>Désignations récentes</h4><ul class="af-sub">'+H.map(d => '<li>'+astHM(d.debut)+' : <b>'+esc(astNom(d.p))+'</b> désigné par '+esc(astNom(d.par))+(d.fin ? ', jusqu’à '+astHM(d.fin) : '')+(d.motif ? ' — '+esc(d.motif) : '')+'</li>').join('')+'</ul>';
+  /* fichier */
+  h += '<h4>Fichier</h4><div class="af-pl">'+(FSA && FD.save.state === 'ok' ? 'Dossier de données connecté'+(AST_LU ? ', relu à '+hhmm(new Date(AST_LU)) : '') : 'Pas de dossier de données connecté : le planning reste sur ce poste')+
+       ' <button class="mini" onclick="astActualiser()">relire maintenant</button> <button class="mini" onclick="astExport()">exporter</button> <label class="mini" style="cursor:pointer">importer<input type="file" accept=".json" hidden onchange="astImport(this)"></label></div>';
+  /* administration */
+  h += '<h4>Administration</h4>';
+  if(!AST_ADMIN){
+    h += '<div class="af-pl">'+(AST.admin ? 'Code d’administration :' : 'Aucun code d’administration : créez-le (4 caractères au moins).')+' <input id="ast_pin" type="password" autocomplete="off" style="width:120px"> <button class="tb" onclick="astAdmin()">'+(AST.admin ? 'Déverrouiller' : 'Créer le code')+'</button></div>';
+  } else {
+    const cb = (r, k) => '<td><input type="checkbox"'+(astRoleA(r, k) ? ' checked' : '')+' onchange="astSet(\'roles\',\''+r.id+'\',\''+k+'\',this.checked)"></td>';
+    h += '<div class="af-sub">« Examine » = peut examiner un patient (consultations) ; « valide » = peut valider une table réalisée ; « gère » = tient le planning des tables ; « désigne » = désigne le coordinateur de l’afflux et modifie le planning d’astreinte ; « coordinateur » = peut l’être.</div><div style="overflow-x:auto"><table class="af-t"><tr><th>Rôle</th><th>Examine</th><th>Valide</th><th>Gère</th><th>Désigne</th><th>Coordinateur</th><th></th></tr>'+
+      R.map(r => '<tr><td><input value="'+esc(r.l)+'" onchange="astSet(\'roles\',\''+r.id+'\',\'l\',this.value)"></td>'+cb(r,'examine')+cb(r,'valide')+cb(r,'gere')+cb(r,'designe')+cb(r,'coord')+'<td><button class="mini" onclick="astSuppr(\'roles\',\''+r.id+'\')">retirer</button></td></tr>').join('')+
+      '</table></div><button class="mini" onclick="astAjout(\'roles\')">+ rôle</button>';
+    h += '<div style="overflow-x:auto;margin-top:8px"><table class="af-t"><tr><th>Personne</th><th>Rôle</th><th>Active</th><th></th></tr>'+
+      astVis(AST.personnes).map(p => '<tr><td><input value="'+esc(p.nom)+'" onchange="astSet(\'personnes\',\''+p.id+'\',\'nom\',this.value)"></td><td><select onchange="astSet(\'personnes\',\''+p.id+'\',\'role\',this.value)">'+R.map(r => '<option value="'+r.id+'"'+(r.id === p.role ? ' selected' : '')+'>'+esc(r.l)+'</option>').join('')+'</select></td><td><input type="checkbox"'+(p.actif !== 0 ? ' checked' : '')+' onchange="astSet(\'personnes\',\''+p.id+'\',\'actif\',this.checked)"></td><td><button class="mini" onclick="astSuppr(\'personnes\',\''+p.id+'\')">retirer</button></td></tr>').join('')+
+      '</table></div><div class="af-pl">Ajouter : <input id="ast_nn" placeholder="Nom" style="width:160px"> <select id="ast_nr">'+R.map(r => '<option value="'+r.id+'">'+esc(r.l)+'</option>').join('')+'</select> <button class="mini" onclick="astAjout(\'personnes\')">+ personne</button></div>';
+    h += '<div class="af-pl">Nouveau code d’administration : <input id="ast_npin" type="password" style="width:120px"> <button class="mini" onclick="astAdminCode()">changer</button> <button class="mini" onclick="AST_ADMIN=false;astOpen()">verrouiller</button></div>';
+  }
+  modalHTML(h+'</div>');
+}
+
+/* ---------- consultation d'hyperbarie chronique : aides et calculs (12.4.1) ---------- */
+const PJ_COURRIER = 'Courrier d’adressage';
+function chrCourrierBox(){
+  const n = (Array.isArray(REC.d.pj) ? REC.d.pj : []).filter(x=>x.titre===PJ_COURRIER).length;
+  return '<div class="note" style="margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span>Courrier d’adressage : <b>'+(n ? n+' page'+(n>1?'s':'')+' jointe'+(n>1?'s':'') : 'non joint')+'</b>'+(n ? ' (onglet Conclusion, « Pièces jointes »)' : '')+'.</span>'+
+    '<label class="tb" style="cursor:pointer">Photographier ou choisir une image<input type="file" accept="image/*" capture="environment" multiple hidden onchange="pjAdd(this,\'courrier\')"></label>'+
+    '<span style="color:var(--ink2);font-size:12px">Un courrier scanné s’ajoute s’il est enregistré en image (JPEG, PNG) ; un PDF n’est pas accepté.</span></div>';
+}
+/* scanner thoracique sans injection suggéré : antécédent pulmonaire, tabagisme actif ou sevré, âge supérieur à 50 ans (règle du service) */
+function chrScanRaisons(d){
+  const R = [], am = Array.isArray(d.atcd_med) ? d.atcd_med : [], tx = Array.isArray(d.tox) ? d.tox : [], ci = Array.isArray(d.chr_ci_l) ? d.chr_ci_l : [];
+  if(am.indexOf('pneumo')>=0 || am.indexOf('asthme')>=0 || ci.some(x=>['pnx','bpco','asthme'].indexOf(x)>=0)) R.push('antécédent pulmonaire');
+  if(tx.indexOf('tabac')>=0) R.push('tabagisme actif'+(d.tabac_pa!=null ? ' ('+String(d.tabac_pa).replace('.', ',')+' PA)' : ''));
+  else if(tx.indexOf('tabac_sevre')>=0) R.push('tabagisme sevré'+(d.tabac_pa!=null ? ' ('+String(d.tabac_pa).replace('.', ',')+' PA)' : ''));
+  if(d.age!=null && d.age > 50) R.push('âge de '+d.age+' ans');
+  return R;
+}
+function chrScanBox(){
+  const d = REC.d, R = chrScanRaisons(d);
+  const st = {1:'réalisé', 0:'non réalisé', 2:'demandé, en attente'}[d.im_tdm_thor];
+  if(!R.length) return '<div class="note" style="margin:0">Scanner thoracique sans injection : pas de critère retrouvé (antécédent pulmonaire, tabagisme actif ou sevré, âge supérieur à 50 ans) d’après la fiche.</div>';
+  return '<div class="note" style="margin:0;border-color:#e3bd9a;background:#fbeee4"><b>Scanner thoracique sans injection suggéré</b> : '+esc(R.join(', '))+'. '+
+    (st ? 'Scanner thoracique : <b>'+st+'</b> (onglet Examens complémentaires).' : '<button type="button" class="mini" onclick="chrScanDemande()">le demander</button>')+'</div>';
+}
+function chrScanDemande(){ REC.d.im_tdm_thor = 2; touch(); renderForm(); toast('Scanner thoracique demandé : il figure dans « Examens en attente de résultat »'); }
+/* les valeurs proposées : indication retenue, fréquence et séances d'après le protocole */
+function chrCalc(){
+  const d = REC.d; if(cadreOf(d)!==7) return;
+  const ind = d.chr_indic===99 ? (d.chr_indic_txt || '') : ((CHR_INDIC.find(o=>o.v===d.chr_indic) || {}).l || '');
+  autoSync('chr_ind_ret_txt', d.chr_ind_ret===1 && ind ? ind : null);
+  const P = tblProto(d.chr_proto);
+  autoSync('chr_freq', P ? P.freq : null);
+  autoSync('chr_nb', P && P.nb ? P.nb : null);
+  autoSync('chr_reeval', P && P.reeval ? P.reeval : null);
+}
+function chrPlanBox(){
+  const d = REC.d; if(d.chr_ind_ret!==1) return '';
+  const R = d.dossier ? tblResasDe(d.dossier) : [], fut = R.filter(r=>r.statut==='prevu');
+  return '<div class="note" style="margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center">'+
+    '<span>Planning des tables : <b>'+(R.length ? fut.length+' séance'+(fut.length>1?'s':'')+' à venir, '+R.filter(r=>r.statut==='fait').length+' réalisée(s)' : 'cure non planifiée')+'</b>.</span>'+
+    (d.dossier ? '<button type="button" class="tb gd" onclick="tblPlanFiche()">'+(R.length ? 'Compléter la cure' : 'Planifier la cure')+'</button><button type="button" class="tb" onclick="tblRdvPatient(REC.d.dossier)">Rendez-vous du patient</button>' : '<span style="color:#b45309">Saisissez le numéro de dossier pour planifier la cure.</span>')+'</div>';
+}
+/* ---------- la synthèse ---------- */
+function chrAdrTexte(d){
+  const {fin, flat, lc1} = TXT, P = [];
+  const ind = d.chr_indic===99 ? (d.chr_indic_txt ? flat(d.chr_indic_txt) : 'autre indication') : (CHR_INDIC.find(o=>o.v===d.chr_indic) || {}).l;
+  if(ind) P.push(fin('Indication proposée : '+lc1(ind)+(d.chr_indic!==99 && d.chr_indic_txt ? ' ('+flat(d.chr_indic_txt).replace(/[.\s]+$/, '')+')' : '')));
+  const spe = d.chr_adr_spe===99 ? (d.chr_adr_spe_autre ? flat(d.chr_adr_spe_autre) : '') : (CHR_SPE.find(o=>o.v===d.chr_adr_spe) || {}).l;
+  if(d.chr_adr_nom || spe) P.push(fin('Adressé par '+[d.chr_adr_nom ? flat(d.chr_adr_nom) : 'un médecin', spe ? '('+lc1(spe)+')' : '', d.chr_adr_etab ? ', '+flat(d.chr_adr_etab) : ''].join(' ').replace(/\s+,/, ',')+(d.chr_adr_date ? ', courrier du '+frDate(d.chr_adr_date) : '')));
+  if(d.chr_histoire) P.push(fin(d.chr_histoire));
+  return [P.join(' ')];
+}
+function chrCiTexte(d){
+  const {fin, lst, lc1, flat} = TXT, L = (Array.isArray(d.chr_ci_l) ? d.chr_ci_l : []), P = [];
+  if(L.indexOf('aucune')>=0) P.push('Aucune contre-indication à l’oxygénothérapie hyperbare retrouvée.');
+  else if(L.length) P.push(bold(fin('Contre-indications retrouvées : '+lst(L.map(v=>lc1((CHR_CI.find(o=>o.v===v) || {}).l || v))))));
+  if(d.chr_ci_txt) P.push(fin(d.chr_ci_txt));
+  const R = chrScanRaisons(d);
+  if(R.length) P.push(fin('Scanner thoracique sans injection '+({1:'réalisé', 0:'non réalisé', 2:'demandé'}[d.im_tdm_thor] || 'suggéré')+' ('+R.join(', ')+')'));
+  return P;
+}
+function chrPrescTexte(d){
+  const {fin, flat, lc1} = TXT, P = [];
+  if(d.chr_ind_ret===1) P.push(bold(fin('Indication retenue'+(d.chr_ind_ret_txt ? ' : '+lc1(flat(d.chr_ind_ret_txt)).replace(/[.\s]+$/, '') : ''))));
+  else if(d.chr_ind_ret===0) P.push(bold('Indication non retenue.')); else if(d.chr_ind_ret===2) P.push('Indication à discuter.');
+  if(d.chr_ci_concl===0) P.push('Absence de contre-indication à l’oxygénothérapie hyperbare.');
+  else if(d.chr_ci_concl===1) P.push(bold('Contre-indication relative, levée ou acceptée.'));
+  else if(d.chr_ci_concl===2) P.push(bold('Contre-indication présente : oxygénothérapie hyperbare récusée.'));
+  if(d.chr_ind_ret===1){
+    const T = TABLES.find(t=>t.v===d.chr_table), x = [];
+    if(T) x.push('table '+T.l);
+    if(d.chr_pauses===1) x.push('avec pauses à l’air'); else if(d.chr_pauses===0) x.push('sans pause à l’air');
+    if(d.chr_premed===1) x.push('prémédication'+(d.chr_premed_dci ? ' par '+flat(d.chr_premed_dci) : '')+(d.chr_premed_dose ? ', '+flat(d.chr_premed_dose) : '')+(d.chr_premed_moment ? ', '+lc1(flat(d.chr_premed_moment)).replace(/[.\s]+$/, '') : ''));
+    else if(d.chr_premed===0) x.push('sans prémédication');
+    if(x.length) P.push(fin('Prescription d’oxygénothérapie hyperbare : '+x.join(', ')));
+    const y = [];
+    if(d.chr_freq) y.push(lc1(flat(d.chr_freq)).replace(/[.\s]+$/, ''));
+    if(d.chr_nb!=null) y.push(d.chr_nb+' séances prescrites');
+    if(d.chr_reeval!=null) y.push('réévaluation à '+d.chr_reeval+' séances');
+    if(y.length) P.push(fin(TXT.cap(y.join(', '))));
+    if(d.chr_date1) P.push(fin('Première séance le '+frDate(d.chr_date1)+(d.chr_h1 ? ' à '+TXT.hFr(d.chr_h1) : '')));
+    if(d.chr_rdv_date) P.push(fin('Rendez-vous de consultation le '+frDate(d.chr_rdv_date)+(d.chr_rdv_h ? ' à '+TXT.hFr(d.chr_rdv_h) : '')));
+  }
+  return P;
+}
+/* ---------- le papier ---------- */
+function chrPrint(){
+  const d = REC.d;
+  const idb = '<div class="pid">'+pid('Nom',d.nom)+pid('Prénom',d.prenom)+pid('Sexe',lab('sexe'))+pid('Date de naissance',frDate(d.ddn))+pid('N° de dossier',d.dossier)+pid('Âge',ageFr(d))+
+              pid('Date',frDate(d.date_ex))+pid('Examinateur',d.examinateur)+'</div>';
+  const pied = '<div style="font-size:7pt;text-align:right;margin-top:1.5mm;color:#444">Fiche '+esc(REC.id)+' — éditée le '+frDate(iso(new Date()))+' à '+hhmm(new Date())+'</div>';
+  let h = '<div class="pg"><div class="phead">'+docTitre()+'</div>'+idb+
+    pspec('chr_adr','Indication et adressage')+pspec(['ident2','plongeur'],'Terrain du patient')+pcontacts()+pspec('constantes','Constantes')+pspec('general','Examen clinique général')+pspec('orl','ORL')+pied+'</div>';
+  h += '<div class="pg"><div class="phead" style="font-size:10.5pt">CONTRE-INDICATIONS, EXAMENS ET PRESCRIPTION</div>'+idb+
+    pspec('chr_ci','Contre-indications à l’OHB')+pspec('examens','Examens complémentaires')+pspec('chr_presc','Conclusion et prescription d’OHB')+
+    '<div class="pbox"><h4>SYNTHÈSE</h4><div class="pb psyn">'+narrativeHTML()+'</div></div>'+pied+'</div>';
+  return h;
+}
+
+/* =====================================================================
+   PLANNING DES TABLES — FONCTIONNEMENT NORMAL (12.4.1)
+   La semaine des séances de recompression hors afflux massif : horaires de table (7 h 45 et 10 h le matin, 12 h 45 et 15 h l'après-midi par défaut), jours d'ouverture, chambres et leur nombre de
+   places, tenus par les infirmiers. Une cure prescrite (consultation d'hyperbarie chronique) se planifie d'après son protocole (protocoles du service paramétrables par l'administrateur) ;
+   chaque séance réalisée se valide (rôle autorisé à valider une table) et crée la fiche « séance de recompression » du dossier. Une table annulée (raison technique, urgence en cours…) se signale aux
+   patients par courriel en quelques clics. Les rendez-vous d'un patient s'impriment ou partent par courriel.
+   Rangement : comme le planning d'astreinte, dans le dossier de données (plannings/tables.json), relu à l'ouverture, au bouton Actualiser et toutes les minutes, fusionné élément par élément ; sans Firebase.
+   Les courriels s'ouvrent dans la messagerie du poste (lien mailto) : ADP n'envoie rien lui-même, il n'a pas de serveur.
+   ===================================================================== */
+const TBL_KEY = 'tables', TBL_FILE = 'tables.json';
+let TBL = null, TBL_ON = false, TBL_LUNDI = null, TBL_T = null, TBL_LU = null;
+const TBL_JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+function tblDefaut(){
+  const t = astNow();
+  return {format:'adp-tables-v1', maj:t,
+    params:{t:t, horaires:['07:45','10:00','12:45','15:00'], jours:[1,2,3,4,5], tableDef:'A15',
+      chambres:[{id:'c1', l:'Chambre 1', cap:6}, {id:'cu', l:'Chambre d’urgence', cap:3}],
+      protos:[
+        {id:'std', l:'Standard : 1 séance par jour, 5 jours sur 7', freq:'1 séance par jour, 5 jours sur 7', etapes:[{jours:0, parJour:1}], jours:[1,2,3,4,5], nb:20, reeval:10},
+        {id:'surdite', l:'Surdité brusque : 2 par jour pendant 2 jours, puis 1 par jour pendant 10 jours', freq:'2 séances par jour pendant 2 jours, puis 1 séance par jour pendant 10 jours', etapes:[{jours:2, parJour:2}, {jours:10, parJour:1}], jours:[1,2,3,4,5], nb:14, reeval:0}],
+      service:'Service de médecine hyperbare', tel:'', signature:'',
+      autoConf:0, autoAnn:1,
+      objConf:'Vos rendez-vous d’oxygénothérapie hyperbare',
+      txtConf:'Bonjour {prenom} {nom},\n\nVoici vos rendez-vous d’oxygénothérapie hyperbare :\n{liste}\n\nMerci de vous présenter 15 minutes avant l’heure indiquée.\n\n{service}\n{tel}\n{signature}',
+      objAnn:'Annulation de votre séance d’oxygénothérapie hyperbare',
+      txtAnn:'Bonjour,\n\nNous sommes contraints d’annuler votre séance d’oxygénothérapie hyperbare du {date} à {heure} ({motif}). Nous vous recontacterons pour la reporter.\n\nVeuillez nous excuser pour ce désagrément.\n\n{service}\n{tel}\n{signature}'},
+    resas:[], annul:[]};
+}
+const TBL_MOTIFS = ['Raison technique', 'Urgence en cours', 'Afflux massif', 'Personnel indisponible', 'Autre'];
+const tblVis = L => (L || []).filter(x => !x.del);
+function tblProto(id){ return TBL && (TBL.params.protos || []).find(p => p.id === id) || null; }
+/* les options des listes de la fiche suivent les paramètres */
+function tblOpts(){
+  if(!TBL) return;
+  CHR_PROTO_OPTS.length = 0; (TBL.params.protos || []).forEach(p => CHR_PROTO_OPTS.push({v:p.id, l:p.l}));
+  CHR_H_OPTS.length = 0; (TBL.params.horaires || []).forEach(h => CHR_H_OPTS.push({v:h, l:h.replace(':', ' h ')}));
+}
+async function tblLoad(){
+  try{ TBL = await metaGet(TBL_KEY); }catch(e){ TBL = null; }
+  if(!TBL) TBL = tblDefaut();
+  tblOpts();
+  setInterval(() => { if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(tblSyncLocked).catch(() => {}); }, 60000);
+}
+/* les rangs d'une cure suivent l'ordre des séances non annulées ; le total est le plus grand du nombre prescrit et du nombre planifié */
+function tblRenum(){
+  const by = {};
+  tblVis(TBL.resas).filter(r => r.statut !== 'annule').forEach(r => { (by[r.dossier] = by[r.dossier] || []).push(r); });
+  Object.keys(by).forEach(k => {
+    const L = by[k].sort((a, b) => (a.date + a.h).localeCompare(b.date + b.h)), tot = Math.max(L.length, ...L.map(r => r.presc || 0));
+    L.forEach((r, i) => { if(r.rang !== i + 1 || r.total !== tot){ r.rang = i + 1; r.total = tot; r.t = astNow(); } });
+  });
+}
+function tblSave(){
+  tblRenum();
+  TBL.maj = astNow(); metaSet(TBL_KEY, TBL).catch(() => {}); tblOpts();
+  clearTimeout(TBL_T); TBL_T = setTimeout(() => { if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(tblSyncLocked).catch(() => {}); }, 300);
+  if(TBL_ON) tblRender();
+}
+function tblMerge(a, b){
+  if(!a) return b; if(!b) return a;
+  const o = {format:'adp-tables-v1', maj:(a.maj || '') > (b.maj || '') ? a.maj : b.maj};
+  o.params = String((a.params || {}).t || '') >= String((b.params || {}).t || '') ? a.params : b.params;
+  ['resas', 'annul'].forEach(k => { const m = new Map(); (a[k] || []).concat(b[k] || []).forEach(x => { if(!x || !x.id) return; const y = m.get(x.id); if(!y || String(x.t || '') > String(y.t || '')) m.set(x.id, x); }); o[k] = Array.from(m.values()); });
+  return o;
+}
+const tblSig = x => JSON.stringify(['resas', 'annul'].map(k => (x[k] || []).map(y => y.id + '@' + y.t).sort())) + String((x.params || {}).t || '');
+async function tblSyncLocked(){
+  if(!FSA || FD.save.state !== 'ok' || !FD.save.h || !TBL) return;
+  const dir = await FD.save.h.getDirectoryHandle(AST_DIR, {create:true});
+  let f = null;
+  try{ const fh = await dir.getFileHandle(TBL_FILE); f = JSON.parse(await (await fh.getFile()).text()); }catch(e){ f = null; }
+  if(f && f.format !== 'adp-tables-v1') f = null;
+  const m = tblMerge(TBL, f), avant = tblSig(TBL);
+  if(!f || tblSig(f) !== tblSig(m)) await writeIn(dir, TBL_FILE, JSON.stringify(m, null, 1));
+  TBL_LU = astNow();
+  if(tblSig(m) !== avant){ TBL = m; await metaSet(TBL_KEY, TBL); tblOpts(); if(TBL_ON) tblRender(); }
+}
+
+/* ---------- droits (rôles du planning d'astreinte) ---------- */
+const AST_PERM_DEF = {med_ref:{examine:1, valide:1, gere:1}, ide_ref:{examine:0, valide:1, gere:1}, ide:{examine:0, valide:1, gere:1}, med:{examine:1, valide:1, gere:0}};
+function astPerm(k, pid){
+  if(!astConfigure()) return true;                                     // rien de paramétré : pas de restriction
+  pid = pid === undefined ? AST_MOI : pid;
+  if(!pid) return k === 'examine';                                     // poste anonyme : l'examen reste possible (pas de blocage), le reste se réserve
+  const p = astPers(pid), r = p && astRole(p.role); if(!p || !r || p.actif === 0) return false;
+  if(r[k] != null) return !!r[k];
+  return !!((AST_PERM_DEF[r.id] || {})[k]);
+}
+const tblPeutGerer = () => astPerm('gere'), tblPeutValider = () => astPerm('valide');
+function tblGarde(k){ if(astPerm(k)) return true; toast(k === 'valide' ? 'Valider une table réalisée est réservé aux rôles autorisés (Astreinte › Je suis)' : 'Le planning des tables se modifie par un rôle autorisé (infirmiers, médecins référents : Astreinte › Je suis)'); return false; }
+
+/* ---------- réservations ---------- */
+const tblResasDe = dossier => tblVis(TBL && TBL.resas).filter(r => r.dossier === dossier && r.statut !== 'annule').sort((a, b) => (a.date + a.h).localeCompare(b.date + b.h));
+const tblAnnule = (date, h, ch) => tblVis(TBL.annul).find(a => a.date === date && (a.h === h || a.h === '*') && (a.ch === ch || a.ch === '*'));
+const tblDans = (date, h, ch) => tblVis(TBL.resas).filter(r => r.date === date && r.h === h && r.ch === ch && r.statut !== 'annule');
+const tblLibre = (date, h, ch) => { const c = TBL.params.chambres.find(x => x.id === ch); return !!c && !tblAnnule(date, h, ch) && tblDans(date, h, ch).length < c.cap; };
+const tblIsoD = d => iso(d);
+const tblAddJ = (s, n) => { const d = new Date(s+'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
+/* le patient d'une fiche : identité et courriel, de la fiche la plus récente du dossier */
+function tblPatient(dossier){
+  const L = DB.filter(f => f.d && f.d.dossier === dossier).concat(REC && REC.d && REC.d.dossier === dossier ? [REC] : []).sort((a, b) => stamp(b).localeCompare(stamp(a)));
+  const pick = k => { const f = L.find(x => x.d[k]); return f ? f.d[k] : ''; };
+  return {dossier:dossier, nom:pick('nom'), prenom:pick('prenom'), email:pick('email'), sexe:pick('sexe'), ddn:pick('ddn')};
+}
+/* planifier une cure : jours du protocole ouverts dans le service, créneau souhaité puis les suivants, chambre qui a de la place, le patient jamais deux fois au même créneau */
+function tblPlanCure(o){
+  const P = tblProto(o.proto) || TBL.params.protos[0], H = TBL.params.horaires, jours = (P.jours || [1,2,3,4,5]).filter(j => TBL.params.jours.indexOf(j) >= 0);
+  const deja = tblResasDe(o.dossier);
+  let rang = deja.length, reste = Math.max(0, (o.nb || P.nb || 0) - deja.length), jour = o.date1 || tblIsoD(new Date()), e = 0, jE = 0, out = [], garde = 0;
+  const total = rang + reste, pt = tblPatient(o.dossier);
+  while(reste > 0 && garde++ < 400){
+    const dw = new Date(jour+'T12:00').getDay();
+    if(jours.indexOf(dw) >= 0){
+      const et = P.etapes[Math.min(e, P.etapes.length - 1)], n = Math.min(et.parJour || 1, reste);
+      const h0 = H.indexOf(o.h1) >= 0 ? H.indexOf(o.h1) : 0;
+      const ordre = n >= 2 ? [h0].concat([h0 + 2, h0 + 3, h0 + 1].filter(i => i < H.length)).concat(H.map((x, i) => i).filter(i => i < h0)) : [h0].concat(H.map((x, i) => i).filter(i => i > h0)).concat(H.map((x, i) => i).filter(i => i < h0));
+      let pris = 0;
+      for(const i of ordre){
+        if(pris >= n) break;
+        const h = H[i];
+        if(tblVis(TBL.resas).some(r => r.dossier === o.dossier && r.date === jour && r.h === h && r.statut !== 'annule')) continue;
+        const ch = TBL.params.chambres.find(c => tblLibre(jour, h, c.id)); if(!ch) continue;
+        const r = {id:afUid('r'), dossier:o.dossier, nom:pt.nom, prenom:pt.prenom, email:pt.email, date:jour, h:h, ch:ch.id, table:o.table || TBL.params.tableDef, rang:++rang, total:total, presc:total, statut:'prevu', par:AST_MOI || '', t:astNow()};
+        TBL.resas.push(r); out.push(r); pris++; reste--;
+      }
+      if(pris){ jE++; if(et.jours && jE >= et.jours){ e++; jE = 0; } }
+    }
+    jour = tblAddJ(jour, 1);
+  }
+  return out;
+}
+function tblPlanFiche(){
+  if(!tblGarde('gere')) return;
+  const d = REC.d; if(!d.dossier){ toast('Numéro de dossier manquant'); return; }
+  if(d.chr_ind_ret!==1){ toast('L’indication doit être retenue'); return; }
+  if(d.chr_ci_concl===2){ toast('Contre-indication présente : pas de cure'); return; }
+  const T = TABLES.find(t => t.v === d.chr_table);
+  const out = tblPlanCure({dossier:d.dossier, proto:d.chr_proto, nb:d.chr_nb, date1:d.chr_date1, h1:d.chr_h1, table:T ? T.l : null});
+  tblSave(); renderForm();
+  if(!out.length){ toast('Aucune séance ajoutée (cure déjà planifiée, ou aucune place)'); return; }
+  toast(out.length+' séance(s) planifiée(s), du '+frDate(out[0].date)+' au '+frDate(out[out.length - 1].date));
+  if(TBL.params.autoConf) tblMailConf(d.dossier);
+}
+
+/* ---------- courriels (lien mailto : la messagerie du poste s'ouvre, rien n'est envoyé sans vous) ---------- */
+function tblGabarit(t, v){ return String(t || '').replace(/\{(\w+)\}/g, (m, k) => v[k] != null ? v[k] : ''); }
+function tblMailto(to, bcc, obj, corps){
+  const q = []; if(bcc) q.push('bcc='+encodeURIComponent(bcc)); q.push('subject='+encodeURIComponent(obj)); q.push('body='+encodeURIComponent(corps));
+  const a = document.createElement('a'); a.href = 'mailto:'+encodeURIComponent(to || '').replace(/%40/g, '@').replace(/%2C/g, ',')+'?'+q.join('&'); a.click();
+}
+const tblChL = id => (TBL.params.chambres.find(c => c.id === id) || {}).l || id;
+const tblListeTxt = L => L.map(r => '- '+TBL_JOURS[new Date(r.date+'T12:00').getDay()]+' '+frDate(r.date)+' à '+r.h.replace(':', ' h ')+' ('+r.table+', séance '+r.rang+(r.total ? '/'+r.total : '')+')').join('\n');
+function tblMailConf(dossier){
+  const pt = tblPatient(dossier), L = tblResasDe(dossier).filter(r => r.statut === 'prevu' && r.date >= tblIsoD(new Date()));
+  if(!pt.email){ toast('Pas d’adresse e-mail pour ce patient (onglet Administratif, Identité complémentaire)'); return; }
+  if(!L.length){ toast('Aucun rendez-vous à venir'); return; }
+  const P = TBL.params, v = {nom:pt.nom || '', prenom:pt.prenom || '', liste:tblListeTxt(L), service:P.service, tel:P.tel, signature:P.signature};
+  tblMailto(pt.email, '', tblGabarit(P.objConf, v), tblGabarit(P.txtConf, v));
+}
+function tblMailAnn(L, motif){
+  const P = TBL.params, mails = Array.from(new Set(L.map(r => r.email || tblPatient(r.dossier).email).filter(Boolean)));
+  const sans = L.filter(r => !(r.email || tblPatient(r.dossier).email)).map(r => r.nom || r.dossier);
+  if(!mails.length){ toast('Aucune adresse e-mail parmi les patients concernés'+(sans.length ? ' : '+sans.join(', ') : '')); return; }
+  const r0 = L[0], v = {date:frDate(r0.date), heure:r0.h.replace(':', ' h '), motif:String(motif || '').toLowerCase(), service:P.service, tel:P.tel, signature:P.signature};
+  tblMailto('', mails.join(','), tblGabarit(P.objAnn, v), tblGabarit(P.txtAnn, v));          // les adresses en copie cachée : aucun patient ne voit celle des autres
+  if(sans.length) toast('Sans adresse e-mail, à prévenir autrement : '+sans.join(', '));
+}
+/* ---------- rendez-vous d'un patient : impression ---------- */
+function tblRdvPatient(dossier){
+  if(!dossier){ toast('Numéro de dossier manquant'); return; }
+  const pt = tblPatient(dossier), L = tblResasDe(dossier), P = TBL.params;
+  const fiche = DB.concat(REC ? [REC] : []).filter(f => f.d && f.d.dossier === dossier && f.d.chr_rdv_date).sort((a, b) => stamp(b).localeCompare(stamp(a)))[0];
+  const rdv = fiche ? 'Consultation de réévaluation : '+frDate(fiche.d.chr_rdv_date)+(fiche.d.chr_rdv_h ? ' à '+fiche.d.chr_rdv_h : '') : '';
+  const lignes = L.map(r => '<tr'+(r.statut !== 'prevu' ? ' style="color:#777"' : '')+'><td>'+TBL_JOURS[new Date(r.date+'T12:00').getDay()]+' '+frDate(r.date)+'</td><td>'+r.h.replace(':', ' h ')+'</td><td>'+esc(r.table)+'</td><td>'+r.rang+(r.total ? '/'+r.total : '')+'</td><td>'+({prevu:'prévue', fait:'réalisée', absent:'absent'}[r.statut] || r.statut)+'</td></tr>').join('');
+  const html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Rendez-vous '+esc(pt.nom || dossier)+'</title><style>body{font:12pt/1.4 system-ui,sans-serif;margin:16mm}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ccc;padding:4px 6px;text-align:left}h1{font-size:16pt}</style></head><body>'+
+    '<h1>'+esc(P.service)+'</h1><p><b>'+esc([pt.prenom, pt.nom].filter(Boolean).join(' ') || 'Patient')+'</b> — dossier '+esc(dossier)+'</p><h2 style="font-size:13pt">Vos séances d’oxygénothérapie hyperbare</h2>'+
+    '<table><tr><th>Date</th><th>Heure</th><th>Table</th><th>Séance</th><th>État</th></tr>'+(lignes || '<tr><td colspan="5">Aucune séance planifiée.</td></tr>')+'</table>'+(rdv ? '<p><b>'+esc(rdv)+'</b></p>' : '')+
+    '<p>Merci de vous présenter 15 minutes avant l’heure indiquée.'+(P.tel ? ' Contact : '+esc(P.tel)+'.' : '')+'</p></body></html>';
+  const w = window.open('', '_blank'); if(!w){ toast('Fenêtre bloquée par le navigateur : autorisez les fenêtres pour imprimer'); return; }
+  w.document.write(html); w.document.close(); setTimeout(() => { try{ w.focus(); w.print(); }catch(e){} }, 300);
+}
+
+/* ---------- actions sur une séance ---------- */
+async function tblValider(id){
+  if(!tblGarde('valide')) return;
+  const r = TBL.resas.find(x => x.id === id); if(!r) return;
+  r.statut = 'fait'; r.valPar = AST_MOI || ''; r.valT = astNow(); r.t = astNow(); tblSave(); closeModal();
+  /* la séance réalisée devient une fiche « séance de recompression » du dossier (une recompression cotée = une séance) */
+  try{
+    const src = tblPatient(r.dossier), last = DB.filter(f => f.d && f.d.dossier === r.dossier).sort((a, b) => stamp(b).localeCompare(stamp(a)))[0];
+    const rec = blank(), T = TABLES.find(t => t.l === r.table);
+    const nd = {dossier:r.dossier, fiche_type:4, cadre:last ? cadreOf(last.d) : 7, date_ex:r.date, heure_ex:r.h, tb_table:T ? T.v : 9, tb_h_mep:r.h, examinateur:AST_MOI ? astNom(AST_MOI) : '', seance_tbl:r.id};
+    if(!T) nd.tb_table_autre = r.table;
+    ['nom','prenom','sexe','ddn','dossier_pseudo'].forEach(k => { if(last && last.d[k] != null) nd[k] = last.d[k]; });
+    rec.d = nd; rec.updated = new Date().toISOString();
+    await idbPut(rec); DB.push(rec); await renumberAll(); renderList(); updateBar();
+    afterSave(rec, false).catch(() => {});
+    toast('Séance validée : fiche de séance créée pour le dossier '+r.dossier);
+  }catch(e){ toast('Séance validée ; la fiche de séance n’a pas pu être créée : '+errTxt(e)); }
+}
+function tblStatut(id, st){
+  if(!tblGarde(st === 'absent' ? 'valide' : 'gere')) return;
+  const r = TBL.resas.find(x => x.id === id); if(!r) return;
+  r.statut = st; r.t = astNow(); tblSave(); closeModal();
+}
+function tblDeplacer(id){
+  if(!tblGarde('gere')) return;
+  const r = TBL.resas.find(x => x.id === id); if(!r) return;
+  const d = ($('#tbl_md') || {}).value, h = ($('#tbl_mh') || {}).value;
+  if(!d || !h) return;
+  const ch = TBL.params.chambres.find(c => tblLibre(d, h, c.id));
+  if(!ch){ toast('Plus de place à ce créneau'); return; }
+  r.date = d; r.h = h; r.ch = ch.id; r.t = astNow(); tblSave(); closeModal(); toast('Séance déplacée au '+frDate(d)+' à '+h);
+}
+function tblSuppr(id){ if(!tblGarde('gere')) return; const r = TBL.resas.find(x => x.id === id); if(!r || !confirm('Retirer cette séance du planning ?')) return; r.del = 1; r.t = astNow(); tblSave(); closeModal(); }
+function tblResaMenu(id){
+  const r = TBL.resas.find(x => x.id === id); if(!r) return;
+  const H = TBL.params.horaires.map(h => '<option>'+h+'</option>').join('');
+  modalHTML('<h3>'+esc([r.prenom, r.nom].filter(Boolean).join(' ') || r.dossier)+' — séance '+r.rang+(r.total ? '/'+r.total : '')+'</h3>'+
+    '<p>'+TBL_JOURS[new Date(r.date+'T12:00').getDay()]+' '+frDate(r.date)+' à '+r.h+' · '+esc(tblChL(r.ch))+' · '+esc(r.table)+' · <b>'+({prevu:'prévue', fait:'réalisée', absent:'absent', annule:'annulée'}[r.statut])+'</b>'+(r.valPar ? ' (validée par '+esc(astNom(r.valPar))+')' : '')+'</p>'+
+    '<div class="af-btns">'+(r.statut === 'prevu' ? '<button class="tb gd" onclick="tblValider(\''+id+'\')">Valider la table réalisée</button><button class="tb" onclick="tblStatut(\''+id+'\',\'absent\')">Absent</button>' : '<button class="tb" onclick="tblStatut(\''+id+'\',\'prevu\')">Remettre en prévu</button>')+
+    '<button class="tb" onclick="tblMailConf(\''+esc(r.dossier)+'\')">Courriel des rendez-vous</button><button class="tb" onclick="tblRdvPatient(\''+esc(r.dossier)+'\')">Imprimer les rendez-vous</button></div>'+
+    '<h4>Déplacer</h4><div class="af-pl"><input id="tbl_md" type="date" value="'+r.date+'"> <select id="tbl_mh">'+H+'</select> <button class="tb" onclick="tblDeplacer(\''+id+'\')">Déplacer</button> <button class="mini" onclick="tblSuppr(\''+id+'\')">retirer du planning</button></div>');
+}
+/* annuler une table (un créneau d'une chambre, ou toute une journée) : les séances passent « annulées », le courriel aux patients s'ouvre */
+function tblAnnuler(date, h, ch){
+  if(!tblGarde('gere')) return;
+  const opts = TBL_MOTIFS.map(m => '<option>'+m+'</option>').join('');
+  modalHTML('<h3>Annuler '+(h === '*' ? 'toutes les tables du '+frDate(date) : 'la table du '+frDate(date)+' à '+h+(ch !== '*' ? ' ('+esc(tblChL(ch))+')' : ''))+'</h3>'+
+    '<div class="af-pl">Motif : <select id="tbl_am">'+opts+'</select> <input id="tbl_at" placeholder="précision (facultatif)" style="width:200px"></div>'+
+    '<div class="af-pl"><label><input type="checkbox" id="tbl_amail"'+(TBL.params.autoAnn ? ' checked' : '')+'> ouvrir le courriel d’annulation aux patients</label></div>'+
+    '<button class="tb gd" onclick="tblAnnulerOk(\''+date+'\',\''+h+'\',\''+ch+'\')">Annuler et prévenir</button>');
+}
+function tblAnnulerOk(date, h, ch){
+  const motif = [($('#tbl_am') || {}).value, String(($('#tbl_at') || {}).value || '').trim()].filter(Boolean).join(' : '), mail = ($('#tbl_amail') || {}).checked;
+  TBL.annul.push({id:afUid('a'), date:date, h:h, ch:ch, motif:motif, par:AST_MOI || '', t:astNow()});
+  const L = tblVis(TBL.resas).filter(r => r.date === date && (h === '*' || r.h === h) && (ch === '*' || r.ch === ch) && r.statut === 'prevu');
+  L.forEach(r => { r.statut = 'annule'; r.motif = motif; r.t = astNow(); });
+  tblSave(); closeModal();
+  toast(L.length+' séance(s) annulée(s)');
+  if(mail && L.length) tblMailAnn(L, motif);
+}
+function tblRetablir(id){ if(!tblGarde('gere')) return; const a = TBL.annul.find(x => x.id === id); if(!a) return; a.del = 1; a.t = astNow(); tblSave(); toast('Créneau rouvert ; les séances annulées restent à replanifier'); }
+function tblAjout(date, h, ch){
+  if(!tblGarde('gere')) return;
+  const cures = tblCuresActives();
+  modalHTML('<h3>Ajouter une séance — '+frDate(date)+' à '+h+' ('+esc(tblChL(ch))+')</h3><div class="af-pl">Patient (dossier) : <input id="tbl_ad" list="tbl_adl" style="width:200px"><datalist id="tbl_adl">'+
+    cures.map(c => '<option value="'+esc(c.dossier)+'">'+esc([c.prenom, c.nom].filter(Boolean).join(' '))+'</option>').join('')+'</datalist> table <select id="tbl_at2">'+TABLES.filter(t => t.v !== 9).map(t => '<option'+(t.l === TBL.params.tableDef ? ' selected' : '')+'>'+t.l+'</option>').join('')+'</select>'+
+    ' <button class="tb gd" onclick="tblAjoutOk(\''+date+'\',\''+h+'\',\''+ch+'\')">Ajouter</button></div>');
+}
+function tblAjoutOk(date, h, ch){
+  const dos = String(($('#tbl_ad') || {}).value || '').trim(), table = ($('#tbl_at2') || {}).value; if(!dos){ toast('Dossier'); return; }
+  if(!tblLibre(date, h, ch)){ toast('Plus de place'); return; }
+  const pt = tblPatient(dos), deja = tblResasDe(dos);
+  TBL.resas.push({id:afUid('r'), dossier:dos, nom:pt.nom, prenom:pt.prenom, email:pt.email, date:date, h:h, ch:ch, table:table, rang:deja.length + 1, total:Math.max(deja.length + 1, (deja[0] || {}).total || 0), statut:'prevu', par:AST_MOI || '', t:astNow()});
+  tblSave(); closeModal();
+}
+function tblCuresActives(){
+  const by = {};
+  tblVis(TBL.resas).filter(r => r.statut !== 'annule').forEach(r => { (by[r.dossier] = by[r.dossier] || []).push(r); });
+  const today = tblIsoD(new Date());
+  const out = Object.keys(by).map(k => { const L = by[k].sort((a, b) => (a.date + a.h).localeCompare(b.date + b.h)); const nx = L.find(r => r.statut === 'prevu' && r.date >= today);
+    const presc = Math.max(0, ...L.map(r => r.presc || 0));
+    return {dossier:k, nom:L[0].nom, prenom:L[0].prenom, fait:L.filter(r => r.statut === 'fait').length, total:Math.max(L.length, presc), manque:Math.max(0, presc - L.length), next:nx}; });
+  /* les prescriptions sans séance planifiée */
+  DB.filter(f => f.d && cadreOf(f.d) === 7 && f.d.chr_ind_ret === 1 && f.d.dossier && !by[f.d.dossier]).forEach(f => { if(!out.some(o => o.dossier === f.d.dossier)) out.push({dossier:f.d.dossier, nom:f.d.nom, prenom:f.d.prenom, fait:0, total:f.d.chr_nb || 0, next:null, aPlanifier:f}); });
+  return out.sort((a, b) => String(a.nom || a.dossier).localeCompare(String(b.nom || b.dossier)));
+}
+
+/* ---------- l'écran ---------- */
+async function openTables(){
+  if(DIRTY && !confirm('La fiche en cours contient des modifications non enregistrées. Continuer ?')) return;
+  if(!TBL) await tblLoad();
+  if(!TBL_LUNDI){ const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); TBL_LUNDI = iso(d); }
+  AF_ON = false; TBL_ON = true; DIRTY = false; tblRender(); updatePatBar(); window.scrollTo(0, 0);
+  if(FSA && FD.save.state === 'ok' && FD.save.h) withFolderLock(tblSyncLocked).catch(() => {});
+}
+function tblQuitter(){ TBL_ON = false; REC = blank(); REC._attenteCadre = true; renderForm(); updateBar(); }
+function tblSemaine(n){ TBL_LUNDI = n === 0 ? (() => { const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); })() : tblAddJ(TBL_LUNDI, 7*n); tblRender(); }
+function tblPlanCureUI(dossier){
+  if(!tblGarde('gere')) return;
+  const f = DB.filter(x => x.d && x.d.dossier === dossier && cadreOf(x.d) === 7 && x.d.chr_ind_ret === 1).sort((a, b) => stamp(b).localeCompare(stamp(a)))[0];
+  if(!f){ toast('Pas de prescription retenue pour ce dossier'); return; }
+  const d = f.d, T = TABLES.find(t => t.v === d.chr_table);
+  const L = tblResasDe(dossier), apres = L.length ? tblAddJ(L[L.length - 1].date, 1) : null, auj = tblIsoD(new Date());
+  const debut = [d.chr_date1, apres, auj].filter(Boolean).sort().pop();                       // jamais avant aujourd'hui ni avant la dernière séance planifiée
+  const out = tblPlanCure({dossier:dossier, proto:d.chr_proto, nb:d.chr_nb, date1:debut, h1:d.chr_h1, table:T ? T.l : null});
+  tblSave(); toast(out.length+' séance(s) planifiée(s)'); if(out.length && TBL.params.autoConf) tblMailConf(dossier);
+}
+function tblRender(){
+  if(!TBL_ON) return;
+  document.body.classList.add('af-on');
+  const P = TBL.params, jours = [0,1,2,3,4,5,6].map(i => tblAddJ(TBL_LUNDI, i)).filter(dt => P.jours.indexOf(new Date(dt+'T12:00').getDay()) >= 0), today = tblIsoD(new Date());
+  const gere = tblPeutGerer(), coul = {prevu:'#1f6fb2', fait:'#2e7d32', absent:'#b45309', annule:'#9ca3af'};
+  let h = '<div class="af"><div class="af-top"><div><h2>Planning des tables — fonctionnement normal</h2><span class="af-sub">Semaine du '+frDate(TBL_LUNDI)+' · horaires '+P.horaires.join(', ')+'</span>'+
+    '<div style="margin-top:4px">'+astCoordHTML().replace('Coordinateur :', 'Coordinateur de l’afflux :')+'</div>'+
+    (gere ? '' : '<div class="af-share off" style="margin-top:4px">Lecture seule : le planning se modifie par un rôle autorisé (Astreinte › Je suis).</div>')+'</div>'+
+    '<div class="af-btns"><button class="tb" onclick="tblSemaine(-1)">◀ Semaine précédente</button><button class="tb" onclick="tblSemaine(0)">Cette semaine</button><button class="tb" onclick="tblSemaine(1)">Semaine suivante ▶</button>'+
+    '<button class="tb" onclick="astOpen()">Astreinte</button><button class="tb" onclick="tblParam()">Paramètres</button><button class="tb" onclick="tblQuitter()">Quitter</button></div></div>';
+  h += '<div class="af-scroll"><table class="af-t tbl-g"><thead><tr><th></th>'+jours.map(dt => '<th'+(dt === today ? ' class="tbl-auj"' : '')+'>'+TBL_JOURS[new Date(dt+'T12:00').getDay()]+' '+frDate(dt).slice(0, 5)+
+    (gere ? ' <button class="mini" title="Annuler toutes les tables de la journée" onclick="tblAnnuler(\''+dt+'\',\'*\',\'*\')">annuler la journée</button>' : '')+'</th>').join('')+'</tr></thead><tbody>';
+  P.horaires.forEach(hr => {
+    h += '<tr><th>'+hr+'</th>'+jours.map(dt => '<td'+(dt === today ? ' class="tbl-auj"' : '')+'>'+P.chambres.map(c => {
+      const an = tblAnnule(dt, hr, c.id), L = tblVis(TBL.resas).filter(r => r.date === dt && r.h === hr && r.ch === c.id), occ = L.filter(r => r.statut !== 'annule').length;
+      return '<div class="tbl-c'+(an ? ' an' : '')+'"><div class="tbl-ch"><b>'+esc(c.l)+'</b> '+occ+'/'+c.cap+
+        (an ? ' <span class="af-st" style="--c:#c00000" title="'+esc(an.motif || '')+'">annulée</span>'+(gere ? ' <button class="mini" onclick="tblRetablir(\''+an.id+'\')">rouvrir</button>' : '')
+            : (gere ? ' <button class="mini" onclick="tblAjout(\''+dt+'\',\''+hr+'\',\''+c.id+'\')" title="Ajouter un patient">+</button> <button class="mini" onclick="tblAnnuler(\''+dt+'\',\''+hr+'\',\''+c.id+'\')" title="Annuler cette table">annuler</button>' : ''))+'</div>'+
+        L.map(r => '<button class="af-chip" style="--c:'+coul[r.statut]+'" onclick="tblResaMenu(\''+r.id+'\')" title="'+esc(r.table+' · '+({prevu:'prévue', fait:'réalisée', absent:'absent', annule:'annulée : '+(r.motif || '')}[r.statut]))+'">'+(r.statut === 'fait' ? '✓ ' : r.statut === 'annule' ? '✕ ' : '')+esc(r.nom || r.dossier)+' '+r.rang+(r.total ? '/'+r.total : '')+'</button>').join('')+'</div>';
+    }).join('')+'</td>').join('')+'</tr>';
+  });
+  h += '</tbody></table></div>';
+  const C = tblCuresActives();
+  h += '<div class="sec"><h3>Cures</h3><div class="body"><div class="af-scroll"><table class="af-t"><tr><th>Patient</th><th>Dossier</th><th>Séances</th><th>Prochaine</th><th></th></tr>'+
+    (C.length ? C.map(c => '<tr><td>'+esc([c.prenom, c.nom].filter(Boolean).join(' ') || '—')+'</td><td>'+esc(c.dossier)+'</td><td>'+c.fait+(c.total ? '/'+c.total : '')+' réalisée(s)</td><td>'+(c.next ? frDate(c.next.date)+' '+c.next.h : (c.aPlanifier ? '<span style="color:#b45309">à planifier</span>' : '—'))+'</td>'+
+      '<td class="af-nw">'+(c.aPlanifier && gere ? '<button class="mini" onclick="tblPlanCureUI(\''+esc(c.dossier)+'\')">planifier</button> ' : '')+(c.manque && gere ? '<button class="mini" onclick="tblPlanCureUI(\''+esc(c.dossier)+'\')" title="Des séances annulées manquent à la cure">compléter ('+c.manque+')</button> ' : '')+'<button class="mini" onclick="tblRdvPatient(\''+esc(c.dossier)+'\')">imprimer</button> <button class="mini" onclick="tblMailConf(\''+esc(c.dossier)+'\')">courriel</button></td></tr>').join('') : '<tr><td colspan="5" class="af-sub">Aucune cure.</td></tr>')+
+    '</table></div><div class="af-sub" style="margin-top:6px">Une cure se planifie depuis la consultation d’hyperbarie chronique (conclusion et prescription), ou ici pour une prescription retenue. Cliquez un patient pour valider la table réalisée (rôle autorisé), le noter absent, le déplacer ou lui écrire. '+
+    (FSA && FD.save.state === 'ok' ? 'Planning rangé dans le dossier de données (plannings/tables.json)'+(TBL_LU ? ', relu à '+hhmm(new Date(TBL_LU)) : '')+'.' : 'Pas de dossier de données connecté : le planning reste sur ce poste.')+'</div></div></div>';
+  $('#form').innerHTML = h+'</div>';
+}
+/* ---------- paramètres (administrateur) ---------- */
+function tblP(k, v, i, j){
+  if(!AST_ADMIN && astConfigure()){ toast('Réservé à l’administrateur (Astreinte › Administration)'); return; }
+  const P = TBL.params;
+  if(k === 'horaires') P.horaires = String(v).split(/[,;\s]+/).map(x => x.trim()).filter(x => /^\d{1,2}:\d{2}$/.test(x)).map(x => x.padStart(5, '0')).sort();
+  else if(k === 'jour'){ const n = Number(i); P.jours = v ? Array.from(new Set(P.jours.concat([n]))).sort() : P.jours.filter(x => x !== n); }
+  else if(k === 'ch') P.chambres[i][j] = j === 'cap' ? Math.max(0, Number(v) || 0) : v;
+  else if(k === 'chAdd') P.chambres.push({id:afUid('c'), l:'Nouvelle chambre', cap:1});
+  else if(k === 'proto'){ const pr = P.protos[i]; if(j === 'etapes'){ try{ pr.etapes = String(v).split(/\s*\+\s*/).map(s => { const m = /(\d+)\s*[x×]\s*(\d+)/i.exec(s); return m ? {parJour:+m[1], jours:+m[2]} : {parJour:Number(s) || 1, jours:0}; }); }catch(e){} }
+    else if(j === 'jours') pr.jours = String(v).split(/[,;\s]+/).map(Number).filter(n => n >= 0 && n <= 6); else pr[j] = (j === 'nb' || j === 'reeval') ? (Number(v) || 0) : v; }
+  else if(k === 'protoAdd') P.protos.push({id:afUid('p'), l:'Nouveau protocole', freq:'', etapes:[{jours:0, parJour:1}], jours:[1,2,3,4,5], nb:20, reeval:10});
+  else if(k === 'protoDel'){ if(P.protos.length > 1) P.protos.splice(i, 1); }
+  else P[k] = (k === 'autoConf' || k === 'autoAnn') ? (v ? 1 : 0) : v;
+  P.t = astNow(); tblSave(); tblParam();
+}
+function tblParam(){
+  const P = TBL.params, ok = AST_ADMIN || !astConfigure(), dis = ok ? '' : ' disabled';
+  const etTxt = pr => pr.etapes.map(e => e.jours ? e.parJour+'x'+e.jours : String(e.parJour)).join(' + ');
+  let h = '<h3>Paramètres du planning des tables</h3>'+(ok ? '' : '<div class="note">Lecture seule : déverrouillez l’administration (Astreinte › Administration).</div>')+'<div class="af-par">';
+  h += '<h4>Horaires et jours</h4><div class="af-pl">Horaires des tables : <input'+dis+' value="'+esc(P.horaires.join(', '))+'" onchange="tblP(\'horaires\', this.value)" style="width:240px"></div>';
+  h += '<div class="af-pl">Jours : '+[1,2,3,4,5,6,0].map(n => '<label><input type="checkbox"'+dis+(P.jours.indexOf(n) >= 0 ? ' checked' : '')+' onchange="tblP(\'jour\', this.checked, '+n+')"> '+TBL_JOURS[n]+'</label>').join(' ')+'</div>';
+  h += '<div class="af-pl">Table par défaut : <select'+dis+' onchange="tblP(\'tableDef\', this.value)">'+TABLES.filter(t => t.v !== 9).map(t => '<option'+(t.l === P.tableDef ? ' selected' : '')+'>'+t.l+'</option>').join('')+'</select></div>';
+  h += '<h4>Chambres</h4>'+P.chambres.map((c, i) => '<div class="af-pl"><input'+dis+' value="'+esc(c.l)+'" onchange="tblP(\'ch\', this.value, '+i+', \'l\')"> places : <input'+dis+' type="number" min="0" value="'+c.cap+'" style="width:56px" onchange="tblP(\'ch\', this.value, '+i+', \'cap\')"></div>').join('')+(ok ? '<button class="mini" onclick="tblP(\'chAdd\')">+ chambre</button>' : '');
+  h += '<h4>Protocoles du service</h4><div class="af-sub">Étapes : « 1 » = 1 séance par jour jusqu’au nombre prescrit ; « 2x2 + 1x10 » = 2 par jour pendant 2 jours, puis 1 par jour pendant 10 jours. Jours : 1 = lundi … 6 = samedi, 0 = dimanche.</div>'+
+    P.protos.map((pr, i) => '<div class="af-pl" style="border-top:1px solid var(--bd);padding-top:6px"><input'+dis+' value="'+esc(pr.l)+'" style="width:320px" onchange="tblP(\'proto\', this.value, '+i+', \'l\')"> fréquence (texte) <input'+dis+' value="'+esc(pr.freq)+'" style="width:300px" onchange="tblP(\'proto\', this.value, '+i+', \'freq\')"></div>'+
+      '<div class="af-pl">étapes <input'+dis+' value="'+esc(etTxt(pr))+'" style="width:110px" onchange="tblP(\'proto\', this.value, '+i+', \'etapes\')"> jours <input'+dis+' value="'+esc(pr.jours.join(','))+'" style="width:100px" onchange="tblP(\'proto\', this.value, '+i+', \'jours\')"> séances <input'+dis+' type="number" value="'+pr.nb+'" style="width:56px" onchange="tblP(\'proto\', this.value, '+i+', \'nb\')"> réévaluation à <input'+dis+' type="number" value="'+pr.reeval+'" style="width:56px" onchange="tblP(\'proto\', this.value, '+i+', \'reeval\')">'+(ok && P.protos.length > 1 ? ' <button class="mini" onclick="tblP(\'protoDel\', 0, '+i+')">retirer</button>' : '')+'</div>').join('')+(ok ? '<button class="mini" onclick="tblP(\'protoAdd\')">+ protocole</button>' : '');
+  h += '<h4>Courriels</h4><div class="af-pl">Service <input'+dis+' value="'+esc(P.service)+'" onchange="tblP(\'service\', this.value)" style="width:240px"> téléphone <input'+dis+' value="'+esc(P.tel)+'" onchange="tblP(\'tel\', this.value)"> signature <input'+dis+' value="'+esc(P.signature)+'" onchange="tblP(\'signature\', this.value)"></div>'+
+    '<div class="af-pl"><label><input type="checkbox"'+dis+(P.autoConf ? ' checked' : '')+' onchange="tblP(\'autoConf\', this.checked)"> ouvrir le courriel de confirmation dès qu’une cure est planifiée</label> <label><input type="checkbox"'+dis+(P.autoAnn ? ' checked' : '')+' onchange="tblP(\'autoAnn\', this.checked)"> proposer le courriel d’annulation à chaque table annulée</label></div>'+
+    '<div class="af-pl">Objet de confirmation <input'+dis+' value="'+esc(P.objConf)+'" style="width:380px" onchange="tblP(\'objConf\', this.value)"></div><textarea'+dis+' rows="6" style="width:100%" onchange="tblP(\'txtConf\', this.value)">'+esc(P.txtConf)+'</textarea>'+
+    '<div class="af-pl">Objet d’annulation <input'+dis+' value="'+esc(P.objAnn)+'" style="width:380px" onchange="tblP(\'objAnn\', this.value)"></div><textarea'+dis+' rows="6" style="width:100%" onchange="tblP(\'txtAnn\', this.value)">'+esc(P.txtAnn)+'</textarea>'+
+    '<div class="af-sub">Champs : {nom} {prenom} {liste} {date} {heure} {motif} {service} {tel} {signature}. Les courriels s’ouvrent dans la messagerie du poste (ADP n’envoie rien seul) ; une annulation met les patients en copie cachée.</div></div>';
+  modalHTML(h);
+}
+/* une rubrique « embarquée » (ou une liste de champs) affichée dans une autre : ses champs, avec un intertitre facultatif */
+function embedHTML(src, titre){
+  const L = Array.isArray(src) ? src.map(k=>FIELDS[k]).filter(Boolean) : ((SPEC.find(s=>s.id===src) || {f:[]}).f);
+  return '<div class="emb">'+(titre ? '<div class="emb-t">'+esc(titre)+'</div>' : '')+L.map(fieldHTML).join('')+'</div>';
+}
+/* un rôle qui n'examine pas (infirmier) : les consultations s'affichent en lecture seule ; l'identification reste modifiable (passer la fiche en « séance de recompression », que l'infirmier peut coter) */
+function astLectureSeule(){
+  if(AF_ON || TBL_ON || !REC || REC._attenteCadre || ftype()===4 || astPerm('examine')) return;
+  document.querySelectorAll('#form .sec').forEach(s => { if(s.id !== 's_ident') s.setAttribute('inert', ''); });
+  const f = $('#form'); if(f) f.insertAdjacentHTML('afterbegin', '<div class="note" style="margin:8px 0;border-color:#e3bd9a;background:#fbeee4"><b>Lecture seule</b> : '+esc(astNom(AST_MOI))+' n’a pas un rôle qui examine les patients. '+
+    'Une séance de recompression se cote en passant le type de consultation à « Séance », ou depuis le planning des tables (valider la table réalisée).</div>');
+}
+/* =====================================================================
    EXAMENS COMPLÉMENTAIRES DEMANDÉS, RÉSULTAT EN ATTENTE (12.1.1)
    Chaque examen se coche OUI (réalisé, avec son résultat), NON, ou « Demandé, en attente » (code 2) : le résultat se saisit sur une consultation ultérieure. L'encart « Examens en attente de résultat »,
    en tête du premier onglet, tient la liste de ce qui a été demandé dans le dossier et n'a pas encore son résultat. Il n'est visible que s'il en reste un : un examen coché OUI sur une consultation
@@ -13584,6 +15051,7 @@ async function fbCreate(opt){
     await fbSetup(code);
     await fbHttp('PUT', 'h', {t:{'.sv':'timestamp'}, c:await fbSeal({ok:'ADP', v:1})}, true);          // le contrôle : un autre appareil qui tape le code le retrouve
     FB.ft = {}; FB.fs = {}; FB.up = {}; FB.base = {}; FB.ct = {}; FB.prev = null; FB.prevRec = null;
+    AFS.ct = {}; AFS.del = {}; AFS.pend = true; afSyncSave();
     await fbSaveCfg(); await fbSaveState(true);
     fbStart();
     return {ok:true, code:code};
@@ -13607,6 +15075,7 @@ async function fbJoin(codeTxt, opt){
     const o = await fbOpen(h.c);
     if(!o || o.ok !== 'ADP') throw Object.assign(new Error('contrôle'), {absent:true});
     FB.ft = {}; FB.fs = {}; FB.up = {}; FB.base = {}; FB.ct = {}; FB.prev = null; FB.prevRec = null;
+    AFS.ct = {}; AFS.del = {}; AFS.pend = true; afSyncSave();
     await fbSaveCfg(); await fbSaveState(true);
     fbStart();
     return {ok:true};
@@ -13623,6 +15092,7 @@ async function fbUnpair(erase){
   fbStop();
   FB.cfg = null; FB.room = ''; FB.kEnc = FB.kMac = null; FB.names.clear(); FB.dc.clear(); FB.tree = null;
   FB.ft = {}; FB.fs = {}; FB.up = {}; FB.base = {}; FB.ct = {}; FB.prev = null; FB.prevRec = null; FB.q.clear(); FB.peers = []; FB.status = 'off'; FB.detail = ''; FB.showCode = false;
+  AFS.ct = {}; AFS.del = {}; AFS.pend = false; afSyncSave();
   try{ await metaSet('fb', null); await metaSet('fbft', null); }catch(e){}
   fbChip(); toast('Couplage interrompu' + (erase && !msg ? ' ; données en ligne effacées' : '') + msg);
   return msg;
@@ -13717,6 +15187,7 @@ async function fbWork(all, fids, gen){
     Object.keys(T.d || {}).forEach(x => ids.add(x)); Object.keys(T.m || {}).forEach(x => ids.add(x));
     DB.forEach(f => { if(FB_ID_RE.test(f.id) && f.d && f.d.dossier) ids.add(f.id); });
     if(REC && FB_ID_RE.test(REC.id) && REC.d && REC.d.dossier) ids.add(REC.id);
+    ids.add(AF_FID);
     fids = ids;
   }
   let n = 0;
@@ -13724,7 +15195,7 @@ async function fbWork(all, fids, gen){
   if(gen !== FB.gen) return;
   if(all){
     if(!(FB.tree && FB.tree.h)){ FB.ready = false; FB.status = 'gone'; FB.detail = 'le couplage a été effacé sur un autre appareil : interrompez-le ici aussi'; fbChip(); return; }
-    FB.ready = true; FB.status = 'on'; FB.retry = 0; FB.detail = ''; fbFlushSoon(0);
+    FB.ready = true; FB.status = 'on'; FB.retry = 0; FB.detail = ''; fbFlushSoon(0); if(AFS.pend) afFbPushSoon(0);
   }
   await fbAfterBatch();
   fbChip();
@@ -13735,6 +15206,7 @@ async function fbWork(all, fids, gen){
    Valeurs différentes : la plus récente l'emporte. À égalité, c'est le nuage (une copie locale périmée, par exemple une fiche abandonnée, ne remplace jamais une valeur plus récente et se remet à jour).
    Un champ n'est envoyé que s'il a été modifié ici après l'heure du nuage ; l'absence d'un champ ici ne le supprime ailleurs que s'il a été effacé ici, explicitement. */
 async function fbReconcile(fid){
+  if(fid === AF_FID){ await afFbReconcile(); return; }          // l'afflux massif partagé (12.2.2)
   if(!FB_ID_RE.test(fid)) return;
   const T = FB.tree || {}, nodes = (T.d && T.d[fid]) || {}, meta = T.m && T.m[fid];
   const R = {}; let maxT = 0, created = '', gone = 0;
@@ -13953,6 +15425,7 @@ function fbScan(){
   DB.forEach(f => { if(FB_ID_RE.test(f.id) && f.d && f.d.dossier && (f.updated || '') > (FB.up[f.id] || '') && !(REC && REC.id === f.id)){ fbMarkExternal(f); if(fbHasPush(f, f.id)) FB.q.add(f.id); else FB.up[f.id] = f.updated; } });
   if(REC && DIRTY && REC.d && REC.d.dossier && FB_ID_RE.test(REC.id)){ fbMark(REC); FB.q.add(REC.id); }
   if(FB.q.size) fbFlushSoon(0);
+  if(AFS.pend) afFbPushSoon(0);
 }
 
 /* ---------- présence ---------- */
@@ -13987,7 +15460,7 @@ function fbChipHTML(){
            '<span class="dot' + (FB.status === 'on' ? ' on' : '') + '"></span><span class="lbl2"> ' + esc(lab) + '</span></a>';
   }catch(e){ return ''; }
 }
-function fbChip(){ try{ updateBar(); fbModalStatus(); }catch(e){} }
+function fbChip(){ try{ updateBar(); fbModalStatus(); const e = $('#af_share'); if(e) e.innerHTML = afPartageHTML(); }catch(e){} }
 function fbStatusHTML(){
   const st = {on:['Connecté', 'var(--ok)'], connecting:['Connexion en cours…', 'var(--warn)'], retry:['Hors ligne, nouvel essai automatique', 'var(--warn)'], denied:['Accès refusé par la base', 'var(--bad)'], gone:['Couplage effacé sur un autre appareil', 'var(--bad)'], off:['Aucun couplage', 'var(--ink2)']}[FB.status] || ['', ''];
   const n = FB.peers.length, S = FB.stats;
@@ -14143,6 +15616,9 @@ async function saveDraft(){ if(DIRTY && REC && !EDIT_ASK) await metaSet('draft',
   $('#patholder').innerHTML = patternDefs();
   try{ await openDB(); }catch(e){ alert("Impossible d'ouvrir la base locale du navigateur : "+e); }
   DB = await idbAll();
+  await afLoad();
+  await astLoad();
+  await tblLoad();
   const s = await metaGet('settings');
   if(s){ SET.poste=s.poste||''; SET.sep=s.sep||';'; SET.pii=!!s.pii;
          SET.wedge = s.wedge!==false; SET.scanRe=s.scanRe||''; SET.hash=!!s.hash; SET.hashLen=s.hashLen||12;
