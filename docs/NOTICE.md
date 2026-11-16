@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.3.1 (version d'essai)
+# ADP — accident de plongée, version 12.4.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1081 colonnes (1054 avant la 12.1.2).
+Une ligne = une fiche. 1122 colonnes (1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -548,6 +548,44 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
 - **Le fichier** : `plannings/astreinte.json` dans le **dossier de données**, comme les fiches. Il est relu et fusionné à l'ouverture, au bouton **Actualiser**, toutes les **60 secondes**, et réécrit après chaque modification. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification, une suppression est une marque, et la fusion garde le plus récent de chaque élément, si bien qu'aucune modification faite sur un autre poste n'est écrasée. **Il ne passe pas par Firebase.** Un poste sans dossier de données (iPhone, Firefox) garde sa copie et peut *exporter* ou *importer* (fusionner) le fichier.
 - **Délai** : un changement fait sur un poste arrive sur les autres au plus tard à leur prochaine lecture (une minute), ou tout de suite avec *Actualiser*.
 - Le fichier porte les **noms du personnel** : ne le versionnez pas dans un dépôt public.
+
+## Consultation d'hyperbarie chronique (cadre 7, depuis la 12.4.1)
+
+Le cadre **Consultation d'hyperbarie chronique (hors urgence)** s'ouvre, avec une **interface proposée, à valider**. Ce qui est propre à la plongée et à l'urgence est masqué (mode d'entrée, plongée, examen neurologique, ASIA, recompression, diagnostic de plongée ; les valeurs restent dans la fiche).
+
+| Onglet | Encarts |
+|---|---|
+| 1 · Administratif | identification ; **coordonnées** (adresse, téléphone, **e-mail** : il sert aux courriels de rendez-vous) ; contacts, médecin traitant |
+| 2 · Anamnèse | **Terrain du patient** (antécédents, habitudes de vie dont le tabac en paquets-années calculés, traitements, allergies) ; **Indication et adressage** : indication proposée (liste, ou autre), médecin adresseur, **spécialité**, établissement, contact, date du courrier, **courrier joint** (photo prise à l'appareil ou image scannée, rangée dans les pièces jointes sous le titre « Courrier d'adressage » ; un PDF n'est pas accepté), histoire de la maladie |
+| 3 · Examen clinique général | constantes, **examen général**, **ORL** (otoscopie, Valsalva, Weber, Rinne), **Contre-indications à l'OHB** |
+| 5 · Examens complémentaires | biologie, imagerie, dont le **scanner thoracique** |
+| 6 · Conclusion | **Conclusion et prescription d'OHB**, traitements, orientation, pièces jointes |
+
+- **Contre-indications** : liste à cocher (pneumothorax non drainé, BPCO, emphysème ou bulles, asthme non contrôlé, épilepsie non contrôlée, claustrophobie, infection ORL ou dysperméabilité tubaire, fièvre, insuffisance cardiaque décompensée, chimiothérapie, disulfirame, dispositif implanté non validé, chirurgie récente thoracique ou de l'oreille, grossesse, autre). **Liste proposée, à valider par le service.**
+- **Scanner thoracique sans injection suggéré** (règle du service) en cas d'**antécédent pulmonaire** (pneumothorax, asthme, ou contre-indication pulmonaire cochée), de **tabagisme actif ou sevré** (avec les PA), ou d'**âge supérieur à 50 ans** ; un bouton le passe en « Demandé, en attente » (il rejoint alors les examens en attente de résultat).
+- **Conclusion** : indication retenue (oui, non, à discuter) et son libellé ; contre-indication (absente ; relative, levée ou acceptée ; présente : OHB récusée) ; **prescription** : table (**A15** proposée), pauses à l'air, **prémédication** (DCI, dose et voie, moment de la prise), **protocole du service** (paramétrable : voir le planning des tables), fréquence, nombre de séances et réévaluation proposés d'après le protocole (modifiables), date de la **première séance**, créneau souhaité, **rendez-vous** de consultation. Les boutons *Planifier la cure* et *Rendez-vous du patient* relient la fiche au planning des tables.
+- La synthèse, le papier (deux pages propres, puis les pièces jointes, dont le courrier) et le fichier de données suivent. De nouvelles colonnes s'ajoutent au CSV (`chr_*`).
+
+## Planning des tables — fonctionnement normal (depuis la 12.4.1)
+
+*Organisation du service › Planning des tables* (et *Plus › Planning des tables*) : la semaine des séances de recompression **hors afflux massif**, tenue par les infirmiers.
+
+- **Grille de la semaine** : horaires de table **7 h 45, 10 h, 12 h 45 et 15 h** par défaut, jours d'ouverture (du lundi au vendredi par défaut), une case par chambre avec ses places (Chambre 1 : 6 ; chambre d'urgence : 3). Navigation de semaine en semaine.
+- **Planifier une cure** (depuis la consultation, ou depuis la liste des cures pour une prescription retenue) : les jours du protocole ouverts dans le service, le créneau souhaité (pour deux séances par jour, le créneau souhaité puis celui de l'après-midi), une chambre qui a de la place, jamais deux séances du même patient au même créneau. Les séances sont numérotées (3/14…).
+- **Protocoles du service** (paramétrés par l'administrateur) : par défaut, *Standard* (1 séance par jour, 5 jours sur 7, 20 séances, réévaluation à 10) et *Surdité brusque* (2 par jour pendant 2 jours, puis 1 par jour pendant 10 jours : 14 séances). **Le nombre de séances et la réévaluation par défaut sont des exemples, à remplacer par ceux du service ; la surdité brusque suit aussi les jours d'ouverture (une fin de semaine interrompt la cure : ouvrez le samedi et le dimanche si le service le fait).**
+- **Sur une séance** : *valider la table réalisée* (rôle qui valide : la séance passe « réalisée » et une **fiche « séance de recompression »** du dossier se crée, datée, avec la table et l'heure, au nom de la personne qui valide) ; *absent* ; *déplacer* ; *retirer* ; *courriel des rendez-vous* ; *imprimer les rendez-vous*.
+- **Annuler une table** (un créneau d'une chambre) ou **toute une journée** : motif (raison technique, urgence en cours, afflux massif, personnel indisponible, autre) et précision ; les séances passent « annulées » et le **courriel d'annulation** s'ouvre, les patients en copie cachée. Une cure amputée d'une séance annulée propose **compléter**, après sa dernière séance.
+- **Courriels** : ils s'ouvrent dans la **messagerie du poste** (lien `mailto`), prêts à partir ; **ADP n'envoie rien lui-même** (il n'a pas de serveur). Modèles paramétrables (objet, texte, nom du service, téléphone, signature) ; réglages : ouvrir le courriel de confirmation dès qu'une cure est planifiée, proposer le courriel d'annulation à chaque table annulée.
+- **Rendez-vous d'un patient** : une page à imprimer (séances, état, rendez-vous de consultation).
+- **Rangement** : `plannings/tables.json` dans le dossier de données, comme le planning d'astreinte (relu à l'ouverture, au bouton Actualiser et toutes les minutes, fusionné élément par élément, sans Firebase). Le fichier porte des **noms et des adresses e-mail de patients**.
+
+## Rôles et droits (depuis la 12.4.1)
+
+Les rôles de *Astreinte › Administration* portent cinq droits : **examine** (examiner un patient), **valide** (valider une table réalisée), **gère** (tenir le planning des tables), **désigne** (désigner le coordinateur de l'afflux, modifier le planning d'astreinte), **coordinateur** (pouvoir l'être). Par défaut : médecin référent (examine, valide, gère, désigne) ; médecin (examine, valide) ; infirmier référent (valide, gère, désigne, coordinateur) ; infirmier (valide, gère, coordinateur).
+
+- **Un rôle qui n'examine pas** (infirmier) voit les consultations **en lecture seule** : seule l'identification reste modifiable, pour passer la fiche en « séance de recompression », qu'il peut coter, comme il peut valider une table depuis le planning.
+- **Sans rôles ni personnes paramétrés**, rien n'est restreint (comme avant). Un poste qui n'a pas dit « Je suis » peut examiner, mais ne gère ni ne valide les tables.
+- **« Je suis » reste déclaratif, sans authentification** : c'est une règle d'organisation, pas un contrôle d'accès.
 
 ## Les six onglets de saisie
 
@@ -2094,7 +2132,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1081 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1122 colonnes.
 
 ### Codages principaux
 

@@ -645,6 +645,47 @@ co_k_air;Air ambiant : soustraction → début de l’oxygène (Cinétique de l�
 co_k_ohb_delai;Délai 1re mesure → mise en pression (Cinétique de l’HbCO (estimation));numerique (min)
 co_iot;Patient intubé et ventilé (Table de recompression proposée);"1 = OUI ; 0 = NON"
 co_delai_ohb;Délai fin de l’exposition → mise en pression (Table de recompression proposée);numerique, calcule (min)
+chr_indic;Indication proposée (Indication et adressage);"1 = Lésion radio-induite : cystite radique ; 2 = Lésion radio-induite : rectite ou entérite radique ; 3 = Ostéoradionécrose mandibulaire ; 4 = Prévention de l’ostéoradionécrose (extraction dentaire en territoire irradié) ; 5 = Autre lésion radio-induite des tissus mous ; 6 = Surdité brusque idiopathique ; 7 = Pied diabétique (ulcère) ; 8 = Ulcère ou plaie ischémique chronique ; 9 = Ostéomyélite chronique réfractaire ; 10 = Ostéonécrose aseptique de la tête fémorale ; 11 = Greffe ou lambeau compromis ; 12 = Lésion traumatique des tissus (écrasement, syndrome des loges), en relais ; 13 = Infection nécrosante des tissus mous, en relais ; 99 = Autre (préciser)"
+chr_indic_txt;Indication — précisions (Indication et adressage);texte libre
+chr_adr_spe;Spécialité (Indication et adressage);"1 = ORL ; 2 = Chirurgie maxillo-faciale, stomatologie ; 3 = Radiothérapie, oncologie ; 4 = Urologie ; 5 = Gastro-entérologie, proctologie ; 6 = Diabétologie, endocrinologie ; 7 = Chirurgie vasculaire, angiologie ; 8 = Chirurgie orthopédique ; 9 = Dermatologie, plaies et cicatrisation ; 10 = Chirurgie plastique ; 11 = Infectiologie ; 12 = Médecine générale ; 99 = Autre (préciser)"
+chr_adr_spe_autre;Spécialité — à préciser (Indication et adressage);texte libre
+chr_adr_etab;Établissement ou cabinet (Indication et adressage);texte libre
+chr_adr_date;Date du courrier d’adressage (Indication et adressage);AAAA-MM-JJ
+chr_histoire;Histoire de la maladie (Indication et adressage);texte libre
+chr_ci_l_aucune;Contre-indications retrouvées - Aucune contre-indication retrouvée (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_pnx;Contre-indications retrouvées - Pneumothorax non drainé (contre-indication absolue) (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_bpco;Contre-indications retrouvées - BPCO, emphysème, bulles pulmonaires (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_asthme;Contre-indications retrouvées - Asthme non contrôlé (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_epil;Contre-indications retrouvées - Épilepsie non contrôlée (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_claustro;Contre-indications retrouvées - Claustrophobie (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_orl;Contre-indications retrouvées - Infection ORL aiguë, dysperméabilité tubaire (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_fievre;Contre-indications retrouvées - Fièvre, hyperthermie (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_icard;Contre-indications retrouvées - Insuffisance cardiaque décompensée (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_chimio;Contre-indications retrouvées - Chimiothérapie en cours (bléomycine, doxorubicine, cisplatine…) (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_disulf;Contre-indications retrouvées - Disulfirame (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_dispo;Contre-indications retrouvées - Dispositif implanté non validé en caisson (stimulateur, neurostimulateur, pompe…) (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_chir;Contre-indications retrouvées - Chirurgie récente thoracique ou de l’oreille (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_gross;Contre-indications retrouvées - Grossesse (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l_autre;Contre-indications retrouvées - Autre (préciser) (Contre-indications à l’OHB);"1 = coche ; 0 = non coche"
+chr_ci_l;Contre-indications retrouvées - liste (Contre-indications à l’OHB);texte, valeurs separees par |
+chr_ci_txt;Précisions (Contre-indications à l’OHB);texte libre
+chr_ind_ret;Indication retenue (Conclusion et prescription d’OHB);"1 = Oui ; 0 = Non ; 2 = À discuter"
+chr_ind_ret_txt;Indication retenue — libellé (Conclusion et prescription d’OHB);texte libre
+chr_ci_concl;Contre-indication à l’OHB (Conclusion et prescription d’OHB);"0 = Absente ; 1 = Relative, levée ou acceptée ; 2 = Présente : OHB récusée"
+chr_table;Table retenue (Conclusion et prescription d’OHB);"1 = A15 ; 2 = A15IOT ; 3 = A18IOT ; 4 = A18 ; 5 = B18 ; 6 = A18HeOx ; 7 = B18HeOx ; 8 = C18 ; 9 = Autre (préciser)"
+chr_pauses;Pauses à l’air (Conclusion et prescription d’OHB);"1 = OUI ; 0 = NON"
+chr_premed;Prémédication (Conclusion et prescription d’OHB);"1 = OUI ; 0 = NON"
+chr_premed_dci;Prémédication — DCI (Conclusion et prescription d’OHB);texte libre
+chr_premed_dose;Dose et voie (Conclusion et prescription d’OHB);texte libre
+chr_premed_moment;Moment de la prise (Conclusion et prescription d’OHB);texte libre
+chr_proto;Protocole (Conclusion et prescription d’OHB);"std = Standard : 1 séance par jour, 5 jours sur 7 ; surdite = Surdité brusque : 2 par jour pendant 2 jours, puis 1 par jour pendant 10 jours"
+chr_freq;Fréquence (Conclusion et prescription d’OHB);texte libre
+chr_nb;Nombre de séances prescrites (Conclusion et prescription d’OHB);numerique (séances)
+chr_reeval;Réévaluation attendue à (Conclusion et prescription d’OHB);numerique (séances)
+chr_date1;Date de la première séance (Conclusion et prescription d’OHB);AAAA-MM-JJ
+chr_h1;Créneau souhaité (Conclusion et prescription d’OHB);"07:45 = 07 h 45 ; 10:00 = 10 h 00 ; 12:45 = 12 h 45 ; 15:00 = 15 h 00"
+chr_rdv_date;Rendez-vous de consultation (réévaluation) — date (Conclusion et prescription d’OHB);AAAA-MM-JJ
+chr_rdv_h;Rendez-vous de consultation — heure (Conclusion et prescription d’OHB);HH:MM
 pl_dtr_src;Origine de la DTR;"1 = calculee d apres les heures DF et HS ; 2 = saisie ; 3 = estimee d apres Pmax et les paliers (DTP seule connue) ; 4 = deduite de DTP - DT ; vide = DTR inconnue"
 pl_dtr_att_min;DTR attendue - minimum;"entier, minutes : remontee a 12 m/min, 10 s par metre entre paliers, arrondie a la minute superieure ; vide = Pmax inconnue"
 pl_dtr_att_max;DTR attendue - maximum;"entier, minutes : remontee a 9 m/min, 10 s par metre entre paliers, arrondie a la minute superieure ; vide = Pmax inconnue"
