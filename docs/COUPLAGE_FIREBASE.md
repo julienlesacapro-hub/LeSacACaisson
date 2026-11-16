@@ -1,6 +1,6 @@
 # Coupler deux appareils (Firebase)
 
-*Version d'essai 12.1.1 (couplage inchangé depuis la 11.1.1).* Le couplage permet à deux appareils, ou davantage, de **retrouver les mêmes fiches presque en temps réel** : un téléphone ou une tablette au chevet, un ordinateur au bureau.
+*Version d'essai 12.2.2 (depuis la 12.2.2, le couplage partage aussi l'afflux massif CO).* Le couplage permet à deux appareils, ou davantage, de **retrouver les mêmes fiches presque en temps réel** : un téléphone ou une tablette au chevet, un ordinateur au bureau.
 C'est une fonction **facultative** : tant qu'aucun couplage n'est créé, ADP ne fait aucune requête réseau (hors dictée vocale).
 
 Menu **Plus › Couplage entre appareils…** (icône en forme de maillon). Une pastille dans la barre d'état rappelle l'état (« couplé · seul », « couplé · 2 appareils », « hors ligne », « accès refusé »).
@@ -11,7 +11,7 @@ Menu **Plus › Couplage entre appareils…** (icône en forme de maillon). Une 
 
 | | |
 |---|---|
-| **Oui** | toutes les fiches qui portent un **numéro de dossier**, champ par champ ; la suppression d'une fiche |
+| **Oui** | toutes les fiches qui portent un **numéro de dossier**, champ par champ ; la suppression d'une fiche ; depuis la 12.2.2, l'**événement d'afflux massif CO** (patients, lieux et leur historique, séances, paramètres), champ par champ |
 | **Non** | les fiches sans numéro de dossier (brouillons) ; l'**identité** (nom, prénom, date de naissance) **sauf si la case est cochée** ; les champs calculés (rang d'examen, âge en mois) que chaque appareil recalcule ; les réglages ; les photos des pièces jointes ; un champ de plus de 28 000 caractères (compté dans « trop longs, non envoyés ») |
 
 - **Fiche ouverte** : une modification faite sur un appareil arrive dans la fiche ouverte sur l'autre, en une ou deux secondes. Si vous n'avez rien modifié, la fiche n'est pas marquée « non enregistrée » ; la question *« Cette fiche est déjà enregistrée.
@@ -100,4 +100,5 @@ Les deux appareils affichent « **couplé · 2 appareils** ». Enregistrez une *
 - Données : `/adp/<salon>/h` (contrôle chiffré), `/adp/<salon>/d/<fiche>/<haché du champ>` = `{t, c}`, `/adp/<salon>/m/<fiche>` (méta ou suppression), `/adp/<salon>/p/<appareil>` (présence, rafraîchie toutes les 20 s).
   `t` = heure de la **modification** du champ (heure locale corrigée de l'écart avec l'horloge du serveur) ; `c` = IV (12 octets) + texte chiffré de `{f : fiche, k : champ, v : valeur}` (ou `x : 1` pour un champ effacé), en base64url. Un nœud dont le contenu ne correspond pas à son emplacement est ignoré.
 - Fusion : pour chaque champ, `ft` = heure de la valeur de l'appareil, `ct` = heure du champ dans la base. Valeurs différentes : la plus récente l'emporte, **à égalité la base** ; un champ n'est envoyé que si `ft > ct` ; l'absence d'un champ ici ne supprime rien ailleurs sans suppression explicite.
+- Afflux massif (12.2.2) : `/adp/<salon>/d/afflux-co/<haché>` = `{t, c}`, une « fiche » réservée qui a la forme des autres : **les règles déjà publiées l'acceptent**, rien à changer dans la console. Le contenu chiffré est `{a : clé, v : valeur}` (ou `x : 1`), la clé valant `E|champ` (l'événement), `P.<id>|champ` (un patient) ou `S.<id>|champ` (une séance) ; `<objet>|_del` marque une suppression définitive. Haché : HMAC de `af|<clé>`. Même fusion que les fiches, sauf l'historique des lieux (`hist`), fusionné par union triée (heure, puis lieu). Le lieu actuel n'est pas envoyé : il se déduit de l'historique. Un appareil antérieur à la 12.2.2 ignore ces nœuds (contenu sans champ `f`), en les comptant comme erreurs.
 - Essais : un émulateur local de Firebase (`fbemu.py`) et deux instances d'Edge sans fenêtre (`run_fb.py`, boîte à outils de test) ; jamais contre la vraie base.

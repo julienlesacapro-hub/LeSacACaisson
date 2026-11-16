@@ -2,7 +2,7 @@
 
 Outil de saisie pour la prise en charge d'un accident de plongée en médecine
 hyperbare : consultation initiale en urgence, consultations de suivi, compte
-rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.2.1 (**version d'essai**, à valider avant la version principale).
+rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.2.2 (**version d'essai**, à valider avant la version principale).
 
 Deux sorties, depuis la même saisie :
 
@@ -24,7 +24,7 @@ Aucune donnée ne quitte l'appareil. Pas de serveur, pas de compte, pas de requ�
 réseau. **Deux exceptions, facultatives :** la **dictée vocale** de Chrome et d'Edge, qui
 confie l'audio à un service de transcription du navigateur (voir `docs/NOTICE.md`,
 « Dictée vocale »), et, depuis la 11.1.1, le **couplage entre appareils** par Firebase
-Realtime Database (désactivé par défaut ; fiches chiffrées de bout en bout ; voir
+Realtime Database (désactivé par défaut ; fiches et afflux massif chiffrés de bout en bout ; voir
 `docs/COUPLAGE_FIREBASE.md`). Le code entier tient dans `index.html`.
 
 ---

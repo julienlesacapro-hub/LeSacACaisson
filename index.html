@@ -788,6 +788,9 @@ svg.echo rect.z:hover{stroke-width:2.6;filter:brightness(.96)}
 @media screen{ .pg{display:none} }
 /* ---------- afflux massif CO (12.2.1) ---------- */
 body.af-on #navbar{display:none!important}
+.af-share{font-size:12px;border-radius:6px;padding:2px 8px;background:#eef2f7;color:var(--ink2)}
+.af-share.on{background:#e6f4ea;color:#1e6b34;font-weight:600}
+.af-share.off{background:#fff6d6;color:#7a5200}
 .af{max-width:1400px;margin:8px auto 30px}
 .af h2{margin:4px 0;font-size:20px}
 .af-top{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-end;margin-bottom:10px}
@@ -9940,7 +9943,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.2.1';
+const APP_VERSION = '12.2.2';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -12819,11 +12822,15 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.2.2 (version d’essai) : afflux partagé entre appareils.</b><br>'+
+  'Quand le <b>couplage entre appareils</b> est en place, l’événement d’afflux est <b>partagé</b> par tous les appareils du même code, presque en temps réel et chiffré de bout en bout : '+
+  'chaque opérateur saisit, déplace, cote et planifie, et tous voient le même tableau. Fusion champ par champ (la modification la plus récente l’emporte) ; les déplacements simultanés d’un même patient sont tous gardés ; '+
+  'un identifiant saisi deux fois est signalé « doublon ». L’en-tête de l’écran dit l’état du partage. Aucune modification des règles Firebase n’est nécessaire.</p>'+
   '<p><b>Nouveautés de la 12.2.1 (version d’essai) : afflux massif — intoxication au CO.</b><br>'+
   'Une carte <b>Afflux massif</b> en tête du choix du cadre (et dans <b>Plus</b>) ouvre un écran à part : <b>saisie rapide</b> des patients par identifiant (clavier, douchette ou numérotation automatique), '+
   '<b>lieux paramétrables</b> (chaque déplacement est horodaté, déplacement groupé des patients cochés), indication et <b>contre-indication à l’OHB</b>, installation (assis, allongé, réanimatoire), scope, '+
   'et <b>planification des séances</b> sur les deux chambres (capacités et configurations paramétrables, mise en place, intervalle entre séances) : proposer, valider, démarrer, terminer. '+
-  'Exports CSV et JSON ; une fiche CO se crée depuis la ligne d’un patient. L’événement reste sur l’appareil : il n’est pas partagé par le couplage.</p>'+
+  'Exports CSV et JSON ; une fiche CO se crée depuis la ligne d’un patient.</p>'+
   '<p><b>Nouveautés de la 12.1.2 (version d’essai) : intoxication au monoxyde de carbone.</b><br>'+
   '<b>Examen neurologique simplifié</b> (sans vidéonystagmoscopie, Hoffmann, trépidations, contractions, sphincter anal). '+
   '<b>Examen cardio-vasculaire</b> détaillé (douleur thoracique, rythme, souffle, insuffisance cardiaque, hypoperfusion, pouls ; inhalation de fumées et cyanure en cas d’incendie). '+
@@ -13478,8 +13485,8 @@ function afDefaut(){
         {id:'cu_6a', l:'6 assis', assis:6, allonges:0, rea:0, scopes:1, setup:0}]}],
     patients:[], seances:[]};
 }
-async function afLoad(){ try{ AF = await metaGet(AF_KEY); }catch(e){ AF = null; } }
-function afSave(){ clearTimeout(AF_SAVE_T); AF_SAVE_T = setTimeout(()=>{ if(AF) metaSet(AF_KEY, AF); }, 250); }
+async function afLoad(){ try{ AF = await metaGet(AF_KEY); }catch(e){ AF = null; } await afSyncLoad(); AFS.prev = afFlat(AF); }
+function afSave(){ clearTimeout(AF_SAVE_T); AF_SAVE_T = setTimeout(()=>{ if(AF) metaSet(AF_KEY, AF); }, 250); try{ afFbMark(); }catch(e){ console.error('afflux :', e); } }
 async function openAfflux(){
   if(DIRTY && !confirm('La fiche en cours contient des modifications non enregistrées. Continuer ?')) return;
   if(!AF) await afLoad();
@@ -13570,7 +13577,7 @@ function afPlanifier(silence){
     }));
     if(!best){ hors.push(P.id); cand.shift(); continue; }
     const T = afTableDe(best.pts, base);
-    AF.seances.push({id:'s'+(++AF.seq), ch:best.c.id, cfg:best.cfg.id, table:T.l, duree:T.m, debut:new Date(best.st).toISOString(), pts:best.pts.map(x=>x.id), statut:'proposee'});
+    AF.seances.push({id:afUid('s'), ch:best.c.id, cfg:best.cfg.id, table:T.l, duree:T.m, debut:new Date(best.st).toISOString(), pts:best.pts.map(x=>x.id), statut:'proposee'});
     libre[best.c.id] = best.st + T.m*60000 + rot; cfgAv[best.c.id] = best.cfg.id;
     cand = cand.filter(x=>best.pts.indexOf(x)<0);
   }
@@ -13613,7 +13620,7 @@ function afNouveau(code){
   if(!code){ toast('Identifiant vide'); return null; }
   if(AF.patients.some(p=>p.code===code)){ toast('Identifiant déjà saisi : '+code); AF_HL = (AF.patients.find(p=>p.code===code) || {}).id; afRender(); return null; }
   const now = new Date().toISOString();
-  const p = {id:'p'+(++AF.seq), code:code, cree:now, lieu:AF.lieuAccueil, hist:[{lieu:AF.lieuAccueil, l:afLieu(AF.lieuAccueil), t:now}],
+  const p = {id:afUid('p'), code:code, cree:now, lieu:AF.lieuAccueil, hist:[{lieu:AF.lieuAccueil, l:afLieu(AF.lieuAccueil), t:now}],
              hbco:null, spco:0, neuro:null, gross:null, inst:'assis', scope:0, ind:null, ci:null, ci_txt:'', table:'', dispo:'', note:'', nb:0, encore:0};
   AF.patients.push(p); AF_HL = p.id; afSave(); return p;
 }
@@ -13717,7 +13724,7 @@ function afNouvelEvt(){
 /* ---------- paramètres : lieux, chambres, configurations ---------- */
 function afParam(k, v, a, b){
   if(k==='lieu'){ const l = AF.lieux.find(x=>x.id===a); if(l && v.trim()) l.l = v.trim(); }
-  else if(k==='lieuAdd'){ AF.lieux.push({id:'l'+(++AF.seq), l:'Nouveau lieu'}); }
+  else if(k==='lieuAdd'){ AF.lieux.push({id:afUid('l'), l:'Nouveau lieu'}); }
   else if(k==='lieuDel'){ if(AF.patients.some(p=>p.lieu===a) || [AF.lieuAccueil, AF.lieuApres, AF.lieuSortie].indexOf(a)>=0 || AF.chambres.some(c=>c.lieu===a)){ toast('Lieu utilisé : il ne peut pas être retiré'); return; } AF.lieux = AF.lieux.filter(x=>x.id!==a); }
   else if(k==='role') AF[a] = v;
   else if(k==='rotation') AF.rotation = Math.max(0, Number(v)||0);
@@ -13725,7 +13732,7 @@ function afParam(k, v, a, b){
   else if(k==='nom') AF.nom = v;
   else if(k==='ch'){ const c = afCh(a); if(c) c[b] = v; }
   else if(k==='cfg'){ const c = afCh(a), x = c && c.configs.find(y=>y.id===b.id); if(x) x[b.k] = b.k==='l' ? v : (b.k==='rea' ? (v ? 1 : 0) : Math.max(0, Number(v)||0)); }
-  else if(k==='cfgAdd'){ const c = afCh(a); if(c) c.configs.push({id:c.id+'_'+(++AF.seq), l:'Nouvelle configuration', assis:0, allonges:0, rea:0, scopes:1, setup:0}); }
+  else if(k==='cfgAdd'){ const c = afCh(a); if(c) c.configs.push({id:afUid(c.id+'_'), l:'Nouvelle configuration', assis:0, allonges:0, rea:0, scopes:1, setup:0}); }
   else if(k==='cfgDel'){ const c = afCh(a); if(c && c.configs.length > 1) c.configs = c.configs.filter(y=>y.id!==b); }
   afSave(); afRender(); if(k!=='nom') afParamOpen();
 }
@@ -13767,7 +13774,7 @@ function afHTML(){
   const P = AF.patients, cnt = {}; P.forEach(p=>{ const s = afStatut(p); cnt[s] = (cnt[s]||0)+1; });
   const lieuOpts = cur => AF.lieux.map(l=>'<option value="'+l.id+'"'+(l.id===cur ? ' selected' : '')+'>'+esc(l.l)+'</option>').join('');
   let h = '<div class="af">';
-  h += '<div class="af-top"><div><h2>Afflux massif — intoxication au CO</h2><input class="af-nom" value="'+esc(AF.nom)+'" onchange="afParam(\'nom\', this.value)" aria-label="Nom de l’événement"> <span class="af-sub">ouvert à '+afHM(AF.debut)+' le '+frDate(iso(new Date(AF.debut)))+' · '+P.length+' patient'+(P.length>1 ? 's' : '')+'</span></div>'+
+  h += '<div class="af-top"><div><h2>Afflux massif — intoxication au CO</h2><input class="af-nom" value="'+esc(AF.nom)+'" onchange="afParam(\'nom\', this.value)" aria-label="Nom de l’événement"> <span class="af-sub">ouvert à '+afHM(AF.debut)+' le '+frDate(iso(new Date(AF.debut)))+' · '+P.length+' patient'+(P.length>1 ? 's' : '')+'</span><div id="af_share" style="margin-top:4px">'+afPartageHTML()+'</div></div>'+
     '<div class="af-btns"><button class="tb" onclick="afParamOpen()">Paramètres</button><button class="tb" onclick="afCSV()">Exporter CSV</button><button class="tb" onclick="afJSON()">Sauvegarde JSON</button>'+
     '<label class="tb" style="cursor:pointer">Importer JSON<input type="file" accept=".json,application/json" hidden onchange="afImport(this)"></label><button class="tb" onclick="afNouvelEvt()">Nouvel événement</button><button class="tb" onclick="afQuitter()">Quitter</button></div></div>';
   /* saisie rapide */
@@ -13781,13 +13788,14 @@ function afHTML(){
     '<div class="af-bulk">Patients cochés → <select id="af_bulk"><option value="">choisir un lieu</option>'+lieuOpts('')+'</select> <button class="tb" onclick="afDeplacerSel($(\'#af_bulk\').value)">Déplacer</button></div></div></div>';
   /* patients */
   h += '<div class="sec"><h3>Patients</h3><div class="body"><div class="af-scroll"><table class="af-t af-pts"><thead><tr><th></th><th>Identifiant</th><th>Statut</th><th>Lieu</th><th>HbCO %</th><th>Neuro</th><th>OHB</th><th>Contre-indication</th><th>Installation</th><th>Scopé</th><th>Grossesse</th><th>Table</th><th>Séance</th><th>Disponible à</th><th></th></tr></thead><tbody>';
+  const nCode = {}; P.forEach(p=>{ nCode[p.code] = (nCode[p.code]||0)+1; });
   P.slice().sort(afPrio).forEach(p=>{
     const st = afStatut(p), o = afOuverte(p.id), on = k => "afSet('"+p.id+"','"+k+"',this.value)";
     const poss = (st==='attente' || st==='propose' || st==='planifie') ? afSeancesPossibles(p) : [];
     const sea = o ? '<span title="'+esc(afOcc(afCfg(afCh(o.ch), o.cfg) || {assis:0,allonges:0,scopes:0}, o.pts.map(afPat).filter(Boolean)))+'">'+esc((afCh(o.ch)||{}).l || o.ch)+' · '+afHM(o.debut)+' · '+esc(o.table)+'</span>'+(o.statut!=='en_cours' ? ' <button class="mini" onclick="afRetirer(\''+o.id+'\',\''+p.id+'\')">retirer</button>' : '')
               : (AF.hors && AF.hors.indexOf(p.id)>=0 && st==='attente' ? '<span style="color:#c00000">aucune configuration possible</span>' : '');
     h += '<tr id="afr_'+p.id+'"><td><input type="checkbox"'+(AF_SEL[p.id] ? ' checked' : '')+' onchange="AF_SEL[\''+p.id+'\']=this.checked" aria-label="Sélectionner '+esc(p.code)+'"></td>'+
-      '<td><b>'+esc(p.code)+'</b><br><small class="af-sub">arrivé '+afHM(p.cree)+'</small></td>'+
+      '<td><b>'+esc(p.code)+'</b>'+(nCode[p.code] > 1 ? ' <span class="af-st" style="--c:#c00000" title="Le même identifiant a été saisi deux fois (sur deux appareils ?) : retirez le doublon">doublon</span>' : '')+'<br><small class="af-sub">arrivé '+afHM(p.cree)+'</small></td>'+
       '<td><span class="af-st" style="--c:'+AF_ST[st][1]+'">'+esc(AF_ST[st][0])+'</span>'+(p.nb ? '<br><small>'+p.nb+' séance'+(p.nb>1 ? 's' : '')+' faite'+(p.nb>1 ? 's' : '')+'</small>' : '')+'</td>'+
       '<td><select onchange="afDeplacer(\''+p.id+'\', this.value)">'+lieuOpts(p.lieu)+'</select></td>'+
       '<td class="af-nw"><input id="af_h_'+p.id+'" type="text" inputmode="decimal" value="'+(p.hbco!=null ? String(p.hbco).replace('.', ',') : '')+'" style="width:48px" onchange="'+on('hbco')+'"><select onchange="'+on('spco')+'" title="Mesure"><option value="0"'+(p.spco!==1 ? ' selected' : '')+'>HbCO</option><option value="1"'+(p.spco===1 ? ' selected' : '')+'>SpCO</option></select></td>'+
@@ -13837,6 +13845,170 @@ function afPlanning(){
         (s.statut!=='terminee' ? '<button class="mini" onclick="afSeance(\''+s.id+'\',\'supprimer\')">supprimer</button>' : '')+'</div></div>';
   });
   return h+'</div><div class="af-sub" style="margin-top:4px">⟂ allongé · ♥ scopé. Démarrer place les patients dans le lieu de la chambre ; terminer compte la séance et les place dans le lieu « après une séance ».</div>';
+}
+
+/* =====================================================================
+   AFFLUX MASSIF PARTAGÉ ENTRE APPAREILS (12.2.2)
+   Quand le couplage entre appareils est en place, l'événement d'afflux est partagé par tous les appareils du même code, presque en temps réel, avec le même chiffrement de bout en bout que les fiches.
+   - Emplacement : /adp/<salon>/d/afflux-co/<haché>, une « fiche » réservée dont les nœuds ont la forme de ceux des fiches ({t, c}) : les règles de sécurité déjà publiées l'acceptent, sans rien changer
+     dans la console. Le contenu chiffré est {a : clé, v : valeur} (ou x : 1 pour une valeur effacée), où la clé est « E|champ » (l'événement : nom, lieux, chambres…), « P.<id>|champ » (un patient)
+     ou « S.<id>|champ » (une séance) ; « <objet>|_del » marque un patient ou une séance supprimés (définitivement : les identifiants sont uniques, rien ne ressuscite).
+   - Fusion champ par champ, comme les fiches : la valeur la plus récente l'emporte, à égalité le nuage. Exception : l'historique des lieux d'un patient (« hist ») est l'union des deux historiques,
+     triée par heure : deux opérateurs qui déplacent le même patient ne perdent aucun déplacement.
+   - Un patient ou une séance créés sur deux appareils ont des identifiants différents (horodatage et tirage aléatoire) : rien ne s'écrase. Le même identifiant patient saisi deux fois est signalé (doublon).
+   - Hors ligne, tout continue ; les modifications partent à la reconnexion, après la lecture de l'état de la base.
+   ===================================================================== */
+const AF_FID = 'afflux-co';
+const AF_ELOC = ['seq', 'hors'];                                   // champs de l'événement propres à l'appareil : jamais envoyés
+const AFS = {ft:{}, ct:{}, del:{}, prev:null, pend:false, t:null, renderT:null, loaded:false};
+const afUid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+async function afSyncLoad(){ try{ const s = await metaGet('afsync'); if(s){ AFS.ft = s.ft || {}; AFS.ct = s.ct || {}; AFS.del = s.del || {}; } }catch(e){} AFS.loaded = true; }
+function afSyncSave(){ try{ metaSet('afsync', {ft:AFS.ft, ct:AFS.ct, del:AFS.del}); }catch(e){} }
+/* l'événement à plat : clé → valeur en JSON */
+function afFlat(A){
+  const o = {}; if(!A) return o;
+  const put = (k, v) => { if(v !== undefined && v !== null && v !== '') o[k] = JSON.stringify(v); };
+  Object.keys(A).forEach(k => { if(k === 'patients' || k === 'seances' || AF_ELOC.indexOf(k) >= 0) return; put('E|' + k, A[k]); });
+  (A.patients || []).forEach(p => Object.keys(p).forEach(k => { if(k !== 'id' && k !== 'lieu') put('P.' + p.id + '|' + k, p[k]); }));          // le lieu actuel se déduit de l'historique
+  (A.seances || []).forEach(s => Object.keys(s).forEach(k => { if(k !== 'id') put('S.' + s.id + '|' + k, s[k]); }));
+  return o;
+}
+const afObj = k => k.slice(0, k.indexOf('|'));
+/* de la forme à plat vers l'événement (les champs propres à l'appareil sont repris de l'événement local) */
+function afUnflat(m, loc){
+  const A = {patients:[], seances:[]}, P = {}, S = {};
+  Object.keys(m).forEach(k => {
+    const i = k.indexOf('|'), ob = k.slice(0, i), f = k.slice(i + 1), v = JSON.parse(m[k]);
+    if(ob === 'E') A[f] = v;
+    else if(ob.charAt(0) === 'P'){ const id = ob.slice(2); (P[id] = P[id] || {id:id})[f] = v; }
+    else if(ob.charAt(0) === 'S'){ const id = ob.slice(2); (S[id] = S[id] || {id:id})[f] = v; }
+  });
+  const dP = afDefautPatient();
+  A.patients = Object.keys(P).map(id => Object.assign({}, dP, P[id])).filter(p => p.code).sort((a, b) => String(a.cree).localeCompare(String(b.cree)));
+  A.patients.forEach(p => { const h = p.hist[p.hist.length - 1]; p.lieu = h ? h.lieu : A.lieuAccueil; });
+  A.seances = Object.keys(S).map(id => Object.assign({pts:[]}, S[id])).filter(s => s.ch && s.debut);
+  AF_ELOC.forEach(k => { if(loc && loc[k] != null) A[k] = loc[k]; });
+  if(A.seq == null) A.seq = 0;
+  return A;
+}
+function afDefautPatient(){ return {hist:[], hbco:null, spco:0, neuro:null, gross:null, inst:'assis', scope:0, ind:null, ci:null, ci_txt:'', table:'', dispo:'', note:'', nb:0, encore:0}; }
+/* une modification locale : les clés qui ont changé depuis l'état précédent sont datées ; un patient ou une séance disparus sont marqués supprimés */
+function afFbMark(){
+  if(!fbOn()) { AFS.prev = afFlat(AF); return; }
+  const cur = afFlat(AF), prev = AFS.prev || {}, now = fbNow();
+  Object.keys(cur).forEach(k => { if(prev[k] !== cur[k]) AFS.ft[k] = now; });
+  const vivants = new Set(Object.keys(cur).map(afObj));
+  Object.keys(prev).forEach(k => {
+    if(k in cur) return;
+    const ob = afObj(k);
+    if(ob !== 'E' && !vivants.has(ob)) AFS.del[ob] = AFS.del[ob] || now; else AFS.ft[k] = now;
+  });
+  AFS.prev = cur; AFS.pend = true; afSyncSave();
+  afFbPushSoon();
+}
+function afFbPushSoon(ms){ clearTimeout(AFS.t); AFS.t = setTimeout(afFbPush, ms == null ? 600 : ms); }
+/* l'envoi : ce qui a été modifié ici après le nuage, et les suppressions */
+async function afFbPush(){
+  if(!fbOn() || !FB.kEnc || !FB.ready || !AF){ return; }
+  const cur = afFlat(AF), upd = {}, sent = [], now = fbNow();
+  const keys = new Set(Object.keys(cur).concat(Object.keys(AFS.ft)));
+  for(const k of keys){
+    const ob = afObj(k); if(AFS.del[ob]) continue;
+    const ft = AFS.ft[k] || 0; if(!(ft > (AFS.ct[k] || 0))) continue;
+    const c = await fbSeal(k in cur ? {a:k, v:JSON.parse(cur[k])} : {a:k, x:1});
+    if(c.length > FB_MAXC){ FB.stats.big++; continue; }
+    upd['d/' + AF_FID + '/' + (await fbName('af|' + k))] = {t:ft, c:c}; sent.push([k, ft]);
+  }
+  /* une suppression : la marque part, les champs de l'objet connus du nuage sont effacés */
+  const T = (FB.tree && FB.tree.d && FB.tree.d[AF_FID]) || {};
+  for(const ob of Object.keys(AFS.del)){
+    const k = ob + '|_del', h = await fbName('af|' + k);
+    if(T[h]) continue;                                                                     // déjà dans le nuage
+    upd['d/' + AF_FID + '/' + h] = {t:AFS.del[ob], c:await fbSeal({a:k, v:1})}; sent.push([k, AFS.del[ob]]);
+    for(const hh of Object.keys(T)){ const hit = FB.dc.get(AF_FID + '/' + hh); if(hit && hit.o && typeof hit.o.a === 'string' && afObj(hit.o.a) === ob) upd['d/' + AF_FID + '/' + hh] = null; }
+  }
+  const L = Object.keys(upd);
+  if(!L.length){ AFS.pend = false; return; }
+  try{
+    for(let i = 0; i < L.length; i += 250){ const part = {}; L.slice(i, i + 250).forEach(k => { part[k] = upd[k]; }); await fbHttp('PATCH', '', part, true); }
+    sent.forEach(x => { AFS.ct[x[0]] = x[1]; });
+    AFS.pend = false; FB.stats.sent += sent.length; FB.stats.at = Date.now(); afSyncSave(); fbChip();
+  }catch(e){ AFS.pend = true; fbFail(e); }
+}
+/* la réception : le nuage contre l'appareil */
+async function afFbReconcile(){
+  if(!FB.kEnc) return;
+  if(!AFS.loaded) await afSyncLoad();
+  const T = (FB.tree && FB.tree.d && FB.tree.d[AF_FID]) || {}, R = {}, delR = {};
+  for(const h of Object.keys(T)){
+    const nd = T[h]; if(!nd || typeof nd.c !== 'string') continue;
+    const key = AF_FID + '/' + h, hit = FB.dc.get(key);
+    let o; if(hit && hit.c === nd.c) o = hit.o; else { o = await fbOpen(nd.c); FB.dc.set(key, {c:nd.c, o:o}); }
+    if(!o || typeof o.a !== 'string' || o.a.indexOf('|') < 1 || (await fbName('af|' + o.a)) !== h){ FB.stats.err++; continue; }
+    if(o.a.slice(-5) === '|_del'){ delR[afObj(o.a)] = +nd.t || 1; continue; }
+    R[o.a] = {t:+nd.t || 0, x:!!o.x, v:o.x ? undefined : JSON.stringify(o.v)};
+  }
+  const loc = AF, cur = afFlat(loc), m = Object.assign({}, cur);
+  let recu = 0, push = false;
+  /* l'événement a changé ailleurs (« nouvel événement ») : ce qui appartient à l'ancien disparaît ici */
+  const rid = R['E|id'], lid = cur['E|id'];
+  const bascule = rid && !rid.x && lid && rid.v !== lid && rid.t >= (AFS.ft['E|id'] || 0);
+  if(bascule){ Object.keys(m).forEach(k => { if(afObj(k) !== 'E' && !R[k]) delete m[k]; }); }
+  for(const k of Object.keys(R)){
+    const r = R[k], c = m[k], ft = AFS.ft[k] || 0;
+    AFS.ct[k] = Math.max(AFS.ct[k] || 0, r.t);
+    const same = r.x ? c === undefined : c === r.v;
+    if(same){ if(ft < r.t) AFS.ft[k] = r.t; continue; }
+    if(k.slice(-5) === '|hist' && !r.x && c !== undefined){                                   // historique des lieux : l'union des deux
+      const u = afHistUnion(JSON.parse(c), JSON.parse(r.v)), uj = JSON.stringify(u);
+      m[k] = uj; if(uj !== r.v){ AFS.ft[k] = fbNow(); push = true; } else AFS.ft[k] = r.t;
+      if(uj !== c) recu++;
+      continue;
+    }
+    if(r.t >= ft){ if(r.x) delete m[k]; else m[k] = r.v; AFS.ft[k] = r.t; recu++; }
+    else push = true;
+  }
+  /* ce que le nuage n'a pas : daté de maintenant s'il n'a jamais été daté (premier couplage d'un appareil qui avait déjà un événement) */
+  Object.keys(m).forEach(k => { if(!R[k]){ if(!(k in AFS.ft)) AFS.ft[k] = fbNow(); if((AFS.ft[k] || 0) > (AFS.ct[k] || 0)) push = true; } });
+  /* les suppressions venues d'ailleurs */
+  Object.keys(delR).forEach(ob => { AFS.del[ob] = AFS.del[ob] || delR[ob]; });
+  Object.keys(m).forEach(k => { if(AFS.del[afObj(k)]) delete m[k]; });
+  Object.keys(AFS.del).forEach(ob => { if(!delR[ob]) push = true; });
+  const vide = !Object.keys(m).some(k => k.indexOf('E|') === 0);
+  if(!vide){
+    const avant = JSON.stringify(cur), apres = JSON.stringify(m);
+    if(avant !== apres || !loc){
+      AF = afUnflat(m, loc);
+      AFS.prev = afFlat(AF);
+      try{ await metaSet(AF_KEY, AF); }catch(e){}
+      FB.stats.recv += recu;
+      afRenderSoon();
+      if(recu && AF_ON && Date.now() - FB.toastAt > 15000){ FB.toastAt = Date.now(); toast('Afflux mis à jour depuis un autre appareil'); }
+    } else AFS.prev = cur;
+  }
+  afSyncSave();
+  if(push){ AFS.pend = true; afFbPushSoon(0); }
+}
+function afHistUnion(a, b){
+  const all = (Array.isArray(a) ? a : []).concat(Array.isArray(b) ? b : []), seen = new Set(), out = [];
+  all.forEach(h => { const k = h && (h.t + '|' + h.lieu); if(!h || seen.has(k)) return; seen.add(k); out.push(h); });
+  return out.sort((x, y) => String(x.t).localeCompare(String(y.t)) || String(x.lieu).localeCompare(String(y.lieu)));          // ordre identique sur tous les appareils
+}
+function afRenderSoon(){
+  if(!AF_ON) { try{ if(REC && REC._attenteCadre) renderForm(); }catch(e){} return; }
+  clearTimeout(AFS.renderT);
+  AFS.renderT = setTimeout(function again(){
+    const a = document.activeElement;
+    if(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.id !== 'af_code' && !modalOpen()){ AFS.renderT = setTimeout(again, 1200); return; }      // pas pendant une saisie
+    const y = window.scrollY; afRender(); window.scrollTo(0, y);
+  }, 200);
+}
+/* l'état du partage, en tête de l'écran d'afflux */
+function afPartageHTML(){
+  if(!fbOn()) return '<span class="af-share off" title="Plus › Couplage entre appareils">Non partagé : cet événement reste sur cet appareil. <a href="#" onclick="openFb();return false">Coupler les appareils</a> pour travailler à plusieurs.</span>';
+  const n = FB.peers.length, ok = FB.status === 'on';
+  return '<span class="af-share'+(ok ? ' on' : '')+'">'+(ok ? 'Partagé · '+(n + 1)+' appareil'+(n ? 's' : '')+(n ? ' ('+esc(FB.peers.map(p=>p.name).join(', '))+')' : '') : 'Partage : '+esc(FB.status === 'retry' ? 'hors ligne, les modifications partiront à la reconnexion' : FB.status === 'denied' ? 'accès refusé' : 'connexion…'))+
+         (AFS.pend ? ' · envoi en attente' : '')+'</span>';
 }
 
 /* =====================================================================
@@ -14037,6 +14209,7 @@ async function fbCreate(opt){
     await fbSetup(code);
     await fbHttp('PUT', 'h', {t:{'.sv':'timestamp'}, c:await fbSeal({ok:'ADP', v:1})}, true);          // le contrôle : un autre appareil qui tape le code le retrouve
     FB.ft = {}; FB.fs = {}; FB.up = {}; FB.base = {}; FB.ct = {}; FB.prev = null; FB.prevRec = null;
+    AFS.ct = {}; AFS.del = {}; AFS.pend = true; afSyncSave();
     await fbSaveCfg(); await fbSaveState(true);
     fbStart();
     return {ok:true, code:code};
@@ -14060,6 +14233,7 @@ async function fbJoin(codeTxt, opt){
     const o = await fbOpen(h.c);
     if(!o || o.ok !== 'ADP') throw Object.assign(new Error('contrôle'), {absent:true});
     FB.ft = {}; FB.fs = {}; FB.up = {}; FB.base = {}; FB.ct = {}; FB.prev = null; FB.prevRec = null;
+    AFS.ct = {}; AFS.del = {}; AFS.pend = true; afSyncSave();
     await fbSaveCfg(); await fbSaveState(true);
     fbStart();
     return {ok:true};
@@ -14076,6 +14250,7 @@ async function fbUnpair(erase){
   fbStop();
   FB.cfg = null; FB.room = ''; FB.kEnc = FB.kMac = null; FB.names.clear(); FB.dc.clear(); FB.tree = null;
   FB.ft = {}; FB.fs = {}; FB.up = {}; FB.base = {}; FB.ct = {}; FB.prev = null; FB.prevRec = null; FB.q.clear(); FB.peers = []; FB.status = 'off'; FB.detail = ''; FB.showCode = false;
+  AFS.ct = {}; AFS.del = {}; AFS.pend = false; afSyncSave();
   try{ await metaSet('fb', null); await metaSet('fbft', null); }catch(e){}
   fbChip(); toast('Couplage interrompu' + (erase && !msg ? ' ; données en ligne effacées' : '') + msg);
   return msg;
@@ -14170,6 +14345,7 @@ async function fbWork(all, fids, gen){
     Object.keys(T.d || {}).forEach(x => ids.add(x)); Object.keys(T.m || {}).forEach(x => ids.add(x));
     DB.forEach(f => { if(FB_ID_RE.test(f.id) && f.d && f.d.dossier) ids.add(f.id); });
     if(REC && FB_ID_RE.test(REC.id) && REC.d && REC.d.dossier) ids.add(REC.id);
+    ids.add(AF_FID);
     fids = ids;
   }
   let n = 0;
@@ -14177,7 +14353,7 @@ async function fbWork(all, fids, gen){
   if(gen !== FB.gen) return;
   if(all){
     if(!(FB.tree && FB.tree.h)){ FB.ready = false; FB.status = 'gone'; FB.detail = 'le couplage a été effacé sur un autre appareil : interrompez-le ici aussi'; fbChip(); return; }
-    FB.ready = true; FB.status = 'on'; FB.retry = 0; FB.detail = ''; fbFlushSoon(0);
+    FB.ready = true; FB.status = 'on'; FB.retry = 0; FB.detail = ''; fbFlushSoon(0); if(AFS.pend) afFbPushSoon(0);
   }
   await fbAfterBatch();
   fbChip();
@@ -14188,6 +14364,7 @@ async function fbWork(all, fids, gen){
    Valeurs différentes : la plus récente l'emporte. À égalité, c'est le nuage (une copie locale périmée, par exemple une fiche abandonnée, ne remplace jamais une valeur plus récente et se remet à jour).
    Un champ n'est envoyé que s'il a été modifié ici après l'heure du nuage ; l'absence d'un champ ici ne le supprime ailleurs que s'il a été effacé ici, explicitement. */
 async function fbReconcile(fid){
+  if(fid === AF_FID){ await afFbReconcile(); return; }          // l'afflux massif partagé (12.2.2)
   if(!FB_ID_RE.test(fid)) return;
   const T = FB.tree || {}, nodes = (T.d && T.d[fid]) || {}, meta = T.m && T.m[fid];
   const R = {}; let maxT = 0, created = '', gone = 0;
@@ -14406,6 +14583,7 @@ function fbScan(){
   DB.forEach(f => { if(FB_ID_RE.test(f.id) && f.d && f.d.dossier && (f.updated || '') > (FB.up[f.id] || '') && !(REC && REC.id === f.id)){ fbMarkExternal(f); if(fbHasPush(f, f.id)) FB.q.add(f.id); else FB.up[f.id] = f.updated; } });
   if(REC && DIRTY && REC.d && REC.d.dossier && FB_ID_RE.test(REC.id)){ fbMark(REC); FB.q.add(REC.id); }
   if(FB.q.size) fbFlushSoon(0);
+  if(AFS.pend) afFbPushSoon(0);
 }
 
 /* ---------- présence ---------- */
@@ -14440,7 +14618,7 @@ function fbChipHTML(){
            '<span class="dot' + (FB.status === 'on' ? ' on' : '') + '"></span><span class="lbl2"> ' + esc(lab) + '</span></a>';
   }catch(e){ return ''; }
 }
-function fbChip(){ try{ updateBar(); fbModalStatus(); }catch(e){} }
+function fbChip(){ try{ updateBar(); fbModalStatus(); const e = $('#af_share'); if(e) e.innerHTML = afPartageHTML(); }catch(e){} }
 function fbStatusHTML(){
   const st = {on:['Connecté', 'var(--ok)'], connecting:['Connexion en cours…', 'var(--warn)'], retry:['Hors ligne, nouvel essai automatique', 'var(--warn)'], denied:['Accès refusé par la base', 'var(--bad)'], gone:['Couplage effacé sur un autre appareil', 'var(--bad)'], off:['Aucun couplage', 'var(--ink2)']}[FB.status] || ['', ''];
   const n = FB.peers.length, S = FB.stats;
