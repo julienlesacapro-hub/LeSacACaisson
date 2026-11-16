@@ -1505,7 +1505,8 @@ const CADRES = [
   d:'Même fiche ; l’examen neurologique puis l’examen cardio-respiratoire sont mis en avant dans la synthèse.'},
  {v:4, id:'co',        l:'Intoxication au monoxyde de carbone',                c:'CO',        actif:1, g:'urgence',
   d:'Interface proposée : circonstances, symptômes, HbCO, critères de gravité et d’indication de l’oxygénothérapie hyperbare, suivi et prévention (à valider).'},
- {v:5, id:'embolie',   l:'Embolie gazeuse',                                    c:'Embolie',   actif:0, g:'urgence',   d:'Prochaine version.'},
+ {v:5, id:'embolie',   l:'Embolie gazeuse',                                    c:'Embolie',   actif:1, g:'urgence',
+  d:'Interface proposée : circonstances (geste iatrogène, plongée, traumatisme), type d’embolie, symptômes, prise en charge avant recompression, examen neurologique et cardio-respiratoire, délai jusqu’à la recompression (à valider).'},
  {v:6, id:'urgence',   l:'Autre urgence hyperbare',                            c:'Urgence',   actif:0, g:'urgence',   d:'Prochaine version.'},
  {v:7, id:'chronique', l:'Consultation d’hyperbarie chronique (hors urgence)', c:'Chronique', actif:1, g:'programmee',
   d:'Interface proposée : indication et adressage (courrier joint), terrain, examen général et ORL, contre-indications à l’OHB, prescription de la cure et rendez-vous (à valider).'},
@@ -1936,6 +1937,26 @@ const EX_LOCO_L = [
  {v:'cheville', l:'Cheville, pied'}, {v:'rachis', l:'Rachis'}, {v:'mobilite', l:'Limitation de la mobilité'}, {v:'oedeme', l:'Œdème, tuméfaction'},
  {v:'musc', l:'Douleurs musculaires, zones de compression'}, {v:'trauma', l:'Lésion traumatique'}, {v:'impot', l:'Impotence fonctionnelle'}
 ];
+/* =====================================================================
+   EMBOLIE GAZEUSE (cadre 5) — 12.5.1, interface PROPOSÉE (à valider)
+   Circonstances (geste iatrogène, plongée, traumatisme), type d'embolie (artérielle, veineuse, paradoxale), symptômes initiaux, prise en charge avant la recompression, examen neurologique
+   (sans ASIA ni sensibilités) et cardio-respiratoire, délai événement → mise en pression (un délai de 6 heures au plus est associé à une évolution favorable : Tekle et al., Neurocrit Care 2013,
+   doi:10.1007/s12028-012-9683-3).
+   ===================================================================== */
+const EMB_CAUSE = [{v:1,l:'Iatrogène'},{v:2,l:'Plongée (surpression pulmonaire)'},{v:3,l:'Traumatique (plaie thoracique, blast)'},{v:9,l:'Autre'}];
+const EMB_GESTE = [
+ {v:1, l:'Pose, utilisation ou ablation d’un cathéter veineux central'}, {v:2, l:'Hémodialyse, aphérèse, circuit extracorporel'}, {v:3, l:'Chirurgie cardiaque, circulation extracorporelle'},
+ {v:4, l:'Neurochirurgie (position assise)'}, {v:5, l:'Endoscopie digestive (CPRE…)'}, {v:6, l:'Biopsie ou ponction pulmonaire transthoracique'},
+ {v:7, l:'Cathétérisme ou angiographie artériels'}, {v:8, l:'Autre chirurgie'}, {v:9, l:'Obstétrique'}, {v:10, l:'Ventilation mécanique'}, {v:99, l:'Autre (préciser)'}
+];
+const EMB_TYPE = [{v:1,l:'Artérielle'},{v:2,l:'Veineuse'},{v:3,l:'Paradoxale (shunt droite-gauche)'},{v:4,l:'Indéterminée'}];
+const EMB_POS = [{v:1,l:'Décubitus dorsal'},{v:2,l:'Assise ou demi-assise'},{v:3,l:'Décubitus latéral gauche'},{v:4,l:'Trendelenburg'},{v:9,l:'Autre'}];
+const EMB_SYMPT = [
+ {v:'pc', l:'Perte de connaissance'}, {v:'coma', l:'Coma'}, {v:'convuls', l:'Convulsions'}, {v:'deficit', l:'Déficit moteur'}, {v:'aphasie', l:'Aphasie, trouble du langage'},
+ {v:'visuel', l:'Troubles visuels, cécité corticale'}, {v:'confus', l:'Confusion, agitation'}, {v:'ceph', l:'Céphalées'}, {v:'acr', l:'Arrêt cardio-respiratoire'},
+ {v:'choc', l:'Hypotension, choc'}, {v:'rythme', l:'Trouble du rythme'}, {v:'dlr_thor', l:'Douleur thoracique'}, {v:'desat', l:'Dyspnée, désaturation'},
+ {v:'livedo', l:'Marbrures, livedo'}, {v:'bulles', l:'Air visible (cathéter, rétine, langue)'}
+];
 const SPEC = [
 {id:'ident', t:'Identification', cols:2, page:1, tail:()=>identBox(), f:[
   {k:'cadre', l:'Cadre de la consultation', t:'choice', o:CADRE_OPTS, full:1, nofill:1,
@@ -1948,11 +1969,11 @@ const SPEC = [
   {k:'sexe',      l:'Sexe',    t:'choice', o:[{v:1,l:'M'},{v:2,l:'F'},{v:3,l:'Autre'}], not:[4]},
   {k:'ddn',       l:'Date de naissance', t:'date', pii:1, not:[4]},
   {k:'age',       l:'Âge', t:'calc', hint:'Calculé à la date de l’examen ; en années et mois pour un mineur', not:[4]},
-  {k:'date_acc',  l:"Date de l'accident", t:'date', not:[4], nocadres:[7]},
-  {k:'heure_acc', l:"Heure de l'accident", t:'time', not:[4], nocadres:[7]},
+  {k:'date_acc',  l:"Date de l'accident", t:'date', not:[4], nocadres:[5,7]},
+  {k:'heure_acc', l:"Heure de l'accident", t:'time', not:[4], nocadres:[5,7]},
   {k:'date_ex',   l:"Date de l'examen", lab4:'Date de la séance', t:'date', req:1},
   {k:'heure_ex',  l:"Heure de l'examen", t:'time', req:1, not:[4]},
-  {k:'delai_min', l:'Délai accident → examen (min)', t:'calc', not:[2,3,4], nocadres:[7]},
+  {k:'delai_min', l:'Délai accident → examen (min)', t:'calc', not:[2,3,4], nocadres:[5,7]},
   {k:'examinateur',l:'Examinateur', t:'txt', list:'exlist'},
   {k:'num_ex',    l:"N° d'examen pour ce patient", t:'calc', hint:'Une séance de recompression sans examen porte le numéro du dernier examen et une lettre : EX3b, EX3c…'}
 ]},
@@ -2006,7 +2027,7 @@ const SPEC = [
   {k:'delai_symp_pec', l:'Délai 1ers symptômes → prise en charge (min)', t:'calc', full:1}
 ]},
 
-{id:'plongeur', t:'Le plongeur', tc:{4:'Terrain du patient', 7:'Terrain du patient'}, cols:2, page:2, only:[1], f:[
+{id:'plongeur', t:'Le plongeur', tc:{4:'Terrain du patient', 5:'Terrain du patient', 7:'Terrain du patient'}, cols:2, page:2, only:[1], f:[
   {k:'h_pident', t:'head', l:'Poids, taille et IMC', full:1},
   {k:'poids', l:'Poids (kg)', t:'num', min:20, max:250, unit:'kg'},
   {k:'taille', l:'Taille (cm)', t:'num', min:100, max:230, unit:'cm'},
@@ -2645,7 +2666,7 @@ const SPEC = [
 
 /* Diagnostic retenu : un ou plusieurs diagnostics associés, avec leurs types, et un diagnostic
    principal quand plusieurs sont retenus et que le principal est déterminé. */
-{nocadres:[7], id:'diagnostic', page:6, t:'Diagnostic retenu', cols:1, noghost:1, f:[
+{nocadres:[5,7], id:'diagnostic', page:6, t:'Diagnostic retenu', cols:1, noghost:1, f:[
   {k:'dg_liste', l:'Diagnostic(s) retenu(s)', t:'multi', o:DG, full:1,
    hint:'Plusieurs diagnostics peuvent être associés'},
   {k:'dg_add_types', l:'Accident de désaturation — type', t:'multi', o:DG_ADD, full:1, sub:1, dep:['dg_liste',['add']]},
@@ -2855,6 +2876,34 @@ const SPEC = [
   {k:'chr_rdv_date', l:'Rendez-vous de consultation (réévaluation) — date', t:'date', dep:['chr_ind_ret',[1]]},
   {k:'chr_rdv_h', l:'Rendez-vous de consultation — heure', t:'time', dep:['chr_ind_ret',[1]]},
   {k:'chr_plan_box', t:'html', fn:()=>chrPlanBox(), full:1, nofill:1}
+]},
+{id:'emb_circ', t:'Circonstances de l’embolie', cols:2, page:2, only:[1], cadres:[5], f:[
+  {k:'emb_cause', l:'Origine', t:'choice', o:EMB_CAUSE, full:1},
+  {k:'emb_geste', l:'Geste en cause', t:'select', o:EMB_GESTE, full:1, sub:1, dep:['emb_cause',[1]]},
+  {k:'emb_geste_txt', l:'Geste — précisions', t:'txt', wide:1, full:1, sub:1, nofill:1, dep:['emb_cause',[1,2,3,9]]},
+  {k:'emb_lieu', l:'Service, établissement', t:'txt', wide:1, full:1, nofill:1},
+  {k:'emb_date', l:'Date de l’événement', t:'date'},
+  {k:'emb_h', l:'Heure de l’événement', t:'time'},
+  {k:'emb_type', l:'Type d’embolie', t:'choice', o:EMB_TYPE, full:1},
+  {k:'emb_pos', l:'Position au moment de l’événement', t:'choice', o:EMB_POS, full:1},
+  {k:'emb_fop', l:'Shunt droite-gauche connu (FOP…)', t:'choice', o:ONA}
+]},
+{id:'emb_symp', t:'Symptômes et prise en charge avant recompression', cols:2, page:2, only:[1], cadres:[5], f:[
+  {k:'emb_sympt', l:'Symptômes initiaux', t:'multi', o:EMB_SYMPT, full:1},
+  {k:'emb_gcs_init', l:'Glasgow initial', t:'num', min:3, max:15, unit:'/ 15'},
+  {k:'emb_iot', l:'Intubé, ventilé', t:'choice', o:ON},
+  {k:'emb_histoire', l:'Histoire', t:'area', wide:1, full:1, nofill:1, phr:['Survenue au retrait d’un cathéter veineux central jugulaire.','Malaise brutal au cours du geste.','Bulles visibles dans la tubulure.','Amélioration sous oxygène.']},
+  {k:'h_emb_pec', t:'head', l:'Avant la recompression', full:1},
+  {k:'emb_o2', l:'Oxygène à haute concentration', t:'choice', o:ONA},
+  {k:'emb_o2_h', l:'Heure de début de l’oxygène', t:'time', sub:1, dep:['emb_o2',[1]]},
+  {k:'emb_aspi', l:'Aspiration d’air par le cathéter', t:'choice', o:ONA},
+  {k:'emb_tdm_air', l:'Air visible à l’imagerie', t:'choice', o:ON, hint:'Scanner cérébral ou thoracique ; le résultat détaillé se note dans Examens complémentaires'},
+  {k:'emb_tdm_isch', l:'Ischémie ou œdème à l’imagerie avant recompression', t:'choice', o:ON, hint:'Associés à une évolution moins favorable (Tekle 2013)'},
+  {k:'emb_evol', l:'Évolution avant recompression', t:'choice', o:EVOL, full:1}
+]},
+{id:'emb_delai_s', t:'Délai jusqu’à la recompression', cols:1, page:6, before:'recomp', cadres:[5], noghost:1, f:[
+  {k:'emb_delai_box', t:'html', fn:()=>embDelaiBox(), full:1, nofill:1},
+  {k:'emb_delai', l:'Délai événement → mise en pression', t:'calc', unit:'min', full:1, hint:'Calculé : date et heure de l’événement → heure de mise en pression'}
 ]},
 /* 12.4.2 : examen général détaillé, affiché sous chaque « Anomalie … » de l'examen clinique général (embedded) ; en fin de SPEC, les colonnes existantes ne bougent pas */
 {id:'gen_det', t:'Examen général détaillé', cols:1, page:3, noghost:1, embedded:1, when:()=>false, f:[
@@ -3251,7 +3300,8 @@ function defautsDe(t, cad){
   const m = DEFAUTS[t]; if(!m) return null;
   const c = cad != null ? cad : ((REC && REC.d) ? cadreOf(REC.d) : 1);
   if(c===4) return {};
-  if(c===7) return Number(t)===1 ? {chr_table:1} : {};                                    // hyperbarie chronique : A15 proposée pour la cure, rien de la plongée                                                                    // intoxication au CO : aucune valeur d'office propre à la plongée (table, aspirine, bilans, profil, déséquipement, score MJOAS de sortie)
+  if(c===7) return Number(t)===1 ? {chr_table:1} : {};
+  if(c===5) return Number(t)===1 ? {tb_table:DEF_TABLE} : {};                             // embolie gazeuse : la table proposée d'office (B18), à valider ; rien de la plongée                                    // hyperbarie chronique : A15 proposée pour la cure, rien de la plongée                                                                    // intoxication au CO : aucune valeur d'office propre à la plongée (table, aspirine, bilans, profil, déséquipement, score MJOAS de sortie)
   if(Number(t)===1 && c===2){ const o = Object.assign({}, m); delete o.tb_table; return o; }            // OPI : pas de table de recompression d'office
   return m;
 }
@@ -3289,7 +3339,7 @@ function opiSeul(d){
   return cadreOf(d) === 2;
 }
 /* pas de score ASIA pour l'OPI seul (12.1.1) ni pour l'intoxication au CO (cadre 4) */
-function sansAsia(d){ return opiSeul(d) || cadreOf(d)===4 || cadreOf(d)===7; }
+function sansAsia(d){ return opiSeul(d) || [4,5,7].indexOf(cadreOf(d))>=0; }
 /* pas de score ASIA : rien n'est calculé ni enregistré */
 function asiaOff(){
   const d = REC.d;
@@ -3582,7 +3632,7 @@ function computeAll(){
   } else delete d.delai_min;
 
   reprisesInit();
-  adpCalc(); coCalc(); chrCalc();
+  adpCalc(); coCalc(); chrCalc(); embCalc();
 
   const au = orlAudio();
   if(au.code===9){ delete d.orl_interp; delete d.orl_interp_txt; }
@@ -4547,15 +4597,15 @@ const PAGES = [
  {n:1, l:'Administratif', c:'Administratif', s:'identification, identité, entrée, contacts',
   s2:'identification de la consultation'},
  {n:2, l:'Anamnèse et plongée', c:'Anamnèse', s:'plongeur, plongée, facteurs, anamnèse',
-  lc:{4:'Anamnèse et intoxication'}, sc:{4:'terrain, circonstances, symptômes'}},
+  lc:{4:'Anamnèse et intoxication', 5:'Anamnèse et circonstances', 7:'Anamnèse et indication'}, sc:{4:'terrain, circonstances, symptômes', 5:'terrain, circonstances, symptômes', 7:'terrain, indication, adressage'}},
  {n:3, l:'Examen clinique général', c:'Examen', s:'constantes, conscience, ORL, vestibulaire, cutané',
-  sc:{4:'constantes, conscience, examen par appareil'}},
+  sc:{4:'constantes, conscience, examen par appareil', 5:'constantes, examen par appareil, conscience', 7:'constantes, examen par appareil, ORL, contre-indications'}},
  {n:4, l:'Examen neurologique', c:'Neuro', s:'réflexes, force, sensibilités, scores',
-  sc:{4:'réflexes, force, coordination, cognition'}},
+  sc:{4:'réflexes, force, coordination, cognition', 5:'réflexes, force, coordination'}},
  {n:5, l:'Examens complémentaires', c:'Examens compl.', s:'actes, gaz du sang, biologie, ECG, imagerie',
   sc:{4:'HbCO, gaz du sang, biologie, imagerie'}},
  {n:6, l:'Conclusion et évolution', c:'Conclusion', s:'recompression, traitements, diagnostic, orientation',
-  s2:'évolution, diagnostic, orientation, sortie', sc:{4:'gravité, OHB, traitements, diagnostic, suivi'}}
+  s2:'évolution, diagnostic, orientation, sortie', sc:{4:'gravité, OHB, traitements, diagnostic, suivi', 5:'délai, recompression, traitements, orientation', 7:'conclusion, prescription, rendez-vous'}}
 ];
 let PAGE = 1;
 let TYPE_PROPOSE = false;   /* le type a ete deduit du rang de l'examen */
@@ -7735,7 +7785,7 @@ function examFocus(d, SY){
   } else {
     const cd = cadreOf(d);
     if(cd===2) car = true;
-    else if(cd===3 || cd===4){ neu = true; car = true; }
+    else if(cd===3 || cd===4 || cd===5){ neu = true; car = true; }
     else if(SY.neu.pos.length) neu = true;
     else if(SY.gen.pos.length) gen = true;
   }
@@ -7870,7 +7920,7 @@ function narrativeBlocks(){
   /* libellé d'une option, ou texte « à préciser » quand le menu porte le code 99 ; au milieu d'une phrase, sans majuscule */
   const niv = k => d[k]==null ? '' : (d[k]===99 ? flat(d[k+'_autre']||'autre') : lc1(lab(k)));
   const multi = k => Array.isArray(d[k]) ? d[k] : [];
-  const CO4 = cadreOf(d)===4, CH7 = cadreOf(d)===7;          // CH7 : hyperbarie chronique (12.4.1) ; intoxication au monoxyde de carbone (12.1.1) : le patient, les circonstances, les symptômes remplacent le plongeur et la plongée
+  const CO4 = cadreOf(d)===4, CH7 = cadreOf(d)===7, EG5 = cadreOf(d)===5;          // CH7 : hyperbarie chronique (12.4.1) ; intoxication au monoxyde de carbone (12.1.1) : le patient, les circonstances, les symptômes remplacent le plongeur et la plongée
 
   /* ---------- en-tête, comme sur la feuille d'observation ---------- */
   const titre = TY===2 ? 'Observation de suivi' : TY===3 ? 'Compte rendu de séjour' : 'Observation d’entrée';
@@ -7911,9 +7961,9 @@ function narrativeBlocks(){
     if(d.plongee_depuis!=null) ex.push('plongeur depuis '+d.plongee_depuis);
     if(d.nb_plongees_total!=null) ex.push(d.nb_plongees_total+' plongée'+(d.nb_plongees_total>1?'s':'')+' au total');
     if(d.nb_plongees_an!=null) ex.push(d.nb_plongees_an+' plongée'+(d.nb_plongees_an>1?'s':'')+' par an en moyenne sur les 2 dernières années');
-    if(!CO4 && !CH7 && (nv.length || ex.length)) pa.push(', '+(nv.length ? lst(nv) : 'pratique')+(ex.length ? ' ('+ex.join(' ; ')+')' : ''));
+    if(!CO4 && !CH7 && !EG5 && (nv.length || ex.length)) pa.push(', '+(nv.length ? lst(nv) : 'pratique')+(ex.length ? ' ('+ex.join(' ; ')+')' : ''));
     if(!CO4 && d.auto_encadre===1) pa.push(', plongée auto-encadrée');
-    sect(CO4 || CH7 ? 'Le patient' : 'Le plongeur', [pa.length ? fin((CO4 || CH7 ? (F ? 'Patiente' : 'Patient') : (F ? 'Plongeuse' : 'Plongeur'))+pa.join('')) : ''], true);
+    sect(CO4 || CH7 || EG5 ? 'Le patient' : 'Le plongeur', [pa.length ? fin((CO4 || CH7 || EG5 ? (F ? 'Patiente' : 'Patient') : (F ? 'Plongeuse' : 'Plongeur'))+pa.join('')) : ''], true);
 
     /* la plongée */
     const l1 = [];
@@ -7982,7 +8032,7 @@ function narrativeBlocks(){
     if(d.ff_visib) env.push({1:'bonne visibilité', 2:'mauvaise visibilité', 3:'visibilité inférieure à 1 m'}[d.ff_visib]);
     if(d.ff_env) env.push(lc1(flat(d.ff_env).replace(/[.;,:\s]+$/,'')));
     if(env.length) l1.push(fin('Conditions environnementales : '+env.join(', ')));
-    if(CO4) sect('Circonstances de l’intoxication', coCircTexte(d), true); else if(CH7) sect('Indication et adressage', chrAdrTexte(d), true); else sect('La plongée', [l1.filter(Boolean).join(' ')], true);
+    if(CO4) sect('Circonstances de l’intoxication', coCircTexte(d), true); else if(CH7) sect('Indication et adressage', chrAdrTexte(d), true); else if(EG5) sect('Circonstances de l’embolie', embCircTexte(d), true); else sect('La plongée', [l1.filter(Boolean).join(' ')], true);
 
     /* ce qui s'est passé, puis les premiers signes */
     const ls = [];
@@ -7993,7 +8043,7 @@ function narrativeBlocks(){
       ls.push(fin(q));
     }
     if(d.sf_arrivee) ls.push(fin('Signes fonctionnels à l’arrivée : '+lc1(flat(d.sf_arrivee))));
-    if(!CH7) sect('Histoire des symptômes', CO4 ? [coSympTexte(d)] : [ls.filter(Boolean).join(' ')], true);
+    if(!CH7) sect('Histoire des symptômes', CO4 ? [coSympTexte(d)] : EG5 ? embSympTexte(d) : [ls.filter(Boolean).join(' ')], true);
 
     /* soins sur place */
     const sp = [];
@@ -8192,6 +8242,7 @@ function narrativeBlocks(){
   /* ---------- diagnostic retenu : entre les examens paracliniques et la conduite à tenir ---------- */
   const dgt = diagnosticTexte(d);
   if(dgt) sect('Diagnostic retenu', [dgt], true);
+  if(EG5){ const dl = embDelaiTexte(d); if(dl.length) sect('Délai jusqu’à la recompression', dl, false); }
   if(CH7){ sect('Contre-indications à l’oxygénothérapie hyperbare', chrCiTexte(d), false); sect('Conclusion et prescription', chrPrescTexte(d), true); }
   if(CO4){ const ck = coCinetTexte(d); if(ck.length) sect('Cinétique de la carboxyhémoglobine (estimation)', ck, false); }
   if(CO4) sect('Gravité et indication d’oxygénothérapie hyperbare', coGraviteTexte(d), false);
@@ -9270,7 +9321,7 @@ function psco(){
    une prise en charge en urgence, un suivi sous traitement et un compte rendu
    de séjour ne racontent pas la même chose. */
 function docTitre(){
-  const t = REC.d.fiche_type || 1, sj = cadreOf(REC.d)===4 ? 'INTOXICATION AU MONOXYDE DE CARBONE' : cadreOf(REC.d)===7 ? 'OXYGÉNOTHÉRAPIE HYPERBARE PROGRAMMÉE' : 'ACCIDENT DE PLONGÉE';
+  const t = REC.d.fiche_type || 1, sj = cadreOf(REC.d)===4 ? 'INTOXICATION AU MONOXYDE DE CARBONE' : cadreOf(REC.d)===7 ? 'OXYGÉNOTHÉRAPIE HYPERBARE PROGRAMMÉE' : cadreOf(REC.d)===5 ? 'EMBOLIE GAZEUSE' : 'ACCIDENT DE PLONGÉE';
   if(t===4) return "SÉANCE DE RECOMPRESSION THÉRAPEUTIQUE";
   if(t===1 && cadreOf(REC.d)===7) return "CONSULTATION INITIALE — "+sj;
   if(t===2) return "FICHE DE SUIVI — "+sj;
@@ -9295,6 +9346,7 @@ function buildPrint(){
   if(TY===4) return buildPrintSeance();
   let h='';
   if(cadreOf(d)===7) h = chrPrint();          // hyperbarie chronique : deux pages propres, puis les pièces jointes
+  else if(cadreOf(d)===5) h = embPrint();     // embolie gazeuse : ses pages, puis les pièces jointes
   else {
 
   /* ---------- page d'accueil : seulement sur la consultation initiale et le CRH ---------- */
@@ -10080,7 +10132,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.4.2';
+const APP_VERSION = '12.5.1';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -12964,6 +13016,10 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.5.1 (version d’essai) : embolie gazeuse.</b><br>'+
+  'Le cadre <b>Embolie gazeuse</b> s’ouvre (interface proposée, à valider) : circonstances (geste iatrogène, plongée, traumatisme ; service ; date et heure ; type artériel, veineux ou paradoxal ; position ; shunt connu), symptômes initiaux et Glasgow, intubation, '+
+  'prise en charge avant la recompression (oxygène, aspiration d’air par le cathéter, air ou ischémie à l’imagerie, évolution), examen neurologique sans ASIA ni sensibilités et cardio-respiratoire mis en avant, '+
+  '<b>délai événement → mise en pression</b> calculé (en rouge au-delà de 6 heures). La table B18 est proposée d’office, comme pour l’accident de plongée : à valider.</p>'+
   '<p><b>Nouveautés de la 12.4.2 (version d’essai).</b><br>'+
   '<b>ECG</b> : dès que l’ECG est coché OUI, quel que soit le cadre, les <b>signes d’ischémie et d’atteinte myocardique</b> (rythme, sus- ou sous-décalage du ST, ondes T négatives, ondes Q, territoire, conduction, extrasystoles) s’affichent juste sous la fréquence et le QTc, et rédigent le compte rendu ; la synthèse met les seuls signes anormaux en gras (l’intoxication au CO ne les affichait pas : corrigé). '+
   '<b>Examen général</b> : une anomalie cardio-vasculaire, respiratoire, abdominale ou locomotrice cochée OUI ouvre la liste de ses signes à cocher ; la synthèse les écrit en gras.</p>'+
@@ -14840,6 +14896,67 @@ function tblParam(){
     '<div class="af-pl">Objet d’annulation <input'+dis+' value="'+esc(P.objAnn)+'" style="width:380px" onchange="tblP(\'objAnn\', this.value)"></div><textarea'+dis+' rows="6" style="width:100%" onchange="tblP(\'txtAnn\', this.value)">'+esc(P.txtAnn)+'</textarea>'+
     '<div class="af-sub">Champs : {nom} {prenom} {liste} {date} {heure} {motif} {service} {tel} {signature}. Les courriels s’ouvrent dans la messagerie du poste (ADP n’envoie rien seul) ; une annulation met les patients en copie cachée.</div></div>';
   modalHTML(h);
+}
+/* ---------- embolie gazeuse (12.5.1) ---------- */
+function embMs(d){ if(!d.emb_h) return null; const t = new Date((d.emb_date || d.date_ex)+'T'+d.emb_h); return isNaN(t) ? null : t; }
+function embCalc(){
+  const d = REC.d; if(cadreOf(d)!==5) return;
+  const a = embMs(d); let dl = null;
+  if(a && d.tb_h_mep){ const b = new Date((d.emb_date || d.date_ex)+'T'+d.tb_h_mep); if(!isNaN(b)){ dl = Math.round((b - a)/60000); while(dl < 0) dl += 1440; } }
+  if(dl==null) delete d.emb_delai; else d.emb_delai = dl;
+}
+function embDelaiBox(){
+  const d = REC.d, a = embMs(d);
+  if(!a) return '<div class="note" style="margin:0">Renseignez l’heure de l’événement (onglet Anamnèse) : le délai jusqu’à la recompression se calcule.</div>';
+  const dl = d.emb_delai, depuis = Math.round((Date.now() - a.getTime())/60000);
+  const t = dl!=null ? 'Délai événement → mise en pression : <b'+(dl > 360 ? ' style="color:#c00000"' : '')+'>'+esc(TXT.dureeFr(dl))+'</b>.' : (depuis >= 0 && depuis < 2880 ? 'Événement il y a <b'+(depuis > 360 ? ' style="color:#c00000"' : '')+'>'+esc(TXT.dureeFr(depuis))+'</b> ; mise en pression non renseignée.' : '');
+  return '<div class="note" style="margin:0">'+t+' <span style="color:var(--ink2)">Une recompression dans les 6 heures est associée à une évolution favorable (OR 9,1 ; Tekle 2013, embolie gazeuse cérébrale iatrogène) ; au-delà, l’OHB reste à discuter.</span></div>';
+}
+function embCircTexte(d){
+  const {fin, flat, lc1} = TXT, P = [];
+  const cause = {1:'iatrogène', 2:'en plongée (surpression pulmonaire)', 3:'traumatique', 9:'d’autre origine'}[d.emb_cause];
+  const type = {1:'artérielle', 2:'veineuse', 3:'paradoxale', 4:''}[d.emb_type];
+  if(cause || type) P.push(fin('Embolie gazeuse'+(type ? ' '+type : '')+(cause ? ' '+cause : '')));
+  const g = d.emb_geste===99 ? '' : (EMB_GESTE.find(o=>o.v===d.emb_geste) || {}).l;
+  if(g || d.emb_geste_txt) P.push(fin('Geste : '+[g ? lc1(g) : '', d.emb_geste_txt ? flat(d.emb_geste_txt) : ''].filter(Boolean).join(', ')));
+  if(d.emb_lieu) P.push(fin('Lieu : '+flat(d.emb_lieu)));
+  if(d.emb_h) P.push(fin('Survenue '+(d.emb_date ? 'le '+frDate(d.emb_date)+' ' : '')+'à '+TXT.hFr(d.emb_h)));
+  const pos = (EMB_POS.find(o=>o.v===d.emb_pos) || {}).l; if(pos) P.push(fin('Position : '+lc1(pos)));
+  if(d.emb_fop===1) P.push(bold('Shunt droite-gauche connu.'));
+  return [P.join(' ')];
+}
+function embSympTexte(d){
+  const {fin, lst, lc1, hFr} = TXT, P = [];
+  if(d.emb_histoire) P.push(fin(d.emb_histoire));
+  const sy = (Array.isArray(d.emb_sympt) ? d.emb_sympt : []).map(v=>lc1((EMB_SYMPT.find(o=>o.v===v) || {}).l || v));
+  if(sy.length) P.push(bold(fin('Symptômes initiaux : '+lst(sy))));
+  if(d.emb_gcs_init!=null) P.push(d.emb_gcs_init < 15 ? bold('Glasgow initial à '+d.emb_gcs_init+'.') : 'Glasgow initial à 15.');
+  if(d.emb_iot===1) P.push(bold('Intubé et ventilé.'));
+  const pec = [];
+  if(d.emb_o2===1) pec.push('oxygène à haute concentration'+(d.emb_o2_h ? ' à partir de '+hFr(d.emb_o2_h) : '')); else if(d.emb_o2===0) pec.push('pas d’oxygène');
+  if(d.emb_aspi===1) pec.push('aspiration d’air par le cathéter');
+  if(pec.length) P.push(fin('Avant la recompression : '+pec.join(', ')));
+  if(d.emb_tdm_air===1) P.push(bold('Air visible à l’imagerie.'));
+  if(d.emb_tdm_isch===1) P.push(bold('Ischémie ou œdème à l’imagerie avant la recompression.'));
+  if(d.emb_evol!=null){ const t = 'Évolution avant recompression : '+lc1((EVOL.find(o=>o.v===d.emb_evol) || {}).l || ''); P.push(d.emb_evol===2 ? bold(fin(t)) : fin(t)); }
+  return [P.join(' ')];
+}
+function embDelaiTexte(d){
+  if(d.emb_delai==null) return [];
+  const t = 'Délai entre l’événement et la mise en pression : '+TXT.dureeFr(d.emb_delai)+'.';
+  return [d.emb_delai > 360 ? bold(t) : t];
+}
+function embPrint(){
+  const d = REC.d;
+  const idb = '<div class="pid">'+pid('Nom',d.nom)+pid('Prénom',d.prenom)+pid('Sexe',lab('sexe'))+pid('Date de naissance',frDate(d.ddn))+pid('N° de dossier',d.dossier)+pid('Âge',ageFr(d))+
+              pid('Événement',(frDate(d.emb_date)+' '+(d.emb_h||'')).trim())+pid('Examinateur',d.examinateur)+pid('Date examen',frDate(d.date_ex))+pid('Heure examen',d.heure_ex)+'</div>';
+  const pied = '<div style="font-size:7pt;text-align:right;margin-top:1.5mm;color:#444">Fiche '+esc(REC.id)+' — éditée le '+frDate(iso(new Date()))+' à '+hhmm(new Date())+'</div>';
+  let h = '<div class="pg"><div class="phead">'+docTitre()+'</div>'+idb+pspec('entree')+pspec(['ident2','plongeur'],'Terrain du patient')+pspec('emb_circ','Circonstances de l’embolie')+pspec('emb_symp','Symptômes et prise en charge avant recompression')+pcontacts()+pied+'</div>';
+  h += '<div class="pg"><div class="phead">EXAMEN CLINIQUE</div>'+idb+pspec('general','Examen clinique général')+pspec('consc','Conscience')+pspec('fsup','Fonctions supérieures')+pspec('refsup','Réflexes — membres supérieurs')+
+       pspec('refinf','Réflexes — membres inférieurs')+pspec('force','Motricité et force motrice')+pspec('coord','Coordination, équilibre et marche')+pspec('concl_ex','Conclusion de l’examen clinique')+pied+'</div>';
+  h += '<div class="pg"><div class="phead" style="font-size:10.5pt">PRISE EN CHARGE</div>'+idb+pspec('emb_delai_s','Délai jusqu’à la recompression')+pspec('recomp','Recompression')+pspec('actes','Actes')+pspec('examens','Examens complémentaires')+pspec('prescriptions','Prescriptions')+
+       pspec('concl','Orientation et commentaires')+'<div class="pbox"><h4>SYNTHÈSE</h4><div class="pb psyn">'+narrativeHTML()+'</div></div>'+pied+'</div>';
+  return h;
 }
 /* une rubrique « embarquée » (ou une liste de champs) affichée dans une autre : ses champs, avec un intertitre facultatif */
 function embedHTML(src, titre){
