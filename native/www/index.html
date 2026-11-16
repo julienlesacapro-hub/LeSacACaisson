@@ -788,6 +788,7 @@ svg.echo rect.z:hover{stroke-width:2.6;filter:brightness(.96)}
 @media screen{ .pg{display:none} }
 /* ---------- afflux massif CO (12.2.1) ---------- */
 body.af-on #navbar{display:none!important}
+.emb{border-left:3px solid var(--acc);padding:2px 0 2px 10px;margin:2px 0 6px}.emb .row{grid-column:auto}.emb-t{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);font-weight:700;margin:2px 0 4px}
 .tbl-g td{vertical-align:top;min-width:150px}.tbl-g th{vertical-align:top}
 .tbl-c{border:1px solid var(--bd);border-radius:6px;padding:3px 5px;margin:2px 0;background:#fff}.tbl-c.an{background:#f3f4f6}
 .tbl-ch{font-size:11.5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:2px}
@@ -1914,6 +1915,27 @@ const CHR_CI = [
 const CHR_PROTO_OPTS = [];
 const CHR_H_OPTS = [];
 
+/* 12.4.2 : les signes de l'examen général, cochés sous chaque anomalie */
+const EX_CV_L = [
+ {v:'tachy', l:'Tachycardie'}, {v:'brady', l:'Bradycardie'}, {v:'irreg', l:'Pouls irrégulier'}, {v:'hypoTA', l:'Hypotension artérielle'}, {v:'hyperTA', l:'Hypertension artérielle'},
+ {v:'souffle', l:'Souffle cardiaque'}, {v:'dlr_thor', l:'Douleur thoracique'}, {v:'icd', l:'Signes d’insuffisance cardiaque droite (turgescence jugulaire, reflux hépato-jugulaire, œdèmes)'},
+ {v:'icg', l:'Signes d’insuffisance cardiaque gauche (crépitants, orthopnée)'}, {v:'marbr', l:'Marbrures, temps de recoloration allongé'}, {v:'extr', l:'Extrémités froides'},
+ {v:'pouls', l:'Pouls périphérique aboli ou asymétrique'}, {v:'cyan', l:'Cyanose'}
+];
+const EX_PNEUMO_L = [
+ {v:'polyp', l:'Polypnée'}, {v:'desat', l:'Désaturation'}, {v:'lutte', l:'Signes de lutte respiratoire'}, {v:'toux', l:'Toux'}, {v:'hemopt', l:'Hémoptysie'},
+ {v:'mousse', l:'Expectoration mousseuse'}, {v:'crep', l:'Crépitants'}, {v:'sibil', l:'Sibilants'}, {v:'mv', l:'Diminution du murmure vésiculaire'}, {v:'matite', l:'Matité'},
+ {v:'tympan', l:'Tympanisme'}, {v:'esc', l:'Emphysème sous-cutané'}, {v:'dlr_pl', l:'Douleur thoracique respiratoire (pleurale)'}
+];
+const EX_ABDO_L = [
+ {v:'dlr', l:'Douleur abdominale'}, {v:'defense', l:'Défense'}, {v:'contract', l:'Contracture'}, {v:'distens', l:'Distension, météorisme'}, {v:'nv', l:'Nausées ou vomissements'},
+ {v:'diarr', l:'Diarrhée'}, {v:'transit', l:'Arrêt du transit'}, {v:'hepato', l:'Hépatomégalie'}, {v:'masse', l:'Masse palpable'}, {v:'globe', l:'Globe vésical'}, {v:'hernie', l:'Orifice herniaire anormal'}
+];
+const EX_LOCO_L = [
+ {v:'dlr_art', l:'Douleur articulaire'}, {v:'epaule', l:'Épaule'}, {v:'coude', l:'Coude'}, {v:'poignet', l:'Poignet, main'}, {v:'hanche', l:'Hanche'}, {v:'genou', l:'Genou'},
+ {v:'cheville', l:'Cheville, pied'}, {v:'rachis', l:'Rachis'}, {v:'mobilite', l:'Limitation de la mobilité'}, {v:'oedeme', l:'Œdème, tuméfaction'},
+ {v:'musc', l:'Douleurs musculaires, zones de compression'}, {v:'trauma', l:'Lésion traumatique'}, {v:'impot', l:'Impotence fonctionnelle'}
+];
 const SPEC = [
 {id:'ident', t:'Identification', cols:2, page:1, tail:()=>identBox(), f:[
   {k:'cadre', l:'Cadre de la consultation', t:'choice', o:CADRE_OPTS, full:1, nofill:1,
@@ -2209,16 +2231,20 @@ const SPEC = [
 
 {id:'general', t:'Examen clinique général', cols:1, page:3,
  norm:{ex_cv:0,ex_pneumo:0,ex_abdo:0,ex_loco:0}, f:[
-  {k:'ex_cv', cadres:[1,2,3], l:'Anomalie cardio-vasculaire', t:'choice', o:ON},
-  {k:'ex_cv_txt', cadres:[1,2,3], l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_cv',[1]], sub:1,
+  {k:'ex_cv', nocadres:[4], l:'Anomalie cardio-vasculaire', t:'choice', o:ON},
+  {k:'ex_cv_box', t:'html', fn:()=>embedHTML(['ex_cv_l']), full:1, nofill:1, nocadres:[4], dep:['ex_cv',[1]]},
+  {k:'ex_cv_txt', nocadres:[4], l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_cv',[1]], sub:1,
    phr:['Tachycardie.','Bradycardie.','Hypotension.','Marbrures.','Souffle cardiaque.']},
   {k:'ex_pneumo', l:'Anomalie respiratoire', t:'choice', o:ON},
+  {k:'ex_pneumo_box', t:'html', fn:()=>embedHTML(['ex_pneumo_l']), full:1, nofill:1, dep:['ex_pneumo',[1]]},
   {k:'ex_pneumo_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_pneumo',[1]], sub:1,
    phr:['Polypnée.','Crépitants.','Toux.','Hémoptysie.','Douleur thoracique.','Emphysème sous-cutané.',
         'Suspicion d’œdème pulmonaire d’immersion.','Suspicion de surpression pulmonaire.']},
   {k:'ex_abdo', l:'Anomalie abdominale', t:'choice', o:ON},
+  {k:'ex_abdo_box', t:'html', fn:()=>embedHTML(['ex_abdo_l']), full:1, nofill:1, dep:['ex_abdo',[1]]},
   {k:'ex_abdo_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_abdo',[1]], sub:1},
   {k:'ex_loco', l:'Anomalie locomotrice', t:'choice', o:ON},
+  {k:'ex_loco_box', t:'html', fn:()=>embedHTML(['ex_loco_l']), full:1, nofill:1, dep:['ex_loco',[1]]},
   {k:'ex_loco_txt', l:'Préciser', t:'txt', wide:1, full:1, nofill:1, dep:['ex_loco',[1]], sub:1,
    phr:['Douleur articulaire (bend).','Épaule.','Coude.','Genou.','Hanche.','Impotence fonctionnelle.','Douleurs musculaires, zones de compression (rhabdomyolyse).','Phlyctènes de compression.']}
 ]},
@@ -2520,6 +2546,7 @@ const SPEC = [
   {k:'im_ecg', l:'ECG', t:'choice', o:EXA},
   {k:'ecg_fc', l:'ECG — fréquence cardiaque', t:'num', min:20, max:250, unit:'bpm', sub:1, dep:['im_ecg',[1]]},
   {k:'ecg_qtc', l:'ECG — QTc', t:'num', min:200, max:700, unit:'ms', sub:1, dep:['im_ecg',[1]]},
+  {k:'ecg_isch_box', t:'html', fn:()=>embedHTML('co_ecg', 'Signes d’ischémie et d’atteinte myocardique'), full:1, nofill:1, dep:['im_ecg',[1]]},
   {k:'ecg_txt', l:'ECG — compte rendu', t:'area', wide:1, sub:1, nofill:1, dep:['im_ecg',[1]],
    ph:'Renseignez la fréquence ou le QTc : le compte rendu se rédige tout seul. Vous pouvez aussi l’écrire directement.',
    hint:'Rédigé à partir de la fréquence et du QTc, modifiable à la main ; repris tel quel dans la synthèse'},
@@ -2765,7 +2792,8 @@ const SPEC = [
   {k:'co_fumees', l:'Signes d’inhalation de fumées', t:'choice', o:ON, dep:['co_source',['incendie']], hint:'Suies narinaires ou buccales, brûlures faciales, voix rauque, stridor, crachats noirâtres'},
   {k:'co_cyanure', l:'Intoxication cyanhydrique associée suspectée', t:'choice', o:ON, dep:['co_source',['incendie']], hint:'Incendie en milieu clos, troubles de la conscience, lactates élevés (Culnan 2018)'}
 ]},
-{id:'co_ecg', t:'ECG : signes d’atteinte myocardique', cols:2, page:5, before:'examens', cadres:[4], noghost:1,
+/* 12.4.2 : les signes ECG s'affichent dans « Examens complémentaires », sous la fréquence et le QTc, pour tous les cadres (embedded : la rubrique n'a pas d'encart à elle ; ses colonnes restent à leur place) */
+{id:'co_ecg', t:'ECG : signes d’atteinte myocardique', cols:2, page:5, noghost:1, embedded:1, when:()=>false,
  norm:{co_ecg_rythme:1,co_ecg_repol:0,co_ecg_cond:0,co_ecg_esv:0}, f:[
   {k:'co_ecg_note', t:'html', fn:()=>coEcgNote(), full:1, nofill:1},
   {k:'co_ecg_rythme', l:'Rythme', t:'choice', o:CO_ECG_RYTHME, full:1, dep:['im_ecg',[1]]},
@@ -2827,6 +2855,13 @@ const SPEC = [
   {k:'chr_rdv_date', l:'Rendez-vous de consultation (réévaluation) — date', t:'date', dep:['chr_ind_ret',[1]]},
   {k:'chr_rdv_h', l:'Rendez-vous de consultation — heure', t:'time', dep:['chr_ind_ret',[1]]},
   {k:'chr_plan_box', t:'html', fn:()=>chrPlanBox(), full:1, nofill:1}
+]},
+/* 12.4.2 : examen général détaillé, affiché sous chaque « Anomalie … » de l'examen clinique général (embedded) ; en fin de SPEC, les colonnes existantes ne bougent pas */
+{id:'gen_det', t:'Examen général détaillé', cols:1, page:3, noghost:1, embedded:1, when:()=>false, f:[
+  {k:'ex_cv_l', l:'Anomalies cardio-vasculaires', t:'multi', o:EX_CV_L, full:1, nocadres:[4], dep:['ex_cv',[1]]},
+  {k:'ex_pneumo_l', l:'Anomalies respiratoires', t:'multi', o:EX_PNEUMO_L, full:1, dep:['ex_pneumo',[1]]},
+  {k:'ex_abdo_l', l:'Anomalies abdominales', t:'multi', o:EX_ABDO_L, full:1, dep:['ex_abdo',[1]]},
+  {k:'ex_loco_l', l:'Anomalies locomotrices', t:'multi', o:EX_LOCO_L, full:1, dep:['ex_loco',[1]]}
 ]}
 ];
 
@@ -4967,8 +5002,10 @@ function refreshField(k){
   const f=FIELDS[k];
   if(!f){ softRefresh(); return; }
   const sec=SPEC.find(s=>s.id===f._sec);
-  if(sec && sec.custom){ renderForm(); return; }
+  if(sec && (sec.custom || sec.embedded)){ renderForm(); return; }          // rubrique affichée dans une autre (signes ECG, examen général détaillé)
   sec.f.forEach(g=>{ const r=$('#r_'+g.k); if(r) r.outerHTML=fieldHTML(g); });
+  /* un champ d'une autre rubrique qui dépend de celui-ci suit aussi */
+  SPEC.forEach(s2=>{ if(s2===sec) return; s2.f.forEach(g=>{ if(g.dep && g.dep.indexOf(k)>=0){ const r=$('#r_'+g.k); if(r) r.outerHTML=fieldHTML(g); } }); });
   refreshBadges(); updateGlobalFill(); renderSynth();
   if($('#asiabody')) refreshASIA(false);
 }
@@ -6018,7 +6055,7 @@ function adpCalc(){
   /* consultation de sortie : examens à réaliser, proposés d'après le ou les diagnostics retenus et le générateur de documents */
   if(ftype()===3 && !d.exam_prop_off) autoSync('sortie_exam_second', genExamsTexte(d));
   /* ECG : compte rendu rédigé à partir de la fréquence et du QTc, modifiable */
-  autoSync('ecg_txt', (d.im_ecg===1 && (d.ecg_fc!=null || d.ecg_qtc!=null || (cadreOf(d)===4 && CO_ECG_K.some(k=>d[k]!=null)))) ? ecgTexte(d) : null);
+  autoSync('ecg_txt', (d.im_ecg===1 && (d.ecg_fc!=null || d.ecg_qtc!=null || CO_ECG_K.some(k=>d[k]!=null))) ? ecgTexte(d) : null);
   /* biologie : horodatage proposé, Hb et Ht du bilan repris du gaz du sang du même jour */
   bioCalc(d);
 }
@@ -6430,7 +6467,7 @@ function addMin(hm, n){
 }
 /* ECG normal, à compléter : fréquence et QTc manquants restent « xx » pour être vus */
 function ecgTexte(d){
-  if(cadreOf(d)===4) return coEcgTexte(d);
+  if(CO_ECG_K.some(k=>d[k]!=null)) return coEcgTexte(d);          // les signes ECG cotés rédigent le compte rendu, quel que soit le cadre
   const fc = d.ecg_fc!=null ? d.ecg_fc : 'xx', q = d.ecg_qtc!=null ? d.ecg_qtc : 'xx';
   return 'RSR à '+fc+' bpm, d’axe non dévié, sans trouble de la conduction ni de la repolarisation. QTc à '+q+' ms.';
 }
@@ -7517,9 +7554,16 @@ function examFindings(){
   /* ---------- examen général par appareil ---------- */
   const GEN = [['ex_cv','cardio-vasculaire'],['ex_pneumo','respiratoire'],['ex_abdo','abdominal'],['ex_loco','locomoteur']];
   const cv4 = cadreOf(d)===4 ? coCvGen(d) : null;          // intoxication au CO : l'anomalie cardio-vasculaire est déduite de l'encart « Examen cardio-vasculaire »
-  const gv = k => (cv4 && k==='ex_cv') ? cv4.v : d[k], gt = k => (cv4 && k==='ex_cv') ? cv4.t : d[k+'_txt'];
+  const GL = {ex_cv:EX_CV_L, ex_pneumo:EX_PNEUMO_L, ex_abdo:EX_ABDO_L, ex_loco:EX_LOCO_L};
+  const gv = k => (cv4 && k==='ex_cv') ? cv4.v : d[k];
+  const gt = k => {
+    if(cv4 && k==='ex_cv') return cv4.t;
+    const L = (Array.isArray(d[k+'_l']) ? d[k+'_l'] : []).map(v=>(GL[k].find(o=>o.v===v) || {}).l).filter(Boolean).map(x=>TXT.lc1(x));
+    const t = d[k+'_txt'] ? TXT.lc1(flat(d[k+'_txt']).replace(/\.$/,'')) : '';
+    return L.concat(t ? [t] : []).join(', ');
+  };
   const gen = dom('gen', GEN.some(g=>gv(g[0])!=null));
-  GEN.forEach(g=>{ if(gv(g[0])===1) add(gen,g[0],'anomalie '+g[1],gt(g[0])?'('+TXT.lc1(flat(gt(g[0])).replace(/\.$/,''))+')':'',1); });
+  GEN.forEach(g=>{ if(gv(g[0])===1) add(gen,g[0],'anomalie '+g[1],gt(g[0])?'('+gt(g[0])+')':'',1); });
   gen.normaux = GEN.filter(g=>gv(g[0])===0).map(g=>g[1]);
   gen.normIds = GEN.filter(g=>gv(g[0])===0).map(g=>g[0]);
 
@@ -8075,7 +8119,12 @@ function narrativeBlocks(){
       PC(cat, fin(lib+' : '+(ab ? bold(r) : r)), ab);
     } else PC(cat, lib+' réalisé'+(e?'e':'')+'.');
   };
-  if(d.im_ecg===1){ const eab = CO4 && coEcgAb(d), et = d.ecg_txt ? fin('ECG : '+d.ecg_txt) : 'ECG réalisé.'; PC('ecg', eab ? bold(et) : et, eab); }
+  if(d.im_ecg===1){
+    const eab = coEcgAb(d), auto = d.ecg_txt && d.ecg_txt === d.ecg_txt_auto && CO_ECG_K.some(k=>d[k]!=null);
+    /* compte rendu rédigé par l'application : seuls les signes anormaux en gras ; compte rendu modifié à la main : tout en gras s'il y a une anomalie cotée */
+    const et = auto ? 'ECG : '+coEcgTexte(d, true) : (d.ecg_txt ? fin('ECG : '+d.ecg_txt) : 'ECG réalisé.');
+    PC('ecg', (eab && !auto) ? bold(et) : et, eab);
+  }
   exam('rp', 'im_rp', 'Radiographie thoracique', 'im_rp_res', 1);
   exam('tdm_thor', 'im_tdm_thor', 'Scanner thoracique', 'im_tdm_thor_res', 0);
   exam('tdm_cer', 'im_tdm_cer', 'Scanner cérébral', 'im_tdm_cer_res', 0);
@@ -9013,6 +9062,7 @@ const PMERGE = {
   organisme:['organisme_autre'], certif_medecin:['certif_medecin_autre'],
   pl_proc:['pl_ordi_modele','pl_ordi_reglage','pl_proc_autre'], pl_tenue:['pl_tenue_autre'],
   im_ecg:['ecg_txt'], tb_table:['tb_table_autre'],
+  ex_cv:['ex_cv_l'], ex_pneumo:['ex_pneumo_l'], ex_abdo:['ex_abdo_l'], ex_loco:['ex_loco_l'],
   rx_solu:['rx_solu_dose','rx_solu_jours'],
   im_rp:['im_rp_res'], im_tdm_thor:['im_tdm_thor_res'], im_tdm_cer:['im_tdm_cer_res'],
   im_irm_cer:['im_irm_cer_res'], im_irm_med:['im_irm_med_res'], im_eto:['im_eto_fop','im_eto_res'],
@@ -10030,7 +10080,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.4.1';
+const APP_VERSION = '12.4.2';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -12914,6 +12964,9 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.4.2 (version d’essai).</b><br>'+
+  '<b>ECG</b> : dès que l’ECG est coché OUI, quel que soit le cadre, les <b>signes d’ischémie et d’atteinte myocardique</b> (rythme, sus- ou sous-décalage du ST, ondes T négatives, ondes Q, territoire, conduction, extrasystoles) s’affichent juste sous la fréquence et le QTc, et rédigent le compte rendu ; la synthèse met les seuls signes anormaux en gras (l’intoxication au CO ne les affichait pas : corrigé). '+
+  '<b>Examen général</b> : une anomalie cardio-vasculaire, respiratoire, abdominale ou locomotrice cochée OUI ouvre la liste de ses signes à cocher ; la synthèse les écrit en gras.</p>'+
   '<p><b>Nouveautés de la 12.4.1 (version d’essai) : hyperbarie chronique, planning des tables, rôles.</b><br>'+
   'Le cadre <b>Consultation d’hyperbarie chronique</b> s’ouvre : indication et médecin adresseur (spécialité, courrier joint en photo), terrain (antécédents, tabac en PA, traitements, allergies), coordonnées, examen général et ORL, '+
   '<b>contre-indications à l’OHB</b> (scanner thoracique sans injection suggéré en cas d’antécédent pulmonaire, de tabagisme même sevré ou d’âge supérieur à 50 ans), et une conclusion qui statue sur l’indication, la contre-indication et la <b>prescription</b> '+
@@ -13311,25 +13364,27 @@ const coQtLong = d => d.ecg_qtc!=null && d.ecg_qtc >= (d.sexe===2 ? 460 : 450);
 function coEcgAb(d){
   return d.im_ecg===1 && (d.co_ecg_rythme>=3 || d.co_ecg_repol===1 || d.co_ecg_cond===1 || d.co_ecg_esv===1 || coQtLong(d));
 }
-function coEcgTexte(d){
-  const lab = (L, v) => (L.find(o=>o.v===v) || {}).l || '', lc = TXT.lc1;
+function coEcgTexte(d, gras){
+  const lab = (L, v) => (L.find(o=>o.v===v) || {}).l || '', lc = TXT.lc1, B = x => gras ? bold(x) : x;          // gras : la synthèse met en gras les seuls signes anormaux
   const fc = d.ecg_fc!=null ? d.ecg_fc : 'xx', q = d.ecg_qtc!=null ? d.ecg_qtc : 'xx';
-  const ry = {1:'Rythme sinusal', 2:'Tachycardie sinusale', 3:'Fibrillation ou flutter atrial', 4:'Trouble du rythme'}[d.co_ecg_rythme] || 'Rythme';
+  const ry0 = {1:'Rythme sinusal', 2:'Tachycardie sinusale', 3:'Fibrillation ou flutter atrial', 4:'Trouble du rythme'}[d.co_ecg_rythme];
+  const ry = ry0 ? (d.co_ecg_rythme >= 3 ? B(ry0+' à '+fc+' bpm') : ry0+' à '+fc+' bpm') : 'Fréquence cardiaque à '+fc+' bpm';
   const P = [];
   if(d.co_ecg_repol===1){
     const L = (Array.isArray(d.co_ecg_isch) ? d.co_ecg_isch : []).map(v=>lc(lab(CO_ECG_ISCH, v)));
-    P.push((L.length ? TXT.lst(L) : 'trouble de la repolarisation')+(d.co_ecg_isch_loc ? ' (territoire '+lc(TXT.flat(d.co_ecg_isch_loc)).replace(/[.\s]+$/, '')+')' : ''));
+    P.push(B((L.length ? TXT.lst(L) : 'trouble de la repolarisation')+(d.co_ecg_isch_loc ? ' (territoire '+lc(TXT.flat(d.co_ecg_isch_loc)).replace(/[.\s]+$/, '')+')' : '')));
   } else if(d.co_ecg_repol===0) P.push('sans trouble de la repolarisation');
   if(d.co_ecg_cond===1){
     const L = (Array.isArray(d.co_ecg_cond_t) ? d.co_ecg_cond_t : []).map(v=>lc(lab(CO_ECG_COND, v)));
-    P.push(L.length ? TXT.lst(L) : 'trouble de la conduction');
+    P.push(B(L.length ? TXT.lst(L) : 'trouble de la conduction'));
   } else if(d.co_ecg_cond===0) P.push('sans trouble de la conduction');
-  if(d.co_ecg_esv===1) P.push('extrasystoles ventriculaires');
-  return ry+' à '+fc+' bpm'+(P.length ? ', '+P.join(', ') : '')+'. QTc à '+q+' ms'+(coQtLong(d) ? ' (allongé)' : '')+'.';
+  if(d.co_ecg_esv===1) P.push(B('extrasystoles ventriculaires'));
+  const qt = 'QTc à '+q+' ms'+(coQtLong(d) ? ' (allongé)' : '');
+  return ry+(P.length ? ', '+P.join(', ') : '')+'. '+(coQtLong(d) ? B(qt) : qt)+'.';
 }
 function coEcgNote(){
   const d = REC.d;
-  if(d.im_ecg!==1) return '<div class="note" style="margin:0">Cotez « ECG : OUI » dans « Examens complémentaires » (juste en dessous) : les signes à rechercher s’affichent ici et rédigent le compte rendu de l’ECG.</div>';
+  if(d.im_ecg!==1) return '';
   const ab = coEcgAb(d);
   return '<div class="note" style="margin:0'+(ab ? ';border-color:#c00000' : '')+'">'+(ab ? '<b style="color:#c00000">ECG anormal : signe d’atteinte myocardique possible.</b> Troponine à répéter, avis cardiologique. ' : 'Rythme, repolarisation (ST, ondes T, ondes Q), conduction, extrasystoles, QTc. ')+
     (coQtLong(d) ? '<b style="color:#c00000">QTc à '+d.ecg_qtc+' ms : allongé.</b> ' : '')+'Le compte rendu de l’ECG se rédige d’après ces items (modifiable).</div>';
@@ -14785,6 +14840,11 @@ function tblParam(){
     '<div class="af-pl">Objet d’annulation <input'+dis+' value="'+esc(P.objAnn)+'" style="width:380px" onchange="tblP(\'objAnn\', this.value)"></div><textarea'+dis+' rows="6" style="width:100%" onchange="tblP(\'txtAnn\', this.value)">'+esc(P.txtAnn)+'</textarea>'+
     '<div class="af-sub">Champs : {nom} {prenom} {liste} {date} {heure} {motif} {service} {tel} {signature}. Les courriels s’ouvrent dans la messagerie du poste (ADP n’envoie rien seul) ; une annulation met les patients en copie cachée.</div></div>';
   modalHTML(h);
+}
+/* une rubrique « embarquée » (ou une liste de champs) affichée dans une autre : ses champs, avec un intertitre facultatif */
+function embedHTML(src, titre){
+  const L = Array.isArray(src) ? src.map(k=>FIELDS[k]).filter(Boolean) : ((SPEC.find(s=>s.id===src) || {f:[]}).f);
+  return '<div class="emb">'+(titre ? '<div class="emb-t">'+esc(titre)+'</div>' : '')+L.map(fieldHTML).join('')+'</div>';
 }
 /* un rôle qui n'examine pas (infirmier) : les consultations s'affichent en lecture seule ; l'identification reste modifiable (passer la fiche en « séance de recompression », que l'infirmier peut coter) */
 function astLectureSeule(){

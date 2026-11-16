@@ -2,7 +2,7 @@
 
 Outil de saisie pour la prise en charge d'un accident de plongée en médecine
 hyperbare : consultation initiale en urgence, consultations de suivi, compte
-rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.4.1 (**version d'essai**, à valider avant la version principale).
+rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.4.2 (**version d'essai**, à valider avant la version principale).
 
 Deux sorties, depuis la même saisie :
 
@@ -10,7 +10,7 @@ Deux sorties, depuis la même saisie :
    de consultation (compte rendu de prise en charge, fiche de suivi, compte rendu
    de séjour) ;
 2. un fichier `donnees_neuro.csv` unique qui s'incrémente, une ligne par fiche,
-   1122 colonnes, prêt pour R, Python, SPSS, Jamovi ou Excel.
+   1176 colonnes, prêt pour R, Python, SPSS, Jamovi ou Excel.
 
 Depuis la consultation de sortie, le générateur de courriers du service (courriers,
 ordonnances, certificats) s'ouvre rempli avec ce que la fiche sait, et deux lignes à
@@ -122,7 +122,7 @@ icons/                     icônes 32 à 1024 px, dont deux masquables Android
 brand_logo_source.png      le blason, fichier maître, pour régénérer les icônes
 docs/
   PUBLIER.md                   publier et mettre à jour, pas à pas
-  dictionnaire_variables.csv   1122 variables, libellé et codage de chacune
+  dictionnaire_variables.csv   1176 variables, libellé et codage de chacune
   COUPLAGE_FIREBASE.md         coupler deux appareils : mise en place, sécurité, dépannage
   regles_firebase.json         règles de sécurité à copier dans la console Firebase
   NOTICE.md                    mode d'emploi clinique et technique

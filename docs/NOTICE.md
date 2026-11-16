@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.4.1 (version d'essai)
+# ADP — accident de plongée, version 12.4.2 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1122 colonnes (1081 en 12.1.2 à 12.3.1, 1054 avant).
+Une ligne = une fiche. 1176 colonnes (1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -548,6 +548,12 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
 - **Le fichier** : `plannings/astreinte.json` dans le **dossier de données**, comme les fiches. Il est relu et fusionné à l'ouverture, au bouton **Actualiser**, toutes les **60 secondes**, et réécrit après chaque modification. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification, une suppression est une marque, et la fusion garde le plus récent de chaque élément, si bien qu'aucune modification faite sur un autre poste n'est écrasée. **Il ne passe pas par Firebase.** Un poste sans dossier de données (iPhone, Firefox) garde sa copie et peut *exporter* ou *importer* (fusionner) le fichier.
 - **Délai** : un changement fait sur un poste arrive sur les autres au plus tard à leur prochaine lecture (une minute), ou tout de suite avec *Actualiser*.
 - Le fichier porte les **noms du personnel** : ne le versionnez pas dans un dépôt public.
+
+## ECG et examen général détaillés, tous cadres (depuis la 12.4.2)
+
+- **ECG** : dès que « ECG » est coché **OUI** (onglet Examens complémentaires), quel que soit le cadre (accident de plongée, OPI, mixte, CO, hyperbarie chronique), l'encart **Signes d'ischémie et d'atteinte myocardique** s'affiche **juste sous la fréquence cardiaque et le QTc** : rythme (sinusal, tachycardie sinusale, fibrillation ou flutter atrial, autre), trouble de la repolarisation ou signe ischémique (sus-décalage du ST, sous-décalage du ST, ondes T négatives, ondes Q, territoire), trouble de la conduction (BAV, BBD, BBG), extrasystoles ventriculaires ; le QTc est jugé allongé à partir de 450 ms chez l'homme et 460 ms chez la femme (seuils usuels). Un ECG anormal s'affiche en rouge. Le **compte rendu** de l'ECG se rédige d'après ces items (modifiable) ; dans la synthèse, **seuls les signes anormaux sont en gras** (tout le compte rendu s'il a été réécrit à la main). *Corrige la 12.1.2 : dans l'intoxication au CO, cocher l'ECG n'affichait pas ces signes (l'encart, rangé à part, n'était pas rafraîchi).*
+- **Examen clinique général** : une anomalie **cardio-vasculaire**, **respiratoire**, **abdominale** ou **locomotrice** cochée **OUI** ouvre, juste en dessous, la **liste de ses signes à cocher** (tachycardie, souffle, signes d'insuffisance cardiaque, marbrures… ; polypnée, crépitants, sibilants, murmure vésiculaire diminué… ; douleur, défense, contracture… ; articulation atteinte, œdème, impotence…), puis le champ « Préciser ». La synthèse écrit les signes cochés **en gras**, appareil par appareil ; le papier les porte sur la ligne de l'anomalie. Dans l'intoxication au CO, le cardio-vasculaire reste l'encart détaillé propre au CO.
+- Fichier de données : les colonnes `ex_cv_l`, `ex_pneumo_l`, `ex_abdo_l`, `ex_loco_l` (une par case, plus la liste) s'ajoutent en fin de formulaire.
 
 ## Consultation d'hyperbarie chronique (cadre 7, depuis la 12.4.1)
 
@@ -2132,7 +2138,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1122 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1176 colonnes.
 
 ### Codages principaux
 
