@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.4.2 (version d'essai)
+# ADP — accident de plongée, version 12.5.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1176 colonnes (1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
+Une ligne = une fiche. 1211 colonnes (1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -432,9 +432,9 @@ et prépare les futures interfaces du logiciel (une par cadre). Cliquez la carte
 | Œdème pulmonaire d'immersion (OPI) | `2` | actif : même fiche, **sans score ASIA et sans table de recompression cochée d'office** (depuis la 12.1.1) ; l'examen cardio-respiratoire est mis en avant dans la synthèse |
 | Mixte (accident de désaturation et OPI) | `3` | actif : l'examen neurologique puis l'examen cardio-respiratoire sont mis en avant |
 | Intoxication au monoxyde de carbone | `4` | **actif depuis la 12.1.1** : interface propre, **proposée, à valider** (voir *L'intoxication au monoxyde de carbone*) |
-| Embolie gazeuse | `5` | annoncé |
+| Embolie gazeuse | `5` | **actif depuis la 12.5.1** : interface proposée, à valider (voir *Embolie gazeuse*) |
 | Autre urgence hyperbare | `6` | annoncé |
-| Consultation d'hyperbarie chronique (hors urgence) | `7` | annoncé |
+| Consultation d'hyperbarie chronique (hors urgence) | `7` | **actif depuis la 12.4.1** : interface proposée, à valider (voir *Consultation d'hyperbarie chronique*) |
 | Consultation spécialisée hors AMM (off-label) | `8` | annoncé |
 | Consultation d'expertise (professionnelle ou de loisir) | `9` | annoncé |
 
@@ -548,6 +548,23 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
 - **Le fichier** : `plannings/astreinte.json` dans le **dossier de données**, comme les fiches. Il est relu et fusionné à l'ouverture, au bouton **Actualiser**, toutes les **60 secondes**, et réécrit après chaque modification. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification, une suppression est une marque, et la fusion garde le plus récent de chaque élément, si bien qu'aucune modification faite sur un autre poste n'est écrasée. **Il ne passe pas par Firebase.** Un poste sans dossier de données (iPhone, Firefox) garde sa copie et peut *exporter* ou *importer* (fusionner) le fichier.
 - **Délai** : un changement fait sur un poste arrive sur les autres au plus tard à leur prochaine lecture (une minute), ou tout de suite avec *Actualiser*.
 - Le fichier porte les **noms du personnel** : ne le versionnez pas dans un dépôt public.
+
+## Embolie gazeuse (cadre 5, depuis la 12.5.1)
+
+Le cadre **Embolie gazeuse** s'ouvre, avec une **interface proposée, à valider**. Ce qui est propre à la plongée est masqué (plongée, facteurs, anamnèse de plongée, ORL, vestibulaire, lésions cutanées, miction, sensibilités, ASIA, scores, diagnostic de plongée ; les valeurs restent dans la fiche).
+
+| Onglet | Encarts |
+|---|---|
+| 1 · Administratif | identification ; mode d'entrée et prise en charge initiale ; identité complémentaire ; contacts |
+| 2 · Anamnèse et circonstances | **Terrain du patient** ; **Circonstances de l'embolie** : origine (iatrogène, plongée par surpression pulmonaire, traumatique, autre), geste en cause (cathéter veineux central, hémodialyse ou circuit extracorporel, chirurgie cardiaque, neurochirurgie en position assise, endoscopie digestive, biopsie pulmonaire, cathétérisme artériel, autre chirurgie, obstétrique, ventilation mécanique, autre) et précisions, service, **date et heure de l'événement**, type (artérielle, veineuse, paradoxale, indéterminée), position, shunt droite-gauche connu ; **Symptômes et prise en charge avant recompression** : symptômes initiaux (quinze cases), Glasgow initial, intubation, histoire, oxygène et son heure, aspiration d'air par le cathéter, air visible à l'imagerie, ischémie ou œdème à l'imagerie, évolution |
+| 3 · Examen clinique général | constantes, examen général détaillé, conscience, fonctions supérieures, signes fonctionnels |
+| 4 · Examen neurologique | réflexes, force, coordination et marche, conclusion (sans sensibilités ni ASIA) |
+| 5 · Examens complémentaires | actes, gaz du sang, biologie, ECG (signes d'ischémie), imagerie |
+| 6 · Conclusion | **Délai jusqu'à la recompression**, recompression, traitements, orientation |
+
+- **Délai événement → mise en pression** : calculé d'après la date et l'heure de l'événement et l'heure de mise en pression ; tant que la mise en pression n'est pas saisie, l'encart dit depuis combien de temps l'événement a eu lieu. En rouge au-delà de **6 heures** : chez 36 patients traités par OHB pour une embolie gazeuse cérébrale iatrogène, une recompression dans les 6 heures était associée à une évolution favorable à 24 heures (OR 9,1), et une ischémie ou un œdème à l'imagerie avant la recompression à une évolution moins favorable (Tekle et al., *Neurocrit Care* 2013, doi:10.1007/s12028-012-9683-3).
+- **Table** : la **B18** est proposée d'office, comme pour l'accident de plongée. **À valider par le service** (aucune règle de table propre à l'embolie gazeuse n'a été donnée).
+- La synthèse (« Le patient », « Circonstances de l'embolie », « Histoire des symptômes », examen neurologique puis cardio-respiratoire, « Délai jusqu'à la recompression ») et le papier (trois pages, titrées « EMBOLIE GAZEUSE ») suivent. De nouvelles colonnes s'ajoutent au CSV (`emb_*`).
 
 ## ECG et examen général détaillés, tous cadres (depuis la 12.4.2)
 
@@ -2138,7 +2155,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1176 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1211 colonnes.
 
 ### Codages principaux
 

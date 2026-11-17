@@ -686,6 +686,41 @@ chr_date1;Date de la première séance (Conclusion et prescription d’OHB);AAAA
 chr_h1;Créneau souhaité (Conclusion et prescription d’OHB);"07:45 = 07 h 45 ; 10:00 = 10 h 00 ; 12:45 = 12 h 45 ; 15:00 = 15 h 00"
 chr_rdv_date;Rendez-vous de consultation (réévaluation) — date (Conclusion et prescription d’OHB);AAAA-MM-JJ
 chr_rdv_h;Rendez-vous de consultation — heure (Conclusion et prescription d’OHB);HH:MM
+emb_cause;Origine (Circonstances de l’embolie);"1 = Iatrogène ; 2 = Plongée (surpression pulmonaire) ; 3 = Traumatique (plaie thoracique, blast) ; 9 = Autre"
+emb_geste;Geste en cause (Circonstances de l’embolie);"1 = Pose, utilisation ou ablation d’un cathéter veineux central ; 2 = Hémodialyse, aphérèse, circuit extracorporel ; 3 = Chirurgie cardiaque, circulation extracorporelle ; 4 = Neurochirurgie (position assise) ; 5 = Endoscopie digestive (CPRE…) ; 6 = Biopsie ou ponction pulmonaire transthoracique ; 7 = Cathétérisme ou angiographie artériels ; 8 = Autre chirurgie ; 9 = Obstétrique ; 10 = Ventilation mécanique ; 99 = Autre (préciser)"
+emb_geste_txt;Geste — précisions (Circonstances de l’embolie);texte libre
+emb_lieu;Service, établissement (Circonstances de l’embolie);texte libre
+emb_date;Date de l’événement (Circonstances de l’embolie);AAAA-MM-JJ
+emb_h;Heure de l’événement (Circonstances de l’embolie);HH:MM
+emb_type;Type d’embolie (Circonstances de l’embolie);"1 = Artérielle ; 2 = Veineuse ; 3 = Paradoxale (shunt droite-gauche) ; 4 = Indéterminée"
+emb_pos;Position au moment de l’événement (Circonstances de l’embolie);"1 = Décubitus dorsal ; 2 = Assise ou demi-assise ; 3 = Décubitus latéral gauche ; 4 = Trendelenburg ; 9 = Autre"
+emb_fop;Shunt droite-gauche connu (FOP…) (Circonstances de l’embolie);"1 = OUI ; 0 = NON"
+emb_sympt_pc;Symptômes initiaux - Perte de connaissance (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_coma;Symptômes initiaux - Coma (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_convuls;Symptômes initiaux - Convulsions (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_deficit;Symptômes initiaux - Déficit moteur (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_aphasie;Symptômes initiaux - Aphasie, trouble du langage (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_visuel;Symptômes initiaux - Troubles visuels, cécité corticale (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_confus;Symptômes initiaux - Confusion, agitation (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_ceph;Symptômes initiaux - Céphalées (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_acr;Symptômes initiaux - Arrêt cardio-respiratoire (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_choc;Symptômes initiaux - Hypotension, choc (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_rythme;Symptômes initiaux - Trouble du rythme (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_dlr_thor;Symptômes initiaux - Douleur thoracique (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_desat;Symptômes initiaux - Dyspnée, désaturation (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_livedo;Symptômes initiaux - Marbrures, livedo (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt_bulles;Symptômes initiaux - Air visible (cathéter, rétine, langue) (Symptômes et prise en charge avant recompression);"1 = coche ; 0 = non coche"
+emb_sympt;Symptômes initiaux - liste (Symptômes et prise en charge avant recompression);texte, valeurs separees par |
+emb_gcs_init;Glasgow initial (Symptômes et prise en charge avant recompression);numerique (/ 15)
+emb_iot;Intubé, ventilé (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
+emb_histoire;Histoire (Symptômes et prise en charge avant recompression);texte libre
+emb_o2;Oxygène à haute concentration (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
+emb_o2_h;Heure de début de l’oxygène (Symptômes et prise en charge avant recompression);HH:MM
+emb_aspi;Aspiration d’air par le cathéter (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
+emb_tdm_air;Air visible à l’imagerie (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
+emb_tdm_isch;Ischémie ou œdème à l’imagerie avant recompression (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
+emb_evol;Évolution avant recompression (Symptômes et prise en charge avant recompression);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
+emb_delai;Délai événement → mise en pression (Délai jusqu’à la recompression);numerique, calcule (min)
 ex_cv_l_tachy;Anomalies cardio-vasculaires - Tachycardie (Examen général détaillé);"1 = coche ; 0 = non coche"
 ex_cv_l_brady;Anomalies cardio-vasculaires - Bradycardie (Examen général détaillé);"1 = coche ; 0 = non coche"
 ex_cv_l_irreg;Anomalies cardio-vasculaires - Pouls irrégulier (Examen général détaillé);"1 = coche ; 0 = non coche"
