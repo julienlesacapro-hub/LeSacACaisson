@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.6.1 (version d'essai)
+# ADP — accident de plongée, version 12.7.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1249 colonnes (1215 en 12.5.2 et 12.5.3, 1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
+Une ligne = une fiche. 1264 colonnes (1249 en 12.6.1, 1215 en 12.5.2 et 12.5.3, 1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -435,7 +435,7 @@ et prépare les futures interfaces du logiciel (une par cadre). Cliquez la carte
 | Embolie gazeuse | `5` | **actif depuis la 12.5.1** : interface proposée, à valider (voir *Embolie gazeuse*) |
 | Autre urgence hyperbare | `6` | **actif depuis la 12.6.1** : interface proposée, à valider (voir *Autre urgence hyperbare*) |
 | Consultation d'hyperbarie chronique (hors urgence) | `7` | **actif depuis la 12.4.1** : interface proposée, à valider (voir *Consultation d'hyperbarie chronique*) |
-| Consultation spécialisée hors AMM (off-label) | `8` | annoncé |
+| Consultation spécialisée hors AMM (off-label) | `8` | **actif depuis la 12.7.1** : interface proposée, à valider (voir *Consultation hors AMM*) |
 | Consultation d'expertise (professionnelle ou de loisir) | `9` | annoncé |
 
 - Les cadres annoncés se voient mais ne se choisissent pas : un message dit qu'ils arrivent dans une prochaine version.
@@ -638,6 +638,17 @@ La consultation initiale d'hyperbarie chronique produit un **compte rendu de con
 - Le compte rendu est la **première page du document imprimé** (bouton PDF) de la consultation initiale ; les pages de saisie détaillées suivent.
 - *Planifier la cure* demande confirmation si la décision du patient n'est pas « accepte le traitement ».
 - Les phrases à cliquer des éléments expliqués (bénéfice et absence de garantie, déroulement, risques, possibilité d'interrompre, document remis) sont des **propositions à adapter au document d'information du service**.
+
+## Consultation hors AMM (cadre 8, depuis la 12.7.1)
+
+Le cadre **Consultation spécialisée hors AMM (off-label)** s'ouvre, avec une **interface proposée, à valider**. C'est la **consultation d'hyperbarie chronique** (adressage et courrier, terrain, examen général et ORL, contre-indications et scanner suggéré, conclusion et prescription, information et décision du patient, compte rendu, planification de la cure), avec deux encarts en plus :
+
+- **Justification de l'indication hors AMM** (onglet Anamnèse, après l'adressage) : pathologie ou indication demandée ; statut (hors des indications reconnues, indication reconnue en situation particulière, protocole de recherche) ; rationnel ; meilleur niveau de preuve disponible (essais randomisés, études observationnelles, séries de cas, avis d'experts, aucune donnée) ; références ; échec ou contre-indication des traitements conventionnels et traitements déjà essayés.
+- **Avis collégial, consentement et évaluation** (onglet Conclusion) : avis collégial (favorable, défavorable, à demander ; date, participants) ; information spécifique (caractère hors recommandations, bénéfice non démontré, alternatives, arrêt possible à tout moment) ; consentement écrit ; prise en charge financière (habituelle, dérogatoire ou à la charge du patient, à préciser) ; critères d'évaluation ; critères d'arrêt.
+
+Le **compte rendu de consultation** (titré « indication hors AMM ») ajoute la justification après la raison de l'orientation, et l'avis collégial, l'information spécifique, le consentement, la prise en charge et les critères d'évaluation et d'arrêt à la conclusion ; l'encart signale en plus, s'ils manquent : justification, avis collégial, information sur le caractère hors recommandations, consentement écrit, critères d'évaluation. *Planifier la cure* demande confirmation sans avis collégial favorable ou sans consentement écrit. De nouvelles colonnes s'ajoutent au CSV (`off_*`).
+
+*Terme* : « hors AMM » est le nom du cadre ; pour l'OHB, il s'agit en pratique d'une indication **hors des indications reconnues** (liste de l'ECHM), d'où le libellé du statut.
 
 ## Planning des tables — fonctionnement normal (depuis la 12.4.1)
 
@@ -2205,7 +2216,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1249 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1264 colonnes.
 
 ### Codages principaux
 
