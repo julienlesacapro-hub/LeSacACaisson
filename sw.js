@@ -10,7 +10,7 @@
 /* canal : le même mot que CANAL dans index.html. La version d'essai garde son cache sous un autre nom (« test-adp- ») : elle ne supprime pas, et la version principale ne supprime pas, le cache de l'autre
    (les caches d'une adresse sont partagés entre les pages de cette adresse). */
 const CANAL   = 'test';
-const VERSION = 'v12.7.1';
+const VERSION = 'v12.8.2';
 const PREFIXE = CANAL === 'test' ? 'test-adp-' : 'adp-';
 const CACHE   = PREFIXE + VERSION;
 

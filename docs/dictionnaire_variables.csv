@@ -12,7 +12,7 @@ date_acc;Date de l'accident;AAAA-MM-JJ
 heure_acc;Heure de l'accident;HH:MM
 delai_min;Delai accident vers examen;"entier, minutes (calcule ; consultation initiale seulement, vide sur les fiches suivantes)"
 fiche_type;Type de consultation;"1 = consultation initiale (prise en charge en urgence) ; 2 = consultation de suivi ; 3 = consultation de sortie / CRH ; 4 = seance de recompression sans examen clinique (fiche rapide, numeros EX3b, EX3c...) ; vide = non renseigne (a lire comme 1)"
-cadre;Cadre de la consultation;"1 = Accident de plongee (ADD) ; 2 = Œdeme pulmonaire d’immersion (OPI) ; 3 = Mixte (accident de desaturation et OPI) ; 4 = Intoxication au monoxyde de carbone ; 5 = Embolie gazeuse ; 6 = Autre urgence hyperbare ; 7 = Consultation d’hyperbarie chronique (hors urgence) ; 8 = Consultation specialisee hors AMM (off-label) ; 9 = Consultation d’expertise (professionnelle ou de loisir) ; les cadres 5 a 9 sont annonces pour les prochaines versions ; vide = fiche d avant la 11.1.1 (accident de plongee, a lire comme 1)"
+cadre;Cadre de la consultation;"1 = Accident de plongee (ADD) ; 2 = Œdeme pulmonaire d’immersion (OPI) ; 3 = Mixte (accident de desaturation et OPI) ; 4 = Intoxication au monoxyde de carbone ; 5 = Embolie gazeuse ; 6 = Autre urgence hyperbare ; 7 = Consultation d’hyperbarie chronique (hors urgence) ; 8 = Consultation specialisee hors indications reconnues (off-label) ; 9 = Consultation d’expertise (professionnelle ou de loisir) ; les cadres 5 a 9 sont annonces pour les prochaines versions ; vide = fiche d avant la 11.1.1 (accident de plongee, a lire comme 1)"
 sexe;Sexe;"1 = M ; 2 = F ; 3 = Autre"
 age;Age a la date de l'examen;entier, annees revolues (calcule)
 age_mois;Age - mois en plus des annees (mineur);"entier 0 a 11, calcule ; seulement pour un patient de moins de 18 ans, vide pour un adulte"
@@ -720,13 +720,13 @@ emb_aspi;Aspiration d’air par le cathéter (Symptômes et prise en charge avan
 emb_tdm_air;Air visible à l’imagerie (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_tdm_isch;Ischémie ou œdème à l’imagerie avant recompression (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_evol;Évolution avant recompression (Symptômes et prise en charge avant recompression);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
-off_patho;Pathologie, indication demandée (Justification de l’indication hors AMM);texte libre
-off_statut;Statut de l’indication (Justification de l’indication hors AMM);"1 = Hors des indications reconnues ; 2 = Indication reconnue, situation particulière ; 3 = Dans un protocole de recherche"
-off_rationnel;Rationnel, justification (Justification de l’indication hors AMM);texte libre
-off_preuve;Meilleur niveau de preuve disponible (Justification de l’indication hors AMM);"1 = Essais randomisés ; 2 = Études observationnelles ; 3 = Séries de cas ; 4 = Avis d’experts ; 5 = Aucune donnée publiée"
-off_biblio;Références (Justification de l’indication hors AMM);texte libre
-off_echec;Échec ou contre-indication des traitements conventionnels (Justification de l’indication hors AMM);"1 = OUI ; 0 = NON"
-off_echec_txt;Traitements déjà essayés (Justification de l’indication hors AMM);texte libre
+off_patho;Pathologie, indication demandée (Justification de l’indication (hors indications reconnues));texte libre
+off_statut;Statut de l’indication (Justification de l’indication (hors indications reconnues));"1 = Hors des indications reconnues ; 2 = Indication reconnue, situation particulière ; 3 = Dans un protocole de recherche"
+off_rationnel;Rationnel, justification (Justification de l’indication (hors indications reconnues));texte libre
+off_preuve;Meilleur niveau de preuve disponible (Justification de l’indication (hors indications reconnues));"1 = Essais randomisés ; 2 = Études observationnelles ; 3 = Séries de cas ; 4 = Avis d’experts ; 5 = Aucune donnée publiée"
+off_biblio;Références (Justification de l’indication (hors indications reconnues));texte libre
+off_echec;Échec ou contre-indication des traitements conventionnels (Justification de l’indication (hors indications reconnues));"1 = OUI ; 0 = NON"
+off_echec_txt;Traitements déjà essayés (Justification de l’indication (hors indications reconnues));texte libre
 off_rcp;Avis collégial (RCP, staff) (Avis collégial, consentement et évaluation);"1 = Avis collégial favorable ; 2 = Avis collégial défavorable ; 3 = À demander"
 off_rcp_date;Date de l’avis (Avis collégial, consentement et évaluation);AAAA-MM-JJ
 off_rcp_txt;Participants, précisions (Avis collégial, consentement et évaluation);texte libre
@@ -735,6 +735,37 @@ off_consent;Consentement écrit recueilli (Avis collégial, consentement et éva
 off_fin;Prise en charge financière (Avis collégial, consentement et évaluation);"1 = Prise en charge habituelle ; 2 = Prise en charge dérogatoire ou à la charge du patient ; 3 = À préciser"
 off_objectif;Critères d’évaluation (objectif mesurable) (Avis collégial, consentement et évaluation);texte libre
 off_arret;Critères d’arrêt (Avis collégial, consentement et évaluation);texte libre
+exp_act;Activité (Motif de l’expertise);"1 = Plongée de loisir ; 2 = Encadrement de la plongée de loisir ; 3 = Plongée professionnelle (scaphandrier, travaux sous-marins) ; 4 = Travail en air comprimé (tunnelier, caisson) ; 5 = Plongée militaire ou de sécurité ; 6 = Personnel de caisson hyperbare ; 7 = Apnée ; 9 = Autre"
+exp_act_txt;Activité — précisions (classe, mention, employeur) (Motif de l’expertise);texte libre
+exp_motif;Motif (Motif de l’expertise);"1 = Avis d’aptitude initial ; 2 = Reprise après un accident de plongée ; 3 = Avis après une pathologie ou un traitement ; 4 = Recherche d’un shunt droite-gauche (FOP) ; 5 = Avis demandé par le médecin du travail ; 6 = Expertise médico-légale ou assurance ; 9 = Autre"
+exp_motif_txt;Motif — précisions (Motif de l’expertise);texte libre
+exp_dem;Demandeur (Motif de l’expertise);"1 = Le plongeur lui-même ; 2 = Médecin traitant ; 3 = Médecin fédéral ou du sport ; 4 = Médecin du travail ; 5 = Employeur ; 6 = Assureur, juridiction ; 9 = Autre"
+exp_acc_type;Type d’accident (Motif de l’expertise);"1 = ADD médullaire ; 2 = ADD cérébral ; 3 = ADD vestibulaire ; 4 = ADD cutané ou ostéo-articulaire ; 5 = Œdème pulmonaire d’immersion ; 6 = Surpression pulmonaire ; 7 = Barotraumatisme de l’oreille ; 9 = Autre"
+exp_acc_date;Date de l’accident ou du diagnostic (Motif de l’expertise);AAAA-MM-JJ
+exp_acc_ttt;Traitement reçu (recompression, séances) (Motif de l’expertise);texte libre
+exp_acc_seq;Séquelles (Motif de l’expertise);"1 = OUI ; 0 = NON"
+exp_acc_seq_txt;Séquelles — préciser (Motif de l’expertise);texte libre
+exp_acc_fact;Facteur favorisant identifié (Motif de l’expertise);texte libre
+exp_histoire;Histoire, éléments du dossier (Motif de l’expertise);texte libre
+exp_avis;Avis (Avis d’expertise);"1 = Apte ; 2 = Apte avec restrictions ; 3 = Inapte temporaire ; 4 = Inapte définitif ; 5 = Avis différé (examens en attente)"
+exp_restr_prof;Restrictions - Profondeur maximale limitée (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_sanspal;Restrictions - Plongée dans la courbe, sans palier obligatoire (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_nosucc;Restrictions - Pas de plongée successive ni consécutive (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_nitrox;Restrictions - Air suroxygéné (Nitrox) avec tables ou ordinateur à l’air (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_remontee;Restrictions - Remontée lente, palier de sécurité allongé (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_noeffort;Restrictions - Pas d’effort intense en plongée ni après (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_noalt;Restrictions - Pas de voyage en altitude ou en avion dans les 24 heures (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_encadre;Restrictions - Plongée encadrée uniquement (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_noapnee;Restrictions - Pas d’apnée (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr_autre;Restrictions - Autre (préciser) (Avis d’expertise);"1 = coche ; 0 = non coche"
+exp_restr;Restrictions - liste (Avis d’expertise);texte, valeurs separees par |
+exp_prof;Profondeur maximale (Avis d’expertise);numerique (m)
+exp_restr_txt;Restrictions — précisions (Avis d’expertise);texte libre
+exp_inapt_duree;Durée de l’inaptitude (Avis d’expertise);texte libre
+exp_reeval;Date de réévaluation (Avis d’expertise);AAAA-MM-JJ
+exp_exam;Examens demandés avant l’avis (Avis d’expertise);texte libre
+exp_motivation;Motivation de l’avis (Avis d’expertise);texte libre
+exp_dest;Destinataire du compte rendu (Avis d’expertise);texte libre
 urg_indic;Indication (Indication et contexte);"1 = Infection nécrosante des tissus mous (gangrène gazeuse, fasciite nécrosante) ; 2 = Écrasement de membre, fracture ouverte grave, syndrome des loges ; 3 = Ischémie aiguë post-traumatique, lambeau ou réimplantation compromis ; 4 = Surdité brusque ; 5 = Occlusion de l’artère centrale de la rétine ; 6 = Intoxication par les fumées d’incendie (cyanure associé) ; 7 = Brûlure étendue ; 8 = Abcès intracrânien ; 9 = Anémie aiguë sans transfusion possible ; 10 = Lésion radio-induite hémorragique (cystite, rectite) ; 99 = Autre (préciser)"
 urg_indic_txt;Précisions (Indication et contexte);texte libre
 urg_dem_spe;Spécialité (Indication et contexte);"1 = Urgences ; 2 = Réanimation ; 3 = Chirurgie orthopédique, traumatologie ; 4 = Chirurgie viscérale ; 5 = Chirurgie plastique, main ; 6 = ORL ; 7 = Ophtalmologie ; 8 = Infectiologie ; 9 = Neurochirurgie ; 10 = Urologie ; 11 = Médecine générale ; 99 = Autre (préciser)"
