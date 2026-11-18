@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.5.2 (version d'essai)
+# ADP — accident de plongée, version 12.5.3 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -513,6 +513,7 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
 
 - **Saisie rapide** : un identifiant puis Entrée crée le patient, horodaté, dans le lieu d'arrivée ; la **douchette** fonctionne aussi (même règle d'extraction et même pseudonymisation que pour une fiche) ; la **numérotation automatique** crée d'un coup *n* patients `CO-01`, `CO-02`… (préfixe réglable). Un identifiant déjà saisi est refusé et sa ligne surlignée.
 - **Lieux** : un tableau par lieu, avec les patients qui s'y trouvent. Chaque changement de lieu (menu de la ligne, ou déplacement groupé des patients cochés) est **horodaté** ; « historique » donne le parcours d'un patient. Les lieux se paramètrent (ajout, renommage, retrait d'un lieu inutilisé), ainsi que trois rôles : lieu d'arrivée, lieu après une séance, sortie (le patient quitte l'afflux).
+- **Saisie des patients (depuis la 12.5.3)** : chaque patient a une **ligne compacte**, dans l'ordre d'arrivée (stable pendant la saisie) : bordure et statut en couleur, lieu, résumé (HbCO, neuro, installation, scope, contre-indication), séance, et en orange **ce qui reste à compléter** pour qu'il puisse être planifié. Un toucher l'**ouvre** en fiche à **gros boutons colorés**, faits pour le doigt ; toucher le choix actif l'efface. La fiche reste ouverte et l'écran ne bouge pas pendant la saisie (avant la 12.5.3, le tableau défilait de côté et revenait à gauche à chaque saisie sur téléphone). **Patient suivant** ouvre le prochain patient à compléter ; un patient qui vient d'être saisi s'ouvre aussitôt ; toucher un patient dans le tableau des lieux l'ouvre aussi.
 - **Par patient** : HbCO ou SpCO, signes neurologiques, indication d'OHB (indiquée, non indiquée, à discuter), **contre-indication** (à vérifier, absente, présente avec sa nature), installation (assis, allongé, réanimatoire avec IOT), scope, grossesse, table (automatique : A18 si signes neurologiques, A15 sinon ; version IOT pour un réanimatoire), heure de disponibilité (patient encore en transit), statut. « fiche CO » crée une fiche *Intoxication au monoxyde de carbone* préremplie (identifiant, SpCO, indication, contre-indication, IOT, grossesse, table et heure de mise en pression de la 1re séance validée).
 - **Chambres** (paramétrables : nom, lieu, configurations) — valeurs par défaut :
 
