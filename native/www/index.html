@@ -2905,6 +2905,17 @@ const SPEC = [
   {k:'emb_delai_box', t:'html', fn:()=>embDelaiBox(), full:1, nofill:1},
   {k:'emb_delai', l:'Délai événement → mise en pression', t:'calc', unit:'min', full:1, hint:'Calculé : date et heure de l’événement → heure de mise en pression'}
 ]},
+/* 12.5.2 : information du patient, acceptation du traitement, compte rendu de consultation (hyperbarie chronique) */
+{id:'chr_cr', t:'Information du patient et compte rendu', cols:1, page:6, after:'chr_presc', cadres:[7], noghost:1, f:[
+  {k:'chr_info', l:'Information délivrée au patient', t:'choice', o:ONA, full:1, dep:['chr_ind_ret',[1]], hint:'Intérêt attendu, déroulement des séances, risques et limites de l’OHB'},
+  {k:'chr_info_txt', l:'Éléments expliqués', t:'area', wide:1, full:1, sub:1, nofill:1, dep:['chr_info',[1]],
+   phr:['Bénéfice attendu et absence de garantie de résultat.','Déroulement : séances en caisson, durée, assiduité nécessaire.',
+        'Risques : barotraumatisme de l’oreille moyenne ou des sinus, myopie transitoire, crise convulsive hyperoxique (rare), claustrophobie.',
+        'Possibilité d’interrompre le traitement à tout moment.','Document d’information remis.']},
+  {k:'chr_accord', l:'Décision du patient', t:'choice', o:[{v:1,l:'Accepte le traitement',c:'v-ok'},{v:2,l:'Souhaite réfléchir',c:'v-wn'},{v:0,l:'Refuse le traitement',c:'v-ab'}], full:1, dep:['chr_ind_ret',[1]]},
+  {k:'chr_copie_mt', l:'Copie du compte rendu au médecin traitant', t:'choice', o:ONA, full:1},
+  {k:'chr_cr_box', t:'html', fn:()=>chrCRBox(), full:1, nofill:1}
+]},
 /* 12.4.2 : examen général détaillé, affiché sous chaque « Anomalie … » de l'examen clinique général (embedded) ; en fin de SPEC, les colonnes existantes ne bougent pas */
 {id:'gen_det', t:'Examen général détaillé', cols:1, page:3, noghost:1, embedded:1, when:()=>false, f:[
   {k:'ex_cv_l', l:'Anomalies cardio-vasculaires', t:'multi', o:EX_CV_L, full:1, nocadres:[4], dep:['ex_cv',[1]]},
@@ -10132,7 +10143,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.5.1';
+const APP_VERSION = '12.5.2';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -13016,6 +13027,10 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.5.2 (version d’essai) : compte rendu de consultation d’hyperbarie chronique.</b><br>'+
+  'La consultation initiale d’hyperbarie chronique produit un <b>compte rendu de consultation</b> : patient, médecin adresseur, raison de l’orientation, antécédents et traitements, examen clinique, contre-indications, '+
+  'indication retenue ou non, protocole prescrit, <b>information du patient et sa décision</b> (nouvel encart), date de début du traitement et rendez-vous, signature et copie au médecin traitant. '+
+  'L’encart signale ce qui manque ; le compte rendu se voit, se copie (texte enrichi) et forme la première page du document imprimé. Planifier une cure demande confirmation si le patient n’a pas accepté le traitement.</p>'+
   '<p><b>Nouveautés de la 12.5.1 (version d’essai) : embolie gazeuse.</b><br>'+
   'Le cadre <b>Embolie gazeuse</b> s’ouvre (interface proposée, à valider) : circonstances (geste iatrogène, plongée, traumatisme ; service ; date et heure ; type artériel, veineux ou paradoxal ; position ; shunt connu), symptômes initiaux et Glasgow, intubation, '+
   'prise en charge avant la recompression (oxygène, aspiration d’air par le cathéter, air ou ischémie à l’imagerie, évolution), examen neurologique sans ASIA ni sensibilités et cardio-respiratoire mis en avant, '+
@@ -14526,6 +14541,7 @@ function chrPrescTexte(d){
     if(d.chr_nb!=null) y.push(d.chr_nb+' séances prescrites');
     if(d.chr_reeval!=null) y.push('réévaluation à '+d.chr_reeval+' séances');
     if(y.length) P.push(fin(TXT.cap(y.join(', '))));
+    const acc = chrAccordTexte(d); if(acc) P.push(acc);
     if(d.chr_date1) P.push(fin('Première séance le '+frDate(d.chr_date1)+(d.chr_h1 ? ' à '+TXT.hFr(d.chr_h1) : '')));
     if(d.chr_rdv_date) P.push(fin('Rendez-vous de consultation le '+frDate(d.chr_rdv_date)+(d.chr_rdv_h ? ' à '+TXT.hFr(d.chr_rdv_h) : '')));
   }
@@ -14537,7 +14553,8 @@ function chrPrint(){
   const idb = '<div class="pid">'+pid('Nom',d.nom)+pid('Prénom',d.prenom)+pid('Sexe',lab('sexe'))+pid('Date de naissance',frDate(d.ddn))+pid('N° de dossier',d.dossier)+pid('Âge',ageFr(d))+
               pid('Date',frDate(d.date_ex))+pid('Examinateur',d.examinateur)+'</div>';
   const pied = '<div style="font-size:7pt;text-align:right;margin-top:1.5mm;color:#444">Fiche '+esc(REC.id)+' — éditée le '+frDate(iso(new Date()))+' à '+hhmm(new Date())+'</div>';
-  let h = '<div class="pg"><div class="phead">'+docTitre()+'</div>'+idb+
+  let h = (ftype()===1 ? '<div class="pg"><div class="pb psyn">'+blocksHTML(chrCRBlocks(d))+'</div>'+pied+'</div>' : '')+
+    '<div class="pg"><div class="phead">'+docTitre()+'</div>'+idb+
     pspec('chr_adr','Indication et adressage')+pspec(['ident2','plongeur'],'Terrain du patient')+pcontacts()+pspec('constantes','Constantes')+pspec('general','Examen clinique général')+pspec('orl','ORL')+pied+'</div>';
   h += '<div class="pg"><div class="phead" style="font-size:10.5pt">CONTRE-INDICATIONS, EXAMENS ET PRESCRIPTION</div>'+idb+
     pspec('chr_ci','Contre-indications à l’OHB')+pspec('examens','Examens complémentaires')+pspec('chr_presc','Conclusion et prescription d’OHB')+
@@ -14681,6 +14698,7 @@ function tblPlanFiche(){
   const d = REC.d; if(!d.dossier){ toast('Numéro de dossier manquant'); return; }
   if(d.chr_ind_ret!==1){ toast('L’indication doit être retenue'); return; }
   if(d.chr_ci_concl===2){ toast('Contre-indication présente : pas de cure'); return; }
+  if(d.chr_accord!==1 && !confirm('Le patient n’a pas (encore) accepté le traitement dans la fiche. Planifier la cure quand même ?')) return;
   const T = TABLES.find(t => t.v === d.chr_table);
   const out = tblPlanCure({dossier:d.dossier, proto:d.chr_proto, nb:d.chr_nb, date1:d.chr_date1, h1:d.chr_h1, table:T ? T.l : null});
   tblSave(); renderForm();
@@ -14897,6 +14915,73 @@ function tblParam(){
     '<div class="af-sub">Champs : {nom} {prenom} {liste} {date} {heure} {motif} {service} {tel} {signature}. Les courriels s’ouvrent dans la messagerie du poste (ADP n’envoie rien seul) ; une annulation met les patients en copie cachée.</div></div>';
   modalHTML(h);
 }
+/* ---------- compte rendu de consultation d'hyperbarie chronique (12.5.2) ----------
+   Il porte au moins : le médecin adresseur, la raison de l'orientation, l'indication retenue ou non, le protocole prescrit, l'information du patient et son acceptation,
+   l'examen clinique, la date de début du traitement. Les éléments manquants sont signalés dans l'encart ; le compte rendu s'imprime (première page du papier), se copie ou s'ouvre seul. */
+function chrAccordTexte(d){
+  const F = d.sexe===2, pr = F ? 'elle' : 'il';
+  const det = d.chr_info_txt ? ' ('+TXT.lc1(TXT.flat(d.chr_info_txt)).replace(/[.\s]+$/, '').replace(/\.\s+/g, ' ; ').replace(/ ; ([A-ZÀ-Ý])/g, (m, c) => ' ; '+c.toLowerCase())+')' : '';
+  const inf = d.chr_info===1 ? (F ? 'La patiente a été informée' : 'Le patient a été informé')+' de l’intérêt attendu, du déroulement, des risques et des limites de l’oxygénothérapie hyperbare'+det : '';
+  const acc = {1:pr+' accepte le traitement', 2:pr+' souhaite réfléchir avant de l’accepter', 0:pr+' refuse le traitement'}[d.chr_accord];
+  if(inf && acc) return TXT.fin(inf+' ; '+acc);
+  if(inf) return TXT.fin(inf);
+  if(acc) return TXT.fin((F ? 'La patiente ' : 'Le patient ')+acc.replace(/^(il|elle) /, ''));
+  return '';
+}
+function chrCRManque(d){
+  const M = [];
+  if(!d.chr_adr_nom) M.push('médecin adresseur');
+  if(!d.chr_indic && !d.chr_histoire) M.push('raison de l’orientation');
+  if(d.chr_ind_ret==null) M.push('indication retenue ou non');
+  const ex = ['ex_cv','ex_pneumo','ex_abdo','ex_loco','oto_D','oto_G'].some(k=>d[k]!=null) || (Array.isArray(d.cst) && d.cst.length);
+  if(!ex) M.push('examen clinique');
+  if(d.chr_ind_ret===1){
+    if(!d.chr_proto && !d.chr_freq) M.push('protocole prescrit');
+    if(d.chr_info!==1) M.push('information du patient');
+    if(d.chr_accord==null) M.push('décision du patient');
+    if(!d.chr_date1) M.push('date de début du traitement');
+  }
+  return M;
+}
+function chrCRBlocks(d){
+  const {fin, flat, lc1} = TXT, N = narrativeBlocks(), get = h => N.find(b=>b.h===h);
+  const F = d.sexe===2, civ = d.sexe===2 ? 'Mme' : d.sexe===1 ? 'M.' : '';
+  const nom = [civ, d.prenom || '', d.nom ? String(d.nom).toUpperCase() : ''].filter(Boolean).join(' ') || 'le patient';
+  const P = (TBL && TBL.params) || {}, B = [];
+  B.push({title:true, lines:[P.service || 'Service de médecine hyperbare', 'Compte rendu de consultation d’oxygénothérapie hyperbare', 'Consultation du '+frDate(d.date_ex)+(d.examinateur ? ' — '+flat(d.examinateur) : '')]});
+  const pat = [nom]; if(d.ddn) pat.push((F ? 'née' : 'né')+' le '+frDate(d.ddn)); if(d.age!=null) pat.push(ageFr(d)); if(d.dossier) pat.push('dossier '+d.dossier);
+  B.push({h:'Patient', inline:true, lines:[pat.join(', ')+'.']});
+  const spe = d.chr_adr_spe===99 ? (d.chr_adr_spe_autre ? flat(d.chr_adr_spe_autre) : '') : ((CHR_SPE.find(o=>o.v===d.chr_adr_spe) || {}).l || '');
+  B.push({h:'Médecin adresseur', inline:true, lines:[d.chr_adr_nom ? fin(flat(d.chr_adr_nom)+(spe ? ' ('+lc1(spe)+')' : '')+(d.chr_adr_etab ? ', '+flat(d.chr_adr_etab) : '')+(d.chr_adr_date ? ', courrier du '+frDate(d.chr_adr_date) : '')) : bold('non renseigné')]});
+  const ind = d.chr_indic===99 ? (d.chr_indic_txt ? flat(d.chr_indic_txt) : '') : ((CHR_INDIC.find(o=>o.v===d.chr_indic) || {}).l || '');
+  const ro = []; if(ind) ro.push(fin('Adressé'+(F ? 'e' : '')+' pour '+lc1(ind)+(d.chr_indic!==99 && d.chr_indic_txt ? ' ('+flat(d.chr_indic_txt).replace(/[.\s]+$/, '')+')' : ''))); if(d.chr_histoire) ro.push(fin(d.chr_histoire));
+  B.push({h:'Raison de l’orientation', lines:ro.length ? ro : [bold('non renseignée')]});
+  const at = get('Antécédents et terrain'); if(at && at.lines.some(Boolean)) B.push({h:'Antécédents, traitements et habitudes de vie', lines:at.lines.filter(Boolean)});
+  const ex = []; const cst = get('Constantes'); if(cst) ex.push(...cst.lines.filter(Boolean));
+  N.filter(b=>EXAM_BLOC(b.h)).forEach(b=>ex.push(...b.lines.filter(Boolean)));
+  B.push({h:'Examen clinique', lines:ex.length ? ex : [bold('non renseigné')]});
+  const ci = chrCiTexte(d); if(ci.length) B.push({h:'Contre-indications à l’oxygénothérapie hyperbare', lines:ci});
+  const cc = [];
+  if(d.chr_ind_ret===1) cc.push(bold(fin('Indication d’oxygénothérapie hyperbare retenue'+(d.chr_ind_ret_txt ? ' : '+lc1(flat(d.chr_ind_ret_txt)).replace(/[.\s]+$/, '') : ''))));
+  else if(d.chr_ind_ret===0) cc.push(bold('Indication d’oxygénothérapie hyperbare non retenue.'));
+  else if(d.chr_ind_ret===2) cc.push(bold('Indication d’oxygénothérapie hyperbare à discuter.'));
+  else cc.push(bold('Indication : non statuée.'));
+  chrPrescTexte(d).slice(d.chr_ind_ret!=null ? 1 : 0).forEach(x=>cc.push(x));          // contre-indication, protocole, acceptation, première séance, rendez-vous (la première ligne, l'indication, est déjà dite)
+  B.push({h:'Conclusion', lines:cc});
+  const sig = []; if(d.examinateur) sig.push(flat(d.examinateur));
+  if(d.chr_copie_mt===1) sig.push('Copie : médecin traitant'+(d.mt_nom ? ', '+flat(d.mt_nom) : '')+'.');
+  if(sig.length) B.push({h:'Signature', inline:true, lines:[sig.join(' — ')]});
+  return B;
+}
+function chrCRBox(){
+  const d = REC.d, M = chrCRManque(d);
+  return '<div class="note" style="margin:0;'+(M.length ? 'border-color:#e3bd9a;background:#fbeee4' : '')+'">'+
+    (M.length ? '<b>Compte rendu incomplet</b> : '+esc(M.join(', '))+'.' : '<b>Compte rendu complet</b> : médecin adresseur, raison de l’orientation, indication, protocole, information et décision du patient, examen clinique, date de début.')+
+    ' <button type="button" class="mini" onclick="chrCRVoir()">voir le compte rendu</button> <button type="button" class="mini" onclick="chrCRCopier()">copier</button>'+
+    '<div style="color:var(--ink2);font-size:12px;margin-top:4px">Le compte rendu est aussi la première page du document imprimé (bouton PDF) de la consultation initiale.</div></div>';
+}
+function chrCRVoir(){ modalHTML('<div class="psyn" style="max-width:760px">'+blocksHTML(chrCRBlocks(REC.d))+'</div><div class="af-btns"><button class="tb gd" onclick="chrCRCopier()">Copier</button></div>'); }
+function chrCRCopier(){ const B = chrCRBlocks(REC.d); copyRich(blocksHTML(B), blocksPlain(B), 'Compte rendu copié', blocksRTF(B)); }
 /* ---------- embolie gazeuse (12.5.1) ---------- */
 function embMs(d){ if(!d.emb_h) return null; const t = new Date((d.emb_date || d.date_ex)+'T'+d.emb_h); return isNaN(t) ? null : t; }
 function embCalc(){
