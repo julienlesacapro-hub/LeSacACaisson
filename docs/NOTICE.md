@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.7.1 (version d'essai)
+# ADP — accident de plongée, version 12.8.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1264 colonnes (1249 en 12.6.1, 1215 en 12.5.2 et 12.5.3, 1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
+Une ligne = une fiche. 1295 colonnes (1264 en 12.7.1, 1249 en 12.6.1, 1215 en 12.5.2 et 12.5.3, 1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -436,9 +436,9 @@ et prépare les futures interfaces du logiciel (une par cadre). Cliquez la carte
 | Autre urgence hyperbare | `6` | **actif depuis la 12.6.1** : interface proposée, à valider (voir *Autre urgence hyperbare*) |
 | Consultation d'hyperbarie chronique (hors urgence) | `7` | **actif depuis la 12.4.1** : interface proposée, à valider (voir *Consultation d'hyperbarie chronique*) |
 | Consultation spécialisée hors AMM (off-label) | `8` | **actif depuis la 12.7.1** : interface proposée, à valider (voir *Consultation hors AMM*) |
-| Consultation d'expertise (professionnelle ou de loisir) | `9` | annoncé |
+| Consultation d'expertise (professionnelle ou de loisir) | `9` | **actif depuis la 12.8.1** : interface proposée, à valider (voir *Consultation d'expertise*) |
 
-- Les cadres annoncés se voient mais ne se choisissent pas : un message dit qu'ils arrivent dans une prochaine version.
+- Depuis la 12.8.1, les neuf cadres sont actifs.
 - Le cadre se change ensuite dans l'onglet *Administratif* (champ **Cadre de la consultation**) ; le bandeau patient le rappelle (« OPI · Consultation initiale »). Choisir le cadre ne marque pas la fiche comme modifiée.
 - Un **ré-examen** et une **séance de recompression** reprennent le cadre de la fiche ouverte et ne repassent pas par l'écran du choix. Une fiche **enregistrée avant la 11.1.1** n'a pas de cadre : c'est une fiche d'accident de plongée (colonne `cadre` vide).
 - Dans `index.html`, le registre `CADRES` porte le code, le nom, le nom court (bandeau) et l'état de chaque cadre ; une section du `SPEC` peut se limiter à certains cadres avec la clé `cadres:[codes]`, et, depuis la 12.1.1, un **champ** aussi
@@ -649,6 +649,23 @@ Le cadre **Consultation spécialisée hors AMM (off-label)** s'ouvre, avec une *
 Le **compte rendu de consultation** (titré « indication hors AMM ») ajoute la justification après la raison de l'orientation, et l'avis collégial, l'information spécifique, le consentement, la prise en charge et les critères d'évaluation et d'arrêt à la conclusion ; l'encart signale en plus, s'ils manquent : justification, avis collégial, information sur le caractère hors recommandations, consentement écrit, critères d'évaluation. *Planifier la cure* demande confirmation sans avis collégial favorable ou sans consentement écrit. De nouvelles colonnes s'ajoutent au CSV (`off_*`).
 
 *Terme* : « hors AMM » est le nom du cadre ; pour l'OHB, il s'agit en pratique d'une indication **hors des indications reconnues** (liste de l'ECHM), d'où le libellé du statut.
+
+## Consultation d'expertise (cadre 9, depuis la 12.8.1)
+
+Le cadre **Consultation d'expertise (professionnelle ou de loisir)** s'ouvre, avec une **interface proposée, à valider**, pensée pour l'**avis d'aptitude** à la plongée ou à une activité en milieu hyperbare.
+
+| Onglet | Encarts |
+|---|---|
+| 1 · Administratif | identification ; identité complémentaire ; contacts |
+| 2 · Plongeur et motif | **Le plongeur** (niveaux, organisme, expérience, certificat, antécédents de plongée, terrain, tabac en PA, traitements, allergies) ; **Motif de l'expertise** : activité (plongée de loisir, encadrement, plongée professionnelle, travail en air comprimé, plongée militaire ou de sécurité, personnel de caisson, apnée, autre) et précisions (classe, mention, employeur) ; motif (aptitude initiale, reprise après accident, avis après pathologie ou traitement, recherche de shunt, demande du médecin du travail, expertise médico-légale ou assurance, autre) ; demandeur ; accident ou pathologie antérieure (type d'accident, date, traitement, séquelles, facteur favorisant) ; histoire |
+| 3 · Examen clinique général | constantes, examen général détaillé, conscience, fonctions supérieures, **ORL**, **vestibulaire**, signes fonctionnels |
+| 4 · Examen neurologique | réflexes, force, coordination, conclusion (sans sensibilités ni ASIA) |
+| 5 · Examens complémentaires | biologie, ECG, épreuve d'effort, échographie cardiaque (shunt), imagerie |
+| 6 · Conclusion | **Avis d'expertise** : apte, apte avec restrictions, inapte temporaire (durée), inapte définitif, avis différé (examens demandés) ; restrictions (profondeur maximale, plongée sans palier obligatoire, pas de plongée successive, Nitrox avec tables à l'air, remontée lente, pas d'effort, pas d'altitude dans les 24 heures, plongée encadrée, pas d'apnée, autre) ; réévaluation ; **motivation** ; destinataire |
+
+- **Compte rendu de consultation d'expertise** : patient, motif, pratique de la plongée, antécédents, examen clinique, examens complémentaires, **avis** (en gras, avec les restrictions), réévaluation, motivation, signature et destinataire. L'encart signale ce qui manque (motif, activité, examen clinique, avis, motivation d'un avis qui n'est pas « apte ») ; le compte rendu se voit, se copie et forme la première page du document imprimé.
+- **Ce n'est pas un certificat d'aptitude réglementaire** (fédéral ou de médecine du travail) : ceux-ci gardent leurs modèles officiels.
+- Les listes (activités, motifs, restrictions) sont des **propositions à valider** ; aucune règle d'aptitude n'est appliquée automatiquement : l'avis reste celui du médecin. De nouvelles colonnes s'ajoutent au CSV (`exp_*`).
 
 ## Planning des tables — fonctionnement normal (depuis la 12.4.1)
 
@@ -2216,7 +2233,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1264 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1295 colonnes.
 
 ### Codages principaux
 
