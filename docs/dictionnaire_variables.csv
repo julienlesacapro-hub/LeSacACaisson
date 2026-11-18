@@ -721,6 +721,10 @@ emb_tdm_air;Air visible à l’imagerie (Symptômes et prise en charge avant rec
 emb_tdm_isch;Ischémie ou œdème à l’imagerie avant recompression (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_evol;Évolution avant recompression (Symptômes et prise en charge avant recompression);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
 emb_delai;Délai événement → mise en pression (Délai jusqu’à la recompression);numerique, calcule (min)
+chr_info;Information délivrée au patient (Information du patient et compte rendu);"1 = OUI ; 0 = NON"
+chr_info_txt;Éléments expliqués (Information du patient et compte rendu);texte libre
+chr_accord;Décision du patient (Information du patient et compte rendu);"1 = Accepte le traitement ; 2 = Souhaite réfléchir ; 0 = Refuse le traitement"
+chr_copie_mt;Copie du compte rendu au médecin traitant (Information du patient et compte rendu);"1 = OUI ; 0 = NON"
 ex_cv_l_tachy;Anomalies cardio-vasculaires - Tachycardie (Examen général détaillé);"1 = coche ; 0 = non coche"
 ex_cv_l_brady;Anomalies cardio-vasculaires - Bradycardie (Examen général détaillé);"1 = coche ; 0 = non coche"
 ex_cv_l_irreg;Anomalies cardio-vasculaires - Pouls irrégulier (Examen général détaillé);"1 = coche ; 0 = non coche"

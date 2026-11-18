@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.5.1 (version d'essai)
+# ADP — accident de plongée, version 12.5.3 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1211 colonnes (1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
+Une ligne = une fiche. 1215 colonnes (1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -513,6 +513,7 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
 
 - **Saisie rapide** : un identifiant puis Entrée crée le patient, horodaté, dans le lieu d'arrivée ; la **douchette** fonctionne aussi (même règle d'extraction et même pseudonymisation que pour une fiche) ; la **numérotation automatique** crée d'un coup *n* patients `CO-01`, `CO-02`… (préfixe réglable). Un identifiant déjà saisi est refusé et sa ligne surlignée.
 - **Lieux** : un tableau par lieu, avec les patients qui s'y trouvent. Chaque changement de lieu (menu de la ligne, ou déplacement groupé des patients cochés) est **horodaté** ; « historique » donne le parcours d'un patient. Les lieux se paramètrent (ajout, renommage, retrait d'un lieu inutilisé), ainsi que trois rôles : lieu d'arrivée, lieu après une séance, sortie (le patient quitte l'afflux).
+- **Saisie des patients (depuis la 12.5.3)** : chaque patient a une **ligne compacte**, dans l'ordre d'arrivée (stable pendant la saisie) : bordure et statut en couleur, lieu, résumé (HbCO, neuro, installation, scope, contre-indication), séance, et en orange **ce qui reste à compléter** pour qu'il puisse être planifié. Un toucher l'**ouvre** en fiche à **gros boutons colorés**, faits pour le doigt ; toucher le choix actif l'efface. La fiche reste ouverte et l'écran ne bouge pas pendant la saisie (avant la 12.5.3, le tableau défilait de côté et revenait à gauche à chaque saisie sur téléphone). **Patient suivant** ouvre le prochain patient à compléter ; un patient qui vient d'être saisi s'ouvre aussitôt ; toucher un patient dans le tableau des lieux l'ouvre aussi.
 - **Par patient** : HbCO ou SpCO, signes neurologiques, indication d'OHB (indiquée, non indiquée, à discuter), **contre-indication** (à vérifier, absente, présente avec sa nature), installation (assis, allongé, réanimatoire avec IOT), scope, grossesse, table (automatique : A18 si signes neurologiques, A15 sinon ; version IOT pour un réanimatoire), heure de disponibilité (patient encore en transit), statut. « fiche CO » crée une fiche *Intoxication au monoxyde de carbone* préremplie (identifiant, SpCO, indication, contre-indication, IOT, grossesse, table et heure de mise en pression de la 1re séance validée).
 - **Chambres** (paramétrables : nom, lieu, configurations) — valeurs par défaut :
 
@@ -588,6 +589,29 @@ Le cadre **Consultation d'hyperbarie chronique (hors urgence)** s'ouvre, avec un
 - **Scanner thoracique sans injection suggéré** (règle du service) en cas d'**antécédent pulmonaire** (pneumothorax, asthme, ou contre-indication pulmonaire cochée), de **tabagisme actif ou sevré** (avec les PA), ou d'**âge supérieur à 50 ans** ; un bouton le passe en « Demandé, en attente » (il rejoint alors les examens en attente de résultat).
 - **Conclusion** : indication retenue (oui, non, à discuter) et son libellé ; contre-indication (absente ; relative, levée ou acceptée ; présente : OHB récusée) ; **prescription** : table (**A15** proposée), pauses à l'air, **prémédication** (DCI, dose et voie, moment de la prise), **protocole du service** (paramétrable : voir le planning des tables), fréquence, nombre de séances et réévaluation proposés d'après le protocole (modifiables), date de la **première séance**, créneau souhaité, **rendez-vous** de consultation. Les boutons *Planifier la cure* et *Rendez-vous du patient* relient la fiche au planning des tables.
 - La synthèse, le papier (deux pages propres, puis les pièces jointes, dont le courrier) et le fichier de données suivent. De nouvelles colonnes s'ajoutent au CSV (`chr_*`).
+
+### Compte rendu de consultation (depuis la 12.5.2)
+
+La consultation initiale d'hyperbarie chronique produit un **compte rendu de consultation**, distinct de la synthèse, qui porte **au moins** :
+
+| Élément | D'où il vient |
+|---|---|
+| Patient (civilité, nom, naissance, âge, dossier) | Identification |
+| **Médecin adresseur** (nom, spécialité, établissement, date du courrier) | Indication et adressage |
+| **Raison de l'orientation** (indication proposée, précisions, histoire) | Indication et adressage |
+| Antécédents, traitements, allergies, habitudes de vie (tabac en PA) | Terrain du patient |
+| **Examen clinique** (constantes, examen général détaillé, ORL) | Examen clinique général |
+| Contre-indications, scanner thoracique | Contre-indications à l'OHB |
+| **Indication retenue ou non**, contre-indication | Conclusion et prescription |
+| **Protocole prescrit** (table, pauses, prémédication, fréquence, séances, réévaluation) | Conclusion et prescription |
+| **Information du patient et sa décision** (accepte, souhaite réfléchir, refuse), avec les éléments expliqués | **Information du patient et compte rendu** (nouvel encart, onglet Conclusion) |
+| **Date de début du traitement**, rendez-vous de consultation | Conclusion et prescription |
+| Signature (examinateur) et copie au médecin traitant | Identification, contacts |
+
+- L'encart **Information du patient et compte rendu** dit ce qui manque (« Compte rendu incomplet : … ») tant qu'un élément obligatoire n'est pas renseigné ; il ouvre le compte rendu (*voir*) et le **copie** en texte enrichi (gras et titres conservés, comme la synthèse).
+- Le compte rendu est la **première page du document imprimé** (bouton PDF) de la consultation initiale ; les pages de saisie détaillées suivent.
+- *Planifier la cure* demande confirmation si la décision du patient n'est pas « accepte le traitement ».
+- Les phrases à cliquer des éléments expliqués (bénéfice et absence de garantie, déroulement, risques, possibilité d'interrompre, document remis) sont des **propositions à adapter au document d'information du service**.
 
 ## Planning des tables — fonctionnement normal (depuis la 12.4.1)
 
@@ -2155,7 +2179,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1211 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1215 colonnes.
 
 ### Codages principaux
 
