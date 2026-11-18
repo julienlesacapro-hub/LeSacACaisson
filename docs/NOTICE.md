@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.5.3 (version d'essai)
+# ADP — accident de plongée, version 12.6.1 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -22,7 +22,7 @@ plein écran, démarrage sans réseau. Voir *Installer sur téléphone et tablet
 | Fichier exploitable, incrémental | `donnees_neuro.csv` | Réécrit automatiquement à chaque enregistrement de fiche |
 
 Un seul CSV pour tous les patients, toutes les consultations et tous les types de document.
-Une ligne = une fiche. 1215 colonnes (1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
+Une ligne = une fiche. 1249 colonnes (1215 en 12.5.2 et 12.5.3, 1211 en 12.5.1, 1176 en 12.4.2, 1122 en 12.4.1, 1081 en 12.1.2 à 12.3.1, 1054 avant).
 
 Sans bouton de plus, chaque enregistrement écrit aussi la fiche entière au format **JSON** dans le
 dossier de données (un fichier par fiche), et chaque ouverture relit ce dossier pour la recherche d'un
@@ -433,7 +433,7 @@ et prépare les futures interfaces du logiciel (une par cadre). Cliquez la carte
 | Mixte (accident de désaturation et OPI) | `3` | actif : l'examen neurologique puis l'examen cardio-respiratoire sont mis en avant |
 | Intoxication au monoxyde de carbone | `4` | **actif depuis la 12.1.1** : interface propre, **proposée, à valider** (voir *L'intoxication au monoxyde de carbone*) |
 | Embolie gazeuse | `5` | **actif depuis la 12.5.1** : interface proposée, à valider (voir *Embolie gazeuse*) |
-| Autre urgence hyperbare | `6` | annoncé |
+| Autre urgence hyperbare | `6` | **actif depuis la 12.6.1** : interface proposée, à valider (voir *Autre urgence hyperbare*) |
 | Consultation d'hyperbarie chronique (hors urgence) | `7` | **actif depuis la 12.4.1** : interface proposée, à valider (voir *Consultation d'hyperbarie chronique*) |
 | Consultation spécialisée hors AMM (off-label) | `8` | annoncé |
 | Consultation d'expertise (professionnelle ou de loisir) | `9` | annoncé |
@@ -549,6 +549,32 @@ Une carte **Afflux massif** s'affiche en tête du choix du cadre (et dans le men
 - **Le fichier** : `plannings/astreinte.json` dans le **dossier de données**, comme les fiches. Il est relu et fusionné à l'ouverture, au bouton **Actualiser**, toutes les **60 secondes**, et réécrit après chaque modification. Plusieurs postes l'écrivent : chaque élément (rôle, personne, créneau, désignation) porte son heure de modification, une suppression est une marque, et la fusion garde le plus récent de chaque élément, si bien qu'aucune modification faite sur un autre poste n'est écrasée. **Il ne passe pas par Firebase.** Un poste sans dossier de données (iPhone, Firefox) garde sa copie et peut *exporter* ou *importer* (fusionner) le fichier.
 - **Délai** : un changement fait sur un poste arrive sur les autres au plus tard à leur prochaine lecture (une minute), ou tout de suite avec *Actualiser*.
 - Le fichier porte les **noms du personnel** : ne le versionnez pas dans un dépôt public.
+
+## Autre urgence hyperbare (cadre 6, depuis la 12.6.1)
+
+Le cadre **Autre urgence hyperbare** s'ouvre, avec une **interface proposée, à valider**. Ce qui est propre à la plongée est masqué, ainsi que l'examen neurologique détaillé (onglet 4), l'ASIA et le diagnostic de plongée ; les valeurs restent dans la fiche.
+
+| Onglet | Encarts |
+|---|---|
+| 1 · Administratif | identification ; mode d'entrée ; identité complémentaire ; contacts |
+| 2 · Anamnèse et indication | **Terrain du patient** ; **Indication et contexte** : indication, précisions, médecin demandeur, spécialité, service, heure de l'appel, **début des symptômes ou de l'événement** ; puis, selon l'indication, ses éléments propres ; histoire |
+| 3 · Examen clinique général | constantes, examen général détaillé, conscience, **ORL**, **contre-indications à l'OHB** (la même liste que la consultation programmée, sans scanner proposé) |
+| 4 · Examens complémentaires | actes, gaz du sang, biologie, ECG, imagerie |
+| 5 · Conclusion | **Décision d'OHB et délai** (délai début → mise en pression calculé ; OHB indiquée, non indiquée ou à discuter ; séances prévues, rythme, réévaluation), recompression, traitements, orientation |
+
+**Indications proposées** et leurs éléments propres :
+
+| Indication | Éléments propres |
+|---|---|
+| Infection nécrosante des tissus mous | localisation, débridement chirurgical et son heure, antibiothérapie et molécules, choc septique |
+| Écrasement de membre, fracture ouverte grave, syndrome des loges ; ischémie aiguë post-traumatique, lambeau ou réimplantation compromis | mécanisme et membre, classification de Gustilo, chirurgie, aponévrotomie, pouls distaux |
+| Surdité brusque | côté, perte auditive moyenne (dB), acouphènes, vertiges, corticothérapie |
+| Occlusion de l'artère centrale de la rétine | côté, acuité visuelle, avis ophtalmologique |
+| Fumées d'incendie (cyanure associé), brûlure étendue, abcès intracrânien, anémie aiguë sans transfusion possible, lésion radio-induite hémorragique, autre | précisions et histoire |
+
+- **Aucune table n'est cochée d'office** : elle dépend de l'indication et du protocole du service.
+- La liste des indications et leurs éléments sont **des propositions à valider par le service** ; aucun délai seuil n'est affiché (il dépend de l'indication).
+- La synthèse (« Indication et contexte », examen général, contre-indications, « Décision d'oxygénothérapie hyperbare ») et le papier (deux pages, titrées « URGENCE HYPERBARE ») suivent. De nouvelles colonnes s'ajoutent au CSV (`urg_*`).
 
 ## Embolie gazeuse (cadre 5, depuis la 12.5.1)
 
@@ -2179,7 +2205,7 @@ d = pd.read_csv("donnees_neuro.csv", sep=";", encoding="utf-8-sig")
 
 - Séparateur par défaut : point-virgule. Modifiable dans **Plus** › **Exporter les données** (virgule pour R et Python).
 - **Cellule vide = valeur manquante (NA).** Aucune valeur par défaut n'est inventée.
-- `dictionnaire_variables.csv` donne le libellé et le codage des 1215 colonnes.
+- `dictionnaire_variables.csv` donne le libellé et le codage des 1249 colonnes.
 
 ### Codages principaux
 
