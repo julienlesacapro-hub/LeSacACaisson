@@ -1531,12 +1531,14 @@ const CADRES = [
   d:'Interface proposée : indication (infection nécrosante, écrasement, ischémie aiguë, surdité brusque, occlusion de l’artère centrale de la rétine…), demande et contexte, contre-indications, décision d’OHB, délai jusqu’à la recompression (à valider).'},
  {v:7, id:'chronique', l:'Consultation d’hyperbarie chronique (hors urgence)', c:'Chronique', actif:1, g:'programmee',
   d:'Interface proposée : indication et adressage (courrier joint), terrain, examen général et ORL, contre-indications à l’OHB, prescription de la cure et rendez-vous (à valider).'},
- {v:8, id:'offlabel',  l:'Consultation spécialisée hors AMM (off-label)',      c:'Off-label', actif:0, g:'programmee', d:'Prochaine version.'},
+ {v:8, id:'offlabel',  l:'Consultation spécialisée hors AMM (off-label)',      c:'Off-label', actif:1, g:'programmee',
+  d:'Interface proposée : celle de l’hyperbarie chronique, plus la justification de l’indication (rationnel, niveau de preuve, échec des traitements), l’avis collégial, l’information sur le caractère hors recommandations, le consentement écrit et les critères d’évaluation (à valider).'},
  {v:9, id:'expertise', l:'Consultation d’expertise (professionnelle ou de loisir)', c:'Expertise', actif:0, g:'programmee', d:'Prochaine version.'}
 ];
 const CADRE_OPTS = CADRES.filter(c=>c.actif).map(c=>({v:c.v, l:c.l}));
 const cadreInfo = v => CADRES.find(c=>c.v===v) || null;
 const cadreOf = d => (d && d.cadre) || 1;
+const chrLike = d => { const c = cadreOf(d); return c === 7 || c === 8; };          // hyperbarie chronique et consultation hors AMM : la même consultation programmée (12.7.1)
 /* Tables de recompression, avec leur durée en minutes (m). La durée sert à proposer
    l'heure de fin à partir de l'heure de mise en pression ; l'heure de fin reste modifiable.
    Le code 9 couvre une table hors liste. */
@@ -1969,6 +1971,15 @@ const EX_LOCO_L = [
    Indication (liste proposée), médecin demandeur, début des symptômes ou de l'événement, éléments propres à l'indication, examen général et ORL, contre-indications à l'OHB,
    décision d'OHB (séances prévues, rythme, réévaluation), délai début → mise en pression.
    ===================================================================== */
+/* =====================================================================
+   CONSULTATION HORS AMM (cadre 8) — 12.7.1, interface PROPOSÉE (à valider)
+   La consultation d'hyperbarie chronique (cadre 7), plus : la justification de l'indication (statut, rationnel, niveau de preuve, références, échec des traitements conventionnels),
+   l'avis collégial, l'information spécifique sur le caractère hors recommandations, le consentement écrit, la prise en charge, les critères d'évaluation et d'arrêt.
+   ===================================================================== */
+const OFF_STATUT = [{v:1,l:'Hors des indications reconnues'},{v:2,l:'Indication reconnue, situation particulière'},{v:3,l:'Dans un protocole de recherche'}];
+const OFF_PREUVE = [{v:1,l:'Essais randomisés'},{v:2,l:'Études observationnelles'},{v:3,l:'Séries de cas'},{v:4,l:'Avis d’experts'},{v:5,l:'Aucune donnée publiée'}];
+const OFF_RCP = [{v:1,l:'Avis collégial favorable',c:'v-ok'},{v:2,l:'Avis collégial défavorable',c:'v-ab'},{v:3,l:'À demander',c:'v-wn'}];
+const OFF_FIN = [{v:1,l:'Prise en charge habituelle'},{v:2,l:'Prise en charge dérogatoire ou à la charge du patient'},{v:3,l:'À préciser'}];
 const URG_INDIC = [
  {v:1, l:'Infection nécrosante des tissus mous (gangrène gazeuse, fasciite nécrosante)'}, {v:2, l:'Écrasement de membre, fracture ouverte grave, syndrome des loges'},
  {v:3, l:'Ischémie aiguë post-traumatique, lambeau ou réimplantation compromis'}, {v:4, l:'Surdité brusque'}, {v:5, l:'Occlusion de l’artère centrale de la rétine'},
@@ -2004,11 +2015,11 @@ const SPEC = [
   {k:'sexe',      l:'Sexe',    t:'choice', o:[{v:1,l:'M'},{v:2,l:'F'},{v:3,l:'Autre'}], not:[4]},
   {k:'ddn',       l:'Date de naissance', t:'date', pii:1, not:[4]},
   {k:'age',       l:'Âge', t:'calc', hint:'Calculé à la date de l’examen ; en années et mois pour un mineur', not:[4]},
-  {k:'date_acc',  l:"Date de l'accident", t:'date', not:[4], nocadres:[5,6,7]},
-  {k:'heure_acc', l:"Heure de l'accident", t:'time', not:[4], nocadres:[5,6,7]},
+  {k:'date_acc',  l:"Date de l'accident", t:'date', not:[4], nocadres:[5,6,7,8]},
+  {k:'heure_acc', l:"Heure de l'accident", t:'time', not:[4], nocadres:[5,6,7,8]},
   {k:'date_ex',   l:"Date de l'examen", lab4:'Date de la séance', t:'date', req:1},
   {k:'heure_ex',  l:"Heure de l'examen", t:'time', req:1, not:[4]},
-  {k:'delai_min', l:'Délai accident → examen (min)', t:'calc', not:[2,3,4], nocadres:[5,6,7]},
+  {k:'delai_min', l:'Délai accident → examen (min)', t:'calc', not:[2,3,4], nocadres:[5,6,7,8]},
   {k:'examinateur',l:'Examinateur', t:'txt', list:'exlist'},
   {k:'num_ex',    l:"N° d'examen pour ce patient", t:'calc', hint:'Une séance de recompression sans examen porte le numéro du dernier examen et une lettre : EX3b, EX3c…'}
 ]},
@@ -2025,7 +2036,7 @@ const SPEC = [
   {k:'email', l:'Adresse e-mail', t:'txt', pii:1, mail:1}
 ]},
 
-{nocadres:[7], id:'entree', t:"Mode d'entrée et prise en charge initiale", cols:2, page:1, only:[1], f:[
+{nocadres:[7,8], id:'entree', t:"Mode d'entrée et prise en charge initiale", cols:2, page:1, only:[1], f:[
   {k:'ad_num', cadres:[1,2,3], l:'Accident de plongée n°', t:'txt', hint:'Numéro de la série du service'},
   {k:'h_arrivee', t:'head', l:'Arrivée au service', full:1},
   {k:'date_arr', l:"Date d'arrivée", t:'date',
@@ -2062,7 +2073,7 @@ const SPEC = [
   {k:'delai_symp_pec', l:'Délai 1ers symptômes → prise en charge (min)', t:'calc', full:1}
 ]},
 
-{id:'plongeur', t:'Le plongeur', tc:{4:'Terrain du patient', 5:'Terrain du patient', 6:'Terrain du patient', 7:'Terrain du patient'}, cols:2, page:2, only:[1], f:[
+{id:'plongeur', t:'Le plongeur', tc:{4:'Terrain du patient', 5:'Terrain du patient', 6:'Terrain du patient', 7:'Terrain du patient', 8:'Terrain du patient'}, cols:2, page:2, only:[1], f:[
   {k:'h_pident', t:'head', l:'Poids, taille et IMC', full:1},
   {k:'poids', l:'Poids (kg)', t:'num', min:20, max:250, unit:'kg'},
   {k:'taille', l:'Taille (cm)', t:'num', min:100, max:230, unit:'cm'},
@@ -2305,7 +2316,7 @@ const SPEC = [
    phr:['Douleur articulaire (bend).','Épaule.','Coude.','Genou.','Hanche.','Impotence fonctionnelle.','Douleurs musculaires, zones de compression (rhabdomyolyse).','Phlyctènes de compression.']}
 ]},
 
-{nocadres:[7], id:'consc', page:3, t:'Conscience', cols:1, norm:{avpu:1,gcs_y:4,gcs_v:5,gcs_m:6}, f:[
+{nocadres:[7,8], id:'consc', page:3, t:'Conscience', cols:1, norm:{avpu:1,gcs_y:4,gcs_v:5,gcs_m:6}, f:[
   {k:'avpu', l:'AVPU', t:'choice', o:[{v:1,l:'Alert',c:'v-ok'},{v:2,l:'Verbal',c:'v-wn'},{v:3,l:'Pain',c:'v-ab'},{v:4,l:'Unresponsive',c:'v-ab'}]},
   {k:'gcs_y', help:'gcs', l:'Glasgow — Ouverture des yeux (Y)', t:'choice', o:gcs(4)},
   {k:'gcs_v', help:'gcs', l:'Glasgow — Réponse verbale (V)',    t:'choice', o:gcs(5)},
@@ -2314,7 +2325,7 @@ const SPEC = [
    hint:'Non calculé si une modalité est cotée NC'}
 ]},
 
-{nocadres:[6,7], id:'fsup', page:3, t:'Fonctions supérieures', cols:1,
+{nocadres:[6,7,8], id:'fsup', page:3, t:'Fonctions supérieures', cols:1,
  norm:{fs_comport:0,fs_dts:0,fs_parole:0,fs_visuel:0,fs_audition:0,fs_acouph:0,fs_vertiges:0,nys:0,vns:0,
        pup_sym:1,pup_aniso:0,pup_myd:0,pup_myo:0,pup_rpm:1}, f:[
   {k:'h_pup', t:'head', l:'Examen pupillaire', full:1,
@@ -2355,7 +2366,7 @@ const SPEC = [
   {k:'vns_niv_regard', cadres:[1,2,3], l:'Position(s) du regard', t:'multi', o:REGARD, dep:['vns_niv',[1]], sub:1}
 ]},
 
-{id:'orl', cadres:[1,2,3,6,7], page:3, t:'ORL et barotraumatisme', cols:2, note:HAINES_TXT, tail:()=>orlBox(),
+{id:'orl', cadres:[1,2,3,6,7,8], page:3, t:'ORL et barotraumatisme', cols:2, note:HAINES_TXT, tail:()=>orlBox(),
  norm:{oto_D:0,oto_G:0,valsalva_D:2,valsalva_G:2,weber:0,rinne_D:1,rinne_G:1}, f:[
   {k:'oto_D', l:'Otoscopie — oreille DROITE',  t:'choice', o:HAINES, help:'oto'},
   {k:'oto_G', l:'Otoscopie — oreille GAUCHE',  t:'choice', o:HAINES, help:'oto'},
@@ -2370,7 +2381,7 @@ const SPEC = [
    phr:['Otalgie droite','Otalgie gauche','Otorragie droite','Otorragie gauche','Plénitude auriculaire','Autophonie','Vertige positionnel déclenché au Valsalva','Barotraumatisme sinusien','Épistaxis']}
 ]},
 
-{nocadres:[6,7], id:'sfonc', page:3, t:'Signes fonctionnels', cols:1, norm:{sf_ceph:0,sf_rachis:0,sf_subj:0,eva_type:2,eva_score:0}, f:[
+{nocadres:[6,7,8], id:'sfonc', page:3, t:'Signes fonctionnels', cols:1, norm:{sf_ceph:0,sf_rachis:0,sf_subj:0,eva_type:2,eva_score:0}, f:[
   {k:'sf_ceph',   l:'Céphalées', t:'choice', o:ON},
   {k:'sf_rachis', cadres:[1,2,3], l:'Douleur rachidienne', t:'choice', o:ON},
   {k:'sf_rachis_loc', cadres:[1,2,3], l:'Localisation', t:'multi', o:[{v:'cervicale',l:'Cervicale'},{v:'dorsale',l:'Dorsale'},{v:'lombaire',l:'Lombaire'}], dep:['sf_rachis',[1]], sub:1},
@@ -2385,7 +2396,7 @@ const SPEC = [
 
 {id:'subj', cadres:[1,2,3], page:3, t:'Signes subjectifs — localisation', custom:'subj', cols:1, when:()=>REC.d.sf_subj!==0, f:[]},
 
-{nocadres:[6,7], id:'refsup', page:4, t:'Réflexes — membres supérieurs', cols:2,
+{nocadres:[6,7,8], id:'refsup', page:4, t:'Réflexes — membres supérieurs', cols:2,
  norm:{ref_bicip_D:1,ref_bicip_G:1,ref_tricip_D:1,ref_tricip_G:1,hoffman_D:0,hoffman_G:0}, f:[
   {k:'ref_bicip_D', help:'rot', l:'Bicipital DROIT',  t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'ref_bicip_G', l:'Bicipital GAUCHE', t:'choice', o:REF, flags:RFLAGS, copyref:1},
@@ -2395,7 +2406,7 @@ const SPEC = [
   {k:'hoffman_G', cadres:[1,2,3], help:'hoffmann', l:'Signe de Hoffmann GAUCHE', t:'choice', o:ON, hint:'OUI = pathologique'}
 ]},
 
-{nocadres:[6,7], id:'refinf', page:4, t:'Réflexes — membres inférieurs', cols:2,
+{nocadres:[6,7,8], id:'refinf', page:4, t:'Réflexes — membres inférieurs', cols:2,
  norm:{ref_rot_D:1,ref_rot_G:1,ref_ach_D:1,ref_ach_G:1,bbk_D:0,bbk_G:0,trep_pied:0,trep_rot:0,contract:0}, f:[
   {k:'ref_rot_D', help:'rot', l:'Rotulien DROIT',  t:'choice', o:REF, flags:RFLAGS, copyref:1},
   {k:'ref_rot_G', l:'Rotulien GAUCHE', t:'choice', o:REF, flags:RFLAGS, copyref:1},
@@ -2417,7 +2428,7 @@ const SPEC = [
    phr:['Deltoïde','Biceps brachial','Avant-bras','Éminence thénar','Muscles intercostaux','Paravertébraux lombaires','Quadriceps','Jumeaux / mollet','Loge antéro-externe de jambe','Muscles de la face']}
 ]},
 
-{nocadres:[6,7], id:'force', page:4, t:'Motricité et force motrice', cols:2, note:MRC_TXT+
+{nocadres:[6,7,8], id:'force', page:4, t:'Motricité et force motrice', cols:2, note:MRC_TXT+
  ' · Les dix myotomes clés sont ceux de la cotation ASIA (ISNCSCI).',
  tail:()=>forceBox(),
  norm:{par_fac:0,barre:0,ming:0,
@@ -2493,7 +2504,7 @@ const SPEC = [
   {k:'mict_residu_post', help:'sphincter', l:'Résidu post-mictionnel (mL)', t:'num', min:0, max:3000, unit:'mL'}
 ]},
 
-{nocadres:[6,7], id:'coord', page:4, t:'Coordination, équilibre et marche', cols:1,
+{nocadres:[6,7,8], id:'coord', page:4, t:'Coordination, équilibre et marche', cols:1,
  norm:{vertic:1,equil_yo:1,equil_yf:1,marche:1,marche_yo:0,marche_yf:0,talon_genou:1,doigt_nez:1}, f:[
   {k:'vertic', l:'Verticalisation possible', t:'choice', o:NO},
   {k:'equil_yo', l:'Équilibre statique conservé — yeux OUVERTS', t:'choice', o:NO, dep:['vertic',[1]], sub:1},
@@ -2544,7 +2555,7 @@ const SPEC = [
 ]},
 
 /* La conclusion de l'examen clinique ferme l'onglet « Examen neurologique » */
-{nocadres:[6,7], id:'concl_ex', page:4, t:"Conclusion de l'examen clinique", cols:1, noghost:1, f:[
+{nocadres:[6,7,8], id:'concl_ex', page:4, t:"Conclusion de l'examen clinique", cols:1, noghost:1, f:[
   {k:'conclusion', l:"Conclusion de l'examen", t:'choice',
    o:[{v:1,l:'Examen neurologique normal',c:'v-ok'},{v:2,l:'Examen neurologique anormal',c:'v-ab'},{v:3,l:'À recontrôler',c:'v-wn'}]}
 ]},
@@ -2564,7 +2575,7 @@ const SPEC = [
    Sur une consultation de suivi ou de sortie, seuls l'anamnèse, l'examen général et
    l'examen neurologique sont repris (en gris) ; les examens complémentaires et la
    conclusion sont nécessairement différents, et un examen coché de nouveau est un nouvel examen. */
-{nocadres:[7], id:'recomp', t:'Recompression', cols:2, page:6, noghost:1, f:[
+{nocadres:[7,8], id:'recomp', t:'Recompression', cols:2, page:6, noghost:1, f:[
   {k:'tb_table', l:'Table utilisée', t:'choice', o:TABLES, full:1, hint:'B18 proposée d’office sur une consultation initiale, modifiable. Une recompression cotée est une séance ; la B18 d’office n’est comptée (compte rendu, fichiers Excel) que si l’encart est rempli : heure de mise en pression ou de fin, ou complication thérapeutique'},
   {k:'tb_table_autre', l:'Table — à préciser', t:'txt', wide:1, full:1, sub:1, dep:['tb_table',[9]]},
   {k:'tb_duree', l:'Durée de la table (min)', t:'calc', unit:'min', dep:['tb_table',[1,2,3,4,5,6,7,8]],
@@ -2701,7 +2712,7 @@ const SPEC = [
 
 /* Diagnostic retenu : un ou plusieurs diagnostics associés, avec leurs types, et un diagnostic
    principal quand plusieurs sont retenus et que le principal est déterminé. */
-{nocadres:[5,6,7], id:'diagnostic', page:6, t:'Diagnostic retenu', cols:1, noghost:1, f:[
+{nocadres:[5,6,7,8], id:'diagnostic', page:6, t:'Diagnostic retenu', cols:1, noghost:1, f:[
   {k:'dg_liste', l:'Diagnostic(s) retenu(s)', t:'multi', o:DG, full:1,
    hint:'Plusieurs diagnostics peuvent être associés'},
   {k:'dg_add_types', l:'Accident de désaturation — type', t:'multi', o:DG_ADD, full:1, sub:1, dep:['dg_liste',['add']]},
@@ -2873,7 +2884,7 @@ const SPEC = [
   {k:'co_delai_ohb', l:'Délai fin de l’exposition → mise en pression', t:'calc', unit:'min', full:1, hint:'Calculé : fin de l’exposition (onglet Circonstances) → heure de mise en pression'}
 ]},
 /* 12.4.1 : consultation d'hyperbarie chronique (cadre 7) — indication et adressage, contre-indications à l'OHB, conclusion et prescription de la cure. Écrites en fin de SPEC : les colonnes existantes ne bougent pas. */
-{id:'chr_adr', t:'Indication et adressage', cols:2, page:2, only:[1], cadres:[7], f:[
+{id:'chr_adr', t:'Indication et adressage', cols:2, page:2, only:[1], cadres:[7,8], f:[
   {k:'chr_indic', l:'Indication proposée', t:'select', o:CHR_INDIC, full:1},
   {k:'chr_indic_txt', l:'Indication — précisions', t:'txt', wide:1, full:1, nofill:1, phr:['Territoire irradié :','Dose et date de la radiothérapie :','Date de début des symptômes :']},
   {k:'h_chr_adr', t:'head', l:'Médecin adresseur', full:1},
@@ -2886,12 +2897,12 @@ const SPEC = [
   {k:'chr_courrier_box', t:'html', fn:()=>chrCourrierBox(), full:1, nofill:1},
   {k:'chr_histoire', l:'Histoire de la maladie', t:'area', wide:1, full:1, nofill:1}
 ]},
-{id:'chr_ci', t:'Contre-indications à l’OHB', cols:1, page:3, after:'orl', cadres:[6,7], noghost:1, f:[
+{id:'chr_ci', t:'Contre-indications à l’OHB', cols:1, page:3, after:'orl', cadres:[6,7,8], noghost:1, f:[
   {k:'chr_scan_box', t:'html', fn:()=>chrScanBox(), full:1, nofill:1},
   {k:'chr_ci_l', l:'Contre-indications retrouvées', t:'multi', o:CHR_CI, excl:{aucune:CHR_CI.filter(x=>x.v!=='aucune').map(x=>x.v)}, full:1},
   {k:'chr_ci_txt', l:'Précisions', t:'txt', wide:1, full:1, nofill:1}
 ]},
-{id:'chr_presc', t:'Conclusion et prescription d’OHB', cols:2, page:6, cadres:[7], noghost:1, f:[
+{id:'chr_presc', t:'Conclusion et prescription d’OHB', cols:2, page:6, cadres:[7,8], noghost:1, f:[
   {k:'chr_ind_ret', l:'Indication retenue', t:'choice', o:[{v:1,l:'Oui',c:'v-ok'},{v:0,l:'Non',c:'v-ab'},{v:2,l:'À discuter',c:'v-wn'}], full:1},
   {k:'chr_ind_ret_txt', l:'Indication retenue — libellé', t:'txt', wide:1, full:1, nofill:1, hint:'Proposé d’après l’indication de l’onglet Anamnèse, modifiable'},
   {k:'chr_ci_concl', l:'Contre-indication à l’OHB', t:'choice', o:[{v:0,l:'Absente',c:'v-ok'},{v:1,l:'Relative, levée ou acceptée',c:'v-wn'},{v:2,l:'Présente : OHB récusée',c:'v-ab'}], full:1},
@@ -2935,6 +2946,25 @@ const SPEC = [
   {k:'emb_tdm_air', l:'Air visible à l’imagerie', t:'choice', o:ON, hint:'Scanner cérébral ou thoracique ; le résultat détaillé se note dans Examens complémentaires'},
   {k:'emb_tdm_isch', l:'Ischémie ou œdème à l’imagerie avant recompression', t:'choice', o:ON, hint:'Associés à une évolution moins favorable (Tekle 2013)'},
   {k:'emb_evol', l:'Évolution avant recompression', t:'choice', o:EVOL, full:1}
+]},
+{id:'off_just', t:'Justification de l’indication hors AMM', cols:2, page:2, after:'chr_adr', only:[1], cadres:[8], f:[
+  {k:'off_patho', l:'Pathologie, indication demandée', t:'txt', wide:1, full:1},
+  {k:'off_statut', l:'Statut de l’indication', t:'choice', o:OFF_STATUT, full:1, hint:'Au regard de la liste des indications reconnues (ECHM 2016)'},
+  {k:'off_rationnel', l:'Rationnel, justification', t:'area', wide:1, full:1, nofill:1},
+  {k:'off_preuve', l:'Meilleur niveau de preuve disponible', t:'choice', o:OFF_PREUVE, full:1},
+  {k:'off_biblio', l:'Références', t:'area', wide:1, full:1, nofill:1},
+  {k:'off_echec', l:'Échec ou contre-indication des traitements conventionnels', t:'choice', o:ONA, full:1},
+  {k:'off_echec_txt', l:'Traitements déjà essayés', t:'area', wide:1, full:1, sub:1, nofill:1, dep:['off_echec',[1]]}
+]},
+{id:'off_decision', t:'Avis collégial, consentement et évaluation', cols:2, page:6, after:'chr_presc', cadres:[8], noghost:1, f:[
+  {k:'off_rcp', l:'Avis collégial (RCP, staff)', t:'choice', o:OFF_RCP, full:1},
+  {k:'off_rcp_date', l:'Date de l’avis', t:'date', sub:1, dep:['off_rcp',[1,2]]},
+  {k:'off_rcp_txt', l:'Participants, précisions', t:'txt', wide:1, full:1, sub:1, nofill:1, dep:['off_rcp',[1,2]]},
+  {k:'off_info', l:'Information spécifique délivrée', t:'choice', o:ONA, full:1, hint:'Caractère hors recommandations, bénéfice non démontré, alternatives, possibilité d’arrêter à tout moment'},
+  {k:'off_consent', l:'Consentement écrit recueilli', t:'choice', o:ONA, full:1},
+  {k:'off_fin', l:'Prise en charge financière', t:'choice', o:OFF_FIN, full:1},
+  {k:'off_objectif', l:'Critères d’évaluation (objectif mesurable)', t:'area', wide:1, full:1, nofill:1, phr:['Douleur (EVA) à chaque réévaluation.','Évolution de la surface de la plaie (photographies datées).','Score fonctionnel avant et après la cure.']},
+  {k:'off_arret', l:'Critères d’arrêt', t:'area', wide:1, full:1, nofill:1, phr:['Absence d’amélioration à la réévaluation.','Effet indésirable.','Souhait du patient.']}
 ]},
 {id:'urg_ind', t:'Indication et contexte', cols:2, page:2, only:[1], cadres:[6], f:[
   {k:'urg_indic', l:'Indication', t:'select', o:URG_INDIC, full:1},
@@ -2986,7 +3016,7 @@ const SPEC = [
   {k:'emb_delai', l:'Délai événement → mise en pression', t:'calc', unit:'min', full:1, hint:'Calculé : date et heure de l’événement → heure de mise en pression'}
 ]},
 /* 12.5.2 : information du patient, acceptation du traitement, compte rendu de consultation (hyperbarie chronique) */
-{id:'chr_cr', t:'Information du patient et compte rendu', cols:1, page:6, after:'chr_presc', cadres:[7], noghost:1, f:[
+{id:'chr_cr', t:'Information du patient et compte rendu', cols:1, page:6, after:'chr_presc', cadres:[7,8], noghost:1, f:[
   {k:'chr_info', l:'Information délivrée au patient', t:'choice', o:ONA, full:1, dep:['chr_ind_ret',[1]], hint:'Intérêt attendu, déroulement des séances, risques et limites de l’OHB'},
   {k:'chr_info_txt', l:'Éléments expliqués', t:'area', wide:1, full:1, sub:1, nofill:1, dep:['chr_info',[1]],
    phr:['Bénéfice attendu et absence de garantie de résultat.','Déroulement : séances en caisson, durée, assiduité nécessaire.',
@@ -3391,7 +3421,7 @@ function defautsDe(t, cad){
   const m = DEFAUTS[t]; if(!m) return null;
   const c = cad != null ? cad : ((REC && REC.d) ? cadreOf(REC.d) : 1);
   if(c===4) return {};
-  if(c===7) return Number(t)===1 ? {chr_table:1} : {};
+  if(c===7 || c===8) return Number(t)===1 ? {chr_table:1} : {};
   if(c===5) return Number(t)===1 ? {tb_table:DEF_TABLE} : {};
   if(c===6) return {};                                                                    // autre urgence : aucune table d'office (elle dépend de l'indication)                             // embolie gazeuse : la table proposée d'office (B18), à valider ; rien de la plongée                                    // hyperbarie chronique : A15 proposée pour la cure, rien de la plongée                                                                    // intoxication au CO : aucune valeur d'office propre à la plongée (table, aspirine, bilans, profil, déséquipement, score MJOAS de sortie)
   if(Number(t)===1 && c===2){ const o = Object.assign({}, m); delete o.tb_table; return o; }            // OPI : pas de table de recompression d'office
@@ -3431,7 +3461,7 @@ function opiSeul(d){
   return cadreOf(d) === 2;
 }
 /* pas de score ASIA pour l'OPI seul (12.1.1) ni pour l'intoxication au CO (cadre 4) */
-function sansAsia(d){ return opiSeul(d) || [4,5,6,7].indexOf(cadreOf(d))>=0; }
+function sansAsia(d){ return opiSeul(d) || [4,5,6,7,8].indexOf(cadreOf(d))>=0; }
 /* pas de score ASIA : rien n'est calculé ni enregistré */
 function asiaOff(){
   const d = REC.d;
@@ -4689,15 +4719,15 @@ const PAGES = [
  {n:1, l:'Administratif', c:'Administratif', s:'identification, identité, entrée, contacts',
   s2:'identification de la consultation'},
  {n:2, l:'Anamnèse et plongée', c:'Anamnèse', s:'plongeur, plongée, facteurs, anamnèse',
-  lc:{4:'Anamnèse et intoxication', 5:'Anamnèse et circonstances', 6:'Anamnèse et indication', 7:'Anamnèse et indication'}, sc:{4:'terrain, circonstances, symptômes', 5:'terrain, circonstances, symptômes', 6:'terrain, indication, contexte', 7:'terrain, indication, adressage'}},
+  lc:{4:'Anamnèse et intoxication', 5:'Anamnèse et circonstances', 6:'Anamnèse et indication', 7:'Anamnèse et indication', 8:'Anamnèse et justification'}, sc:{4:'terrain, circonstances, symptômes', 5:'terrain, circonstances, symptômes', 6:'terrain, indication, contexte', 7:'terrain, indication, adressage', 8:'terrain, adressage, justification'}},
  {n:3, l:'Examen clinique général', c:'Examen', s:'constantes, conscience, ORL, vestibulaire, cutané',
-  sc:{4:'constantes, conscience, examen par appareil', 5:'constantes, examen par appareil, conscience', 6:'constantes, examen par appareil, ORL, contre-indications', 7:'constantes, examen par appareil, ORL, contre-indications'}},
+  sc:{4:'constantes, conscience, examen par appareil', 5:'constantes, examen par appareil, conscience', 6:'constantes, examen par appareil, ORL, contre-indications', 8:'constantes, examen par appareil, ORL, contre-indications', 7:'constantes, examen par appareil, ORL, contre-indications'}},
  {n:4, l:'Examen neurologique', c:'Neuro', s:'réflexes, force, sensibilités, scores',
   sc:{4:'réflexes, force, coordination, cognition', 5:'réflexes, force, coordination'}},
  {n:5, l:'Examens complémentaires', c:'Examens compl.', s:'actes, gaz du sang, biologie, ECG, imagerie',
   sc:{4:'HbCO, gaz du sang, biologie, imagerie'}},
  {n:6, l:'Conclusion et évolution', c:'Conclusion', s:'recompression, traitements, diagnostic, orientation',
-  s2:'évolution, diagnostic, orientation, sortie', sc:{4:'gravité, OHB, traitements, diagnostic, suivi', 5:'délai, recompression, traitements, orientation', 6:'décision d’OHB, délai, recompression, orientation', 7:'conclusion, prescription, rendez-vous'}}
+  s2:'évolution, diagnostic, orientation, sortie', sc:{4:'gravité, OHB, traitements, diagnostic, suivi', 5:'délai, recompression, traitements, orientation', 6:'décision d’OHB, délai, recompression, orientation', 7:'conclusion, prescription, rendez-vous', 8:'avis collégial, consentement, prescription'}}
 ];
 let PAGE = 1;
 let TYPE_PROPOSE = false;   /* le type a ete deduit du rang de l'examen */
@@ -7878,7 +7908,7 @@ function examFocus(d, SY){
     const cd = cadreOf(d);
     if(cd===2) car = true;
     else if(cd===3 || cd===4 || cd===5){ neu = true; car = true; }
-    else if(cd===6 || cd===7) gen = true;
+    else if(cd===6 || cd===7 || cd===8) gen = true;
     else if(SY.neu.pos.length) neu = true;
     else if(SY.gen.pos.length) gen = true;
   }
@@ -8013,7 +8043,7 @@ function narrativeBlocks(){
   /* libellé d'une option, ou texte « à préciser » quand le menu porte le code 99 ; au milieu d'une phrase, sans majuscule */
   const niv = k => d[k]==null ? '' : (d[k]===99 ? flat(d[k+'_autre']||'autre') : lc1(lab(k)));
   const multi = k => Array.isArray(d[k]) ? d[k] : [];
-  const CO4 = cadreOf(d)===4, CH7 = cadreOf(d)===7, EG5 = cadreOf(d)===5, UR6 = cadreOf(d)===6;          // CH7 : hyperbarie chronique (12.4.1) ; intoxication au monoxyde de carbone (12.1.1) : le patient, les circonstances, les symptômes remplacent le plongeur et la plongée
+  const CO4 = cadreOf(d)===4, CH7 = chrLike(d), EG5 = cadreOf(d)===5, UR6 = cadreOf(d)===6;          // CH7 : hyperbarie chronique (12.4.1) ; intoxication au monoxyde de carbone (12.1.1) : le patient, les circonstances, les symptômes remplacent le plongeur et la plongée
 
   /* ---------- en-tête, comme sur la feuille d'observation ---------- */
   const titre = TY===2 ? 'Observation de suivi' : TY===3 ? 'Compte rendu de séjour' : 'Observation d’entrée';
@@ -8125,7 +8155,7 @@ function narrativeBlocks(){
     if(d.ff_visib) env.push({1:'bonne visibilité', 2:'mauvaise visibilité', 3:'visibilité inférieure à 1 m'}[d.ff_visib]);
     if(d.ff_env) env.push(lc1(flat(d.ff_env).replace(/[.;,:\s]+$/,'')));
     if(env.length) l1.push(fin('Conditions environnementales : '+env.join(', ')));
-    if(CO4) sect('Circonstances de l’intoxication', coCircTexte(d), true); else if(CH7) sect('Indication et adressage', chrAdrTexte(d), true); else if(EG5) sect('Circonstances de l’embolie', embCircTexte(d), true); else if(UR6) sect('Indication et contexte', urgCtxTexte(d), true); else sect('La plongée', [l1.filter(Boolean).join(' ')], true);
+    if(CO4) sect('Circonstances de l’intoxication', coCircTexte(d), true); else if(CH7){ sect('Indication et adressage', chrAdrTexte(d), true); if(cadreOf(d)===8){ const oj = offJustTexte(d); if(oj.length) sect('Indication hors AMM', oj, false); } } else if(EG5) sect('Circonstances de l’embolie', embCircTexte(d), true); else if(UR6) sect('Indication et contexte', urgCtxTexte(d), true); else sect('La plongée', [l1.filter(Boolean).join(' ')], true);
 
     /* ce qui s'est passé, puis les premiers signes */
     const ls = [];
@@ -8337,7 +8367,8 @@ function narrativeBlocks(){
   if(dgt) sect('Diagnostic retenu', [dgt], true);
   if(EG5){ const dl = embDelaiTexte(d); if(dl.length) sect('Délai jusqu’à la recompression', dl, false); }
   if(UR6){ const ci = chrCiTexte(d); if(ci.length) sect('Contre-indications à l’oxygénothérapie hyperbare', ci, false); sect('Décision d’oxygénothérapie hyperbare', urgConclTexte(d), true); }
-  if(CH7){ sect('Contre-indications à l’oxygénothérapie hyperbare', chrCiTexte(d), false); sect('Conclusion et prescription', chrPrescTexte(d), true); }
+  if(CH7){ sect('Contre-indications à l’oxygénothérapie hyperbare', chrCiTexte(d), false); sect('Conclusion et prescription', chrPrescTexte(d), true);
+    if(cadreOf(d)===8){ const od = offDecTexte(d); if(od.length) sect('Avis collégial, consentement et évaluation', od, false); } }
   if(CO4){ const ck = coCinetTexte(d); if(ck.length) sect('Cinétique de la carboxyhémoglobine (estimation)', ck, false); }
   if(CO4) sect('Gravité et indication d’oxygénothérapie hyperbare', coGraviteTexte(d), false);
 
@@ -9415,9 +9446,9 @@ function psco(){
    une prise en charge en urgence, un suivi sous traitement et un compte rendu
    de séjour ne racontent pas la même chose. */
 function docTitre(){
-  const t = REC.d.fiche_type || 1, sj = cadreOf(REC.d)===4 ? 'INTOXICATION AU MONOXYDE DE CARBONE' : cadreOf(REC.d)===7 ? 'OXYGÉNOTHÉRAPIE HYPERBARE PROGRAMMÉE' : cadreOf(REC.d)===5 ? 'EMBOLIE GAZEUSE' : cadreOf(REC.d)===6 ? 'URGENCE HYPERBARE' : 'ACCIDENT DE PLONGÉE';
+  const t = REC.d.fiche_type || 1, sj = cadreOf(REC.d)===4 ? 'INTOXICATION AU MONOXYDE DE CARBONE' : cadreOf(REC.d)===7 ? 'OXYGÉNOTHÉRAPIE HYPERBARE PROGRAMMÉE' : cadreOf(REC.d)===8 ? 'OXYGÉNOTHÉRAPIE HYPERBARE HORS AMM' : cadreOf(REC.d)===5 ? 'EMBOLIE GAZEUSE' : cadreOf(REC.d)===6 ? 'URGENCE HYPERBARE' : 'ACCIDENT DE PLONGÉE';
   if(t===4) return "SÉANCE DE RECOMPRESSION THÉRAPEUTIQUE";
-  if(t===1 && cadreOf(REC.d)===7) return "CONSULTATION INITIALE — "+sj;
+  if(t===1 && chrLike(REC.d)) return "CONSULTATION INITIALE — "+sj;
   if(t===2) return "FICHE DE SUIVI — "+sj;
   if(t===3) return "COMPTE RENDU D'HOSPITALISATION — "+sj;
   return "PRISE EN CHARGE EN URGENCE — "+sj;
@@ -9439,7 +9470,7 @@ function buildPrint(){
   const d=REC.d, A=ASIA||{}, TY=d.fiche_type||1, CO4=cadreOf(d)===4, NC = x => CO4 ? '' : x;          // CO4 : intoxication au monoxyde de carbone (12.1.1), NC : ce qui n'a pas de sens pour elle
   if(TY===4) return buildPrintSeance();
   let h='';
-  if(cadreOf(d)===7) h = chrPrint();          // hyperbarie chronique : deux pages propres, puis les pièces jointes
+  if(chrLike(d)) h = chrPrint();          // hyperbarie chronique : deux pages propres, puis les pièces jointes
   else if(cadreOf(d)===5) h = embPrint();     // embolie gazeuse : ses pages, puis les pièces jointes
   else if(cadreOf(d)===6) h = urgPrint();     // autre urgence hyperbare
   else {
@@ -10227,7 +10258,7 @@ function sortedDB(){
    l'explique (diagnostic) et propose ce qui fonctionne : « Exporter tout en JSON » (dossier choisi, ou archive
    ZIP), téléchargement du JSON à chaque enregistrement, import d'un dossier ou d'une archive.
    ===================================================================== */
-const APP_VERSION = '12.6.1';
+const APP_VERSION = '12.7.1';
 /* hasPicker teste une fonction de l'API au moment de s'en servir : une extension ou un réglage du navigateur peut la retirer */
 const hasPicker = name => { try{ return typeof window[name] === 'function'; }catch(e){ return false; } };
 let FSA = hasPicker('showDirectoryPicker');
@@ -11358,7 +11389,7 @@ function patBarHTML(){
   const entreeTip = entree ? 'Premier examen du dossier : '+entree+(prem.heure_ex ? ' à '+prem.heure_ex : '') : '';
   let diag = ''; for(let i = FI.length-1; i >= 0 && !diag; i--) diag = diagCourt(FI[i].d);
   return '<div class="pitems">'+item('Nom', d.nom ? String(d.nom).toUpperCase() : '')+item('Prénom', d.prenom)+'<span class="pbr"></span>'+item('Naissance', naiss)+
-         ([4,5,6,7].indexOf(cadreOf(d))>=0 ? '' : item('Accident n°', d.ad_num))+item('Dossier', d.dossier)+item('Examen n°', exLabel(d))+item('Entrée', entree, entreeTip)+
+         ([4,5,6,7,8].indexOf(cadreOf(d))>=0 ? '' : item('Accident n°', d.ad_num))+item('Dossier', d.dossier)+item('Examen n°', exLabel(d))+item('Entrée', entree, entreeTip)+
          item('Dernier diagnostic retenu', diag, diag, 'dg')+'</div>'+
          '<div class="pright"><span class="pt">'+esc(typ)+'</span>'+patNextHTML()+'</div>';
 }
@@ -13111,6 +13142,10 @@ function openFiches(){
 /* ---------- aide ---------- */
 function openHelp(){
   modalHTML('<h3>Mode d\'emploi</h3>'+
+  '<p><b>Nouveautés de la 12.7.1 (version d’essai) : consultation hors AMM.</b><br>'+
+  'Le cadre <b>Consultation spécialisée hors AMM (off-label)</b> s’ouvre (interface proposée, à valider) : la consultation d’hyperbarie chronique (adressage, terrain, examen, contre-indications, prescription, compte rendu), '+
+  'plus la <b>justification de l’indication</b> (pathologie, statut, rationnel, niveau de preuve, références, échec des traitements conventionnels) et un encart <b>avis collégial, consentement et évaluation</b> '+
+  '(avis collégial, information spécifique, consentement écrit, prise en charge, critères d’évaluation et d’arrêt). Le compte rendu les reprend et signale ce qui manque ; planifier la cure sans avis favorable ou sans consentement écrit demande confirmation.</p>'+
   '<p><b>Nouveautés de la 12.6.1 (version d’essai) : autre urgence hyperbare.</b><br>'+
   'Le cadre <b>Autre urgence hyperbare</b> s’ouvre (interface proposée, à valider) : indication (infection nécrosante, écrasement ou fracture ouverte grave, ischémie aiguë post-traumatique, surdité brusque, occlusion de l’artère centrale de la rétine, fumées d’incendie, brûlure, abcès intracrânien, anémie sans transfusion possible, lésion radio-induite hémorragique, autre), '+
   'médecin demandeur, début des symptômes, éléments propres à l’indication (débridement, antibiothérapie, choc ; Gustilo, aponévrotomie, pouls ; audiogramme ; acuité visuelle), examen général et ORL, contre-indications à l’OHB, '+
@@ -14631,7 +14666,7 @@ function chrScanBox(){
 function chrScanDemande(){ REC.d.im_tdm_thor = 2; touch(); renderForm(); toast('Scanner thoracique demandé : il figure dans « Examens en attente de résultat »'); }
 /* les valeurs proposées : indication retenue, fréquence et séances d'après le protocole */
 function chrCalc(){
-  const d = REC.d; if(cadreOf(d)!==7) return;
+  const d = REC.d; if(!chrLike(d)) return;
   const ind = d.chr_indic===99 ? (d.chr_indic_txt || '') : ((CHR_INDIC.find(o=>o.v===d.chr_indic) || {}).l || '');
   autoSync('chr_ind_ret_txt', d.chr_ind_ret===1 && ind ? ind : null);
   const P = tblProto(d.chr_proto);
@@ -14698,9 +14733,9 @@ function chrPrint(){
   const pied = '<div style="font-size:7pt;text-align:right;margin-top:1.5mm;color:#444">Fiche '+esc(REC.id)+' — éditée le '+frDate(iso(new Date()))+' à '+hhmm(new Date())+'</div>';
   let h = (ftype()===1 ? '<div class="pg"><div class="pb psyn">'+blocksHTML(chrCRBlocks(d))+'</div>'+pied+'</div>' : '')+
     '<div class="pg"><div class="phead">'+docTitre()+'</div>'+idb+
-    pspec('chr_adr','Indication et adressage')+pspec(['ident2','plongeur'],'Terrain du patient')+pcontacts()+pspec('constantes','Constantes')+pspec('general','Examen clinique général')+pspec('orl','ORL')+pied+'</div>';
+    pspec('chr_adr','Indication et adressage')+pspec('off_just','Justification de l’indication hors AMM')+pspec(['ident2','plongeur'],'Terrain du patient')+pcontacts()+pspec('constantes','Constantes')+pspec('general','Examen clinique général')+pspec('orl','ORL')+pied+'</div>';
   h += '<div class="pg"><div class="phead" style="font-size:10.5pt">CONTRE-INDICATIONS, EXAMENS ET PRESCRIPTION</div>'+idb+
-    pspec('chr_ci','Contre-indications à l’OHB')+pspec('examens','Examens complémentaires')+pspec('chr_presc','Conclusion et prescription d’OHB')+
+    pspec('chr_ci','Contre-indications à l’OHB')+pspec('examens','Examens complémentaires')+pspec('chr_presc','Conclusion et prescription d’OHB')+pspec('off_decision','Avis collégial, consentement et évaluation')+
     '<div class="pbox"><h4>SYNTHÈSE</h4><div class="pb psyn">'+narrativeHTML()+'</div></div>'+pied+'</div>';
   return h;
 }
@@ -14842,6 +14877,7 @@ function tblPlanFiche(){
   if(d.chr_ind_ret!==1){ toast('L’indication doit être retenue'); return; }
   if(d.chr_ci_concl===2){ toast('Contre-indication présente : pas de cure'); return; }
   if(d.chr_accord!==1 && !confirm('Le patient n’a pas (encore) accepté le traitement dans la fiche. Planifier la cure quand même ?')) return;
+  if(cadreOf(d)===8 && (d.off_rcp!==1 || d.off_consent!==1) && !confirm('Indication hors AMM : '+[d.off_rcp!==1 ? 'pas d’avis collégial favorable' : '', d.off_consent!==1 ? 'pas de consentement écrit' : ''].filter(Boolean).join(', ')+' dans la fiche. Planifier la cure quand même ?')) return;
   const T = TABLES.find(t => t.v === d.chr_table);
   const out = tblPlanCure({dossier:d.dossier, proto:d.chr_proto, nb:d.chr_nb, date1:d.chr_date1, h1:d.chr_h1, table:T ? T.l : null});
   tblSave(); renderForm();
@@ -14971,7 +15007,7 @@ function tblCuresActives(){
     const presc = Math.max(0, ...L.map(r => r.presc || 0));
     return {dossier:k, nom:L[0].nom, prenom:L[0].prenom, fait:L.filter(r => r.statut === 'fait').length, total:Math.max(L.length, presc), manque:Math.max(0, presc - L.length), next:nx}; });
   /* les prescriptions sans séance planifiée */
-  DB.filter(f => f.d && cadreOf(f.d) === 7 && f.d.chr_ind_ret === 1 && f.d.dossier && !by[f.d.dossier]).forEach(f => { if(!out.some(o => o.dossier === f.d.dossier)) out.push({dossier:f.d.dossier, nom:f.d.nom, prenom:f.d.prenom, fait:0, total:f.d.chr_nb || 0, next:null, aPlanifier:f}); });
+  DB.filter(f => f.d && chrLike(f.d) && f.d.chr_ind_ret === 1 && f.d.dossier && !by[f.d.dossier]).forEach(f => { if(!out.some(o => o.dossier === f.d.dossier)) out.push({dossier:f.d.dossier, nom:f.d.nom, prenom:f.d.prenom, fait:0, total:f.d.chr_nb || 0, next:null, aPlanifier:f}); });
   return out.sort((a, b) => String(a.nom || a.dossier).localeCompare(String(b.nom || b.dossier)));
 }
 
@@ -14987,7 +15023,7 @@ function tblQuitter(){ TBL_ON = false; REC = blank(); REC._attenteCadre = true; 
 function tblSemaine(n){ TBL_LUNDI = n === 0 ? (() => { const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); })() : tblAddJ(TBL_LUNDI, 7*n); tblRender(); }
 function tblPlanCureUI(dossier){
   if(!tblGarde('gere')) return;
-  const f = DB.filter(x => x.d && x.d.dossier === dossier && cadreOf(x.d) === 7 && x.d.chr_ind_ret === 1).sort((a, b) => stamp(b).localeCompare(stamp(a)))[0];
+  const f = DB.filter(x => x.d && x.d.dossier === dossier && chrLike(x.d) && x.d.chr_ind_ret === 1).sort((a, b) => stamp(b).localeCompare(stamp(a)))[0];
   if(!f){ toast('Pas de prescription retenue pour ce dossier'); return; }
   const d = f.d, T = TABLES.find(t => t.v === d.chr_table);
   const L = tblResasDe(dossier), apres = L.length ? tblAddJ(L[L.length - 1].date, 1) : null, auj = tblIsoD(new Date());
@@ -15084,6 +15120,13 @@ function chrCRManque(d){
     if(d.chr_accord==null) M.push('décision du patient');
     if(!d.chr_date1) M.push('date de début du traitement');
   }
+  if(cadreOf(d)===8){
+    if(!d.off_patho && !d.off_rationnel) M.push('justification de l’indication');
+    if(d.off_rcp==null) M.push('avis collégial');
+    if(d.chr_ind_ret===1 && d.off_info!==1) M.push('information sur le caractère hors recommandations');
+    if(d.chr_ind_ret===1 && d.off_consent!==1) M.push('consentement écrit');
+    if(d.chr_ind_ret===1 && !d.off_objectif) M.push('critères d’évaluation');
+  }
   return M;
 }
 function chrCRBlocks(d){
@@ -15091,7 +15134,7 @@ function chrCRBlocks(d){
   const F = d.sexe===2, civ = d.sexe===2 ? 'Mme' : d.sexe===1 ? 'M.' : '';
   const nom = [civ, d.prenom || '', d.nom ? String(d.nom).toUpperCase() : ''].filter(Boolean).join(' ') || 'le patient';
   const P = (TBL && TBL.params) || {}, B = [];
-  B.push({title:true, lines:[P.service || 'Service de médecine hyperbare', 'Compte rendu de consultation d’oxygénothérapie hyperbare', 'Consultation du '+frDate(d.date_ex)+(d.examinateur ? ' — '+flat(d.examinateur) : '')]});
+  B.push({title:true, lines:[P.service || 'Service de médecine hyperbare', 'Compte rendu de consultation d’oxygénothérapie hyperbare'+(cadreOf(d)===8 ? ' (indication hors AMM)' : ''), 'Consultation du '+frDate(d.date_ex)+(d.examinateur ? ' — '+flat(d.examinateur) : '')]});
   const pat = [nom]; if(d.ddn) pat.push((F ? 'née' : 'né')+' le '+frDate(d.ddn)); if(d.age!=null) pat.push(ageFr(d)); if(d.dossier) pat.push('dossier '+d.dossier);
   B.push({h:'Patient', inline:true, lines:[pat.join(', ')+'.']});
   const spe = d.chr_adr_spe===99 ? (d.chr_adr_spe_autre ? flat(d.chr_adr_spe_autre) : '') : ((CHR_SPE.find(o=>o.v===d.chr_adr_spe) || {}).l || '');
@@ -15099,6 +15142,7 @@ function chrCRBlocks(d){
   const ind = d.chr_indic===99 ? (d.chr_indic_txt ? flat(d.chr_indic_txt) : '') : ((CHR_INDIC.find(o=>o.v===d.chr_indic) || {}).l || '');
   const ro = []; if(ind) ro.push(fin('Adressé'+(F ? 'e' : '')+' pour '+lc1(ind)+(d.chr_indic!==99 && d.chr_indic_txt ? ' ('+flat(d.chr_indic_txt).replace(/[.\s]+$/, '')+')' : ''))); if(d.chr_histoire) ro.push(fin(d.chr_histoire));
   B.push({h:'Raison de l’orientation', lines:ro.length ? ro : [bold('non renseignée')]});
+  if(cadreOf(d)===8){ const oj = offJustTexte(d); B.push({h:'Justification de l’indication hors AMM', lines:oj.length ? oj : [bold('non renseignée')]}); }
   const at = get('Antécédents et terrain'); if(at && at.lines.some(Boolean)) B.push({h:'Antécédents, traitements et habitudes de vie', lines:at.lines.filter(Boolean)});
   const ex = []; const cst = get('Constantes'); if(cst) ex.push(...cst.lines.filter(Boolean));
   N.filter(b=>EXAM_BLOC(b.h)).forEach(b=>ex.push(...b.lines.filter(Boolean)));
@@ -15110,6 +15154,7 @@ function chrCRBlocks(d){
   else if(d.chr_ind_ret===2) cc.push(bold('Indication d’oxygénothérapie hyperbare à discuter.'));
   else cc.push(bold('Indication : non statuée.'));
   chrPrescTexte(d).slice(d.chr_ind_ret!=null ? 1 : 0).forEach(x=>cc.push(x));          // contre-indication, protocole, acceptation, première séance, rendez-vous (la première ligne, l'indication, est déjà dite)
+  if(cadreOf(d)===8) offDecTexte(d).forEach(x=>cc.push(x));
   B.push({h:'Conclusion', lines:cc});
   const sig = []; if(d.examinateur) sig.push(flat(d.examinateur));
   if(d.chr_copie_mt===1) sig.push('Copie : médecin traitant'+(d.mt_nom ? ', '+flat(d.mt_nom) : '')+'.');
@@ -15125,6 +15170,29 @@ function chrCRBox(){
 }
 function chrCRVoir(){ modalHTML('<div class="psyn" style="max-width:760px">'+blocksHTML(chrCRBlocks(REC.d))+'</div><div class="af-btns"><button class="tb gd" onclick="chrCRCopier()">Copier</button></div>'); }
 function chrCRCopier(){ const B = chrCRBlocks(REC.d); copyRich(blocksHTML(B), blocksPlain(B), 'Compte rendu copié', blocksRTF(B)); }
+/* ---------- consultation hors AMM (12.7.1) ---------- */
+function offJustTexte(d){
+  const {fin, flat, lc1} = TXT, P = [], lab = (L, v) => (L.find(o=>o.v===v) || {}).l || '';
+  if(d.off_patho) P.push(bold(fin('Indication demandée : '+lc1(flat(d.off_patho)))));
+  if(d.off_statut) P.push(fin('Statut : '+lc1(lab(OFF_STATUT, d.off_statut))));
+  if(d.off_rationnel) P.push(fin('Justification : '+lc1(flat(d.off_rationnel))));
+  if(d.off_preuve) P.push(fin('Meilleur niveau de preuve disponible : '+lc1(lab(OFF_PREUVE, d.off_preuve))));
+  if(d.off_biblio) P.push(fin('Références : '+flat(d.off_biblio)));
+  if(d.off_echec===1) P.push(fin('Échec ou contre-indication des traitements conventionnels'+(d.off_echec_txt ? ' : '+lc1(flat(d.off_echec_txt)).replace(/[.\s]+$/, '') : '')));
+  else if(d.off_echec===0) P.push('Pas d’échec documenté des traitements conventionnels.');
+  return P;
+}
+function offDecTexte(d){
+  const {fin, flat, lc1} = TXT, P = [], F = d.sexe===2;
+  if(d.off_rcp===1 || d.off_rcp===2){ const t = (d.off_rcp===1 ? 'Avis collégial favorable' : 'Avis collégial défavorable')+(d.off_rcp_date ? ' le '+frDate(d.off_rcp_date) : '')+(d.off_rcp_txt ? ' ('+flat(d.off_rcp_txt).replace(/[.\s]+$/, '')+')' : ''); P.push(d.off_rcp===2 ? bold(fin(t)) : fin(t)); }
+  else if(d.off_rcp===3) P.push(bold('Avis collégial à demander.'));
+  if(d.off_info===1) P.push((F ? 'La patiente a été informée' : 'Le patient a été informé')+' du caractère hors recommandations de l’indication, de l’absence de bénéfice démontré, des alternatives et de la possibilité d’arrêter à tout moment.');
+  if(d.off_consent===1) P.push('Consentement écrit recueilli.'); else if(d.off_consent===0) P.push(bold('Consentement écrit non recueilli.'));
+  const fn = {1:'prise en charge habituelle', 2:'prise en charge dérogatoire ou à la charge du patient', 3:'prise en charge à préciser'}[d.off_fin]; if(fn) P.push(fin(TXT.cap(fn)));
+  if(d.off_objectif) P.push(fin('Critères d’évaluation : '+lc1(flat(d.off_objectif))));
+  if(d.off_arret) P.push(fin('Critères d’arrêt : '+lc1(flat(d.off_arret))));
+  return P;
+}
 /* ---------- autre urgence hyperbare (12.6.1) ---------- */
 function urgMs(d){ if(!d.urg_deb_h) return null; const t = new Date((d.urg_deb_date || d.date_ex)+'T'+d.urg_deb_h); return isNaN(t) ? null : t; }
 function urgCalc(){

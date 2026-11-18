@@ -720,6 +720,21 @@ emb_aspi;Aspiration d’air par le cathéter (Symptômes et prise en charge avan
 emb_tdm_air;Air visible à l’imagerie (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_tdm_isch;Ischémie ou œdème à l’imagerie avant recompression (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_evol;Évolution avant recompression (Symptômes et prise en charge avant recompression);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
+off_patho;Pathologie, indication demandée (Justification de l’indication hors AMM);texte libre
+off_statut;Statut de l’indication (Justification de l’indication hors AMM);"1 = Hors des indications reconnues ; 2 = Indication reconnue, situation particulière ; 3 = Dans un protocole de recherche"
+off_rationnel;Rationnel, justification (Justification de l’indication hors AMM);texte libre
+off_preuve;Meilleur niveau de preuve disponible (Justification de l’indication hors AMM);"1 = Essais randomisés ; 2 = Études observationnelles ; 3 = Séries de cas ; 4 = Avis d’experts ; 5 = Aucune donnée publiée"
+off_biblio;Références (Justification de l’indication hors AMM);texte libre
+off_echec;Échec ou contre-indication des traitements conventionnels (Justification de l’indication hors AMM);"1 = OUI ; 0 = NON"
+off_echec_txt;Traitements déjà essayés (Justification de l’indication hors AMM);texte libre
+off_rcp;Avis collégial (RCP, staff) (Avis collégial, consentement et évaluation);"1 = Avis collégial favorable ; 2 = Avis collégial défavorable ; 3 = À demander"
+off_rcp_date;Date de l’avis (Avis collégial, consentement et évaluation);AAAA-MM-JJ
+off_rcp_txt;Participants, précisions (Avis collégial, consentement et évaluation);texte libre
+off_info;Information spécifique délivrée (Avis collégial, consentement et évaluation);"1 = OUI ; 0 = NON"
+off_consent;Consentement écrit recueilli (Avis collégial, consentement et évaluation);"1 = OUI ; 0 = NON"
+off_fin;Prise en charge financière (Avis collégial, consentement et évaluation);"1 = Prise en charge habituelle ; 2 = Prise en charge dérogatoire ou à la charge du patient ; 3 = À préciser"
+off_objectif;Critères d’évaluation (objectif mesurable) (Avis collégial, consentement et évaluation);texte libre
+off_arret;Critères d’arrêt (Avis collégial, consentement et évaluation);texte libre
 urg_indic;Indication (Indication et contexte);"1 = Infection nécrosante des tissus mous (gangrène gazeuse, fasciite nécrosante) ; 2 = Écrasement de membre, fracture ouverte grave, syndrome des loges ; 3 = Ischémie aiguë post-traumatique, lambeau ou réimplantation compromis ; 4 = Surdité brusque ; 5 = Occlusion de l’artère centrale de la rétine ; 6 = Intoxication par les fumées d’incendie (cyanure associé) ; 7 = Brûlure étendue ; 8 = Abcès intracrânien ; 9 = Anémie aiguë sans transfusion possible ; 10 = Lésion radio-induite hémorragique (cystite, rectite) ; 99 = Autre (préciser)"
 urg_indic_txt;Précisions (Indication et contexte);texte libre
 urg_dem_spe;Spécialité (Indication et contexte);"1 = Urgences ; 2 = Réanimation ; 3 = Chirurgie orthopédique, traumatologie ; 4 = Chirurgie viscérale ; 5 = Chirurgie plastique, main ; 6 = ORL ; 7 = Ophtalmologie ; 8 = Infectiologie ; 9 = Neurochirurgie ; 10 = Urologie ; 11 = Médecine générale ; 99 = Autre (préciser)"
