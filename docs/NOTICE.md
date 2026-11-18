@@ -1,4 +1,4 @@
-# ADP — accident de plongée, version 12.8.1 (version d'essai)
+# ADP — accident de plongée, version 12.8.2 (version d'essai)
 
 Fichier unique : `index.html`. Aucune dépendance externe, aucun compte. Aucun réseau, sauf deux fonctions facultatives : la dictée vocale, et — depuis la 11.1.1 — le couplage
 entre appareils par Firebase (désactivé par défaut, chiffré de bout en bout, voir *Le couplage entre appareils*).
@@ -435,7 +435,7 @@ et prépare les futures interfaces du logiciel (une par cadre). Cliquez la carte
 | Embolie gazeuse | `5` | **actif depuis la 12.5.1** : interface proposée, à valider (voir *Embolie gazeuse*) |
 | Autre urgence hyperbare | `6` | **actif depuis la 12.6.1** : interface proposée, à valider (voir *Autre urgence hyperbare*) |
 | Consultation d'hyperbarie chronique (hors urgence) | `7` | **actif depuis la 12.4.1** : interface proposée, à valider (voir *Consultation d'hyperbarie chronique*) |
-| Consultation spécialisée hors AMM (off-label) | `8` | **actif depuis la 12.7.1** : interface proposée, à valider (voir *Consultation hors AMM*) |
+| Consultation spécialisée hors indications reconnues (off-label) | `8` | **actif depuis la 12.7.1** : interface proposée, à valider (voir *Consultation hors indications reconnues*) |
 | Consultation d'expertise (professionnelle ou de loisir) | `9` | **actif depuis la 12.8.1** : interface proposée, à valider (voir *Consultation d'expertise*) |
 
 - Depuis la 12.8.1, les neuf cadres sont actifs.
@@ -639,16 +639,16 @@ La consultation initiale d'hyperbarie chronique produit un **compte rendu de con
 - *Planifier la cure* demande confirmation si la décision du patient n'est pas « accepte le traitement ».
 - Les phrases à cliquer des éléments expliqués (bénéfice et absence de garantie, déroulement, risques, possibilité d'interrompre, document remis) sont des **propositions à adapter au document d'information du service**.
 
-## Consultation hors AMM (cadre 8, depuis la 12.7.1)
+## Consultation hors indications reconnues, off-label (cadre 8, depuis la 12.7.1)
 
-Le cadre **Consultation spécialisée hors AMM (off-label)** s'ouvre, avec une **interface proposée, à valider**. C'est la **consultation d'hyperbarie chronique** (adressage et courrier, terrain, examen général et ORL, contre-indications et scanner suggéré, conclusion et prescription, information et décision du patient, compte rendu, planification de la cure), avec deux encarts en plus :
+Le cadre **Consultation spécialisée hors indications reconnues (off-label)** s'ouvre, avec une **interface proposée, à valider**. C'est la **consultation d'hyperbarie chronique** (adressage et courrier, terrain, examen général et ORL, contre-indications et scanner suggéré, conclusion et prescription, information et décision du patient, compte rendu, planification de la cure), avec deux encarts en plus :
 
-- **Justification de l'indication hors AMM** (onglet Anamnèse, après l'adressage) : pathologie ou indication demandée ; statut (hors des indications reconnues, indication reconnue en situation particulière, protocole de recherche) ; rationnel ; meilleur niveau de preuve disponible (essais randomisés, études observationnelles, séries de cas, avis d'experts, aucune donnée) ; références ; échec ou contre-indication des traitements conventionnels et traitements déjà essayés.
+- **Justification de l'indication (hors indications reconnues)** (onglet Anamnèse, après l'adressage) : pathologie ou indication demandée ; statut (hors des indications reconnues, indication reconnue en situation particulière, protocole de recherche) ; rationnel ; meilleur niveau de preuve disponible (essais randomisés, études observationnelles, séries de cas, avis d'experts, aucune donnée) ; références ; échec ou contre-indication des traitements conventionnels et traitements déjà essayés.
 - **Avis collégial, consentement et évaluation** (onglet Conclusion) : avis collégial (favorable, défavorable, à demander ; date, participants) ; information spécifique (caractère hors recommandations, bénéfice non démontré, alternatives, arrêt possible à tout moment) ; consentement écrit ; prise en charge financière (habituelle, dérogatoire ou à la charge du patient, à préciser) ; critères d'évaluation ; critères d'arrêt.
 
-Le **compte rendu de consultation** (titré « indication hors AMM ») ajoute la justification après la raison de l'orientation, et l'avis collégial, l'information spécifique, le consentement, la prise en charge et les critères d'évaluation et d'arrêt à la conclusion ; l'encart signale en plus, s'ils manquent : justification, avis collégial, information sur le caractère hors recommandations, consentement écrit, critères d'évaluation. *Planifier la cure* demande confirmation sans avis collégial favorable ou sans consentement écrit. De nouvelles colonnes s'ajoutent au CSV (`off_*`).
+Le **compte rendu de consultation** (titré « … hors indications reconnues (off-label) ») ajoute la justification après la raison de l'orientation, et l'avis collégial, l'information spécifique, le consentement, la prise en charge et les critères d'évaluation et d'arrêt à la conclusion ; l'encart signale en plus, s'ils manquent : justification, avis collégial, information sur le caractère hors recommandations, consentement écrit, critères d'évaluation. *Planifier la cure* demande confirmation sans avis collégial favorable ou sans consentement écrit. De nouvelles colonnes s'ajoutent au CSV (`off_*`).
 
-*Terme* : « hors AMM » est le nom du cadre ; pour l'OHB, il s'agit en pratique d'une indication **hors des indications reconnues** (liste de l'ECHM), d'où le libellé du statut.
+*Terme* : jusqu'à la 12.8.1, le cadre s'appelait « hors AMM » ; il s'appelle depuis la 12.8.2 « hors indications reconnues (off-label) », plus juste pour l'OHB, dont les indications reconnues sont celles de la liste de l'ECHM.
 
 ## Consultation d'expertise (cadre 9, depuis la 12.8.1)
 
@@ -2404,7 +2404,7 @@ aux analyses topographiques fines.
 
 ### Le cadre de la consultation
 
-- Étape préalable à toute nouvelle fiche, et premier pas vers les interfaces à venir (intoxication au CO, embolie gazeuse, hyperbarie chronique, hors AMM, expertise…). Voir *Le cadre de la consultation*.
+- Étape préalable à toute nouvelle fiche, et premier pas vers les interfaces à venir (intoxication au CO, embolie gazeuse, hyperbarie chronique, hors indications reconnues (off-label), expertise…). Voir *Le cadre de la consultation*.
 
 ### Couplage entre appareils (Firebase)
 

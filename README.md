@@ -2,7 +2,7 @@
 
 Outil de saisie pour la prise en charge d'un accident de plongée en médecine
 hyperbare : consultation initiale en urgence, consultations de suivi, compte
-rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.8.1 (**version d'essai**, à valider avant la version principale).
+rendu de séjour. Auteur : Dr Julien Lesaca. Version 12.8.2 (**version d'essai**, à valider avant la version principale).
 
 Deux sorties, depuis la même saisie :
 

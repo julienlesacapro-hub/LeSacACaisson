@@ -12,7 +12,7 @@ date_acc;Date de l'accident;AAAA-MM-JJ
 heure_acc;Heure de l'accident;HH:MM
 delai_min;Delai accident vers examen;"entier, minutes (calcule ; consultation initiale seulement, vide sur les fiches suivantes)"
 fiche_type;Type de consultation;"1 = consultation initiale (prise en charge en urgence) ; 2 = consultation de suivi ; 3 = consultation de sortie / CRH ; 4 = seance de recompression sans examen clinique (fiche rapide, numeros EX3b, EX3c...) ; vide = non renseigne (a lire comme 1)"
-cadre;Cadre de la consultation;"1 = Accident de plongee (ADD) ; 2 = Œdeme pulmonaire d’immersion (OPI) ; 3 = Mixte (accident de desaturation et OPI) ; 4 = Intoxication au monoxyde de carbone ; 5 = Embolie gazeuse ; 6 = Autre urgence hyperbare ; 7 = Consultation d’hyperbarie chronique (hors urgence) ; 8 = Consultation specialisee hors AMM (off-label) ; 9 = Consultation d’expertise (professionnelle ou de loisir) ; les cadres 5 a 9 sont annonces pour les prochaines versions ; vide = fiche d avant la 11.1.1 (accident de plongee, a lire comme 1)"
+cadre;Cadre de la consultation;"1 = Accident de plongee (ADD) ; 2 = Œdeme pulmonaire d’immersion (OPI) ; 3 = Mixte (accident de desaturation et OPI) ; 4 = Intoxication au monoxyde de carbone ; 5 = Embolie gazeuse ; 6 = Autre urgence hyperbare ; 7 = Consultation d’hyperbarie chronique (hors urgence) ; 8 = Consultation specialisee hors indications reconnues (off-label) ; 9 = Consultation d’expertise (professionnelle ou de loisir) ; les cadres 5 a 9 sont annonces pour les prochaines versions ; vide = fiche d avant la 11.1.1 (accident de plongee, a lire comme 1)"
 sexe;Sexe;"1 = M ; 2 = F ; 3 = Autre"
 age;Age a la date de l'examen;entier, annees revolues (calcule)
 age_mois;Age - mois en plus des annees (mineur);"entier 0 a 11, calcule ; seulement pour un patient de moins de 18 ans, vide pour un adulte"
@@ -720,13 +720,13 @@ emb_aspi;Aspiration d’air par le cathéter (Symptômes et prise en charge avan
 emb_tdm_air;Air visible à l’imagerie (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_tdm_isch;Ischémie ou œdème à l’imagerie avant recompression (Symptômes et prise en charge avant recompression);"1 = OUI ; 0 = NON"
 emb_evol;Évolution avant recompression (Symptômes et prise en charge avant recompression);"0 = Amélioré ; 1 = Stable ; 2 = Aggravé"
-off_patho;Pathologie, indication demandée (Justification de l’indication hors AMM);texte libre
-off_statut;Statut de l’indication (Justification de l’indication hors AMM);"1 = Hors des indications reconnues ; 2 = Indication reconnue, situation particulière ; 3 = Dans un protocole de recherche"
-off_rationnel;Rationnel, justification (Justification de l’indication hors AMM);texte libre
-off_preuve;Meilleur niveau de preuve disponible (Justification de l’indication hors AMM);"1 = Essais randomisés ; 2 = Études observationnelles ; 3 = Séries de cas ; 4 = Avis d’experts ; 5 = Aucune donnée publiée"
-off_biblio;Références (Justification de l’indication hors AMM);texte libre
-off_echec;Échec ou contre-indication des traitements conventionnels (Justification de l’indication hors AMM);"1 = OUI ; 0 = NON"
-off_echec_txt;Traitements déjà essayés (Justification de l’indication hors AMM);texte libre
+off_patho;Pathologie, indication demandée (Justification de l’indication (hors indications reconnues));texte libre
+off_statut;Statut de l’indication (Justification de l’indication (hors indications reconnues));"1 = Hors des indications reconnues ; 2 = Indication reconnue, situation particulière ; 3 = Dans un protocole de recherche"
+off_rationnel;Rationnel, justification (Justification de l’indication (hors indications reconnues));texte libre
+off_preuve;Meilleur niveau de preuve disponible (Justification de l’indication (hors indications reconnues));"1 = Essais randomisés ; 2 = Études observationnelles ; 3 = Séries de cas ; 4 = Avis d’experts ; 5 = Aucune donnée publiée"
+off_biblio;Références (Justification de l’indication (hors indications reconnues));texte libre
+off_echec;Échec ou contre-indication des traitements conventionnels (Justification de l’indication (hors indications reconnues));"1 = OUI ; 0 = NON"
+off_echec_txt;Traitements déjà essayés (Justification de l’indication (hors indications reconnues));texte libre
 off_rcp;Avis collégial (RCP, staff) (Avis collégial, consentement et évaluation);"1 = Avis collégial favorable ; 2 = Avis collégial défavorable ; 3 = À demander"
 off_rcp_date;Date de l’avis (Avis collégial, consentement et évaluation);AAAA-MM-JJ
 off_rcp_txt;Participants, précisions (Avis collégial, consentement et évaluation);texte libre
